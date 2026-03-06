@@ -1,3 +1,77 @@
+class Rings {
+  constructor(ringData) {
+      this.setrings = Array.from(ringData.setrings);
+      this.ringsexp = Array.from(ringData.ringsexp);
+      this.onmission = ringData.onmission;
+      this.missionid = ringData.missionid;
+      this.missionstate = {
+        turn: ringData.missionstate.turn,
+        activering: ringData.missionstate.activering,
+        skilllog: Array.from(ringData.missionstate.skilllog),
+        flowerpoint: ringData.missionstate.flowerpoint,
+        snowpoint: ringData.missionstate.snowpoint,
+        moonpoint: ringData.missionstate.moonpoint,
+        flowermultiplier: ringData.missionstate.flowermultiplier,
+        snowmultiplier: ringData.missionstate.snowmultiplier,
+        moonmultiplier: ringData.missionstate.moonmultiplier,
+        tps: Array.from(ringData.missionstate.tps),
+        fieldeffect: Array.from(ringData.missionstate.fieldeffect),
+      };
+      this.clearedmission = ringData.clearedmission;
+      this.auto = {
+        doauto: ringData.auto.doauto,
+        automissionid: ringData.auto.automissionid,
+      };
+      this.outsideauto = {
+        autospendshine: ringData.outsideauto.autospendshine,
+        autospendshinenumber: ringData.outsideauto.autospendshinenumber,
+        autospendbright: ringData.outsideauto.autospendbright,
+        autospendbrightnumber: ringData.outsideauto.autospendbrightnumber,
+        autodarklevelreset: ringData.outsideauto.autodarklevelreset,
+        autodarklevelresetborder: ringData.outsideauto.autodarklevelresetborder,
+        autodochallenge: ringData.outsideauto.autodochallenge,
+      };
+
+  }
+
+  toSaveObject() {
+    return {
+      setrings: this.setrings,
+      ringsexp: this.ringsexp,
+      onmission: this.onmission,
+      missionid: this.missionid,
+      missionstate: {
+        turn: this.missionstate.turn,
+        activering: this.missionstate.activering,
+        skilllog: this.missionstate.skilllog,
+        flowerpoint: this.missionstate.flowerpoint,
+        snowpoint: this.missionstate.snowpoint,
+        moonpoint: this.missionstate.moonpoint,
+        flowermultiplier: this.missionstate.flowermultiplier,
+        snowmultiplier: this.missionstate.snowmultiplier,
+        moonmultiplier: this.missionstate.moonmultiplier,
+        tps: this.missionstate.tps,
+        fieldeffect: this.missionstate.fieldeffect,
+      },
+      clearedmission: this.clearedmission,
+      auto: {
+        doauto: this.auto.doauto,
+        automissionid: this.auto.automissionid,
+      },
+      outsideauto: {
+        autospendshine: this.outsideauto.autospendshine,
+        autospendshinenumber: this.outsideauto.autospendshinenumber,
+        autospendbright: this.outsideauto.autospendbright,
+        autospendbrightnumber: this.outsideauto.autospendbrightnumber,
+        autodarklevelreset: this.outsideauto.autodarklevelreset,
+        autodarklevelresetborder: this.outsideauto.autodarklevelresetborder,
+        autodochallenge: this.outsideauto.autodochallenge,
+      },
+    };
+  }
+}
+
+
 function Ringdata() {
 
   this.statusdatatype = [

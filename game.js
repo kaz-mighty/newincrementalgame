@@ -2098,6 +2098,7 @@ Vue.createApp({
     },
     moveworld(i) {
       if (world == i || !this.worldopened[i]) return
+      this.save()
       this.load(i)
       this.world = i
     },
@@ -2884,7 +2885,7 @@ Vue.createApp({
 
 
     setTimeout(this.update, this.player.tickspeed);
-    setInterval(this.save, 2000);
+    setInterval(this.save, 20000);
 
   },
 }).mount('#app');

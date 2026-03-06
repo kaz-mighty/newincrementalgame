@@ -320,6 +320,11 @@
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('polishedstatuebr') }" @click="configtweet('polishedstatuebr')" v-if="player.polishedstatuebr[0]>0">煌像</button>
 
 				</div>
+				<div>
+					データ
+					<button type="button" @click="save()">強制セーブ</button>
+					※20秒毎に自動でセーブされます
+				</div>
 				<div class="export">
 					データ
 					<button type="button" id="exportsave" @click="exportsave()">データ吐き出し</button>

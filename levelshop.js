@@ -5,7 +5,7 @@ function Levelshopdata(){
     new Decimal('1e3'),
     new Decimal('1e4'),
     new Decimal('1e5')
-  ],
+  ]
   this.itemtext =[
     "段位取得量が最大取得段位以下の範囲で増加します。",
     "取得している効力数によって、間隙が少しだけ短くなります。",

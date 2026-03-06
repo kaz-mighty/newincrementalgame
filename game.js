@@ -1409,8 +1409,8 @@ Vue.createApp({
       let gaindarklevel = new Decimal(this.player.darkmoney.log10()).div(dv).pow_base(2).round()
       if(confirm('裏昇段リセットして、裏段位' + gaindarklevel + 'を得ますか？')){
         this.player.darkmoney = new Decimal(0)
-        this.player.darkgenerators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.darkgeneratorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.darkgenerators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.darkgeneratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.darkgeneratorsCost = [
           new Decimal('1e100'),
           new Decimal('1e108'),
@@ -1420,7 +1420,7 @@ Vue.createApp({
           new Decimal('1e316'),
           new Decimal('1e443'),
           new Decimal('1e612')
-        ],
+        ]
         this.player.darklevel = this.player.darklevel.add(gaindarklevel)
       }
     },
@@ -1503,8 +1503,8 @@ Vue.createApp({
         }
 
 
-        this.player.generators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.generatorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.generators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.generatorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.generatorsCost = [
           new Decimal(1),
           new Decimal('1e4'),
@@ -1514,11 +1514,11 @@ Vue.createApp({
           new Decimal('1e36'),
           new Decimal('1e49'),
           new Decimal('1e64')
-        ],
+        ]
 
 
-        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.acceleratorsCost = [
           new Decimal(10),
           new Decimal('1e10'),
@@ -1571,8 +1571,8 @@ Vue.createApp({
         this.player.level = new Decimal(0)
         this.player.levelresettime = new Decimal(0)
 
-        this.player.generators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.generatorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.generators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.generatorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.generatorsCost = [
           new Decimal(1),
           new Decimal('1e4'),
@@ -1582,11 +1582,11 @@ Vue.createApp({
           new Decimal('1e36'),
           new Decimal('1e49'),
           new Decimal('1e64')
-        ],
+        ]
 
 
-        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.acceleratorsCost = [
           new Decimal(10),
           new Decimal('1e10'),
@@ -1596,7 +1596,7 @@ Vue.createApp({
           new Decimal('1e160'),
           new Decimal('1e320'),
           new Decimal('1e640'),
-        ],
+        ]
 
         this.player.tickspeed = 1000
 
@@ -1644,8 +1644,8 @@ Vue.createApp({
         this.player.rank =  new Decimal(0)
         this.player.rankresettime = new Decimal(0)
 
-        this.player.generators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.generatorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.generators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.generatorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.generatorsCost = [
           new Decimal(1),
           new Decimal('1e4'),
@@ -1655,11 +1655,11 @@ Vue.createApp({
           new Decimal('1e36'),
           new Decimal('1e49'),
           new Decimal('1e64')
-        ],
+        ]
 
 
-        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0)),
-        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0)),
+        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0))
+        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
         this.player.acceleratorsCost = [
           new Decimal(10),
           new Decimal('1e10'),

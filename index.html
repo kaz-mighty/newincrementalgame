@@ -101,7 +101,7 @@
 
 
 			</div>
-			<div class="basictabcontents" v-show="player.currenttab == 'basic'">
+			<div class="basictabcontents" v-if="player.currenttab == 'basic'">
 				<div class="levelrcontents" v-if="player.levelresettime.gt(0)">
 					段位: {{ toFormated(player.level,5) }} 段位リセット: {{ toFormated(player.levelresettime,5) }}回
 				</div>
@@ -210,7 +210,7 @@
 						</button>
 					</div>
 				</div>
-				<div v-show= "player.currenttab == 'dark'">
+				<div v-if="player.currenttab == 'dark'">
 					<div id="darkcoinamount" v-show="player.rankchallengecleared.length>=32">裏ポイント: {{ player.darkmoney.toExponential(3) }}</div>
 					裏発生器iは発生器iを強化します。
 					<div v-show = "player.rankchallengecleared.length>=32">裏発生器は、煌きを消費すると発生器のように動作し、裏ポイントや下位の裏発生器を生み出します。裏ポイントは全ての発生器を強化します。</div>
@@ -249,7 +249,7 @@
 
 				</div>
 
-				<div v-show= "player.currenttab == 'light'">
+				<div v-if="player.currenttab == 'light'">
 					<div id="lightcoinamount" v-show="pchallengestage>=1">天上ポイント: {{ player.lightmoney.toExponential(3) }}</div>
 					天上発生器iは裏発生器iを強化します。
 
@@ -268,7 +268,7 @@
 
 				</div>
 
-				<div v-show="player.currenttab == 'time'">
+				<div v-if="player.currenttab == 'time'">
 					<div>時間回帰力: {{ player.accelevel }}</div>
 					<div>起動時間回帰力: {{ player.accelevelused }}</div>
 					<div>使用中時間回帰力: {{ calccampaigncosts() }}</div>
@@ -298,7 +298,7 @@
 				</div>
 
 
-				<div v-show="player.currenttab == 'option'">
+				<div v-if="player.currenttab == 'option'">
 					<button type="button" id="resetbutton" @click="resetData(false)">リセット</button>
 					<div class="tweetconfig">
 						ツイート機能設定
@@ -332,7 +332,7 @@
 						<button type="button" id="importsave" @click="importsave()">データ取り込み</button>
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'level'">
+				<div v-if="player.currenttab == 'level'">
 					最大取得段位:{{ toFormated(player.maxlevelgained,5) }}
 					<div class="challenges-container">
 						挑戦:挑戦とは厳しい条件で昇段リセットを目指すことです。
@@ -446,7 +446,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'rank'">
+				<div v-if="player.currenttab == 'rank'">
 					<div class="levelshop">
 						段位捧所:段位捧所では、段位を消費することによって強化を購入することができます。
 						段位を捧げた回数に応じて、捧げるべき段位の量が少なくなります。
@@ -462,7 +462,7 @@
 						累計購入回数: {{player.levelitembought}}
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'crown'">
+				<div v-if="player.currenttab == 'crown'">
 
 					<div class="challenges-container">
 						完全挑戦:完全階位挑戦とは厳しい条件で昇階リセットを目指すことです。
@@ -501,7 +501,7 @@
 					</div>
 				</div>
 
-				<div v-show="player.currenttab == 'spirit'">
+				<div v-if="player.currenttab == 'spirit'">
 					精霊
 					<div v-for="i in spiritdata.spiritnuma" :key="i">
 						<button type="button" class="spendshinebutton"  @click="buyspirit(i-1)">
@@ -512,7 +512,7 @@
 					</div>
 				</div>
 
-				<div v-show="player.currenttab == 'auto'">
+				<div v-if="player.currenttab == 'auto'">
 					自動購入器設定
 					<div v-if="player.challengebonuses.includes(5)">
 						<button type="button" class="autobuyerbutton" :class="{ 'selected': genautobuy }" @click="toggleautobuyer(0)">
@@ -577,7 +577,7 @@
 						ご了承:オンにすると発生器の出力が低下します
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'shine'">
+				<div v-if="player.currenttab == 'shine'">
 					<div>
 						輝き所持数:{{ player.shine }}
 						<button type="button" class="spendshinebutton"  @click="spendshine(1)">
@@ -657,7 +657,7 @@
 						残滓: {{ player.residue }}
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'world'">
+				<div v-if="player.currenttab == 'world'">
 					記憶: {{ memorysum }}
 					<div>
 						記憶は、他世界での実績の個数の合計です。記憶が多くなるほど、発生器の生産量が増加します。
@@ -712,7 +712,7 @@
 				</div>
 
 
-				<div v-show="player.currenttab == 'chip'">
+				<div v-if="player.currenttab == 'chip'">
 					鋳片は、ポイントを多く貯めて段位リセットすると入手できることがあります。
 					ポイントをより多く貯めるほど、鋳片が入手できる確率が上昇し、また上位の鋳片が入手しやすくなります。
 					<br>
@@ -798,7 +798,7 @@
 
 
 				</div>
-				<div v-show="player.currenttab == 'statue'">
+				<div v-if="player.currenttab == 'statue'">
 					像は、対応する鋳片を使用して作成することができます。像を作成するたびに、必要な鋳片の量は増加します。
 					像は、完全挑戦に入るのに規定数が必要となります。
 					<div v-for="i in 10" :key="i">
@@ -820,7 +820,7 @@
 
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'ring'">
+				<div v-if="player.currenttab == 'ring'">
 					使用輪:{{ player.rings.setrings.map((e) => e+1) }}
 					<div>
 						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.auto.doauto }" @click="configautomission()">
@@ -887,7 +887,7 @@
 						</button>
 					</div>
 				</div>
-				<div v-show="player.currenttab == 'trophy'">
+				<div v-if="player.currenttab == 'trophy'">
 					<button type="button" @click="confchecktrophies()">
 						実績更新:
 					</button>

@@ -1,4 +1,4 @@
-function Challengedata(){
+function Challengedata() {
 
   this.challengetext = [
     "昇段リセットは1e24ポイントから可能になります。",

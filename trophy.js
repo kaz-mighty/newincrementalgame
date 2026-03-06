@@ -1,4 +1,4 @@
-function Trophydata(){
+function Trophydata() {
 
   this.contents = [
     "有段者",

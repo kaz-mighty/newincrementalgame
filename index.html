@@ -129,7 +129,7 @@
 						<button type="button" @click="resetRank(false)">昇階リセット</button>
 					</div>
 					<div id="crownreset" v-if="player.money.greaterThanOrEqualTo(resetCrownborder())">
-						<button type="button" :class="{ 'unavailable': player.onchallenge }"@click="resetCrown(false)">昇冠リセット</buttton>
+						<button type="button" :class="{ 'unavailable': player.onchallenge }"@click="resetCrown(false)">昇冠リセット</button>
 						</div>
 					</div>
 					<br>

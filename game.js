@@ -302,6 +302,17 @@ class Player {
     this.worldpipe = Array.from(playerData.worldpipe);
     this.rings = new Rings(playerData.rings);
 
+    this.auto = {
+        autoSpendShine: playerData.rings.outsideauto.autospendshine,
+        autoSpendShineNumber: playerData.rings.outsideauto.autospendshinenumber,
+        autoSpendBright: playerData.rings.outsideauto.autospendbright,
+        autoSpendBrightNumber: playerData.rings.outsideauto.autospendbrightnumber,
+        autoDarkLevelReset: playerData.rings.outsideauto.autodarklevelreset,
+        autoDarkLevelResetBorder: playerData.rings.outsideauto.autodarklevelresetborder,
+        autoDoChallenge: playerData.rings.outsideauto.autodochallenge,
+        autoRing: playerData.rings.auto.doauto,
+    };
+
   }
 
   toSaveObject() {
@@ -412,7 +423,7 @@ class Player {
       setchiptypefst: this.setchiptypefst,
 
       worldpipe: this.worldpipe,
-      rings: this.rings.toSaveObject(),
+      rings: this.rings.toSaveObject(this),
     };
   }
 
@@ -695,25 +706,25 @@ const app = Vue.createApp({
       this.calclgcost()
       this.checkusedchips()
 
-      if (this.player.rings.auto.doauto) {
-        this.automissiontimerid = setInterval(this.autoplaymission, 1000)
+      if (this.player.auto.autoRing) {
+        this.automissiontimerid = setInterval(() => this.player.rings.autoplaymission(), 1000)
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0
       }
-      if (this.player.rings.outsideauto.autospendshine) {
+      if (this.player.auto.autoSpendShine) {
         this.autoshinetimerid = setInterval(this.autoshine, 1000)
       } else {
         clearInterval(this.autoshinetimerid)
         this.autoshinetimerid = 0
       }
-      if (this.player.rings.outsideauto.autospendbright) {
+      if (this.player.auto.autoSpendBright) {
         this.autobrighttimerid = setInterval(this.autobright, 1000)
       } else {
         clearInterval(this.autobrighttimerid)
         this.autobrighttimerid = 0
       }
-      if (this.player.rings.outsideauto.autodochallenge) {
+      if (this.player.auto.autoDoChallenge) {
         this.autochallengetimerid = setInterval(this.autochallenge, 1000)
       } else {
         clearInterval(this.autochallengetimerid)
@@ -855,7 +866,7 @@ const app = Vue.createApp({
 
       mult = mult.mul(1 + 4 * camp)
 
-      if (this.player.rings.outsideauto.autodochallenge) {
+      if (this.player.auto.autoDoChallenge) {
         mult = mult.mul(0.001)
       }
 
@@ -1172,7 +1183,7 @@ const app = Vue.createApp({
       }
 
 
-      if ((this.player.rings.outsideauto.autodochallenge || !this.player.onchallenge) && this.activechallengebonuses.includes(14) && this.autolevel) {
+      if ((this.player.auto.autoDoChallenge || !this.player.onchallenge) && this.activechallengebonuses.includes(14) && this.autolevel) {
         if (this.player.money.greaterThanOrEqualTo(this.resetLevelborder()) && this.player.level.lt(this.autolevelstopnumber)) {
           if (this.calcgainlevel().greaterThanOrEqualTo(this.autolevelnumber)) {
             this.resetLevel(true, false)
@@ -1307,10 +1318,10 @@ const app = Vue.createApp({
       this.chipthreshold = input
     },
     autoshine() {
-      this.spendshine(this.player.rings.outsideauto.autospendshinenumber)
+      this.spendshine(this.player.auto.autoSpendShineNumber)
     },
     autobright() {
-      this.spendbrightness(this.player.rings.outsideauto.autospendbrightnumber)
+      this.spendbrightness(this.player.auto.autoSpendBrightNumber)
     },
     autochallenge() {
       if (this.player.challengecleared.length == 255) return;
@@ -1323,8 +1334,8 @@ const app = Vue.createApp({
     },
     toggleringautobuyer(index) {
       if (index == 0) {
-        this.player.rings.outsideauto.autospendshine = !this.player.rings.outsideauto.autospendshine
-        if (this.player.rings.outsideauto.autospendshine) {
+        this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine
+        if (this.player.auto.autoSpendShine) {
           this.autoshinetimerid = setInterval(this.autoshine, 1000)
         } else {
           clearInterval(this.autoshinetimerid)
@@ -1332,8 +1343,8 @@ const app = Vue.createApp({
         }
       }
       if (index == 1) {
-        this.player.rings.outsideauto.autospendbright = !this.player.rings.outsideauto.autospendbright
-        if (this.player.rings.outsideauto.autospendbright) {
+        this.player.auto.autoSpendBright = !this.player.auto.autoSpendBright
+        if (this.player.auto.autoSpendBright) {
           this.autobrighttimerid = setInterval(this.autobright, 1000)
         } else {
           clearInterval(this.autobrighttimerid)
@@ -1341,8 +1352,8 @@ const app = Vue.createApp({
         }
       }
       if (index == 2) {
-        this.player.rings.outsideauto.autodochallenge = !this.player.rings.outsideauto.autodochallenge
-        if (this.player.rings.outsideauto.autodochallenge) {
+        this.player.auto.autoDoChallenge = !this.player.auto.autoDoChallenge
+        if (this.player.auto.autoDoChallenge) {
           this.autochallengetimerid = setInterval(this.autochallenge, 1000)
         } else {
           clearInterval(this.autochallengetimerid)
@@ -1356,10 +1367,10 @@ const app = Vue.createApp({
       if (isNaN(input)) return
       if (input < 0 || input > 1000) return
       if (index == 0) {
-        this.player.rings.outsideauto.autospendshinenumber = input
+        this.player.auto.autoSpendShineNumber = input
       }
       if (index == 1) {
-        this.player.rings.outsideauto.autospendbrightnumber = input
+        this.player.auto.autoSpendBrightNumber = input
       }
     },
     setbonusetype(index) {
@@ -2011,7 +2022,7 @@ const app = Vue.createApp({
         }
       }
 
-      if (this.player.rings.outsideauto.autodochallenge || confirm(conf)) {
+      if (this.player.auto.autoDoChallenge || confirm(conf)) {
         if (!this.player.challengebonuses.includes(4)) this.activechallengebonuses = [];
         this.resetLevel(true, true);
         this.player.onchallenge = true;
@@ -2600,8 +2611,8 @@ const app = Vue.createApp({
     },
 
     configautomission() {
-      this.player.rings.auto.doauto = !this.player.rings.auto.doauto
-      if (this.player.rings.auto.doauto) {
+      this.player.auto.autoRing = !this.player.auto.autoRing
+      if (this.player.auto.autoRing) {
         this.automissiontimerid = setInterval(this.autoplaymission, 1000)
       } else {
         clearInterval(this.automissiontimerid)

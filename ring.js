@@ -18,23 +18,12 @@ class Rings {
         fieldeffect: Array.from(ringData.missionstate.fieldeffect),
       };
       this.clearedmission = ringData.clearedmission;
-      this.auto = {
-        doauto: ringData.auto.doauto,
+      this.unUsed = {
         automissionid: ringData.auto.automissionid,
       };
-      this.outsideauto = {
-        autospendshine: ringData.outsideauto.autospendshine,
-        autospendshinenumber: ringData.outsideauto.autospendshinenumber,
-        autospendbright: ringData.outsideauto.autospendbright,
-        autospendbrightnumber: ringData.outsideauto.autospendbrightnumber,
-        autodarklevelreset: ringData.outsideauto.autodarklevelreset,
-        autodarklevelresetborder: ringData.outsideauto.autodarklevelresetborder,
-        autodochallenge: ringData.outsideauto.autodochallenge,
-      };
-
   }
 
-  toSaveObject() {
+  toSaveObject(player) {
     return {
       setrings: this.setrings,
       ringsexp: this.ringsexp,
@@ -55,17 +44,17 @@ class Rings {
       },
       clearedmission: this.clearedmission,
       auto: {
-        doauto: this.auto.doauto,
-        automissionid: this.auto.automissionid,
+        doauto: player.auto.autoRing,
+        automissionid: this.unUsed.automissionid,
       },
       outsideauto: {
-        autospendshine: this.outsideauto.autospendshine,
-        autospendshinenumber: this.outsideauto.autospendshinenumber,
-        autospendbright: this.outsideauto.autospendbright,
-        autospendbrightnumber: this.outsideauto.autospendbrightnumber,
-        autodarklevelreset: this.outsideauto.autodarklevelreset,
-        autodarklevelresetborder: this.outsideauto.autodarklevelresetborder,
-        autodochallenge: this.outsideauto.autodochallenge,
+        autospendshine: player.auto.autoSpendShine,
+        autospendshinenumber: player.auto.autoSpendShineNumber,
+        autospendbright: player.auto.autosSpendBright,
+        autospendbrightnumber: player.auto.autoSpendBrightNumber,
+        autodarklevelreset: player.auto.autoDarkLevelReset,
+        autodarklevelresetborder: player.auto.autoDarkLevelResetBorder,
+        autodochallenge: player.auto.autoDoChallenge,
       },
     };
   }

@@ -557,25 +557,25 @@
 				</div>
 				<div v-if="player.rings.clearedmission.includes(4)">輪自動化器設定</div>
 				<div v-if="player.rings.clearedmission.includes(4)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.outsideauto.autospendshine }" @click="toggleringautobuyer(0)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendShine }" @click="toggleringautobuyer(0)">
 						輝き自動消費器　
 					</button>
 					<button type="button" class="autobuyerbutton" @click="configringautobuyer(0)">
 						輝き自動消費器設定
 					</button>
-					消費輝き: {{ player.rings.outsideauto.autospendshinenumber }}　ご了承:オンにすると2秒ほどゲームが停止します
+					消費輝き: {{ player.auto.autoSpendShineNumber }}　ご了承:オンにすると2秒ほどゲームが停止します
 				</div>
 				<div v-if="player.rings.clearedmission.includes(11)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.outsideauto.autospendbright }" @click="toggleringautobuyer(1)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendBright }" @click="toggleringautobuyer(1)">
 						煌き自動消費器
 					</button>
 					<button type="button" class="autobuyerbutton" @click="configringautobuyer(1)">
 						煌き自動消費器設定
 					</button>
-					消費煌き: {{ player.rings.outsideauto.autospendbrightnumber }}　ご了承:オンにすると2秒ほどゲームが停止します
+					消費煌き: {{ player.auto.autoSpendBrightNumber }}　ご了承:オンにすると2秒ほどゲームが停止します
 				</div>
 				<div v-if="player.rings.clearedmission.includes(12)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.outsideauto.autodochallenge }" @click="toggleringautobuyer(2)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoDoChallenge }" @click="toggleringautobuyer(2)">
 						自動挑戦器
 					</button>
 					ご了承:オンにすると発生器の出力が低下します
@@ -827,7 +827,7 @@
 			<div v-if="player.currenttab == 'ring'">
 				使用輪:{{ player.rings.setrings.map((e) => e+1) }}
 				<div>
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.auto.doauto }" @click="configautomission()">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoRing }" @click="configautomission()">
 						自動周回設定
 					</button>
 					周回試練:{{ Rings.missionInfo[player.rings.missionid].name }}
@@ -880,7 +880,7 @@
 						<div>
 							級位:{{ player.rings.getLevel(player.rings.setrings[player.rings.missionstate.activering]) }}
 						</div>
-						<div v-if="!player.rings.auto.doauto" v-for="i in player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering]).length" :key="i">
+						<div v-if="!player.auto.autoRing" v-for="i in player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering]).length" :key="i">
 							<button v-if="player.rings.missionstate.turn < Rings.missionInfo[this.player.rings.missionid].turn" type="button" @click="useskill(i-1)">
 								{{ Rings.skills[player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering])[i-1]].name }} 消費技量霊気: {{ Rings.skills[player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering])[i-1]].tp }}
 							</button>

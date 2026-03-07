@@ -18,9 +18,7 @@ function Shinedata() {
     sp += 0.02 * data.player.setchip[30]
     sp += 0.01 * data.eachpipedsmalltrophy[6]
     sp += 0.001 * Math.floor(Math.pow(data.player.residue, 1 / 3))
-    for (let i = 0; i < setchipkind; i++) {
-      sp += 0.01 * data.player.polishedstatue[i]
-    }
+    sp += 0.01 * data.player.statues.polishedStatueSum
 
     return data.shinepersent = sp
   }
@@ -53,10 +51,10 @@ function Shinedata() {
 
   this.calcmaxshine = function (data) {
     let rememberlevel = Math.floor((data.checkremembers() + 16) / 16)
-    return this.getmaxshine(data.player.challengecleared.length, rememberlevel, data.player.polishedstatue)
+    return this.getmaxshine(data.player.challengecleared.length, rememberlevel, data.player.statues.polishedStatueSum)
   }
 
-  this.getmaxshine = function (clear, remlv, pst) {
+  this.getmaxshine = function (clear, remlv, polishedStatueSum) {
     let value = 0;
     if (clear >= 32 * 8 - 1) value = 10000000
     else if (clear >= 32 * 7) value = 3000000
@@ -68,11 +66,7 @@ function Shinedata() {
     else value = 0
     value *= remlv
 
-    let statuemul = 0;
-    for (let i = 0; i < 10; i++) {
-      statuemul += pst[i]
-    }
-    value += (value / 10) * statuemul
+    value += (value / 10) * polishedStatueSum
 
     return Math.floor(value)
   }
@@ -82,10 +76,7 @@ function Shinedata() {
     let bp = this.getbp(data.player.rankchallengecleared.length)
     bp += 0.001 * data.player.setchip[49]
     bp += 0.001 * data.eachpipedsmalltrophy[9] * 0.5
-
-    for (let i = 0; i < setchipkind; i++) {
-      bp += 0.001 * Math.floor(data.player.polishedstatuebr[i] / 10) * 0.5
-    }
+    bp += 0.001 * data.player.statues.brightStatueSum * 0.5
 
     return data.brightpersent = bp
   }
@@ -108,7 +99,7 @@ function Shinedata() {
 
   this.calcmaxbright = function (data) {
     let rememberlevel = Math.floor((data.checkremembers() + 16) / 16)
-    return this.getmaxbr(data.player.rankchallengecleared.length, rememberlevel, data.player.polishedstatuebr)
+    return this.getmaxbr(data.player.rankchallengecleared.length, rememberlevel, data.player.statues.brightStatueSum)
   }
 
   this.getbp = function (clear) {
@@ -127,7 +118,7 @@ function Shinedata() {
     return 1 / 1000000 * stage
   }
 
-  this.getmaxbr = function (clear, memlv, pst) {
+  this.getmaxbr = function (clear, memlv, brightStatueSum) {
     let value = 0;
     if (clear >= 32 * 8 - 1) value = 10000
     else if (clear >= 32 * 7) value = 6000
@@ -140,11 +131,7 @@ function Shinedata() {
     else value = 0
     value *= memlv
 
-    let statuemul = 0;
-    for (let i = 0; i < 10; i++) {
-      statuemul += Math.floor(pst[i] / 10)
-    }
-    value += (value / 10) * statuemul
+    value += (value / 10) * brightStatueSum
 
     return Math.floor(value)
   }

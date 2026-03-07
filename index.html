@@ -89,7 +89,7 @@
 				<span id="chip" v-if="player.smalltrophies[5]">
 					<button type="button" @click="changeTab('chip')">鋳片</button>
 				</span>
-				<span id="statue" v-if="player.chip[0] >= 10000 || player.statue[0] >= 1">
+				<span id="statue" v-if="player.chip[0] >= 10000 || player.statues.statue[0] >= 1">
 					<button type="button" @click="changeTab('statue')">像</button>
 				</span>
 				<span id="trophy">
@@ -315,9 +315,9 @@
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('memory') }" @click="configtweet('memory')" v-if="worldopened[1] || worldopened[2]">記憶</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('remember') }" @click="configtweet('remember')" v-if="checkremembers()>0">思い出</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('crown') }" @click="configtweet('crown')" v-if="player.crownresettime.gt(0)">冠位</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('statue') }" @click="configtweet('statue')" v-if="player.statue[0]>0">像</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('polishedstatue') }" @click="configtweet('polishedstatue')" v-if="player.polishedstatue[0]>0">輝像</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('polishedstatuebr') }" @click="configtweet('polishedstatuebr')" v-if="player.polishedstatuebr[0]>0">煌像</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('statue') }" @click="configtweet('statue')" v-if="player.statues.statue[0]>0">像</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('polishedstatue') }" @click="configtweet('polishedstatue')" v-if="player.statues.polishedStatue[0]>0">輝像</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('polishedstatuebr') }" @click="configtweet('polishedstatuebr')" v-if="player.statues.brightStatue[0]>0">煌像</button>
 
 				</div>
 				<div>
@@ -607,7 +607,7 @@
 					</button>
 				</div>
 				<div>輝き入手率: {{ (shinedata.calcshinepersent(whole) * 100).toFixed(1) }}%</div>
-				<div>最大輝き保有数: {{ shinedata.getmaxshine(player.challengecleared.length,Math.floor((this.checkremembers()+16)/16),player.polishedstatue) }}</div>
+				<div>最大輝き保有数: {{ shinedata.calcmaxshine(whole) }}</div>
 				<br>
 				<div>
 					型
@@ -746,11 +746,11 @@
 
 
 
-				<div v-show="player.statue.some((x) => x>0)">
+				<div v-show="player.statues.statue.some((x) => x>0)">
 					洗練:洗練とは、段位リセット時に鋳片を消費して、質の高い鋳片の入手率を向上させることです。
 					洗練度: {{ chipdata.calcchipretrytime(whole) }}
 					<div v-for="i in 9" :key="i">
-						<div v-show="player.statue[i-1]>0">
+						<div v-show="player.statues.statue[i-1]>0">
 							<button type="button" @click="configspendchip(i-1)">
 								{{ chipdata.chipname[i-1] + "片" }}:消費数登録
 							</button>
@@ -806,18 +806,18 @@
 				像は、対応する鋳片を使用して作成することができます。像を作成するたびに、必要な鋳片の量は増加します。
 				像は、完全挑戦に入るのに規定数が必要となります。
 				<div v-for="i in 10" :key="i">
-					<div v-show="player.chip[i-1]>0 || chipused[i-1]>0 || player.statue[i-1]>0 ">
-						{{chipdata.chipname[i-1] + "像"}}: {{ player.statue[i-1] }}
-						{{"輝" + chipdata.chipname[i-1] + "像"}}: {{ player.polishedstatue[i-1] + "/" + player.statue[i-1]}}
-						{{"煌" + chipdata.chipname[i-1] + "像"}}: {{ (player.polishedstatuebr[i-1]/10).toFixed(1) + "/" + player.polishedstatue[i-1]}}
-						<button type="button" @click="buildstatue(i-1)">
-							設像 コスト:{{ calcstatuecost(i-1) }} 片
+					<div v-show="player.chip[i-1]>0 || chipused[i-1]>0 || player.statues.statue[i-1]>0 ">
+						{{chipdata.chipname[i-1] + "像"}}: {{ player.statues.statue[i-1] }}
+						{{"輝" + chipdata.chipname[i-1] + "像"}}: {{ player.statues.polishedStatue[i-1] + "/" + player.statues.statue[i-1]}}
+						{{"煌" + chipdata.chipname[i-1] + "像"}}: {{ (player.statues.brightStatue[i-1]/10).toFixed(1) + "/" + player.statues.polishedStatue[i-1]}}
+						<button type="button" @click="player.statues.buildStatue(player, i-1)">
+							設像 コスト:{{ player.statues.calcStatueCost(i-1) }} 片
 						</button>
-						<button v-if="player.shine>0" type="button" @click="polishstatue(i-1)">
-							磨像 コスト:{{ calcpolishcost(i-1) }} 輝
+						<button v-if="player.shine>0" type="button" @click="player.statues.polishStatue(player, i-1)">
+							磨像 コスト:{{ player.statues.calcPolishCost(i-1) }} 輝
 						</button>
-						<button v-if="player.brightness>0" type="button" @click="polishstatuebr(i-1)">
-							磨像 コスト:{{ calcpolishcostbr(i-1) }} 煌
+						<button v-if="player.brightness>0" type="button" @click="player.statues.polishStatueBright(player, i-1)">
+							磨像 コスト:{{ player.statues.calcPolishCostBright(i-1) }} 煌
 						</button>
 
 					</div>
@@ -959,6 +959,7 @@
 	<script type="text/javascript" src="spirit.js"></script>
 	<script type="text/javascript" src="chip.js"></script>
 	<script type="text/javascript" src="ring.js"></script>
+	<script type="text/javascript" src="statue.js"></script>
 	<script type="text/javascript" src="player.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 </body>

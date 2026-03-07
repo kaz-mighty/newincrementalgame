@@ -321,25 +321,13 @@ const app = Vue.createApp({
         tweetText += '冠位リセット:' + this.player.crownresettime + '%0A';
       }
       if (this.player.tweeting.includes('statue')) {
-        let sum = 0
-        for (let i = 0; i < setchipkind; i++) {
-          sum += this.player.statue[i]
-        }
-        tweetText += '像:' + sum + '%0A';
+        tweetText += '像:' + this.player.statues.statueSum + '%0A';
       }
       if (this.player.tweeting.includes('polishedstatue')) {
-        let sum = 0
-        for (let i = 0; i < setchipkind; i++) {
-          sum += this.player.polishedstatue[i]
-        }
-        tweetText += '輝像:' + sum + '%0A';
+        tweetText += '輝像:' + this.player.statues.polishedStatueSum + '%0A';
       }
       if (this.player.tweeting.includes('polishedstatuebr')) {
-        let sum = 0
-        for (let i = 0; i < setchipkind; i++) {
-          sum += Math.floor(this.player.polishedstatuebr[i] / 10)
-        }
-        tweetText += '煌像:' + sum + '%0A';
+        tweetText += '煌像:' + this.player.statues.brightStatueSum + '%0A';
       }
 
       let tweetUrl = 'dem08656775.github.io/newincrementalgame';
@@ -608,7 +596,7 @@ const app = Vue.createApp({
       mult = mult.mul(1 + this.player.setchip[0] * 0.1)
 
       for (let i = 0; i < setchipkind; i++) {
-        mult = mult.mul(1 + this.player.statue[i] * 0.01)
+        mult = mult.mul(this.player.statues.generatorMulti)
       }
 
       camp = 0
@@ -1347,7 +1335,7 @@ const app = Vue.createApp({
     },
 
     configspendchip(i) {
-      let maxspend = this.player.statue[i] * this.player.statue[i]
+      let maxspend = this.player.statues.statue[i] * this.player.statues.statue[i]
       let input = window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), "")
       input = parseInt(input)
       if (isNaN(input)) return
@@ -1809,7 +1797,7 @@ const app = Vue.createApp({
       }
 
       for (let i = 0; i < 10; i++) {
-        if (this.player.statue[i] < this.player.pchallenges.length - i) {
+        if (this.player.statues.statue[i] < this.player.pchallenges.length - i) {
           alert("像の作成数が不足しているため、完全挑戦を開始できません。")
           return;
         }
@@ -2245,10 +2233,10 @@ const app = Vue.createApp({
         if (this.player.chip[4] > 0) this.player.smalltrophies2nd[19] = true
         if (this.player.chip[4] >= 210) this.player.smalltrophies2nd[20] = true
         if (this.player.chip[4] >= 1275) this.player.smalltrophies2nd[21] = true
-        if (this.player.statue[0] >= 10) this.player.smalltrophies2nd[22] = true
-        if (this.player.statue[1] >= 10) this.player.smalltrophies2nd[23] = true
-        if (this.player.statue[2] >= 10) this.player.smalltrophies2nd[24] = true
-        if (this.player.statue[3] >= 10) this.player.smalltrophies2nd[25] = true
+        if (this.player.statues.statue[0] >= 10) this.player.smalltrophies2nd[22] = true
+        if (this.player.statues.statue[1] >= 10) this.player.smalltrophies2nd[23] = true
+        if (this.player.statues.statue[2] >= 10) this.player.smalltrophies2nd[24] = true
+        if (this.player.statues.statue[3] >= 10) this.player.smalltrophies2nd[25] = true
         if (this.player.crown.greaterThanOrEqualTo(100)) this.player.smalltrophies2nd[26] = true
         if (this.player.crown.greaterThanOrEqualTo(10000)) this.player.smalltrophies2nd[27] = true
         if (this.player.crown.greaterThanOrEqualTo("1e8")) this.player.smalltrophies2nd[28] = true
@@ -2268,16 +2256,16 @@ const app = Vue.createApp({
         if (this.player.chip[6] > 0) this.player.smalltrophies2nd[42] = true
         if (this.player.chip[6] >= 210) this.player.smalltrophies2nd[43] = true
         if (this.player.chip[6] >= 1275) this.player.smalltrophies2nd[44] = true
-        if (this.player.statue[4] >= 10) this.player.smalltrophies2nd[45] = true
-        if (this.player.statue[5] >= 10) this.player.smalltrophies2nd[46] = true
-        if (this.player.statue[6] >= 10) this.player.smalltrophies2nd[47] = true
-        if (this.player.statue[0] >= 64) this.player.smalltrophies2nd[48] = true
-        if (this.player.statue[1] >= 64) this.player.smalltrophies2nd[49] = true
-        if (this.player.statue[2] >= 64) this.player.smalltrophies2nd[50] = true
-        if (this.player.statue[3] >= 64) this.player.smalltrophies2nd[51] = true
-        if (this.player.statue[4] >= 64) this.player.smalltrophies2nd[52] = true
-        if (this.player.statue[5] >= 64) this.player.smalltrophies2nd[53] = true
-        if (this.player.statue[6] >= 64) this.player.smalltrophies2nd[54] = true
+        if (this.player.statues.statue[4] >= 10) this.player.smalltrophies2nd[45] = true
+        if (this.player.statues.statue[5] >= 10) this.player.smalltrophies2nd[46] = true
+        if (this.player.statues.statue[6] >= 10) this.player.smalltrophies2nd[47] = true
+        if (this.player.statues.statue[0] >= 64) this.player.smalltrophies2nd[48] = true
+        if (this.player.statues.statue[1] >= 64) this.player.smalltrophies2nd[49] = true
+        if (this.player.statues.statue[2] >= 64) this.player.smalltrophies2nd[50] = true
+        if (this.player.statues.statue[3] >= 64) this.player.smalltrophies2nd[51] = true
+        if (this.player.statues.statue[4] >= 64) this.player.smalltrophies2nd[52] = true
+        if (this.player.statues.statue[5] >= 64) this.player.smalltrophies2nd[53] = true
+        if (this.player.statues.statue[6] >= 64) this.player.smalltrophies2nd[54] = true
         if (this.player.shine >= 100000000) this.player.smalltrophies2nd[55] = true
         if (this.player.shine >= 1000000000) this.player.smalltrophies2nd[56] = true
         if (this.player.brightness >= 100000) this.player.smalltrophies2nd[57] = true
@@ -2308,40 +2296,6 @@ const app = Vue.createApp({
       for (let v of this.player.setchip) {
         if (v != 0) this.chipused[v - 1] = this.chipused[v - 1] + 1
       }
-    },
-
-    calcstatuecost(i) {
-      return (this.player.statue[i] + 1) * 10000
-    },
-
-    buildstatue(i) {
-      let cost = this.calcstatuecost(i)
-      if (this.player.chip[i] < cost) return
-      this.player.chip[i] -= cost
-      this.player.statue[i] += 1
-    },
-
-    calcpolishcost(i) {
-      return (this.player.polishedstatue[i] + 1) * 1000000
-    },
-
-    polishstatue(i) {
-      let cost = this.calcpolishcost(i)
-      if (this.player.polishedstatue[i] >= this.player.statue[i] || this.player.shine < cost) return;
-      this.player.shine -= cost
-      this.player.polishedstatue[i] += 1
-    },
-
-    calcpolishcostbr(i) {
-      return (this.player.polishedstatuebr[i] + 10) * 100
-    },
-
-    polishstatuebr(i) {
-      let cost = this.calcpolishcostbr(i)
-      if (this.player.polishedstatuebr[i] >= this.player.polishedstatue[i] * 10 || this.player.brightness < cost) return;
-      this.player.brightness -= cost
-      this.player.polishedstatuebr[i] += 1
-
     },
 
     buyspirit(i) {

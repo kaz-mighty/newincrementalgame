@@ -94,9 +94,7 @@ class Player {
     this.disabledchip = Array.from(playerData.disabledchip);
     this.spendchip = Array.from(playerData.spendchip);
 
-    this.statue = Array.from(playerData.statue);
-    this.polishedstatue = Array.from(playerData.polishedstatue);
-    this.polishedstatuebr = Array.from(playerData.polishedstatuebr);
+    this.statues = new Statues(playerData);
 
     this.spiritlevela = Array.from(playerData.spiritlevela);
     this.spiritboughtcurrentcrown = Array.from(playerData.spiritboughtcurrentcrown);
@@ -122,6 +120,7 @@ class Player {
   }
 
   toSaveObject() {
+    const statues = this.statues.toSaveObject();
     return {
       money: this.money,
       level: this.level,
@@ -217,9 +216,9 @@ class Player {
       disabledchip: this.disabledchip,
       spendchip: this.spendchip,
 
-      statue: this.statue,
-      polishedstatue: this.polishedstatue,
-      polishedstatuebr: this.polishedstatuebr,
+      statue: statues.statue,
+      polishedstatue: statues.polishedstatue,
+      polishedstatuebr: statues.polishedstatuebr,
 
       spiritlevela: this.spiritlevela,
       spiritboughtcurrentcrown: this.spiritboughtcurrentcrown,

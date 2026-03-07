@@ -1,0 +1,73 @@
+class Statues {
+  constructor(playerData) {
+    this.statue = Vue.reactive(Array.from(playerData.statue));
+    this.polishedStatue = Vue.reactive(Array.from(playerData.polishedstatue));
+    this.brightStatue = Vue.reactive(Array.from(playerData.polishedstatuebr));
+
+    this._statueSum = Vue.computed(() => this.statue.reduce((a, b) => a + b));
+    this._polishedStatueSum = Vue.computed(() => this.polishedStatue.reduce((a, b) => a + b));
+    this._brightStatueSum = Vue.computed(
+      () => this.brightStatue.reduce((a, b) => a + Math.floor(b / 10), 0)
+    );
+    this._generatorMulti = Vue.computed(
+      () => this.statue.reduce((a, b) => a.mul(1 + b * 0.01), new Decimal(1))
+    );
+  }
+
+  toSaveObject() {
+    return {
+      statue: this.statue,
+      polishedstatue: this.polishedStatue,
+      polishedstatuebr: this.brightStatue,
+    };
+  }
+
+  /* インスタンスやその先祖がリアクティブでない場合でもアクセスできるように対応 */
+  get statueSum() {
+    return Vue.unref(this._statueSum);
+  }
+  get polishedStatueSum() {
+    return Vue.unref(this._polishedStatueSum);
+  }
+  get brightStatueSum() {
+    return Vue.unref(this._brightStatueSum);
+  }
+  get generatorMulti() {
+    return Vue.unref(this._generatorMulti);
+  }
+
+  calcStatueCost(i) {
+    return (this.statue[i] + 1) * 10000
+  }
+
+  buildStatue(player, i) {
+    let cost = this.calcStatueCost(i)
+    if (player.chip[i] < cost) return
+    player.chip[i] -= cost
+    this.statue[i] += 1
+  }
+
+  calcPolishCost(i) {
+    return (this.polishedStatue[i] + 1) * 1000000
+  }
+
+  polishStatue(player, i) {
+    let cost = this.calcPolishCost(i)
+    if (this.polishedStatue[i] >= this.statue[i] || player.shine < cost) return;
+    player.shine -= cost
+    this.polishedStatue[i] += 1
+  }
+
+  calcPolishCostBright(i) {
+    return (this.brightStatue[i] + 10) * 100
+  }
+
+  polishStatueBright(player, i) {
+    let cost = this.calcPolishCostBright(i)
+    if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.brightness < cost) return;
+    player.brightness -= cost
+    this.brightStatue[i] += 1
+
+  }
+
+}

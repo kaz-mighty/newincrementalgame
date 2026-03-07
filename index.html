@@ -830,7 +830,7 @@
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.auto.doauto }" @click="configautomission()">
 						自動周回設定
 					</button>
-					周回試練:{{ ringdata.missioninfo[player.rings.missionid].name }}
+					周回試練:{{ Rings.missionInfo[player.rings.missionid].name }}
 					ご了承:オンにすると2秒ほどゲームが停止します
 				</div>
 				<div v-if="!player.rings.onmission">
@@ -840,17 +840,17 @@
 								<button type="button" @click="configsetrings(i-1)">
 									使用輪設定 {{ i }}
 								</button>
-								輪 {{ i }}: 経験値:{{ player.rings.ringsexp[i-1] }} 級位:{{ ringdata.getlevel(player.rings,i-1) }}
+								輪 {{ i }}: 経験値:{{ player.rings.ringsexp[i-1] }} 級位:{{ player.rings.getLevel(i-1) }}
 							</div>
 						</div>
 					</div>
 					<div>試練</div>
-					<div v-for="i in ringdata.missioninfo.length" :key="i">
+					<div v-for="i in Rings.missionInfo.length" :key="i">
 						<div v-if="isavailablemission(i-1)">
 							<button type="button" v-if="isavailablemission(i-1)" @click="startmission(i-1)">
-								{{ ringdata.missioninfo[i-1].name }}開始
+								{{ Rings.missionInfo[i-1].name }}開始
 							</button>
-							周期:{{ ringdata.missioninfo[i-1].turn }} 目標:{{ ringdata.missioninfo[i-1].goal }} 最小輪数:{{ ringdata.missioninfo[i-1].setsizemin }} 最大輪数:{{ ringdata.missioninfo[i-1].setsizemax }}
+							周期:{{ Rings.missionInfo[i-1].turn }} 目標:{{ Rings.missionInfo[i-1].goal }} 最小輪数:{{ Rings.missionInfo[i-1].setsizemin }} 最大輪数:{{ Rings.missionInfo[i-1].setsizemax }}
 						</div>
 					</div>
 				</div>
@@ -859,12 +859,12 @@
 					<div v-if="player.rings.missionstate.fieldeffect.length>0">
 						特殊効果
 						<div v-for="i in player.rings.missionstate.fieldeffect.length" :key="i">
-							{{ ringdata.fieldeffects.find((elem) => elem.id==player.rings.missionstate.fieldeffect[i-1][0]).description }} 残存: {{ player.rings.missionstate.fieldeffect[i-1][1]==-1?"永続":player.rings.missionstate.fieldeffect[i-1][1] }}
+							{{ Rings.fieldEffects.find((elem) => elem.id==player.rings.missionstate.fieldeffect[i-1][0]).description }} 残存: {{ player.rings.missionstate.fieldeffect[i-1][1]==-1?"永続":player.rings.missionstate.fieldeffect[i-1][1] }}
 						</div>
 					</div>
 					<div>
-						<span>周期: {{ player.rings.missionstate.turn+1 }} / {{ ringdata.missioninfo[player.rings.missionid].turn }} </span>
-						<span>評価: {{ ringpointsum() }} / {{ ringdata.missioninfo[player.rings.missionid].goal }} </span>
+						<span>周期: {{ player.rings.missionstate.turn+1 }} / {{ Rings.missionInfo[player.rings.missionid].turn }} </span>
+						<span>評価: {{ ringpointsum() }} / {{ Rings.missionInfo[player.rings.missionid].goal }} </span>
 					</div>
 					<div>
 						評価詳細: 花:{{ player.rings.missionstate.flowerpoint }} 雪: {{ player.rings.missionstate.snowpoint }} 月: {{ player.rings.missionstate.moonpoint }}
@@ -875,19 +875,19 @@
 					<div>
 						現在輪:{{ player.rings.setrings[player.rings.missionstate.activering]+1 }} 技量霊気: {{player.rings.missionstate.tps[player.rings.missionstate.activering] }}
 						<div>
-							花霊力:{{ ringdata.shortgetstatus(player.rings,0) }} 雪霊力:{{ ringdata.shortgetstatus(player.rings,1) }} 月霊力:{{ ringdata.shortgetstatus(player.rings,2) }}
+							花霊力:{{ player.rings.shortGetStatus(0) }} 雪霊力:{{ player.rings.shortGetStatus(1) }} 月霊力:{{ player.rings.shortGetStatus(2) }}
 						</div>
 						<div>
-							級位:{{ ringdata.getlevel(player.rings,player.rings.setrings[player.rings.missionstate.activering]) }}
+							級位:{{ player.rings.getLevel(player.rings.setrings[player.rings.missionstate.activering]) }}
 						</div>
-						<div v-if="!player.rings.auto.doauto" v-for="i in ringdata.availableskills(player.rings,player.rings.setrings[player.rings.missionstate.activering]).length" :key="i">
-							<button v-if="player.rings.missionstate.turn < ringdata.missioninfo[this.player.rings.missionid].turn" type="button" @click="useskill(i-1)">
-								{{ ringdata.skills[ringdata.availableskills(player.rings,player.rings.setrings[player.rings.missionstate.activering])[i-1]].name }} 消費技量霊気: {{ ringdata.skills[ringdata.availableskills(player.rings,player.rings.setrings[player.rings.missionstate.activering])[i-1]].tp }}
+						<div v-if="!player.rings.auto.doauto" v-for="i in player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering]).length" :key="i">
+							<button v-if="player.rings.missionstate.turn < Rings.missionInfo[this.player.rings.missionid].turn" type="button" @click="useskill(i-1)">
+								{{ Rings.skills[player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering])[i-1]].name }} 消費技量霊気: {{ Rings.skills[player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering])[i-1]].tp }}
 							</button>
 						</div>
 					</div>
 					<button type="button" @click="endmission()">
-						{{ ringpointsum()>=ringdata.missioninfo[player.rings.missionid].goal?"完了":"撤退"　}}
+						{{ ringpointsum()>=Rings.missionInfo[player.rings.missionid].goal?"完了":"撤退"　}}
 					</button>
 				</div>
 			</div>
@@ -944,6 +944,7 @@
 		<br>
 		<div>gmail:newincremental@gmail.com</div>
 	</div>
+	<script>window.exports = {}</script><!-- is-plain-objectのバグ対応 -->
 	<script src="https://cdn.jsdelivr.net/npm/is-plain-object/dist/is-plain-object.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/deepmerge/dist/umd.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue@3.4.5/dist/vue.global.js"></script>

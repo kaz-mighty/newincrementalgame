@@ -421,7 +421,7 @@ class Player {
 const currentPlayer = Vue.ref(new Player(initialData()));
 
 
-Vue.createApp({
+const app = Vue.createApp({
   data() {
     return {
 
@@ -444,7 +444,6 @@ Vue.createApp({
       trophydata: new Trophydata(),
       rememberdata: new Rememberdata(),
       chipdata: new Chipdata(),
-      ringdata: new Ringdata(),
       spiritdata: new Spiritdata(),
       exported: "",
       activechallengebonuses: [],
@@ -2611,7 +2610,7 @@ Vue.createApp({
     },
 
     autoplaymission() {
-      if (this.player.rings.missionstate.turn >= this.ringdata.missioninfo[this.player.rings.missionid].turn) this.endmission()
+      if (this.player.rings.missionstate.turn >= Rings.missionInfo[this.player.rings.missionid].turn) this.endmission()
       if (this.player.rings.onmission) {
         this.useskill(0)
       } else {
@@ -2620,11 +2619,11 @@ Vue.createApp({
     },
 
     isavailablemission(i) {
-      return this.ringdata.missioninfo[i].preventchallenge.every((v) => this.player.rings.clearedmission.includes(v))
+      return Rings.missionInfo[i].preventchallenge.every((v) => this.player.rings.clearedmission.includes(v))
     },
 
     startmission(i) {
-      if (this.player.rings.setrings.length < this.ringdata.missioninfo[i].setsizemin || this.ringdata.missioninfo[i].setsizemax < this.player.rings.setrings.length) return
+      if (this.player.rings.setrings.length < Rings.missionInfo[i].setsizemin || Rings.missionInfo[i].setsizemax < this.player.rings.setrings.length) return
       if (this.player.rings.onmission) return
       this.player.rings.onmission = true
       this.player.rings.missionid = i
@@ -2639,12 +2638,12 @@ Vue.createApp({
       this.player.rings.missionstate.skilllog = []
       this.player.rings.missionstate.tps = []
       for (let r of this.player.rings.setrings) {
-        let lv = this.ringdata.getlevel(this.player.rings, r)
-        this.player.rings.missionstate.tps.push(this.ringdata.getstatus(r, 6, lv))//6:tp status id
+        let lv = this.player.rings.getLevel(r)
+        this.player.rings.missionstate.tps.push(Rings.getStatus(r, 6, lv))//6:tp status id
       }
       this.player.rings.missionstate.fieldeffect = []
       console.log("Starting mission:" + i)
-      for (let e of this.ringdata.missioninfo[i].passivefunction) {
+      for (let e of Rings.missionInfo[i].passivefunction) {
         this.player.rings.missionstate.fieldeffect.push([e, -1])
       }
 
@@ -2655,7 +2654,7 @@ Vue.createApp({
     useskill(i) {
 
       let ringid = this.player.rings.setrings[this.player.rings.missionstate.activering]
-      let sk = this.ringdata.skills[this.ringdata.availableskills(this.player.rings, ringid)[i]]
+      let sk = Rings.skills[this.player.rings.availableSkills(ringid)[i]]
       if (sk.tp > this.player.rings.missionstate.tps[this.player.rings.missionstate.activering]) return
       sk.effect(this.player.rings)
       this.player.rings.missionstate.tps[this.player.rings.missionstate.activering] -= sk.tp
@@ -2666,7 +2665,7 @@ Vue.createApp({
         this.player.rings.missionstate.activering = 0;
         this.player.rings.missionstate.turn++;
         for (let e of this.player.rings.missionstate.fieldeffect) {
-          let eff = this.ringdata.fieldeffects.find((elem) => elem.id == e[0])
+          let eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
           if (eff.timing == "turnend") {
             eff.effect(this.player.rings.missionstate, e[1])
           }
@@ -2681,16 +2680,16 @@ Vue.createApp({
     },
 
     endmission() {
-      let win = this.ringpointsum() >= this.ringdata.missioninfo[this.player.rings.missionid].goal
-      if ((!win) && this.player.rings.missionstate.turn < this.ringdata.missioninfo[this.player.rings.missionid].turn) {
+      let win = this.ringpointsum() >= Rings.missionInfo[this.player.rings.missionid].goal
+      if ((!win) && this.player.rings.missionstate.turn < Rings.missionInfo[this.player.rings.missionid].turn) {
         if (!window.confirm("撤退します。よろしいですか？")) return
       }
       this.player.rings.onmission = false
       if (win) {
         for (i in this.player.rings.setrings) {
           r = this.player.rings.setrings[i]
-          this.player.rings.ringsexp[r] += Math.floor(this.ringdata.missioninfo[this.player.rings.missionid].exp * (this.player.rings.setrings.length - i) / (this.player.rings.setrings.length * (this.player.rings.setrings.length + 1) / 2))
-          this.player.rings.ringsexp[r] = Math.min(this.player.rings.ringsexp[r], this.ringdata.leveltable[this.ringdata.levelcap() - 1])
+          this.player.rings.ringsexp[r] += Math.floor(Rings.missionInfo[this.player.rings.missionid].exp * (this.player.rings.setrings.length - i) / (this.player.rings.setrings.length * (this.player.rings.setrings.length + 1) / 2))
+          this.player.rings.ringsexp[r] = Math.min(this.player.rings.ringsexp[r], Rings.levelTable[Rings.levelCap() - 1])
         }
         if (!this.player.rings.clearedmission.includes(this.player.rings.missionid)) {
           this.player.rings.clearedmission.push(this.player.rings.missionid)
@@ -2879,4 +2878,6 @@ Vue.createApp({
     setInterval(this.save, 20000);
 
   },
-}).mount('#app');
+});
+app.config.globalProperties.Rings = Rings;
+app.mount('#app');

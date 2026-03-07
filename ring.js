@@ -69,45 +69,17 @@ class Rings {
       },
     };
   }
-}
 
-
-function Ringdata() {
-
-  this.statusdatatype = [
+  static statusDataType = [
     [17, 10, 10, 5, 1, 1, 12],//51
     [9, 15, 9, 2, 6, 2, 12],//53
     [8, 8, 13, 3, 3, 7, 12],//55
     [12, 12, 7, 4, 4, 1, 15],//49
     [10, 6, 10, 5, 2, 5, 15],//50
     [5, 8, 8, 3, 6, 6, 15],//51
-  ]
+  ];
 
-  this.statustable = function (fst) {
-    let ret = [fst]
-
-    for (let i = 1; i < 98; i++) {
-      ret[i] = ret[i - 1] * 1.05 + fst * 0.1
-    }
-    for (let i = 0; i < 99; i++) {
-      ret[i] = Math.floor(ret[i] * fst * 0.1)
-    }
-    return ret
-
-  }
-
-  this.getstatus = function (ringid, statusid, level) {
-    return this.statustable(this.statusdatatype[ringid][statusid])[level - 1]
-  }
-
-  this.shortgetstatus = function (rings, statusid) {
-    state = rings.missionstate
-    ringid = rings.setrings[state.activering]
-    level = this.getlevel(rings, ringid)
-    return this.getstatus(ringid, statusid, level)
-  }
-
-  this.leveltable = [
+  static levelTable = [
     0, 14, 67, 189, 417, 796, 1385, 2256, 3495, 5194,
     7449, 10367, 14064, 18673, 24338, 31213, 39456, 49232, 60719, 74105,
     89597, 107407, 127757, 150872, 176987, 206352, 239230, 275897, 316633, 361726,
@@ -118,7 +90,7 @@ function Ringdata() {
     10895987, 11518275, 12166853, 12842447, 13545792, 14277637, 15038744, 15829888, 16651852, 17505424,
     18391398, 19310581, 20263796, 21251876, 22275666, 23336015, 24433777, 25569820, 26745022, 27960279,
     29216495, 30514581, 31855451, 33240033, 34669264, 36144098, 37665500, 39234441, 40851900, Infinity
-  ]
+  ];
   /*:generation
   new Array(99).fill(null).map((n,i) => Math.sin(i)*5 + i*10)
   .map((sum = 0, n => sum += n))
@@ -126,24 +98,8 @@ function Ringdata() {
   .map((sum = 0, n => sum += n))
   .map((v) => Math.floor(v))
   */
-
-  this.levelcap = function (rings) {
-    return 30
-  }
-
-  this.getlevel = function (rings, id) {
-    let exp = rings.ringsexp[id]
-    let lv = 0
-    for (let i = 0; i < this.leveltable.length; i++) {
-      if (exp >= this.leveltable[i]) {
-        lv = i
-      }
-    }
-    lv += 1
-    return Math.min(lv, this.levelcap(rings))
-  }
-
-  this.levelskills = [
+  
+  static levelSkills = [
     {
       1: 0,
       5: 1,
@@ -195,10 +151,9 @@ function Ringdata() {
       12: 8,
       14: 9
     },
+  ];
 
-  ]
-
-  this.missioninfo = [
+  static missionInfo = [
     {
       //id:0
       name: "試練1",
@@ -353,43 +308,9 @@ function Ringdata() {
       passivefunction: [],
       preventchallenge: [12],
     },
-  ]
+  ];
 
-  this.availableskills = function (rings, r) {
-    let ret = []
-    let level = this.getlevel(rings, r)
-    for (let i in this.levelskills[r]) {
-      if (i <= level) {
-        ret.push(this.levelskills[r][i])
-      }
-    }
-    return ret
-  }
-
-  this.affect = function (st, pr, vl) {
-    v = {
-      state: st,
-      prop: pr,
-      value: vl
-    }
-    for (e of state.fieldeffect) {
-      if (e[0].timing == "skilluse") {
-        eff = this.fieldeffects.find((elem) => elem.id == e[0])
-        eff.effect(v)
-      }
-    }
-    v.state[v.prop] += v.value
-  }
-
-  this.affectfield = function (st, i, vl) {
-    v = {
-      state: st,
-      value: vl
-    }
-    v.state.fieldeffect.push([i, vl])
-  }
-
-  this.fieldeffects = [
+  static fieldEffects = [
     {
       id: 1,
       timing: "skilluse",
@@ -438,19 +359,19 @@ function Ringdata() {
       },
       description: "月の評価上昇"
     },
-  ]
+  ];
 
-  this.skills = [
+  static skills = [
     {
       name: "通常",
       tp: 0,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'flowerpoint', Math.floor(state.flowermultiplier * this.getstatus(ringid, 0, level)))
-        this.affect(state, 'snowpoint', Math.floor(state.snowmultiplier * this.getstatus(ringid, 1, level)))
-        this.affect(state, 'moonpoint', Math.floor(state.moonmultiplier * this.getstatus(ringid, 2, level)))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('flowerpoint', Math.floor(state.flowermultiplier * Rings.getStatus(ringid, 0, level)))
+        rings.affect('snowpoint', Math.floor(state.snowmultiplier * Rings.getStatus(ringid, 1, level)))
+        rings.affect('moonpoint', Math.floor(state.moonmultiplier * Rings.getStatus(ringid, 2, level)))
 
       },
     },
@@ -458,30 +379,30 @@ function Ringdata() {
       name: "花増幅",
       tp: 8,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'flowermultiplier', this.getstatus(ringid, 3, level) * 0.01)
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('flowermultiplier', Rings.getStatus(ringid, 3, level) * 0.01)
       }
     },
     {
       name: "雪増幅",
       tp: 8,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'snowmultiplier', this.getstatus(ringid, 4, level) * 0.01)
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('snowmultiplier', Rings.getStatus(ringid, 4, level) * 0.01)
       }
     },
     {
       name: "月増幅",
       tp: 8,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'moonmultiplier', this.getstatus(ringid, 5, level) * 0.01)
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('moonmultiplier', Rings.getStatus(ringid, 5, level) * 0.01)
       }
     },
     //id:4
@@ -489,30 +410,30 @@ function Ringdata() {
       name: "花昇華",
       tp: 15,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'flowerpoint', Math.floor(state.flowermultiplier * this.getstatus(ringid, 0, level) * 5))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('flowerpoint', Math.floor(state.flowermultiplier * Rings.getStatus(ringid, 0, level) * 5))
       }
     },
     {
       name: "雪昇華",
       tp: 15,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'snowpoint', Math.floor(state.snowmultiplier * this.getstatus(ringid, 1, level) * 5))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('snowpoint', Math.floor(state.snowmultiplier * Rings.getStatus(ringid, 1, level) * 5))
       }
     },
     {
       name: "月昇華",
       tp: 15,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'moonpoint', Math.floor(state.moonmultiplier * this.getstatus(ringid, 2, level) * 5))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('moonpoint', Math.floor(state.moonmultiplier * Rings.getStatus(ringid, 2, level) * 5))
       }
     },
     //id:7
@@ -520,33 +441,33 @@ function Ringdata() {
       name: "花爆発",
       tp: 20,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'flowerpoint', Math.floor(state.flowermultiplier * this.getstatus(ringid, 0, level) * 12))
-        this.affect(state, 'flowermultiplier', Math.max(-0.20, 0.50 - state.flowermultiplier))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('flowerpoint', Math.floor(state.flowermultiplier * Rings.getStatus(ringid, 0, level) * 12))
+        rings.affect('flowermultiplier', Math.max(-0.20, 0.50 - state.flowermultiplier))
       }
     },
     {
       name: "雪爆発",
       tp: 20,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'snowpoint', Math.floor(state.snowmultiplier * this.getstatus(ringid, 1, level) * 12))
-        this.affect(state, 'snowmultiplier', Math.max(-0.20, 0.50 - state.snowmultiplier))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('snowpoint', Math.floor(state.snowmultiplier * Rings.getStatus(ringid, 1, level) * 12))
+        rings.affect('snowmultiplier', Math.max(-0.20, 0.50 - state.snowmultiplier))
       }
     },
     {
       name: "月爆発",
       tp: 20,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'moonpoint', Math.floor(state.moonmultiplier * this.getstatus(ringid, 2, level) * 12))
-        this.affect(state, 'moonmultiplier', Math.max(-0.20, 0.50 - state.moonmultiplier))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('moonpoint', Math.floor(state.moonmultiplier * Rings.getStatus(ringid, 2, level) * 12))
+        rings.affect('moonmultiplier', Math.max(-0.20, 0.50 - state.moonmultiplier))
       }
     },
     //id:10
@@ -554,36 +475,36 @@ function Ringdata() {
       name: "花拡散",
       tp: 20,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'flowermultiplier', -0.20)
-        this.affect(state, 'snowmultiplier', 0.10)
-        this.affect(state, 'moonmultiplier', 0.10)
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('flowermultiplier', -0.20)
+        rings.affect('snowmultiplier', 0.10)
+        rings.affect('moonmultiplier', 0.10)
       }
     },
     {
       name: "雪拡散",
       tp: 20,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'snowmultiplier', -0.20)
-        this.affect(state, 'flowermultiplier', 0.10)
-        this.affect(state, 'moonmultiplier', 0.10)
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('snowmultiplier', -0.20)
+        rings.affect('flowermultiplier', 0.10)
+        rings.affect('moonmultiplier', 0.10)
       }
     },
     {
       name: "月拡散",
       tp: 20,
       effect: (rings) => {
-        state = rings.missionstate
-        ringid = rings.setrings[state.activering]
-        level = this.getlevel(rings, ringid)
-        this.affect(state, 'moonmultiplier', -0.20)
-        this.affect(state, 'flowermultiplier', 0.10)
-        this.affect(state, 'snowmultiplier', 0.10)
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affect('moonmultiplier', -0.20)
+        rings.affect('flowermultiplier', 0.10)
+        rings.affect('snowmultiplier', 0.10)
       }
     },
     //id:13
@@ -591,23 +512,101 @@ function Ringdata() {
       name: "花充満",
       tp: 45,
       effect: (rings) => {
-        this.affectfield(state, 4, Math.floor(state.flowermultiplier * this.getstatus(ringid, 0, level)))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affectField(4, Math.floor(state.flowermultiplier * Rings.getStatus(ringid, 0, level)))
       }
     },
     {
       name: "雪充満",
       tp: 45,
       effect: (rings) => {
-        this.affectfield(state, 5, Math.floor(state.snowmultiplier * this.getstatus(ringid, 1, level)))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affectField(5, Math.floor(state.snowmultiplier * Rings.getStatus(ringid, 1, level)))
       }
     },
     {
       name: "月充満",
       tp: 45,
       effect: (rings) => {
-        this.affectfield(state, 6, Math.floor(state.moonmultiplier * this.getstatus(ringid, 2, level)))
+        let state = rings.missionstate
+        let ringid = rings.setrings[state.activering]
+        let level = rings.getLevel(ringid)
+        rings.affectField(6, Math.floor(state.moonmultiplier * Rings.getStatus(ringid, 2, level)))
       }
     },
-  ]
+  ];
+
+  static statusTable(fst) {
+    let ret = [fst]
+
+    for (let i = 1; i < 98; i++) {
+      ret[i] = ret[i - 1] * 1.05 + fst * 0.1
+    }
+    for (let i = 0; i < 99; i++) {
+      ret[i] = Math.floor(ret[i] * fst * 0.1)
+    }
+    return ret
+  }
+
+  static getStatus(ringId, statusId, level) {
+    return Rings.statusTable(Rings.statusDataType[ringId][statusId])[level - 1]
+  }
+
+  static levelCap() {
+    return 30
+  }
+
+  getLevel(ringId) {
+    let exp = this.ringsexp[ringId]
+    let lv = 0
+    for (let i = 0; i < Rings.levelTable.length; i++) {
+      if (exp >= Rings.levelTable[i]) {
+        lv = i
+      }
+    }
+    lv += 1
+    return Math.min(lv, Rings.levelCap())
+  }
+
+  shortGetStatus(statusId) {
+    const ringId = this.setrings[this.missionstate.activering]
+    return Rings.getStatus(ringId, statusId, this.getLevel(ringId))
+  }
+
+  availableSkills(ringId) {
+    let ret = []
+    let level = this.getLevel(ringId)
+    for (let i in Rings.levelSkills[ringId]) {
+      if (i <= level) {
+        ret.push(Rings.levelSkills[ringId][i])
+      }
+    }
+    return ret
+  }
+
+  affect(prop, value) {
+    let v = {
+      state: this.missionstate,
+      prop: prop,
+      value: value,
+    }
+    for (let e of this.missionstate.fieldeffect) {
+      if (e[0].timing == "skilluse") { // bug
+        const eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
+        eff.effect(v)
+      }
+    }
+    this.missionstate[v.prop] += v.value
+  }
+
+  affectField(fieldId, value) {
+    this.missionstate.fieldeffect.push([fieldId, value]);
+  }
 
 }
+
+

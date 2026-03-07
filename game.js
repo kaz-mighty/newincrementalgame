@@ -596,11 +596,9 @@ Vue.createApp({
     importsave() {
       let input = window.prompt("データを入力", "")
       if (input.length <= 50) {
-        console.log("returned")
         return
       }
       let k = atob(input).charAt(0)
-      console.log(k)
       if (k == '{') return
       localStorage.setItem("playerStoredb", input)
       this.dataload()
@@ -677,9 +675,6 @@ Vue.createApp({
       console.log(saveData)
 
       this.player = new Player(saveData)
-      console.log(this.player.levelresettime)
-      console.log(typeof (this.player.levelresettime))
-      this.player.levelresettime.greaterThan(1)
 
       if (!this.player.onchallenge || this.player.challengebonuses.includes(4)) this.activechallengebonuses = this.player.challengebonuses
 
@@ -1306,7 +1301,6 @@ Vue.createApp({
     },
     togglechipthresholduse() {
       this.chipthresholduse = !this.chipthresholduse
-      console.log(this.chipthresholduse)
     },
     configchipthresholdnumber() {
       let input = window.prompt("閾値を設定", "")
@@ -1664,7 +1658,7 @@ Vue.createApp({
             }
           }
           let gainchip = this.chipdata.calcgainchip(this)
-          console.log(gainchip)
+          console.log("gainchip:" + gainchip)
           if (gainchip != -1 && this.player.chip[gainchip] < 10000000) {
 
             let chipgetnum = this.chipdata.calcchipgetnum(this, gainchip)
@@ -1939,7 +1933,7 @@ Vue.createApp({
 
       challengeweightpairs.sort((a, b) => a.weight - b.weight)
 
-      console.log(challengeweightpairs)
+      console.log("challenge weights:", challengeweightpairs)
 
       do {
         if (challengeid == 0) {
@@ -2318,9 +2312,6 @@ Vue.createApp({
     },
 
     openpipe(i) {
-
-      console.log("a")
-
       let maxpipe = this.calcmaxpipe()
 
       if (this.player.worldpipe[i] >= maxpipe) return
@@ -2652,7 +2643,7 @@ Vue.createApp({
         this.player.rings.missionstate.tps.push(this.ringdata.getstatus(r, 6, lv))//6:tp status id
       }
       this.player.rings.missionstate.fieldeffect = []
-      console.log("Starting mission" + i)
+      console.log("Starting mission:" + i)
       for (let e of this.ringdata.missioninfo[i].passivefunction) {
         this.player.rings.missionstate.fieldeffect.push([e, -1])
       }

@@ -418,7 +418,6 @@ function Ringdata() {
       id: 4,
       timing: "turnend",
       effect: (v, val) => {
-        console.log("boot")
         v.flowerpoint += val
       },
       description: "花の評価上昇"

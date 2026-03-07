@@ -16,7 +16,7 @@ function Chipdata() {
     if (data.player.activatedcampaigns.includes("tanabata2")) {
       bonus = bonus.mul(data.player.lightmoney.add(1))
     }
-    console.log("bonus" + bonus)
+    console.log("gain chip bonus:" + bonus)
     let mny = data.player.money
     if (data.chipthresholduse) mny = mny.min(data.chipthreshold)
     let clevel = this.getcl(mny.mul(bonus))

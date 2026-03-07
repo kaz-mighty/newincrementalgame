@@ -836,8 +836,8 @@
 				<div v-if="!player.rings.onmission">
 					<div>
 						<div v-for="i in 13" :key="i">
-							<div v-if="isavailablering(i-1)">
-								<button type="button" @click="configsetrings(i-1)">
+							<div v-if="player.rings.isAvailableRing(world, i-1)">
+								<button type="button" @click="player.rings.configSetRings(world, i-1)">
 									使用輪設定 {{ i }}
 								</button>
 								輪 {{ i }}: 経験値:{{ player.rings.ringsexp[i-1] }} 級位:{{ player.rings.getLevel(i-1) }}
@@ -846,8 +846,8 @@
 					</div>
 					<div>試練</div>
 					<div v-for="i in Rings.missionInfo.length" :key="i">
-						<div v-if="isavailablemission(i-1)">
-							<button type="button" v-if="isavailablemission(i-1)" @click="startmission(i-1)">
+						<div v-if="player.rings.isAvailableMission(i-1)">
+							<button type="button" v-if="player.rings.isAvailableMission(i-1)" @click="player.rings.startMission(i-1)">
 								{{ Rings.missionInfo[i-1].name }}開始
 							</button>
 							周期:{{ Rings.missionInfo[i-1].turn }} 目標:{{ Rings.missionInfo[i-1].goal }} 最小輪数:{{ Rings.missionInfo[i-1].setsizemin }} 最大輪数:{{ Rings.missionInfo[i-1].setsizemax }}
@@ -864,7 +864,7 @@
 					</div>
 					<div>
 						<span>周期: {{ player.rings.missionstate.turn+1 }} / {{ Rings.missionInfo[player.rings.missionid].turn }} </span>
-						<span>評価: {{ ringpointsum() }} / {{ Rings.missionInfo[player.rings.missionid].goal }} </span>
+						<span>評価: {{ player.rings.ringPointSum() }} / {{ Rings.missionInfo[player.rings.missionid].goal }} </span>
 					</div>
 					<div>
 						評価詳細: 花:{{ player.rings.missionstate.flowerpoint }} 雪: {{ player.rings.missionstate.snowpoint }} 月: {{ player.rings.missionstate.moonpoint }}
@@ -881,13 +881,13 @@
 							級位:{{ player.rings.getLevel(player.rings.setrings[player.rings.missionstate.activering]) }}
 						</div>
 						<div v-if="!player.auto.autoRing" v-for="i in player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering]).length" :key="i">
-							<button v-if="player.rings.missionstate.turn < Rings.missionInfo[this.player.rings.missionid].turn" type="button" @click="useskill(i-1)">
+							<button v-if="player.rings.missionstate.turn < Rings.missionInfo[this.player.rings.missionid].turn" type="button" @click="player.rings.useSkill(i-1)">
 								{{ Rings.skills[player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering])[i-1]].name }} 消費技量霊気: {{ Rings.skills[player.rings.availableSkills(player.rings.setrings[player.rings.missionstate.activering])[i-1]].tp }}
 							</button>
 						</div>
 					</div>
-					<button type="button" @click="endmission()">
-						{{ ringpointsum()>=Rings.missionInfo[player.rings.missionid].goal?"完了":"撤退"　}}
+					<button type="button" @click="player.rings.endMission()">
+						{{ player.rings.ringPointSum()>=Rings.missionInfo[player.rings.missionid].goal?"完了":"撤退"　}}
 					</button>
 				</div>
 			</div>

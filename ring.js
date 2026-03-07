@@ -596,6 +596,112 @@ class Rings {
     this.missionstate.fieldeffect.push([fieldId, value]);
   }
 
+  isAvailableRing(worldId, ringId) {
+    if (ringId == 0 || ringId == 1 || ringId == 2) return true
+    if (worldId >= 3) return false
+    if (ringId == worldId + 3) {
+      if (this.clearedmission.includes(4)) return true
+    }
+    return false
+  }
+
+  configSetRings(worldId, ringId) {
+    if (this.onmission) return
+    if (!this.isAvailableRing(worldId, ringId)) return
+    if (this.setrings.includes(ringId)) {
+      this.setrings.splice(this.setrings.indexOf(ringId), 1)
+    } else {
+      this.setrings.push(ringId)
+    }
+  }
+
+  autoplaymission() {
+    if (this.missionstate.turn >= Rings.missionInfo[this.missionid].turn) this.endMission()
+    if (this.onmission) {
+      this.useSkill(0)
+    } else {
+      this.startMission(this.missionid)
+    }
+  }
+
+  isAvailableMission(missionId) {
+    return Rings.missionInfo[missionId].preventchallenge.every((v) => this.clearedmission.includes(v))
+  }
+
+  startMission(i) {
+    if (this.setrings.length < Rings.missionInfo[i].setsizemin || Rings.missionInfo[i].setsizemax < this.setrings.length) return
+    if (this.onmission) return
+    this.onmission = true
+    this.missionid = i
+    this.missionstate.turn = 0
+    this.missionstate.activering = 0
+    this.missionstate.flowerpoint = 0
+    this.missionstate.snowpoint = 0
+    this.missionstate.moonpoint = 0
+    this.missionstate.flowermultiplier = 1
+    this.missionstate.snowmultiplier = 1
+    this.missionstate.moonmultiplier = 1
+    this.missionstate.skilllog = []
+    this.missionstate.tps = []
+    for (let r of this.setrings) {
+      let lv = this.getLevel(r)
+      this.missionstate.tps.push(Rings.getStatus(r, 6, lv))//6:tp status id
+    }
+    this.missionstate.fieldeffect = []
+    console.log("Starting mission:" + i)
+    for (let e of Rings.missionInfo[i].passivefunction) {
+      this.missionstate.fieldeffect.push([e, -1])
+    }
+  }
+
+  useSkill(skillId) {
+    let ringId = this.setrings[this.missionstate.activering]
+    let skill = Rings.skills[this.availableSkills(ringId)[skillId]]
+    if (skill.tp > this.missionstate.tps[this.missionstate.activering]) return
+    skill.effect(this)
+    this.missionstate.tps[this.missionstate.activering] -= skill.tp
+    this.missionstate.skilllog.push([this.setrings[this.missionstate.activering], skillId])
+
+    this.missionstate.activering++;
+    if (this.missionstate.activering == this.setrings.length) {
+      this.missionstate.activering = 0;
+      this.missionstate.turn++;
+      for (let e of this.missionstate.fieldeffect) {
+        let eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
+        if (eff.timing == "turnend") {
+          eff.effect(this.missionstate, e[1])
+        }
+      }
+
+      //this.missionstate.fieldeffect.forEach((item, i) => {
+      //if (item[1] >= 1) item[1]--;
+      //});
+      //this.missionstate.fieldeffect = this.missionstate.fieldeffect.filter((e) => e[1] != 0)
+    }
+  }
+
+  endMission() {
+    let win = this.ringPointSum() >= Rings.missionInfo[this.missionid].goal
+    if ((!win) && this.missionstate.turn < Rings.missionInfo[this.missionid].turn) {
+      if (!window.confirm("撤退します。よろしいですか？")) return
+    }
+    this.onmission = false
+    if (win) {
+      for (i in this.setrings) {
+        let ringId = this.setrings[i]
+        this.ringsexp[ringId] += Math.floor(Rings.missionInfo[this.missionid].exp * (this.setrings.length - i) / (this.setrings.length * (this.setrings.length + 1) / 2))
+        this.ringsexp[ringId] = Math.min(this.ringsexp[ringId], Rings.levelTable[Rings.levelCap() - 1])
+      }
+      if (!this.clearedmission.includes(this.missionid)) {
+        this.clearedmission.push(this.missionid)
+      }
+    }
+  }
+
+  ringPointSum() {
+    return this.missionstate.flowerpoint + this.missionstate.snowpoint + this.missionstate.moonpoint
+  }
+
 }
 
 

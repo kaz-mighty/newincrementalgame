@@ -2586,25 +2586,6 @@ const app = Vue.createApp({
       this.player.spiritlevela[i] += 1;
     },
 
-    isavailablering(i) {
-      if (i == 0 || i == 1 || i == 2) return true
-      if (this.world >= 3) return false
-      if (i == this.world + 3) {
-        if (this.player.rings.clearedmission.includes(4)) return true
-      }
-      return false
-    },
-
-    configsetrings(i) {
-      if (this.player.rings.onmission) return
-      if (!this.isavailablering(i)) return
-      if (this.player.rings.setrings.includes(i)) {
-        this.player.rings.setrings.splice(this.player.rings.setrings.indexOf(i), 1)
-      } else {
-        this.player.rings.setrings.push(i)
-      }
-    },
-
     sleep(ms) {
       var startMsec = new Date();
       while (new Date() - startMsec < ms);
@@ -2613,103 +2594,11 @@ const app = Vue.createApp({
     configautomission() {
       this.player.auto.autoRing = !this.player.auto.autoRing
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(this.autoplaymission, 1000)
+        this.automissiontimerid = setInterval(() => this.player.rings.autoplaymission(), 1000)
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0
       }
-    },
-
-    autoplaymission() {
-      if (this.player.rings.missionstate.turn >= Rings.missionInfo[this.player.rings.missionid].turn) this.endmission()
-      if (this.player.rings.onmission) {
-        this.useskill(0)
-      } else {
-        this.startmission(this.player.rings.missionid)
-      }
-    },
-
-    isavailablemission(i) {
-      return Rings.missionInfo[i].preventchallenge.every((v) => this.player.rings.clearedmission.includes(v))
-    },
-
-    startmission(i) {
-      if (this.player.rings.setrings.length < Rings.missionInfo[i].setsizemin || Rings.missionInfo[i].setsizemax < this.player.rings.setrings.length) return
-      if (this.player.rings.onmission) return
-      this.player.rings.onmission = true
-      this.player.rings.missionid = i
-      this.player.rings.missionstate.turn = 0
-      this.player.rings.missionstate.activering = 0
-      this.player.rings.missionstate.flowerpoint = 0
-      this.player.rings.missionstate.snowpoint = 0
-      this.player.rings.missionstate.moonpoint = 0
-      this.player.rings.missionstate.flowermultiplier = 1
-      this.player.rings.missionstate.snowmultiplier = 1
-      this.player.rings.missionstate.moonmultiplier = 1
-      this.player.rings.missionstate.skilllog = []
-      this.player.rings.missionstate.tps = []
-      for (let r of this.player.rings.setrings) {
-        let lv = this.player.rings.getLevel(r)
-        this.player.rings.missionstate.tps.push(Rings.getStatus(r, 6, lv))//6:tp status id
-      }
-      this.player.rings.missionstate.fieldeffect = []
-      console.log("Starting mission:" + i)
-      for (let e of Rings.missionInfo[i].passivefunction) {
-        this.player.rings.missionstate.fieldeffect.push([e, -1])
-      }
-
-
-
-    },
-
-    useskill(i) {
-
-      let ringid = this.player.rings.setrings[this.player.rings.missionstate.activering]
-      let sk = Rings.skills[this.player.rings.availableSkills(ringid)[i]]
-      if (sk.tp > this.player.rings.missionstate.tps[this.player.rings.missionstate.activering]) return
-      sk.effect(this.player.rings)
-      this.player.rings.missionstate.tps[this.player.rings.missionstate.activering] -= sk.tp
-      this.player.rings.missionstate.skilllog.push([this.player.rings.setrings[this.player.rings.missionstate.activering], i])
-
-      this.player.rings.missionstate.activering++;
-      if (this.player.rings.missionstate.activering == this.player.rings.setrings.length) {
-        this.player.rings.missionstate.activering = 0;
-        this.player.rings.missionstate.turn++;
-        for (let e of this.player.rings.missionstate.fieldeffect) {
-          let eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
-          if (eff.timing == "turnend") {
-            eff.effect(this.player.rings.missionstate, e[1])
-          }
-        }
-        //this.player.rings.missionstate.fieldeffect.forEach((item, i) => {
-        //if(item[1]>=1)item[1]--;
-        //});
-        //this.player.rings.missionstate.fieldeffect = this.player.rings.missionstate.fieldeffect.filter((e) => e[1]!=0)
-
-      }
-
-    },
-
-    endmission() {
-      let win = this.ringpointsum() >= Rings.missionInfo[this.player.rings.missionid].goal
-      if ((!win) && this.player.rings.missionstate.turn < Rings.missionInfo[this.player.rings.missionid].turn) {
-        if (!window.confirm("撤退します。よろしいですか？")) return
-      }
-      this.player.rings.onmission = false
-      if (win) {
-        for (i in this.player.rings.setrings) {
-          r = this.player.rings.setrings[i]
-          this.player.rings.ringsexp[r] += Math.floor(Rings.missionInfo[this.player.rings.missionid].exp * (this.player.rings.setrings.length - i) / (this.player.rings.setrings.length * (this.player.rings.setrings.length + 1) / 2))
-          this.player.rings.ringsexp[r] = Math.min(this.player.rings.ringsexp[r], Rings.levelTable[Rings.levelCap() - 1])
-        }
-        if (!this.player.rings.clearedmission.includes(this.player.rings.missionid)) {
-          this.player.rings.clearedmission.push(this.player.rings.missionid)
-        }
-      }
-    },
-
-    ringpointsum() {
-      return this.player.rings.missionstate.flowerpoint + this.player.rings.missionstate.snowpoint + this.player.rings.missionstate.moonpoint
     },
 
     worktime(val) {

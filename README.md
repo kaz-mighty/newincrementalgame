@@ -14,3 +14,17 @@ this is an incremental game project I(twitter:@dem08656775) created. I threw old
   - (おそらく)自動セーブを挟まずに2連続で世界を変更した場合でも最新の状態が保存されるように
   - 世界の解放条件を満たしてもセーブされるまで世界が解放されない
     - this.playersへthis.playerが反映されるのがセーブ時のため。後でなんとかする。
+
+## 実装上の注意点
+
+- Vueでリアクティブにするデータには、JSのクラスのプライベート要素は使えません。
+  - リアクティブにできない以前に、そもそもVueのプロキシ経由でのアクセスができない。
+- `Vue.ref`, `Vue.compute`は親がリアクティブなオブジェクトかどうかで自動でアンラップされるかどうかが変わるため、
+  シミュレータ移植も考慮してゲッター関数でラップしています(例: statue.js)
+
+## 参考資料
+
+- Vue公式ドキュメント全体 (特に以下)
+  - Composition APIのリアクティビティーの基礎～算出プロパティ
+  - [状態管理](https://ja.vuejs.org/guide/scaling-up/state-management.html)
+

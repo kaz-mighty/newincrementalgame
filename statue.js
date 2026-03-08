@@ -1,4 +1,7 @@
 class Statues {
+  /**
+   * @param {PlayerSaveData} playerData 
+   */
   constructor(playerData) {
     this.statue = Vue.reactive(Array.from(playerData.statue));
     this.polishedStatue = Vue.reactive(Array.from(playerData.polishedstatue));

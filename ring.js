@@ -1,4 +1,7 @@
 class Rings {
+  /**
+   * @param {RingSaveData} ringData
+   */
   constructor(ringData) {
       this.setrings = Array.from(ringData.setrings);
       this.ringsexp = Array.from(ringData.ringsexp);
@@ -23,6 +26,10 @@ class Rings {
       };
   }
 
+  /**
+   * @param {Player} player
+   * @return {RingSaveData}
+   */
   toSaveObject(player) {
     return {
       setrings: this.setrings,

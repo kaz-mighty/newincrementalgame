@@ -6,7 +6,7 @@ const ringmissionnum = 15;
 
 const worldnum = 12
 
-
+/** @type {() => PlayerSaveData} */
 const initialData = () => {
   return {
     money: new Decimal(1),

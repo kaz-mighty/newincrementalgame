@@ -577,7 +577,7 @@ class Rings {
     let ret = []
     let level = this.getLevel(ringId)
     for (let i in Rings.levelSkills[ringId]) {
-      if (i <= level) {
+      if (Number(i) <= level) {
         ret.push(Rings.levelSkills[ringId][i])
       }
     }
@@ -591,6 +591,7 @@ class Rings {
       value: value,
     }
     for (let e of this.missionstate.fieldeffect) {
+      // @ts-expect-error
       if (e[0].timing == "skilluse") { // bug
         const eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
         eff.effect(v)
@@ -694,7 +695,7 @@ class Rings {
     }
     this.onmission = false
     if (win) {
-      for (i in this.setrings) {
+      for (let i = 0; i < this.setrings.length; i++) {
         let ringId = this.setrings[i]
         this.ringsexp[ringId] += Math.floor(Rings.missionInfo[this.missionid].exp * (this.setrings.length - i) / (this.setrings.length * (this.setrings.length + 1) / 2))
         this.ringsexp[ringId] = Math.min(this.ringsexp[ringId], Rings.levelTable[Rings.levelCap() - 1])

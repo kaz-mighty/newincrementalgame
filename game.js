@@ -386,8 +386,8 @@ const app = Vue.createApp({
 
         const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
 
-        saveData = deepmerge(initialData(), this.players[i], {
-          arraymerge: overwriteMerge,
+        let saveData = deepmerge(initialData(), this.players[i], {
+          arrayMerge: overwriteMerge,
           isMergeableObject: isPlainObject
         })
 
@@ -431,7 +431,7 @@ const app = Vue.createApp({
     },
     load(world) {
 
-      saveData = this.players[world]
+      let saveData = this.players[world]
       this.world = world
       console.log(saveData)
 
@@ -599,7 +599,7 @@ const app = Vue.createApp({
         mult = mult.mul(this.player.statues.generatorMulti)
       }
 
-      camp = 0
+      let camp = 0
       if (this.player.activatedcampaigns.includes("newyear")) camp = camp + 1
       if (this.player.activatedcampaigns.includes("vt")) camp = camp + 1
       if (this.player.activatedcampaigns.includes("hina")) camp = camp + 1
@@ -1040,16 +1040,13 @@ const app = Vue.createApp({
     },
     configautobuyer(index) {
       if (index == 0) {
-        let input = window.prompt("リセット時入手段位を設定", "")
-        input = new Decimal(input)
+        let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
         this.autolevelnumber = input
       } else if (index == 1) {
-        let input = window.prompt("昇段停止段位を設定", "")
-        input = new Decimal(input)
+        let input = new Decimal(window.prompt("昇段停止段位を設定", ""))
         this.autolevelstopnumber = input
       } else if (index == 2) {
-        let input = window.prompt("リセット時入手階位を設定", "")
-        input = new Decimal(input)
+        let input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
         this.autoranknumber = input
       }
     },
@@ -1064,8 +1061,7 @@ const app = Vue.createApp({
       this.chipthresholduse = !this.chipthresholduse
     },
     configchipthresholdnumber() {
-      let input = window.prompt("閾値を設定", "")
-      input = new Decimal(input)
+      let input = new Decimal(window.prompt("閾値を設定", ""))
       this.chipthreshold = input
     },
     autoshine() {
@@ -1113,8 +1109,7 @@ const app = Vue.createApp({
       }
     },
     configringautobuyer(index) {
-      let input = window.prompt("消費量を設定:最大1000", "")
-      input = parseInt(input)
+      let input = parseInt(window.prompt("消費量を設定:最大1000", ""))
       if (isNaN(input)) return
       if (input < 0 || input > 1000) return
       if (index == 0) {
@@ -1301,8 +1296,7 @@ const app = Vue.createApp({
       }
       let dividing = 19 - this.player.rank.add(2).log2()
       if (dividing < 1) dividing = 1
-      let mny = this.player.money.log10() - 17
-      mny = new Decimal(mny).pow(this.player.setchip[18])
+      let mny = Math.pow(this.player.money.log10() - 17, this.player.setchip[18])
       let gainlevel = new Decimal(this.player.money.mul(mny).log10()).div(dividing).pow_base(2)
 
       let glmin = new Decimal(18).div(dividing).pow_base(2)
@@ -1336,8 +1330,7 @@ const app = Vue.createApp({
 
     configspendchip(i) {
       let maxspend = this.player.statues.statue[i] * this.player.statues.statue[i]
-      let input = window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), "")
-      input = parseInt(input)
+      let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), ""))
       if (isNaN(input)) return
       if (input < 0 || input > maxspend) return
       this.player.spendchip[i] = input
@@ -1666,8 +1659,7 @@ const app = Vue.createApp({
       this.player.challengeweight[i] = this.calcchallengeid()
     },
     configchallengeweightvalue(i) {
-      let input = window.prompt("重みを設定", "")
-      input = parseInt(input)
+      let input = parseInt(window.prompt("重みを設定", ""))
       if (isNaN(input)) return
       this.player.challengeweightvalue[i] = input
     },
@@ -1852,7 +1844,8 @@ const app = Vue.createApp({
       return this.player.trophies[i] ? this.trophydata.contents[i] : "???"
     },
     moveworld(i) {
-      if (world == i || !this.worldopened[i]) return
+      // @ts-expect-error
+      if (world == i || !this.worldopened[i]) return // bug
       this.save()
       this.load(i)
       this.world = i
@@ -2303,11 +2296,6 @@ const app = Vue.createApp({
       this.player.spiritlevela[i] += 1;
     },
 
-    sleep(ms) {
-      var startMsec = new Date();
-      while (new Date() - startMsec < ms);
-    },
-
     configautomission() {
       this.player.auto.autoRing = !this.player.auto.autoRing
       if (this.player.auto.autoRing) {
@@ -2391,7 +2379,7 @@ const app = Vue.createApp({
     },
     checkpipedsmalltrophies() {
       let sum = 0
-      for (i = 0; i < worldnum; i++) {
+      for (let i = 0; i < worldnum; i++) {
         let cnt = 0
         if (this.players[i].worldpipe[this.world] >= 1) {
           for (let j = 0; j < 100; j++) {

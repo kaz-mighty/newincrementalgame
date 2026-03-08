@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler", //デフォルト値(classic)だとVue等がimportできない
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+  },
+  "include": [
+    "*"
+  ]
+}

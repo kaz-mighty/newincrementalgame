@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "break_infinity.js": "1.2.0",
+    "deepmerge": "^4.3.1",
+    "vue": "3.4.5"
+  }
+}

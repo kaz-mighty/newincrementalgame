@@ -57,7 +57,7 @@ class Rings {
       outsideauto: {
         autospendshine: player.auto.autoSpendShine,
         autospendshinenumber: player.auto.autoSpendShineNumber,
-        autospendbright: player.auto.autosSpendBright,
+        autospendbright: player.auto.autoSpendBright,
         autospendbrightnumber: player.auto.autoSpendBrightNumber,
         autodarklevelreset: player.auto.autoDarkLevelReset,
         autodarklevelresetborder: player.auto.autoDarkLevelResetBorder,

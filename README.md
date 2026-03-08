@@ -14,6 +14,8 @@ this is an incremental game project I(twitter:@dem08656775) created. I threw old
   - (おそらく)自動セーブを挟まずに2連続で世界を変更した場合でも最新の状態が保存されるように
   - 世界の解放条件を満たしてもセーブされるまで世界が解放されない
     - this.playersへthis.playerが反映されるのがセーブ時のため。後でなんとかする。
+  - 現バージョンに存在しないデータが削除されるようになった
+    - beta版プレイ中に間違って開くと問題が起きることになってしまうので、後でなんとかする
 
 ## Getting Started with Development
 

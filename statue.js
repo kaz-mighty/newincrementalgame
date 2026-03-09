@@ -7,11 +7,15 @@ class Statues {
     this.polishedStatue = Vue.reactive(Array.from(playerData.polishedstatue));
     this.brightStatue = Vue.reactive(Array.from(playerData.polishedstatuebr));
 
+    /** @type {Vue.MaybeRef<number>} */
     this._statueSum = Vue.computed(() => this.statue.reduce((a, b) => a + b));
+    /** @type {Vue.MaybeRef<number>} */
     this._polishedStatueSum = Vue.computed(() => this.polishedStatue.reduce((a, b) => a + b));
+    /** @type {Vue.MaybeRef<number>} */
     this._brightStatueSum = Vue.computed(
       () => this.brightStatue.reduce((a, b) => a + Math.floor(b / 10), 0)
     );
+    /** @type {Vue.MaybeRef<Decimal>} */
     this._generatorMulti = Vue.computed(
       () => this.statue.reduce((a, b) => a.mul(1 + b * 0.01), new Decimal(1))
     );

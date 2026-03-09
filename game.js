@@ -192,6 +192,7 @@ const initialData = () => {
 }
 
 
+/** @type {Vue.Ref<Player>} */
 const currentPlayer = Vue.ref(new Player(initialData()));
 
 
@@ -247,7 +248,7 @@ const app = Vue.createApp(Vue.defineComponent({
       memorysum: 0,
       remembersum: 0,
 
-      trophynumber: new Array(10).fill(null).map(() => false),
+      trophynumber: new Array(10).fill(null).map(() => 0),
       smalltrophy: 0,
       eachpipedsmalltrophy: new Array(worldnum).fill(null).map(() => 0),
       pipedsmalltrophy: 0,
@@ -620,7 +621,6 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.auto.autoDoChallenge) {
         mult = mult.mul(0.001)
       }
-
 
 
       this.commonmult = mult

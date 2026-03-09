@@ -195,7 +195,7 @@ const initialData = () => {
 const currentPlayer = Vue.ref(new Player(initialData()));
 
 
-const app = Vue.createApp({
+const app = Vue.createApp(Vue.defineComponent({
   data() {
     return {
 
@@ -2483,6 +2483,6 @@ const app = Vue.createApp({
     setInterval(this.save, 20000);
 
   },
-});
+}));
 app.config.globalProperties.Rings = Rings;
 app.mount('#app');

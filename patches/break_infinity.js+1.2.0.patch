@@ -1,0 +1,13 @@
+diff --git a/node_modules/break_infinity.js/dist/index.d.ts b/node_modules/break_infinity.js/dist/index.d.ts
+index 1bdce25..a180fe7 100644
+--- a/node_modules/break_infinity.js/dist/index.d.ts
++++ b/node_modules/break_infinity.js/dist/index.d.ts
+@@ -139,7 +139,7 @@ export default class Decimal {
+     toNumber(): number;
+     mantissaWithDecimalPlaces(places: number): number;
+     toString(): string;
+-    toExponential(places: number): string;
++    toExponential(places?: number): string;
+     toFixed(places: number): string;
+     toPrecision(places: number): string;
+     valueOf(): string;

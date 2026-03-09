@@ -6,6 +6,17 @@ declare var deepmerge: typeof import("deepmerge");
 declare function isPlainObject(o: any): boolean;
 
 
+/* 毎回importするのが面倒なので再定義する 
+   無駄が多そうに見えるが、これ以上良い方法は見つからなかった
+*/
+type Decimal = import("break_infinity.js").default;
+namespace Vue {
+  type Ref<T> = import("vue").Ref<T>;
+  type ComputedRef<T> = import("vue").ComputedRef<T>;
+  type MaybeRef<T> = import("vue").MaybeRef<T>;
+}
+
+
 /* SaveData types */
 
 type RingSaveData = {

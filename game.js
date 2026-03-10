@@ -18,8 +18,8 @@ const initialData = () => {
     brightness: 0,
     flicker: 0,
 
-    shineloader: new Array(8).fill(null).map(() => 0),
-    brightloader: new Array(8).fill(null).map(() => 0),
+    shineloader: new Array(8).fill(0),
+    brightloader: new Array(8).fill(0),
 
     residue: 0,
 
@@ -94,7 +94,7 @@ const initialData = () => {
     accelevel: 0,
     accelevelused: 0,
     activatedcampaigns: [],
-    timecrystal: new Array(8).fill(null).map(() => 0),
+    timecrystal: new Array(8).fill(0),
     saveversion: version,
 
     currenttab: 'basic',
@@ -105,15 +105,15 @@ const initialData = () => {
     challengecleared: [],
     challengebonuses: [],
 
-    challengeweight: new Array(20).fill(null).map(() => 0),
-    challengeweightvalue: new Array(20).fill(null).map(() => 0),
+    challengeweight: new Array(20).fill(0),
+    challengeweightvalue: new Array(20).fill(0),
 
     onpchallenge: false,
     pchallenges: [],
-    pchallengecleared: new Array(1024).fill(null).map(() => 0),
-    prchallengecleared: new Array(1024).fill(null).map(() => 0),
+    pchallengecleared: new Array(1024).fill(0),
+    prchallengecleared: new Array(1024).fill(0),
 
-    boughttype: [false, false, false, false, false, false],
+    boughttype: new Array(6).fill(false),
     setmodes: new Array(8).fill(null).map((_, i) => i),
     setchallengebonusesfst: [],
     setchallengebonusessnd: [],
@@ -123,37 +123,37 @@ const initialData = () => {
     rankchallengecleared: [],
     rankchallengebonuses: [],
 
-    trophies: new Array(trophynum).fill(null).map(() => false),
-    smalltrophies: new Array(100).fill(null).map(() => false),
-    smalltrophies2nd: new Array(100).fill(null).map(() => false),
+    trophies: new Array(trophynum).fill(false),
+    smalltrophies: new Array(100).fill(false),
+    smalltrophies2nd: new Array(100).fill(false),
 
-    levelitems: [0, 0, 0, 0, 0],
+    levelitems: new Array(5).fill(0),
     levelitembought: 0,
 
     remember: 0,
     rememberspent: 0,
     rememberforgot: 0,
 
-    chip: new Array(setchipkind).fill(0).map(() => 0),
-    setchip: new Array(setchipnum).fill(0).map(() => 0),
-    disabledchip: new Array(setchipnum).fill(0).map(() => false),
-    spendchip: new Array(setchipkind).fill(0).map(() => 0),
+    chip: new Array(setchipkind).fill(0),
+    setchip: new Array(setchipnum).fill(0),
+    disabledchip: new Array(setchipnum).fill(false),
+    spendchip: new Array(setchipkind).fill(0),
 
-    statue: new Array(setchipkind).fill(0).map(() => 0),
-    polishedstatue: new Array(setchipkind).fill(0).map(() => 0),
-    polishedstatuebr: new Array(setchipkind).fill(0).map(() => 0),
+    statue: new Array(setchipkind).fill(0),
+    polishedstatue: new Array(setchipkind).fill(0),
+    polishedstatuebr: new Array(setchipkind).fill(0),
 
-    spiritlevela: new Array(1).fill(0).map(() => 0),
-    spiritboughtcurrentcrown: new Array(1).fill(0).map(() => 0),
+    spiritlevela: new Array(1).fill(0),
+    spiritboughtcurrentcrown: new Array(1).fill(0),
 
 
 
-    setchiptypefst: new Array(100).fill(setchipnum).map(() => 0),
+    setchiptypefst: new Array(setchipnum).fill(0),
 
-    worldpipe: new Array(worldnum).fill(null).map(() => 0),
+    worldpipe: new Array(worldnum).fill(0),
     rings: {
       setrings: [],
-      ringsexp: new Array(13).fill(null).map(() => 0),
+      ringsexp: new Array(13).fill(0),
       onmission: false,
       missionid: 0,
       missionstate: {
@@ -183,12 +183,8 @@ const initialData = () => {
         autodarklevelresetborder: 2,
         autodochallenge: false
       },
-
-
-
-    }
-
-  }
+    },
+  };
 }
 
 
@@ -248,15 +244,15 @@ const app = Vue.createApp(Vue.defineComponent({
       memorysum: 0,
       remembersum: 0,
 
-      trophynumber: new Array(10).fill(null).map(() => 0),
+      trophynumber: new Array(10).fill(0),
       smalltrophy: 0,
-      eachpipedsmalltrophy: new Array(worldnum).fill(null).map(() => 0),
+      eachpipedsmalltrophy: new Array(worldnum).fill(0),
       pipedsmalltrophy: 0,
-      worldopened: new Array(worldnum).fill(null).map(() => false),
+      worldopened: new Array(worldnum).fill(false),
 
 
 
-      chipused: new Array(setchipkind).fill(null).map(() => 0),
+      chipused: new Array(setchipkind).fill(0),
 
       pchallengestage: 0,
 

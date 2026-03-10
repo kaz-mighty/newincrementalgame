@@ -4,29 +4,29 @@ class Chips {
    */
   constructor(playerData) {
     this.chip = Array.from(playerData.chip);
-    this.setchip = Array.from(playerData.setchip);
-    this.disabledchip = Array.from(playerData.disabledchip);
-    this.spendchip = Array.from(playerData.spendchip);
-    this.setchiptypefst = Array.from(playerData.setchiptypefst);
+    this.setChip = Array.from(playerData.setchip);
+    this.disabledChip = Array.from(playerData.disabledchip);
+    this.spendChip = Array.from(playerData.spendchip);
+    this.setChipType1 = Array.from(playerData.setchiptypefst);
 
-    this.chipused = new Array(setchipkind).fill(0);
+    this.chipUsed = new Array(setchipkind).fill(0);
   }
 
   toSaveObject() {
     return {
       chip: this.chip,
-      setchip: this.setchip,
-      disabledchip: this.disabledchip,
-      spendchip: this.spendchip,
-      setchiptypefst: this.setchiptypefst,
+      setchip: this.setChip,
+      disabledchip: this.disabledChip,
+      spendchip: this.spendChip,
+      setchiptypefst: this.setChipType1,
     };
   }
   
   calcChipRetryTime() {
     let retry = 0
     for (let i = 0; i < 9; i++) {
-      if (this.spendchip[i] > 0) {
-        retry += 1 + Math.log(this.spendchip[i]) / Math.log(10 - i)
+      if (this.spendChip[i] > 0) {
+        retry += 1 + Math.log(this.spendChip[i]) / Math.log(10 - i)
       }
     }
     retry = Math.floor(retry)
@@ -46,13 +46,13 @@ class Chips {
   }
 
   haveEnoughChip() {
-    return this.chip.every((x, i) => x >= this.spendchip[i])
+    return this.chip.every((x, i) => x >= this.spendChip[i])
   }
 
   calcChipGetNum(data, kind) {
 
     let hit = 0
-    for (let i = 0; i < this.chipused[kind]; i++) {
+    for (let i = 0; i < this.chipUsed[kind]; i++) {
       let chipdoubleprob = 0.01 * (1 + 0.1 * data.eachpipedsmalltrophy[11])
       if (Math.random() < chipdoubleprob) hit++;
     }
@@ -212,20 +212,20 @@ class Chips {
   ];
 
   chipSet(i, j) {
-    if (this.disabledchip[i]) return
-    if (this.setchip[i] == j) return
-    if (this.chip[j - 1] <= this.chipused[j - 1]) return
-    let oldchip = this.setchip[i] - 1
-    if (oldchip != -1) this.chip[oldchip] = this.chip[oldchip] + this.chipused[oldchip]
-    this.setchip[i] = j
-    if (j != 0) this.chip[j - 1] = this.chip[j - 1] - (this.chipused[j - 1] + 1)
+    if (this.disabledChip[i]) return
+    if (this.setChip[i] == j) return
+    if (this.chip[j - 1] <= this.chipUsed[j - 1]) return
+    let oldchip = this.setChip[i] - 1
+    if (oldchip != -1) this.chip[oldchip] += this.chipUsed[oldchip]
+    this.setChip[i] = j
+    if (j != 0) this.chip[j - 1] -= this.chipUsed[j - 1] + 1
     this.checkUsedChips()
   }
 
   checkUsedChips() {
-    this.chipused.fill(0)
-    for (let v of this.setchip) {
-      if (v != 0) this.chipused[v - 1]++
+    this.chipUsed.fill(0)
+    for (let v of this.setChip) {
+      if (v != 0) this.chipUsed[v - 1]++
     }
   }
 
@@ -238,7 +238,7 @@ class Chips {
   setChipType() {
     if (confirm('現在の鋳片型を登録します。よろしいですか？')) {
       for (let i = 0; i < 100; i++) {
-        this.setchiptypefst[i] = this.setchip[i]
+        this.setChipType1[i] = this.setChip[i]
       }
     }
   }
@@ -246,7 +246,7 @@ class Chips {
   changeChipType() {
     this.clearSetChip()
     for (let i = 0; i < 100; i++) {
-      this.chipSet(i, this.setchiptypefst[i])
+      this.chipSet(i, this.setChipType1[i])
     }
   }
 

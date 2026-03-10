@@ -594,9 +594,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       mult = mult.mul(1 + this.player.setchip[0] * 0.1)
 
-      for (let i = 0; i < setchipkind; i++) {
-        mult = mult.mul(this.player.statues.generatorMulti)
-      }
+      mult = mult.mul(this.player.statues.generatorMulti)
 
       let camp = 0
       if (this.player.activatedcampaigns.includes("newyear")) camp = camp + 1

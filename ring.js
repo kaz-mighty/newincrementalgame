@@ -1,71 +1,4 @@
 class Rings {
-  /**
-   * @param {RingSaveData} ringData
-   */
-  constructor(ringData) {
-      this.setrings = Array.from(ringData.setrings);
-      this.ringsexp = Array.from(ringData.ringsexp);
-      this.onmission = ringData.onmission;
-      this.missionid = ringData.missionid;
-      this.missionstate = {
-        turn: ringData.missionstate.turn,
-        activering: ringData.missionstate.activering,
-        skilllog: Array.from(ringData.missionstate.skilllog),
-        flowerpoint: ringData.missionstate.flowerpoint,
-        snowpoint: ringData.missionstate.snowpoint,
-        moonpoint: ringData.missionstate.moonpoint,
-        flowermultiplier: ringData.missionstate.flowermultiplier,
-        snowmultiplier: ringData.missionstate.snowmultiplier,
-        moonmultiplier: ringData.missionstate.moonmultiplier,
-        tps: Array.from(ringData.missionstate.tps),
-        fieldeffect: Array.from(ringData.missionstate.fieldeffect),
-      };
-      this.clearedmission = ringData.clearedmission;
-      this.unUsed = {
-        automissionid: ringData.auto.automissionid,
-      };
-  }
-
-  /**
-   * @param {Player} player
-   * @return {RingSaveData}
-   */
-  toSaveObject(player) {
-    return {
-      setrings: this.setrings,
-      ringsexp: this.ringsexp,
-      onmission: this.onmission,
-      missionid: this.missionid,
-      missionstate: {
-        turn: this.missionstate.turn,
-        activering: this.missionstate.activering,
-        skilllog: this.missionstate.skilllog,
-        flowerpoint: this.missionstate.flowerpoint,
-        snowpoint: this.missionstate.snowpoint,
-        moonpoint: this.missionstate.moonpoint,
-        flowermultiplier: this.missionstate.flowermultiplier,
-        snowmultiplier: this.missionstate.snowmultiplier,
-        moonmultiplier: this.missionstate.moonmultiplier,
-        tps: this.missionstate.tps,
-        fieldeffect: this.missionstate.fieldeffect,
-      },
-      clearedmission: this.clearedmission,
-      auto: {
-        doauto: player.auto.autoRing,
-        automissionid: this.unUsed.automissionid,
-      },
-      outsideauto: {
-        autospendshine: player.auto.autoSpendShine,
-        autospendshinenumber: player.auto.autoSpendShineNumber,
-        autospendbright: player.auto.autoSpendBright,
-        autospendbrightnumber: player.auto.autoSpendBrightNumber,
-        autodarklevelreset: player.auto.autoDarkLevelReset,
-        autodarklevelresetborder: player.auto.autoDarkLevelResetBorder,
-        autodochallenge: player.auto.autoDoChallenge,
-      },
-    };
-  }
-
   static statusDataType = [
     [17, 10, 10, 5, 1, 1, 12],//51
     [9, 15, 9, 2, 6, 2, 12],//53
@@ -554,6 +487,73 @@ class Rings {
 
   static levelCap() {
     return 30
+  }
+
+  /**
+   * @param {RingSaveData} ringData
+   */
+  constructor(ringData) {
+      this.setrings = Array.from(ringData.setrings);
+      this.ringsexp = Array.from(ringData.ringsexp);
+      this.onmission = ringData.onmission;
+      this.missionid = ringData.missionid;
+      this.missionstate = {
+        turn: ringData.missionstate.turn,
+        activering: ringData.missionstate.activering,
+        skilllog: Array.from(ringData.missionstate.skilllog),
+        flowerpoint: ringData.missionstate.flowerpoint,
+        snowpoint: ringData.missionstate.snowpoint,
+        moonpoint: ringData.missionstate.moonpoint,
+        flowermultiplier: ringData.missionstate.flowermultiplier,
+        snowmultiplier: ringData.missionstate.snowmultiplier,
+        moonmultiplier: ringData.missionstate.moonmultiplier,
+        tps: Array.from(ringData.missionstate.tps),
+        fieldeffect: Array.from(ringData.missionstate.fieldeffect),
+      };
+      this.clearedmission = ringData.clearedmission;
+      this.unUsed = {
+        automissionid: ringData.auto.automissionid,
+      };
+  }
+
+  /**
+   * @param {Player} player
+   * @return {RingSaveData}
+   */
+  toSaveObject(player) {
+    return {
+      setrings: this.setrings,
+      ringsexp: this.ringsexp,
+      onmission: this.onmission,
+      missionid: this.missionid,
+      missionstate: {
+        turn: this.missionstate.turn,
+        activering: this.missionstate.activering,
+        skilllog: this.missionstate.skilllog,
+        flowerpoint: this.missionstate.flowerpoint,
+        snowpoint: this.missionstate.snowpoint,
+        moonpoint: this.missionstate.moonpoint,
+        flowermultiplier: this.missionstate.flowermultiplier,
+        snowmultiplier: this.missionstate.snowmultiplier,
+        moonmultiplier: this.missionstate.moonmultiplier,
+        tps: this.missionstate.tps,
+        fieldeffect: this.missionstate.fieldeffect,
+      },
+      clearedmission: this.clearedmission,
+      auto: {
+        doauto: player.auto.autoRing,
+        automissionid: this.unUsed.automissionid,
+      },
+      outsideauto: {
+        autospendshine: player.auto.autoSpendShine,
+        autospendshinenumber: player.auto.autoSpendShineNumber,
+        autospendbright: player.auto.autoSpendBright,
+        autospendbrightnumber: player.auto.autoSpendBrightNumber,
+        autodarklevelreset: player.auto.autoDarkLevelReset,
+        autodarklevelresetborder: player.auto.autoDarkLevelResetBorder,
+        autodochallenge: player.auto.autoDoChallenge,
+      },
+    };
   }
 
   getLevel(ringId) {

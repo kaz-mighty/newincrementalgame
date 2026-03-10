@@ -92,19 +92,11 @@ class Player {
     this.rememberspent = playerData.rememberspent;
     this.rememberforgot = playerData.rememberforgot;
 
-    this.chip = Array.from(playerData.chip);
-    this.setchip = Array.from(playerData.setchip);
-    this.disabledchip = Array.from(playerData.disabledchip);
-    this.spendchip = Array.from(playerData.spendchip);
-
+    this.chips = new Chips(playerData);
     this.statues = new Statues(playerData);
 
     this.spiritlevela = Array.from(playerData.spiritlevela);
     this.spiritboughtcurrentcrown = Array.from(playerData.spiritboughtcurrentcrown);
-
-
-
-    this.setchiptypefst = Array.from(playerData.setchiptypefst);
 
     this.worldpipe = Array.from(playerData.worldpipe);
     this.rings = new Rings(playerData.rings);
@@ -119,7 +111,6 @@ class Player {
         autoDoChallenge: playerData.rings.outsideauto.autodochallenge,
         autoRing: playerData.rings.auto.doauto,
     };
-
   }
 
   /**
@@ -127,6 +118,7 @@ class Player {
    */
   toSaveObject() {
     const statues = this.statues.toSaveObject();
+    const chips = this.chips.toSaveObject();
     return {
       money: this.money,
       level: this.level,
@@ -217,10 +209,10 @@ class Player {
       rememberspent: this.rememberspent,
       rememberforgot: this.rememberforgot,
 
-      chip: this.chip,
-      setchip: this.setchip,
-      disabledchip: this.disabledchip,
-      spendchip: this.spendchip,
+      chip: chips.chip,
+      setchip: chips.setchip,
+      disabledchip: chips.disabledchip,
+      spendchip: chips.spendchip,
 
       statue: statues.statue,
       polishedstatue: statues.polishedstatue,
@@ -229,13 +221,27 @@ class Player {
       spiritlevela: this.spiritlevela,
       spiritboughtcurrentcrown: this.spiritboughtcurrentcrown,
 
-
-
-      setchiptypefst: this.setchiptypefst,
+      setchiptypefst: chips.setchiptypefst,
 
       worldpipe: this.worldpipe,
       rings: this.rings.toSaveObject(this),
     };
   }
 
+  /* リファクタ中の一時的措置 */
+  get chip() {
+    return this.chips.chip;
+  }
+  get setchip() {
+    return this.chips.setchip;
+  }
+  get disabledchip() {
+    return this.chips.disabledchip;
+  }
+  get spendchip() {
+    return this.chips.spendchip;
+  }
+  get setchiptypefst() {
+    return this.chips.setchiptypefst;
+  }
 }

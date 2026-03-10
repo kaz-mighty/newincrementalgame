@@ -1,17 +1,39 @@
-function Chipdata() {
+class Chips {
+  /**
+   * @param {PlayerSaveData} playerData 
+   */
+  constructor(playerData) {
+    this.chip = Array.from(playerData.chip);
+    this.setchip = Array.from(playerData.setchip);
+    this.disabledchip = Array.from(playerData.disabledchip);
+    this.spendchip = Array.from(playerData.spendchip);
+    this.setchiptypefst = Array.from(playerData.setchiptypefst);
 
-  this.calcchipretrytime = function (data) {
+    this.chipused = new Array(setchipkind).fill(0);
+  }
+
+  toSaveObject() {
+    return {
+      chip: this.chip,
+      setchip: this.setchip,
+      disabledchip: this.disabledchip,
+      spendchip: this.spendchip,
+      setchiptypefst: this.setchiptypefst,
+    };
+  }
+  
+  calcChipRetryTime() {
     let retry = 0
     for (let i = 0; i < 9; i++) {
-      if (data.player.spendchip[i] > 0) {
-        retry += 1 + Math.log(data.player.spendchip[i]) / Math.log(10 - i)
+      if (this.spendchip[i] > 0) {
+        retry += 1 + Math.log(this.spendchip[i]) / Math.log(10 - i)
       }
     }
     retry = Math.floor(retry)
     return retry
   }
 
-  this.calcgainchip = function (data) {
+  calcGainChip(data) {
     let bonus = new Decimal(10).pow(data.eachpipedsmalltrophy[7] * 0.4)
     if (data.player.activatedcampaigns.includes("tanabata2")) {
       bonus = bonus.mul(data.player.lightmoney.add(1))
@@ -19,18 +41,18 @@ function Chipdata() {
     console.log("gain chip bonus:" + bonus)
     let mny = data.player.money
     if (data.chipthresholduse) mny = mny.min(data.chipthreshold)
-    let clevel = this.getcl(mny.mul(bonus))
-    return this.getchipid(clevel, 1 + (this.haveenoughchip(data) ? this.calcchipretrytime(data) : 0))
+    let clevel = Chips.getChipLevel(mny.mul(bonus))
+    return Chips.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0))
   }
 
-  this.haveenoughchip = function (data) {
-    return data.player.chip.every((x, i) => x >= data.player.spendchip[i])
+  haveEnoughChip() {
+    return this.chip.every((x, i) => x >= this.spendchip[i])
   }
 
-  this.calcchipgetnum = function (data, kind) {
+  calcChipGetNum(data, kind) {
 
     let hit = 0
-    for (let i = 0; i < data.chipused[kind]; i++) {
+    for (let i = 0; i < this.chipused[kind]; i++) {
       let chipdoubleprob = 0.01 * (1 + 0.1 * data.eachpipedsmalltrophy[11])
       if (Math.random() < chipdoubleprob) hit++;
     }
@@ -42,39 +64,39 @@ function Chipdata() {
       if (kind == 2) chipgetnum = chipgetnum + 4
     }
 
-    chipgetnum = Math.min(chipgetnum, 10000000 - data.player.chip[kind])
+    chipgetnum = Math.min(chipgetnum, 10000000 - this.chip[kind])
 
     return chipgetnum
 
   }
 
-  this.getcl = function (mny) {
-    if (mny.greaterThanOrEqualTo("1e350")) return 22
-    if (mny.greaterThanOrEqualTo("1e325")) return 21
-    if (mny.greaterThanOrEqualTo("1e300")) return 20
-    if (mny.greaterThanOrEqualTo("1e275")) return 19
-    if (mny.greaterThanOrEqualTo("1e250")) return 18
-    if (mny.greaterThanOrEqualTo("1e240")) return 17
-    if (mny.greaterThanOrEqualTo("1e230")) return 16
-    if (mny.greaterThanOrEqualTo("1e220")) return 15
-    if (mny.greaterThanOrEqualTo("1e210")) return 14
-    if (mny.greaterThanOrEqualTo("1e200")) return 13
-    if (mny.greaterThanOrEqualTo("1e190")) return 12
-    if (mny.greaterThanOrEqualTo("1e180")) return 11
-    if (mny.greaterThanOrEqualTo("1e170")) return 10
-    if (mny.greaterThanOrEqualTo("1e160")) return 9
-    if (mny.greaterThanOrEqualTo("1e150")) return 8
-    if (mny.greaterThanOrEqualTo("1e140")) return 7
-    if (mny.greaterThanOrEqualTo("1e130")) return 6
-    if (mny.greaterThanOrEqualTo("1e120")) return 5
-    if (mny.greaterThanOrEqualTo("1e110")) return 4
-    if (mny.greaterThanOrEqualTo("1e100")) return 3
-    if (mny.greaterThanOrEqualTo("1e90")) return 2
-    if (mny.greaterThanOrEqualTo("1e80")) return 1
+  static getChipLevel(money) {
+    if (money.greaterThanOrEqualTo("1e350")) return 22
+    if (money.greaterThanOrEqualTo("1e325")) return 21
+    if (money.greaterThanOrEqualTo("1e300")) return 20
+    if (money.greaterThanOrEqualTo("1e275")) return 19
+    if (money.greaterThanOrEqualTo("1e250")) return 18
+    if (money.greaterThanOrEqualTo("1e240")) return 17
+    if (money.greaterThanOrEqualTo("1e230")) return 16
+    if (money.greaterThanOrEqualTo("1e220")) return 15
+    if (money.greaterThanOrEqualTo("1e210")) return 14
+    if (money.greaterThanOrEqualTo("1e200")) return 13
+    if (money.greaterThanOrEqualTo("1e190")) return 12
+    if (money.greaterThanOrEqualTo("1e180")) return 11
+    if (money.greaterThanOrEqualTo("1e170")) return 10
+    if (money.greaterThanOrEqualTo("1e160")) return 9
+    if (money.greaterThanOrEqualTo("1e150")) return 8
+    if (money.greaterThanOrEqualTo("1e140")) return 7
+    if (money.greaterThanOrEqualTo("1e130")) return 6
+    if (money.greaterThanOrEqualTo("1e120")) return 5
+    if (money.greaterThanOrEqualTo("1e110")) return 4
+    if (money.greaterThanOrEqualTo("1e100")) return 3
+    if (money.greaterThanOrEqualTo("1e90")) return 2
+    if (money.greaterThanOrEqualTo("1e80")) return 1
     return 0
   }
 
-  this.ptable = [
+  static ptable = [
     [1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
     [0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
@@ -108,11 +130,11 @@ function Chipdata() {
 
 
 
-  ]
+  ];
 
-  this.getchipid = function (lv, time) {
+  static getChipId(lv, time) {
     let d = Math.random()
-    let table = this.ptable[lv].map((x) => Math.pow(x, time))
+    let table = Chips.ptable[lv].map((x) => Math.pow(x, time))
     console.log(table)
     for (let i = 0; i <= 10; i++) {
       if (table[i] > d) {
@@ -121,7 +143,7 @@ function Chipdata() {
     }
   }
 
-  this.chipname = [
+  static chipName = [
     "銅",
     "銀",
     "金",
@@ -132,9 +154,9 @@ function Chipdata() {
     "翠鋼",
     "聖銀",
     "覇金",
-  ]
+  ];
 
-  this.chipbonusname = [
+  static chipBonusName = [
     "発生器効率",
     "発生器1効率",
     "発生器2効率",
@@ -187,5 +209,45 @@ function Chipdata() {
     "煌き入手割合",
     "煌き使用効率",
     "煌き使用効率裏(工事中)",
-  ]
+  ];
+
+  chipSet(i, j) {
+    if (this.disabledchip[i]) return
+    if (this.setchip[i] == j) return
+    if (this.chip[j - 1] <= this.chipused[j - 1]) return
+    let oldchip = this.setchip[i] - 1
+    if (oldchip != -1) this.chip[oldchip] = this.chip[oldchip] + this.chipused[oldchip]
+    this.setchip[i] = j
+    if (j != 0) this.chip[j - 1] = this.chip[j - 1] - (this.chipused[j - 1] + 1)
+    this.checkUsedChips()
+  }
+
+  checkUsedChips() {
+    this.chipused.fill(0)
+    for (let v of this.setchip) {
+      if (v != 0) this.chipused[v - 1]++
+    }
+  }
+
+  clearSetChip() {
+    for (let i = 0; i < 100; i++) {
+      this.chipSet(i, 0)
+    }
+  }
+
+  setChipType() {
+    if (confirm('現在の鋳片型を登録します。よろしいですか？')) {
+      for (let i = 0; i < 100; i++) {
+        this.setchiptypefst[i] = this.setchip[i]
+      }
+    }
+  }
+
+  changeChipType() {
+    this.clearSetChip()
+    for (let i = 0; i < 100; i++) {
+      this.chipSet(i, this.setchiptypefst[i])
+    }
+  }
+
 }

@@ -214,7 +214,6 @@ const app = Vue.createApp(Vue.defineComponent({
       shinedata: new Shinedata(),
       trophydata: new Trophydata(),
       rememberdata: new Rememberdata(),
-      chipdata: new Chipdata(),
       spiritdata: new Spiritdata(),
       exported: "",
       activechallengebonuses: [],
@@ -250,9 +249,6 @@ const app = Vue.createApp(Vue.defineComponent({
       pipedsmalltrophy: 0,
       worldopened: new Array(worldnum).fill(false),
 
-
-
-      chipused: new Array(setchipkind).fill(0),
 
       pchallengestage: 0,
 
@@ -454,7 +450,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.calcaccost()
       this.calcdgcost()
       this.calclgcost()
-      this.checkusedchips()
+      this.player.chips.checkUsedChips()
 
       if (this.player.auto.autoRing) {
         this.automissiontimerid = setInterval(() => this.player.rings.autoplaymission(), 1000)
@@ -1251,25 +1247,6 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
     },
-    clearsetchip() {
-      for (let i = 0; i < 100; i++) {
-        this.chipset(i, 0)
-      }
-    },
-    setchiptype() {
-      if (confirm('現在の鋳片型を登録します。よろしいですか？')) {
-        for (let i = 0; i < 100; i++) {
-          this.player.setchiptypefst[i] = this.player.setchip[i]
-        }
-      }
-    },
-    changechiptype() {
-      this.clearsetchip()
-      for (let i = 0; i < 100; i++) {
-        this.chipset(i, this.player.setchiptypefst[i])
-      }
-
-    },
     changeMode(index) {
       if (this.player.onchallenge && this.player.challenges.includes(3)) return;
       this.player.generatorsMode[index] += 1;
@@ -1396,22 +1373,22 @@ const app = Vue.createApp(Vue.defineComponent({
         if (disa) {
 
           let randomint = Math.floor(Math.random() * 100)
-          this.chipset(randomint, 0)
+          this.player.chips.chipSet(randomint, 0)
           this.player.disabledchip[randomint] = true
         }
 
         if (this.player.money.greaterThan(1e80)) {
 
-          if (this.chipdata.haveenoughchip(this)) {
+          if (this.player.chips.haveEnoughChip()) {
             for (let i = 0; i < 10; i++) {
               this.player.chip[i] -= this.player.spendchip[i]
             }
           }
-          let gainchip = this.chipdata.calcgainchip(this)
+          let gainchip = this.player.chips.calcGainChip(this)
           console.log("gainchip:" + gainchip)
           if (gainchip != -1 && this.player.chip[gainchip] < 10000000) {
 
-            let chipgetnum = this.chipdata.calcchipgetnum(this, gainchip)
+            let chipgetnum = this.player.chips.calcChipGetNum(this, gainchip)
 
             this.player.chip[gainchip] = this.player.chip[gainchip] + chipgetnum
 
@@ -2269,24 +2246,6 @@ const app = Vue.createApp(Vue.defineComponent({
 
     },
 
-    chipset(i, j) {
-      if (this.player.disabledchip[i]) return
-      if (this.player.setchip[i] == j) return
-      if (this.player.chip[j - 1] <= this.chipused[j - 1]) return
-      let oldchip = this.player.setchip[i] - 1
-      if (oldchip != -1) this.player.chip[oldchip] = this.player.chip[oldchip] + this.chipused[oldchip]
-      this.player.setchip[i] = j
-      if (j != 0) this.player.chip[j - 1] = this.player.chip[j - 1] - (this.chipused[j - 1] + 1)
-      this.checkusedchips()
-    },
-
-    checkusedchips() {
-      this.chipused.fill(0)
-      for (let v of this.player.setchip) {
-        if (v != 0) this.chipused[v - 1] = this.chipused[v - 1] + 1
-      }
-    },
-
     buyspirit(i) {
       return
       this.player.spiritlevela[i] += 1;
@@ -2470,7 +2429,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
     this.checkmemories();
     this.checkworlds();
-    this.checkusedchips();
+    this.player.chips.checkUsedChips();
 
     this.time = Date.now()
 
@@ -2481,4 +2440,5 @@ const app = Vue.createApp(Vue.defineComponent({
   },
 }));
 app.config.globalProperties.Rings = Rings;
+app.config.globalProperties.Chips = Chips;
 app.mount('#app');

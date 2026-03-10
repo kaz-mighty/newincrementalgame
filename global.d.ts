@@ -50,14 +50,43 @@ type RingSaveData = {
     autodarklevelreset: boolean;
     autodarklevelresetborder: number;
     autodochallenge: boolean;
+    autochallenge?: boolean; // autodochallengeにリネームされたが、古いデータが残っている
   };
 };
 
+type MarkStoneSaveData = {
+  club: number;
+  clubGainedSinceCrownReset: number;
+  diamond: number;
+  diamondGainedSinceCrownReset: number;
+  heart: number;
+  heartGainedSinceCrownReset: number;
+  spade: number;
+  spadeGainedSinceCrownReset: number;
+  ticksSinceRankReset: number;
+  selectedType: number;
+  greatClub: number;
+  greatDiamond: number;
+  greatHeart: number;
+  greatSpade: number;
+  calibration: {
+    active: boolean;
+    selectedEnemy: number;
+    enemyHp: number;
+    enemyLevel: number;
+    cooldown: number;
+    totalDamage: number;
+    achievements: number;
+    shopUpgrades: boolean[];
+    resolutions: number[];
+  },
+};
+
 type PlayerSaveData = {
-  money: Decimal;
-  level: Decimal;
-  levelresettime: Decimal;
-  maxlevelgained: Decimal;
+  money: Decimal | string;
+  level: Decimal | string;
+  levelresettime: Decimal | string;
+  maxlevelgained: Decimal | string;
   token: number;
   shine: number;
   brightness: number;
@@ -68,41 +97,41 @@ type PlayerSaveData = {
 
   residue: number;
 
-  rank: Decimal;
-  rankresettime: Decimal;
+  rank: Decimal | string;
+  rankresettime: Decimal | string;
 
-  crown: Decimal;
-  crownresettime: Decimal;
+  crown: Decimal | string;
+  crownresettime: Decimal | string;
 
   ranktoken: number;
 
-  generators: Decimal[];
-  generatorsBought: Decimal[];
-  generatorsCost: Decimal[];
+  generators: (Decimal | string)[];
+  generatorsBought: (Decimal | string)[];
+  generatorsCost: (Decimal | string)[];
   generatorsMode: number[];
 
-  accelerators: Decimal[];
-  acceleratorsBought: Decimal[];
-  acceleratorsCost: Decimal[];
+  accelerators: (Decimal | string)[];
+  acceleratorsBought: (Decimal | string)[];
+  acceleratorsCost: (Decimal | string)[];
 
-  darkmoney: Decimal;
+  darkmoney: Decimal | string;
 
-  darkgenerators: Decimal[];
-  darkgeneratorsBought: Decimal[];
-  darkgeneratorsCost: Decimal[];
+  darkgenerators: (Decimal | string)[];
+  darkgeneratorsBought: (Decimal | string)[];
+  darkgeneratorsCost: (Decimal | string)[];
 
-  darklevel: Decimal;
+  darklevel: Decimal | string;
 
-  lightmoney: Decimal,
+  lightmoney: Decimal | string;
 
-  lightgenerators: Decimal[];
-  lightgeneratorsBought: Decimal[];
-  lightgeneratorsCost: Decimal[];
+  lightgenerators: (Decimal | string)[];
+  lightgeneratorsBought: (Decimal | string)[];
+  lightgeneratorsCost: (Decimal | string)[];
 
   tickspeed: number;
   accelevel: number;
   accelevelused: number;
-  activatedcampaigns: string[],
+  activatedcampaigns: string[];
   timecrystal: number[];
   saveversion: number;
 
@@ -159,4 +188,5 @@ type PlayerSaveData = {
 
   worldpipe: number[];
   rings: RingSaveData;
+  markstone?: MarkStoneSaveData; // beta版のみ
 };

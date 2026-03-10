@@ -364,7 +364,9 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     save() {
 
-      this.players[this.world] = this.player.toSaveObject();
+      this.players[this.world] = deepmerge(this.players[this.world], this.player.toSaveObject(), {
+        isMergeableObject: (object) => isPlainObject(object)
+      });
 
       localStorage.setItem("playerStoredb", btoa(JSON.stringify(this.players)));
 

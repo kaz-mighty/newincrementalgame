@@ -450,7 +450,6 @@ const app = Vue.createApp(Vue.defineComponent({
       this.calcaccost()
       this.calcdgcost()
       this.calclgcost()
-      this.player.chips.checkUsedChips()
 
       if (this.player.auto.autoRing) {
         this.automissiontimerid = setInterval(() => this.player.rings.autoplaymission(), 1000)
@@ -1306,7 +1305,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), ""))
       if (isNaN(input)) return
       if (input < 0 || input > maxspend) return
-      this.player.spendchip[i] = input
+      this.player.chips.spendChip[i] = input
     },
 
 
@@ -1371,28 +1370,24 @@ const app = Vue.createApp(Vue.defineComponent({
         }
 
         if (disa) {
-
           let randomint = Math.floor(Math.random() * 100)
-          this.player.chips.chipSet(randomint, 0)
-          this.player.disabledchip[randomint] = true
+          this.player.chips.disableChip(randomint)
         }
 
         if (this.player.money.greaterThan(1e80)) {
-
-          if (this.player.chips.haveEnoughChip()) {
-            for (let i = 0; i < 10; i++) {
-              this.player.chip[i] -= this.player.spendchip[i]
-            }
+          let money = this.player.money;
+          if (this.chipthresholduse) money = money.min(this.chipthreshold)
+          
+          let bonus = new Decimal(10).pow(this.eachpipedsmalltrophy[7] * 0.4)
+          if (this.player.activatedcampaigns.includes("tanabata2")) {
+            bonus = bonus.mul(this.player.lightmoney.add(1))
           }
-          let gainchip = this.player.chips.calcGainChip(this)
-          console.log("gainchip:" + gainchip)
-          if (gainchip != -1 && this.player.chip[gainchip] < 10000000) {
+          console.log("gain chip bonus:" + bonus)
 
-            let chipgetnum = this.player.chips.calcChipGetNum(this, gainchip)
+          const chipDoubleProb = 0.01 * (1 + 0.1 * this.eachpipedsmalltrophy[11])
+          const isGw2 = this.player.activatedcampaigns.includes("gw2")
 
-            this.player.chip[gainchip] = this.player.chip[gainchip] + chipgetnum
-
-          }
+          this.player.chips.gainRandomChip(money.mul(bonus), chipDoubleProb, isGw2);
         }
 
         this.player.money = new Decimal(1)
@@ -1802,7 +1797,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.challengecleared = this.challengedata.challengeids
         this.player.rankchallengecleared = this.challengedata.challengeids
         for (let i = 0; i < setchipnum; i++) {
-          this.player.disabledchip[i] = false
+          this.player.chips.disabledChip[i] = false
         }
         this.countpchallengecleared()
 
@@ -2429,7 +2424,6 @@ const app = Vue.createApp(Vue.defineComponent({
 
     this.checkmemories();
     this.checkworlds();
-    this.player.chips.checkUsedChips();
 
     this.time = Date.now()
 

@@ -1,38 +1,36 @@
 class Chips {
-  static ptable = [
-    [1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+  /** @type {[Decimal, number[]][]} */
+  static probTable = [
+    [new Decimal("0"), [1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.65, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.40, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.30, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [new Decimal("1e80"), [0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e90"), [0.65, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e100"), [0.40, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e110"), [0.30, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.20, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.05, 0.80, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.65, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.55, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [new Decimal("1e120"), [0.20, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e130"), [0.05, 0.80, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e140"), [0.00, 0.65, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e150"), [0.00, 0.55, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.00, 0.45, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.25, 0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.15, 0.60, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.10, 0.40, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [new Decimal("1e160"), [0.00, 0.45, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e170"), [0.00, 0.25, 0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e180"), [0.00, 0.15, 0.60, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e190"), [0.00, 0.10, 0.40, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.00, 0.00, 0.20, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.00, 0.15, 0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.00, 0.10, 0.70, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.00, 0.05, 0.60, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.00, 0.00, 0.50, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [new Decimal("1e200"), [0.00, 0.00, 0.20, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e210"), [0.00, 0.00, 0.15, 0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e220"), [0.00, 0.00, 0.10, 0.70, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e230"), [0.00, 0.00, 0.05, 0.60, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e240"), [0.00, 0.00, 0.00, 0.50, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.00, 0.00, 0.00, 0.40, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.00, 0.00, 0.30, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [new Decimal("1e250"), [0.00, 0.00, 0.00, 0.40, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e275"), [0.00, 0.00, 0.00, 0.30, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.00, 0.00, 0.00, 0.20, 0.95, 0.99, 1.01, 1.01, 1.01, 1.01, 1.01],
-    [0.00, 0.00, 0.00, 0.20, 0.93, 0.98, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [new Decimal("1e300"), [0.00, 0.00, 0.00, 0.20, 0.95, 0.99, 1.01, 1.01, 1.01, 1.01, 1.01]],
+    [new Decimal("1e325"), [0.00, 0.00, 0.00, 0.20, 0.93, 0.98, 1.01, 1.01, 1.01, 1.01, 1.01]],
 
-    [0.00, 0.00, 0.00, 0.20, 0.90, 0.97, 0.995, 1.01, 1.01, 1.01, 1.01],
-
-
-
+    [new Decimal("1e350"), [0.00, 0.00, 0.00, 0.20, 0.90, 0.97, 0.995, 1.01, 1.01, 1.01, 1.01]],
   ];
 
   static chipName = [
@@ -103,35 +101,23 @@ class Chips {
     "煌き使用効率裏(工事中)",
   ];
 
+  /** @param {Decimal} money */
   static getChipLevel(money) {
-    if (money.greaterThanOrEqualTo("1e350")) return 22
-    if (money.greaterThanOrEqualTo("1e325")) return 21
-    if (money.greaterThanOrEqualTo("1e300")) return 20
-    if (money.greaterThanOrEqualTo("1e275")) return 19
-    if (money.greaterThanOrEqualTo("1e250")) return 18
-    if (money.greaterThanOrEqualTo("1e240")) return 17
-    if (money.greaterThanOrEqualTo("1e230")) return 16
-    if (money.greaterThanOrEqualTo("1e220")) return 15
-    if (money.greaterThanOrEqualTo("1e210")) return 14
-    if (money.greaterThanOrEqualTo("1e200")) return 13
-    if (money.greaterThanOrEqualTo("1e190")) return 12
-    if (money.greaterThanOrEqualTo("1e180")) return 11
-    if (money.greaterThanOrEqualTo("1e170")) return 10
-    if (money.greaterThanOrEqualTo("1e160")) return 9
-    if (money.greaterThanOrEqualTo("1e150")) return 8
-    if (money.greaterThanOrEqualTo("1e140")) return 7
-    if (money.greaterThanOrEqualTo("1e130")) return 6
-    if (money.greaterThanOrEqualTo("1e120")) return 5
-    if (money.greaterThanOrEqualTo("1e110")) return 4
-    if (money.greaterThanOrEqualTo("1e100")) return 3
-    if (money.greaterThanOrEqualTo("1e90")) return 2
-    if (money.greaterThanOrEqualTo("1e80")) return 1
-    return 0
+    for (let i = Chips.probTable.length - 1; i > 0; i--) {
+      if (money.greaterThanOrEqualTo(Chips.probTable[i][0])) {
+        return i;
+      }
+    }
+    return 0;
   }
 
+  /** 
+   * @param {number} lv
+   * @param {number} time
+   */
   static getChipId(lv, time) {
     let d = Math.random()
-    let table = Chips.ptable[lv].map((x) => Math.pow(x, time))
+    let table = Chips.probTable[lv][1].map((x) => Math.pow(x, time))
     console.log(table)
     for (let i = 0; i <= 10; i++) {
       if (table[i] > d) {
@@ -151,6 +137,8 @@ class Chips {
     this.setChipType1 = Array.from(playerData.setchiptypefst);
 
     this.chipUsed = new Array(setchipkind).fill(0);
+
+    this.checkUsedChips();
   }
 
   toSaveObject() {
@@ -174,41 +162,56 @@ class Chips {
     return retry
   }
 
-  calcGainChip(data) {
-    let bonus = new Decimal(10).pow(data.eachpipedsmalltrophy[7] * 0.4)
-    if (data.player.activatedcampaigns.includes("tanabata2")) {
-      bonus = bonus.mul(data.player.lightmoney.add(1))
-    }
-    console.log("gain chip bonus:" + bonus)
-    let mny = data.player.money
-    if (data.chipthresholduse) mny = mny.min(data.chipthreshold)
-    let clevel = Chips.getChipLevel(mny.mul(bonus))
-    return Chips.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0))
-  }
-
   haveEnoughChip() {
     return this.chip.every((x, i) => x >= this.spendChip[i])
   }
 
-  calcChipGetNum(data, kind) {
+  /** @param {Decimal} money */
+  calcGainChip(money) {
+    let clevel = Chips.getChipLevel(money)
+    return Chips.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0))
+  }
 
+  /**
+   * 
+   * @param {number} kind 
+   * @param {number} chipDoubleProb
+   * @param {boolean} isGw2
+   * @returns 
+   */
+  calcChipGetNum(kind, chipDoubleProb, isGw2) {
     let hit = 0
     for (let i = 0; i < this.chipUsed[kind]; i++) {
-      let chipdoubleprob = 0.01 * (1 + 0.1 * data.eachpipedsmalltrophy[11])
-      if (Math.random() < chipdoubleprob) hit++;
+      if (Math.random() < chipDoubleProb) hit++;
     }
     hit = Math.min(hit, 10)
-    let chipgetnum = Math.floor(Math.pow(2, hit))
+    let chipGetNum = Math.floor(Math.pow(2, hit))
 
     //ゴールデンウィークキャンペーン
-    if (data.player.activatedcampaigns.includes("gw2")) {
-      if (kind == 2) chipgetnum = chipgetnum + 4
+    if (isGw2 && kind == 2) chipGetNum += 4
+
+    chipGetNum = Math.min(chipGetNum, 10000000 - this.chip[kind])
+    return chipGetNum
+  }
+
+  /**
+   * @param {Decimal} money
+   * @param {number} chipDoubleProb
+   * @param {boolean} isGw2
+   */
+  gainRandomChip(money, chipDoubleProb, isGw2) {
+    // There is a bug: chipの支払い後、さらにhaveEnoughChipの判定をしている
+    if (this.haveEnoughChip()) {
+      for (let i = 0; i < 10; i++) {
+        this.chip[i] -= this.spendChip[i]
+      }
     }
+    let gainChip = this.calcGainChip(money)
+    console.log("gainchip:" + gainChip)
 
-    chipgetnum = Math.min(chipgetnum, 10000000 - this.chip[kind])
-
-    return chipgetnum
-
+    if (gainChip != -1 && this.chip[gainChip] < 10000000) {
+      this.chip[gainChip] += this.calcChipGetNum(gainChip, chipDoubleProb, isGw2)
+    }
   }
 
   chipSet(i, j) {
@@ -233,6 +236,11 @@ class Chips {
     for (let i = 0; i < 100; i++) {
       this.chipSet(i, 0)
     }
+  }
+
+  disableChip(i) {
+    this.chipSet(i, 0)
+    this.disabledChip[i] = true
   }
 
   setChipType() {

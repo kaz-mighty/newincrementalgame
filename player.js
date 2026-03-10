@@ -235,13 +235,4 @@ class Player {
   get setchip() {
     return this.chips.setChip;
   }
-  get disabledchip() {
-    return this.chips.disabledChip;
-  }
-  get spendchip() {
-    return this.chips.spendChip;
-  }
-  get setchiptypefst() {
-    return this.chips.setChipType1;
-  }
 }

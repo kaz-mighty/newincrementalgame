@@ -754,7 +754,7 @@
 							<button type="button" @click="configspendchip(i-1)">
 								{{ Chips.chipName[i-1] + "片" }}:消費数登録
 							</button>
-							現在消費数:{{ player.spendchip[i-1] }}
+							現在消費数:{{ player.chips.spendChip[i-1] }}
 						</div>
 					</div>
 				</div>
@@ -762,7 +762,7 @@
 				鋳片使用
 				<div v-for="i in 32" :key="i">
 					鋳片効力 {{ i }} : {{ Chips.chipBonusName[i-1] }}
-					<span v-show="player.disabledchip[i-1]">（無効）</span>
+					<span v-show="player.chips.disabledChip[i-1]">（無効）</span>
 					<span v-for="j in 10" :key="j">
 						<button v-show="player.chip[j-1]>0" @click="player.chips.chipSet(i-1,j)">
 							{{ Chips.chipName[j-1] + "片" }} コスト:{{ player.chips.chipUsed[j-1]+1 }}
@@ -775,7 +775,7 @@
 				</div>
 				<div v-if="checkremembers()>=16" v-for="i in 20" :key="i">
 					鋳片効力 {{ i+32 }} : {{ Chips.chipBonusName[i+32-1] }}
-					<span v-show="player.disabledchip[i+32-1]">（無効）</span>
+					<span v-show="player.chips.disabledChip[i+32-1]">（無効）</span>
 					<span v-for="j in 10" :key="j">
 						<button v-show="player.chip[j-1]>0" @click="player.chips.chipSet(i+32-1,j)">
 							{{ Chips.chipName[j-1] + "片"}} コスト:{{ player.chips.chipUsed[j-1]+1 }}

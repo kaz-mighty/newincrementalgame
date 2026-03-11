@@ -278,13 +278,13 @@
 
 				時間回帰力選択
 
-				<div v-for="i in timedata.campaigns.length" :key="i">
+				<div v-for="(campaign, campaignId) in Campaign.campaigns" :key="campaignId">
 
-					<button type="button" class="llbutton" :class="{ 'selected': player.activatedCampaigns.includes(timedata.campaignnames[i-1])}" @click="choosecampaigns(timedata.campaignnames[i-1])">
-						{{timedata.campaigns[i-1]}}
+					<button type="button" class="llbutton" :class="{ 'selected': player.activatedCampaigns.includes(campaignId)}" @click="choosecampaigns(campaignId)">
+						{{ campaign.title }}
 					</button>
-					効果: {{timedata.campaigneffects[i-1]}}
-					使用回帰力量: {{timedata.campaigncosts[i-1]}}
+					効果: {{ campaign.desc }}
+					使用回帰力量: {{ campaign.cost }}
 				</div>
 
 				時の結晶
@@ -949,6 +949,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/deepmerge/dist/umd.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue@3.4.5/dist/vue.global.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/break_infinity.js@1.2.0/dist/break_infinity.js"></script>
+	<script type="text/javascript" src="campaign.js"></script>
 	<script type="text/javascript" src="time.js"></script>
 	<script type="text/javascript" src="challenge.js"></script>
 	<script type="text/javascript" src="rank.js"></script>

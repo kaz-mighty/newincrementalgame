@@ -2263,25 +2263,15 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
     calccampaigncosts() {
-
       let sum = 0
       let date = new Date()
-      for (let i = 0; i < this.timedata.campaigns.length; i++) {
-        if (this.player.activatedCampaigns.includes(this.timedata.campaignnames[i])) {
-
-          let incampaign = false
-
-          if (this.timedata.campaignnames[i] == "tanabata" && date.getMonth() == 6 && date.getDate() <= 7) incampaign = true
-          if (this.timedata.campaignnames[i] == "tanabata2" && date.getMonth() == 6 && date.getDate() <= 7) incampaign = true
-          if (this.timedata.campaignnames[i] == "aniv" && (date.getMonth() == 6 && date.getDate() >= 30 || date.getMonth() == 7)) incampaign = true
-
-          if (!incampaign) sum += this.timedata.campaigncosts[i]
-        }
-
+      for (const campaignsId of this.player.activatedCampaigns) {
+        const campaign = Campaign.campaigns[campaignsId];
+        if (campaign == undefined) continue;
+        if (Campaign.isDuring(campaign, date)) continue;
+        sum += campaign.cost;
       }
-
       return sum;
-
     },
 
     choosecampaigns(name) {
@@ -2289,32 +2279,20 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.activatedCampaigns.includes(name)) {
         this.player.activatedCampaigns.splice(this.player.activatedCampaigns.indexOf(name), 1)
       } else {
-        if (this.calccampaigncosts() + this.timedata.campaigncosts[this.timedata.campaignnames.indexOf(name)] > this.player.accelLevelUsed) return;
+        if (this.calccampaigncosts() + (Campaign.campaigns[name]?.cost ?? 0) > this.player.accelLevelUsed) return;
         this.player.activatedCampaigns.push(name)
       }
 
     },
 
     activateintimecampaign() {
-
       let date = new Date()
 
-      for (let i = 0; i < this.timedata.campaigns.length; i++) {
-
-        if (this.timedata.campaignnames[i] == "tanabata" && date.getMonth() == 6 && date.getDate() <= 7) {
-          if (!this.player.activatedCampaigns.includes("tanabata")) this.player.activatedCampaigns.push("tanabata")
-        }
-        if (this.timedata.campaignnames[i] == "tanabata2" && date.getMonth() == 6 && date.getDate() <= 7) {
-          if (!this.player.activatedCampaigns.includes("tanabata2")) this.player.activatedCampaigns.push("tanabata2")
-        }
-
-        if (this.timedata.campaignnames[i] == "aniv" && (date.getMonth() == 6 && date.getDate() >= 30) || (date.getMonth() == 7)) {
-          if (!this.player.activatedCampaigns.includes("aniv")) this.player.activatedCampaigns.push("aniv")
-        }
-
+      for (const campaingId in Campaign.campaigns) {
+        if (!Campaign.isDuring(Campaign.campaigns[campaingId], date)) continue;
+        if (this.player.activatedCampaigns.includes(campaingId)) continue;
+        this.player.activatedCampaigns.push(campaingId);
       }
-
-
     },
 
     counttrophies(index) {
@@ -2435,4 +2413,5 @@ const app = Vue.createApp(Vue.defineComponent({
 }));
 app.config.globalProperties.Rings = Rings;
 app.config.globalProperties.Chips = Chips;
+app.config.globalProperties.Campaign = Campaign;
 app.mount('#app');

@@ -17,6 +17,15 @@ namespace Vue {
 }
 
 
+/* Campaings types */
+type CampaignItem = {
+  title: string;
+  desc: string;
+  cost: number;
+  commonBonus: number;
+  predicate?: (Date) => boolean;
+}
+
 /* SaveData types */
 
 type RingSaveData = {

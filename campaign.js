@@ -90,17 +90,31 @@ class Campaign {
   constructor(playerData) {
     this.accelLevel = playerData.accelevel;
     this.accelLevelUsed = playerData.accelevelused;
-    this.activated = Array.from(playerData.activatedcampaigns);
+    this.activated = Vue.reactive(Array.from(playerData.activatedcampaigns));
+
+    /** @type {Vue.MaybeRef<number>} */
+    this._sumCommonBonus = Vue.computed(() => {
+      let sum = 0;
+      for (const campaignId of this.activated) {
+        sum += Campaign.campaigns[campaignId]?.commonBonus ?? 0;
+      }
+      return sum;
+    });
+  }
+
+  /* インスタンスやその先祖がリアクティブでない場合でもアクセスできるように対応 */
+  get sumCommonBonus() {
+    return Vue.unref(this._sumCommonBonus);
   }
 
   updateCampaign() {
     // todo: 1tickの間、期間中キャンペーンが空になることがあるが、現在は元の仕様の維持を優先
     let date = new Date()
 
-    for (const campaingId in Campaign.campaigns) {
-      if (!Campaign.isDuring(Campaign.campaigns[campaingId], date)) continue;
-      if (this.activated.includes(campaingId)) continue;
-      this.activated.push(campaingId);
+    for (const campaignId in Campaign.campaigns) {
+      if (!Campaign.isDuring(Campaign.campaigns[campaignId], date)) continue;
+      if (this.activated.includes(campaignId)) continue;
+      this.activated.push(campaignId);
     }
 
     if (this.calcCampaignCosts() > this.accelLevelUsed) {
@@ -126,7 +140,7 @@ class Campaign {
   }
 
   clearActivated() {
-    this.activated = [];
+    this.activated.splice(0);
   }
 
   calcCampaignCosts() {

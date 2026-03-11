@@ -17,7 +17,7 @@ namespace Vue {
 }
 
 
-/* Campaings types */
+/* Campaigns types */
 type CampaignItem = {
   title: string;
   desc: string;

@@ -591,16 +591,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       mult = mult.mul(this.player.statues.generatorMulti)
 
-      let camp = 0
-      if (this.player.activatedCampaigns.includes("newyear")) camp = camp + 1
-      if (this.player.activatedCampaigns.includes("vt")) camp = camp + 1
-      if (this.player.activatedCampaigns.includes("hina")) camp = camp + 1
-      if (this.player.activatedCampaigns.includes("gw")) camp = camp + 1
-      if (this.player.activatedCampaigns.includes("tanabata")) camp = camp + 1
-      if (this.player.activatedCampaigns.includes("aniv")) camp = camp + 2
-      if (this.player.activatedCampaigns.includes("sw")) camp = camp + 1
-      if (this.player.activatedCampaigns.includes("xmas")) camp = camp + 1
-
+      let camp = this.player.campaign.sumCommonBonus;
       if (this.player.activatedCampaigns.includes("newyear2025")) {
         if (this.player.onChallenge && this.player.challenges.includes(3) && this.player.challenges.includes(4)) {
           camp = camp + 10

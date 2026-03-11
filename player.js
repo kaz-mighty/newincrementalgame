@@ -5,8 +5,8 @@ class Player {
   constructor(playerData) {
     this.money = new Decimal(playerData.money);
     this.level = new Decimal(playerData.level);
-    this.levelresettime = new Decimal(playerData.levelresettime);
-    this.maxlevelgained = new Decimal(playerData.maxlevelgained);
+    this.levelResetTime = new Decimal(playerData.levelresettime);
+    this.maxLevelGained = new Decimal(playerData.maxlevelgained);
     this.token = playerData.token;
     this.shine = playerData.shine;
     this.brightness = playerData.brightness;
@@ -18,12 +18,12 @@ class Player {
     this.residue = playerData.residue;
 
     this.rank = new Decimal(playerData.rank);
-    this.rankresettime = new Decimal(playerData.rankresettime);
+    this.rankResetTime = new Decimal(playerData.rankresettime);
 
     this.crown = new Decimal(playerData.crown);
-    this.crownresettime = new Decimal(playerData.crownresettime);
+    this.crownResetTime = new Decimal(playerData.crownresettime);
 
-    this.ranktoken = playerData.ranktoken;
+    this.rankToken = playerData.ranktoken;
 
     this.generators = playerData.generators.map(v => new Decimal(v));
     this.generatorsBought = playerData.generatorsBought.map(v => new Decimal(v));
@@ -34,71 +34,71 @@ class Player {
     this.acceleratorsBought = playerData.acceleratorsBought.map(v => new Decimal(v));
     this.acceleratorsCost = playerData.acceleratorsCost.map(v => new Decimal(v));
 
-    this.darkmoney = new Decimal(playerData.darkmoney);
+    this.darkMoney = new Decimal(playerData.darkmoney);
 
-    this.darkgenerators = playerData.darkgenerators.map(v => new Decimal(v));
-    this.darkgeneratorsBought = playerData.darkgeneratorsBought.map(v => new Decimal(v));
-    this.darkgeneratorsCost = playerData.darkgeneratorsCost.map(v => new Decimal(v));
+    this.darkGenerators = playerData.darkgenerators.map(v => new Decimal(v));
+    this.darkGeneratorsBought = playerData.darkgeneratorsBought.map(v => new Decimal(v));
+    this.darkGeneratorsCost = playerData.darkgeneratorsCost.map(v => new Decimal(v));
 
-    this.darklevel = new Decimal(playerData.darklevel);
+    this.darkLevel = new Decimal(playerData.darklevel);
 
-    this.lightmoney = new Decimal(playerData.lightmoney);
+    this.lightMoney = new Decimal(playerData.lightmoney);
 
-    this.lightgenerators = playerData.lightgenerators.map(v => new Decimal(v));
-    this.lightgeneratorsBought = playerData.lightgeneratorsBought.map(v => new Decimal(v));
-    this.lightgeneratorsCost = playerData.lightgeneratorsCost.map(v => new Decimal(v));
+    this.lightGenerators = playerData.lightgenerators.map(v => new Decimal(v));
+    this.lightGeneratorsBought = playerData.lightgeneratorsBought.map(v => new Decimal(v));
+    this.lightGeneratorsCost = playerData.lightgeneratorsCost.map(v => new Decimal(v));
 
-    this.tickspeed = playerData.tickspeed;
-    this.accelevel = playerData.accelevel;
-    this.accelevelused = playerData.accelevelused;
-    this.activatedcampaigns = Array.from(playerData.activatedcampaigns);
-    this.timecrystal = Array.from(playerData.timecrystal);
-    this.saveversion = playerData.saveversion;
+    this.tickSpeed = playerData.tickspeed;
+    this.accelLevel = playerData.accelevel;
+    this.accelLevelUsed = playerData.accelevelused;
+    this.activatedCampaigns = Array.from(playerData.activatedcampaigns);
+    this.timeCrystal = Array.from(playerData.timecrystal);
+    this.saveVersion = playerData.saveversion;
 
-    this.currenttab = "basic";
+    this.currentTab = "basic";
     this.tweeting = Array.from(playerData.tweeting);
 
-    this.onchallenge = playerData.onchallenge;
+    this.onChallenge = playerData.onchallenge;
     this.challenges = Array.from(playerData.challenges);
-    this.challengecleared = Array.from(playerData.challengecleared);
-    this.challengebonuses = Array.from(playerData.challengebonuses);
+    this.challengeCleared = Array.from(playerData.challengecleared);
+    this.challengeBonuses = Array.from(playerData.challengebonuses);
 
-    this.challengeweight = Array.from(playerData.challengeweight);
-    this.challengeweightvalue = Array.from(playerData.challengeweightvalue);
+    this.challengeWeight = Array.from(playerData.challengeweight);
+    this.challengeWeightValue = Array.from(playerData.challengeweightvalue);
 
-    this.onpchallenge = playerData.onpchallenge;
-    this.pchallenges = Array.from(playerData.pchallenges);
-    this.pchallengecleared = Array.from(playerData.pchallengecleared);
-    this.prchallengecleared = Array.from(playerData.prchallengecleared);
+    this.onPerfectChallenge = playerData.onpchallenge;
+    this.perfectChallenges = Array.from(playerData.pchallenges);
+    this.perfectChallengeCleared = Array.from(playerData.pchallengecleared);
+    this.perfectRankChallengeCleared = Array.from(playerData.prchallengecleared);
 
-    this.boughttype = Array.from(playerData.boughttype);
-    this.setmodes = Array.from(playerData.setmodes);
-    this.setchallengebonusesfst = Array.from(playerData.setchallengebonusesfst);
-    this.setchallengebonusessnd = Array.from(playerData.setchallengebonusessnd);
-    this.setrankchallengebonusesfst = Array.from(playerData.setrankchallengebonusesfst);
-    this.setrankchallengebonusessnd = Array.from(playerData.setrankchallengebonusessnd);
+    this.boughtType = Array.from(playerData.boughttype);
+    this.setModes = Array.from(playerData.setmodes);
+    this.setChallengeBonuses1 = Array.from(playerData.setchallengebonusesfst);
+    this.setChallengeBonuses2 = Array.from(playerData.setchallengebonusessnd);
+    this.setRankChallengeBonuses1 = Array.from(playerData.setrankchallengebonusesfst);
+    this.setRankChallengeBonuses2 = Array.from(playerData.setrankchallengebonusessnd);
 
-    this.rankchallengecleared = Array.from(playerData.rankchallengecleared);
-    this.rankchallengebonuses = Array.from(playerData.rankchallengebonuses);
+    this.rankChallengeCleared = Array.from(playerData.rankchallengecleared);
+    this.rankChallengeBonuses = Array.from(playerData.rankchallengebonuses);
 
     this.trophies = Array.from(playerData.trophies);
-    this.smalltrophies = Array.from(playerData.smalltrophies);
-    this.smalltrophies2nd = Array.from(playerData.smalltrophies2nd);
+    this.smallTrophies1st = Array.from(playerData.smalltrophies);
+    this.smallTrophies2nd = Array.from(playerData.smalltrophies2nd);
 
-    this.levelitems = Array.from(playerData.levelitems);
-    this.levelitembought = playerData.levelitembought;
+    this.levelItems = Array.from(playerData.levelitems);
+    this.levelItemBought = playerData.levelitembought;
 
     this.remember = playerData.remember;
-    this.rememberspent = playerData.rememberspent;
-    this.rememberforgot = playerData.rememberforgot;
+    this.rememberSpent = playerData.rememberspent;
+    this.rememberForgot = playerData.rememberforgot;
 
     this.chips = new Chips(playerData);
     this.statues = new Statues(playerData);
 
-    this.spiritlevela = Array.from(playerData.spiritlevela);
-    this.spiritboughtcurrentcrown = Array.from(playerData.spiritboughtcurrentcrown);
+    this.spiritLevelA = Array.from(playerData.spiritlevela);
+    this.spiritBoughtCurrentCrown = Array.from(playerData.spiritboughtcurrentcrown);
 
-    this.worldpipe = Array.from(playerData.worldpipe);
+    this.worldPipe = Array.from(playerData.worldpipe);
     this.rings = new Rings(playerData.rings);
 
     this.auto = {
@@ -122,8 +122,8 @@ class Player {
     return {
       money: this.money,
       level: this.level,
-      levelresettime: this.levelresettime,
-      maxlevelgained: this.maxlevelgained,
+      levelresettime: this.levelResetTime,
+      maxlevelgained: this.maxLevelGained,
       token: this.token,
       shine: this.shine,
       brightness: this.brightness,
@@ -135,12 +135,12 @@ class Player {
       residue: this.residue,
 
       rank: this.rank,
-      rankresettime: this.rankresettime,
+      rankresettime: this.rankResetTime,
 
       crown: this.crown,
-      crownresettime: this.crownresettime,
+      crownresettime: this.crownResetTime,
 
-      ranktoken: this.ranktoken,
+      ranktoken: this.rankToken,
 
       generators: this.generators,
       generatorsBought: this.generatorsBought,
@@ -151,63 +151,63 @@ class Player {
       acceleratorsBought: this.acceleratorsBought,
       acceleratorsCost: this.acceleratorsCost,
 
-      darkmoney: this.darkmoney,
+      darkmoney: this.darkMoney,
 
-      darkgenerators: this.darkgenerators,
-      darkgeneratorsBought: this.darkgeneratorsBought,
-      darkgeneratorsCost: this.darkgeneratorsCost,
+      darkgenerators: this.darkGenerators,
+      darkgeneratorsBought: this.darkGeneratorsBought,
+      darkgeneratorsCost: this.darkGeneratorsCost,
 
-      darklevel: this.darklevel,
+      darklevel: this.darkLevel,
 
-      lightmoney: this.lightmoney,
+      lightmoney: this.lightMoney,
 
-      lightgenerators: this.lightgenerators,
-      lightgeneratorsBought: this.lightgeneratorsBought,
-      lightgeneratorsCost: this.lightgeneratorsCost,
+      lightgenerators: this.lightGenerators,
+      lightgeneratorsBought: this.lightGeneratorsBought,
+      lightgeneratorsCost: this.lightGeneratorsCost,
 
-      tickspeed: this.tickspeed,
-      accelevel: this.accelevel,
-      accelevelused: this.accelevelused,
-      activatedcampaigns: this.activatedcampaigns,
-      timecrystal: this.timecrystal,
-      saveversion: this.saveversion,
+      tickspeed: this.tickSpeed,
+      accelevel: this.accelLevel,
+      accelevelused: this.accelLevelUsed,
+      activatedcampaigns: this.activatedCampaigns,
+      timecrystal: this.timeCrystal,
+      saveversion: this.saveVersion,
 
-      currenttab: this.currenttab,
+      currenttab: this.currentTab,
       tweeting: this.tweeting,
 
-      onchallenge: this.onchallenge,
+      onchallenge: this.onChallenge,
       challenges: this.challenges,
-      challengecleared: this.challengecleared,
-      challengebonuses: this.challengebonuses,
+      challengecleared: this.challengeCleared,
+      challengebonuses: this.challengeBonuses,
 
-      challengeweight: this.challengeweight,
-      challengeweightvalue: this.challengeweightvalue,
+      challengeweight: this.challengeWeight,
+      challengeweightvalue: this.challengeWeightValue,
 
-      onpchallenge: this.onpchallenge,
-      pchallenges: this.pchallenges,
-      pchallengecleared: this.pchallengecleared,
-      prchallengecleared: this.prchallengecleared,
+      onpchallenge: this.onPerfectChallenge,
+      pchallenges: this.perfectChallenges,
+      pchallengecleared: this.perfectChallengeCleared,
+      prchallengecleared: this.perfectRankChallengeCleared,
 
-      boughttype: this.boughttype,
-      setmodes: this.setmodes,
-      setchallengebonusesfst: this.setchallengebonusesfst,
-      setchallengebonusessnd: this.setchallengebonusessnd,
-      setrankchallengebonusesfst: this.setrankchallengebonusesfst,
-      setrankchallengebonusessnd: this.setrankchallengebonusessnd,
+      boughttype: this.boughtType,
+      setmodes: this.setModes,
+      setchallengebonusesfst: this.setChallengeBonuses1,
+      setchallengebonusessnd: this.setChallengeBonuses2,
+      setrankchallengebonusesfst: this.setRankChallengeBonuses1,
+      setrankchallengebonusessnd: this.setRankChallengeBonuses2,
 
-      rankchallengecleared: this.rankchallengecleared,
-      rankchallengebonuses: this.rankchallengebonuses,
+      rankchallengecleared: this.rankChallengeCleared,
+      rankchallengebonuses: this.rankChallengeBonuses,
 
       trophies: this.trophies,
-      smalltrophies: this.smalltrophies,
-      smalltrophies2nd: this.smalltrophies2nd,
+      smalltrophies: this.smallTrophies1st,
+      smalltrophies2nd: this.smallTrophies2nd,
 
-      levelitems: this.levelitems,
-      levelitembought: this.levelitembought,
+      levelitems: this.levelItems,
+      levelitembought: this.levelItemBought,
 
       remember: this.remember,
-      rememberspent: this.rememberspent,
-      rememberforgot: this.rememberforgot,
+      rememberspent: this.rememberSpent,
+      rememberforgot: this.rememberForgot,
 
       chip: chips.chip,
       setchip: chips.setchip,
@@ -218,12 +218,12 @@ class Player {
       polishedstatue: statues.polishedstatue,
       polishedstatuebr: statues.polishedstatuebr,
 
-      spiritlevela: this.spiritlevela,
-      spiritboughtcurrentcrown: this.spiritboughtcurrentcrown,
+      spiritlevela: this.spiritLevelA,
+      spiritboughtcurrentcrown: this.spiritBoughtCurrentCrown,
 
       setchiptypefst: chips.setchiptypefst,
 
-      worldpipe: this.worldpipe,
+      worldpipe: this.worldPipe,
       rings: this.rings.toSaveObject(this),
     };
   }
@@ -232,7 +232,7 @@ class Player {
   get chip() {
     return this.chips.chip;
   }
-  get setchip() {
+  get setChip() {
     return this.chips.setChip;
   }
 }

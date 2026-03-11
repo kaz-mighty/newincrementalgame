@@ -14,8 +14,8 @@ function Shinedata() {
 
   this.calcshinepersent = function (data) {
 
-    let sp = this.getp(data.player.challengecleared.length)
-    sp += 0.02 * data.player.setchip[30]
+    let sp = this.getp(data.player.challengeCleared.length)
+    sp += 0.02 * data.player.setChip[30]
     sp += 0.01 * data.eachpipedsmalltrophy[6]
     sp += 0.001 * Math.floor(Math.pow(data.player.residue, 1 / 3))
     sp += 0.01 * data.player.statues.polishedStatueSum
@@ -36,14 +36,14 @@ function Shinedata() {
     }
 
 
-    if (data.player.activatedcampaigns.includes("xmas2") && sg >= 1) {
+    if (data.player.activatedCampaigns.includes("xmas2") && sg >= 1) {
       if (Math.random() <= 0.5) {
         sg += 1//クリスマスキャンペーン
       }
     }
 
-    if (data.player.rankchallengebonuses.includes(2)) sg *= 2
-    sg *= data.player.accelevelused + 1
+    if (data.player.rankChallengeBonuses.includes(2)) sg *= 2
+    sg *= data.player.accelLevelUsed + 1
 
     return sg
 
@@ -51,7 +51,7 @@ function Shinedata() {
 
   this.calcmaxshine = function (data) {
     let rememberlevel = Math.floor((data.checkremembers() + 16) / 16)
-    return this.getmaxshine(data.player.challengecleared.length, rememberlevel, data.player.statues.polishedStatueSum)
+    return this.getmaxshine(data.player.challengeCleared.length, rememberlevel, data.player.statues.polishedStatueSum)
   }
 
   this.getmaxshine = function (clear, remlv, polishedStatueSum) {
@@ -73,8 +73,8 @@ function Shinedata() {
 
   this.calcbrightpersent = function (data) {
 
-    let bp = this.getbp(data.player.rankchallengecleared.length)
-    bp += 0.001 * data.player.setchip[49]
+    let bp = this.getbp(data.player.rankChallengeCleared.length)
+    bp += 0.001 * data.player.setChip[49]
     bp += 0.001 * data.eachpipedsmalltrophy[9] * 0.5
     bp += 0.001 * data.player.statues.brightStatueSum * 0.5
 
@@ -87,19 +87,19 @@ function Shinedata() {
       bg += 1
     }
 
-    if (data.player.activatedcampaigns.includes("xmas2") && bg >= 1) {
+    if (data.player.activatedCampaigns.includes("xmas2") && bg >= 1) {
       if (Math.random() <= 0.5) {
         bg += 1//クリスマスキャンペーン
       }
     }
 
-    bg *= data.player.accelevelused + 1
+    bg *= data.player.accelLevelUsed + 1
     return bg
   }
 
   this.calcmaxbright = function (data) {
     let rememberlevel = Math.floor((data.checkremembers() + 16) / 16)
-    return this.getmaxbr(data.player.rankchallengecleared.length, rememberlevel, data.player.statues.brightStatueSum)
+    return this.getmaxbr(data.player.rankChallengeCleared.length, rememberlevel, data.player.statues.brightStatueSum)
   }
 
   this.getbp = function (clear) {
@@ -149,13 +149,13 @@ function Shinedata() {
       fg += 1
     }
 
-    if (data.player.activatedcampaigns.includes("xmas2") && fg >= 1) {
+    if (data.player.activatedCampaigns.includes("xmas2") && fg >= 1) {
       if (Math.random() <= 0.5) {
         fg += 1//クリスマスキャンペーン
       }
     }
 
-    fg *= data.player.accelevelused + 1
+    fg *= data.player.accelLevelUsed + 1
 
     return fg
 

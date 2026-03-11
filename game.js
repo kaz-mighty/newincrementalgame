@@ -865,10 +865,8 @@ const app = Vue.createApp(Vue.defineComponent({
 
       this.calctoken()
 
-      this.activateintimecampaign()
-      if (this.calccampaigncosts() > this.player.accelLevelUsed) {
+      if (this.player.campaign.updateCampaign()) {
         alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
-        this.player.activatedCampaigns = []
       }
 
       this.shinedata.calcshinepersent(this)
@@ -955,8 +953,7 @@ const app = Vue.createApp(Vue.defineComponent({
       } else {
         this.multbyac = new Decimal(1)
       }
-      if (this.player.accelLevelUsed == this.player.accelLevel && this.player.tickSpeed <= 10) this.player.accelLevel = this.player.accelLevel + 1
-
+      this.player.campaign.updateAccelLevel(this.player.tickSpeed);
 
 
 
@@ -1394,7 +1391,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.level = this.player.level.add(exit ? new Decimal(0) : gainlevel)
         this.player.levelResetTime = this.player.levelResetTime.add(gainlevelreset)
         this.player.maxLevelGained = this.player.maxLevelGained.max(exit ? new Decimal(0) : gainlevel)
-        if (this.player.accelLevel > 0) {
+        if (this.player.campaign.accelLevel > 0) {
           for (let i = 0; i < 8; i++) {
             let crystalnum = Math.floor(this.player.accelerators[i].log10()) - 10
             if (crystalnum < 0) crystalnum = 0
@@ -2176,10 +2173,10 @@ const app = Vue.createApp(Vue.defineComponent({
         if (this.player.crownResetTime.greaterThanOrEqualTo(5)) this.player.smallTrophies2nd[1] = true
         if (this.player.crownResetTime.greaterThanOrEqualTo(20)) this.player.smallTrophies2nd[2] = true
         if (this.player.crownResetTime.greaterThanOrEqualTo(100)) this.player.smallTrophies2nd[3] = true
-        if (this.player.accelLevel >= 1) this.player.smallTrophies2nd[4] = true
-        if (this.player.accelLevel >= 3) this.player.smallTrophies2nd[5] = true
-        if (this.player.accelLevel >= 6) this.player.smallTrophies2nd[6] = true
-        if (this.player.accelLevel >= 10) this.player.smallTrophies2nd[7] = true
+        if (this.player.campaign.accelLevel >= 1) this.player.smallTrophies2nd[4] = true
+        if (this.player.campaign.accelLevel >= 3) this.player.smallTrophies2nd[5] = true
+        if (this.player.campaign.accelLevel >= 6) this.player.smallTrophies2nd[6] = true
+        if (this.player.campaign.accelLevel >= 10) this.player.smallTrophies2nd[7] = true
         if (this.player.rank.gt('1e8')) this.player.smallTrophies2nd[8] = true
         if (this.player.rank.gt('1e10')) this.player.smallTrophies2nd[9] = true
         if (this.player.rank.gt('1e12')) this.player.smallTrophies2nd[10] = true
@@ -2253,45 +2250,6 @@ const app = Vue.createApp(Vue.defineComponent({
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0
-      }
-    },
-
-    worktime(val) {
-      if (0 <= val && val <= this.player.accelLevel && val >= this.calccampaigncosts()) {
-        this.player.accelLevelUsed = val
-      }
-    },
-
-    calccampaigncosts() {
-      let sum = 0
-      let date = new Date()
-      for (const campaignsId of this.player.activatedCampaigns) {
-        const campaign = Campaign.campaigns[campaignsId];
-        if (campaign == undefined) continue;
-        if (Campaign.isDuring(campaign, date)) continue;
-        sum += campaign.cost;
-      }
-      return sum;
-    },
-
-    choosecampaigns(name) {
-
-      if (this.player.activatedCampaigns.includes(name)) {
-        this.player.activatedCampaigns.splice(this.player.activatedCampaigns.indexOf(name), 1)
-      } else {
-        if (this.calccampaigncosts() + (Campaign.campaigns[name]?.cost ?? 0) > this.player.accelLevelUsed) return;
-        this.player.activatedCampaigns.push(name)
-      }
-
-    },
-
-    activateintimecampaign() {
-      let date = new Date()
-
-      for (const campaingId in Campaign.campaigns) {
-        if (!Campaign.isDuring(Campaign.campaigns[campaingId], date)) continue;
-        if (this.player.activatedCampaigns.includes(campaingId)) continue;
-        this.player.activatedCampaigns.push(campaingId);
       }
     },
 

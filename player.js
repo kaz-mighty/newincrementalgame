@@ -49,11 +49,10 @@ class Player {
     this.lightGeneratorsCost = playerData.lightgeneratorsCost.map(v => new Decimal(v));
 
     this.tickSpeed = playerData.tickspeed;
-    this.accelLevel = playerData.accelevel;
-    this.accelLevelUsed = playerData.accelevelused;
-    this.activatedCampaigns = Array.from(playerData.activatedcampaigns);
     this.timeCrystal = Array.from(playerData.timecrystal);
     this.saveVersion = playerData.saveversion;
+
+    this.campaign = new Campaign(playerData);
 
     this.currentTab = "basic";
     this.tweeting = Array.from(playerData.tweeting);
@@ -166,8 +165,8 @@ class Player {
       lightgeneratorsCost: this.lightGeneratorsCost,
 
       tickspeed: this.tickSpeed,
-      accelevel: this.accelLevel,
-      accelevelused: this.accelLevelUsed,
+      accelevel: this.campaign.accelLevel,
+      accelevelused: this.campaign.accelLevelUsed,
       activatedcampaigns: this.activatedCampaigns,
       timecrystal: this.timeCrystal,
       saveversion: this.saveVersion,
@@ -234,5 +233,8 @@ class Player {
   }
   get setChip() {
     return this.chips.setChip;
+  }
+  get activatedCampaigns() {
+    return this.campaign.activated;
   }
 }

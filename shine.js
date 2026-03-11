@@ -43,7 +43,7 @@ function Shinedata() {
     }
 
     if (data.player.rankChallengeBonuses.includes(2)) sg *= 2
-    sg *= data.player.accelLevelUsed + 1
+    sg *= data.player.campaign.accelLevelUsed + 1
 
     return sg
 
@@ -93,7 +93,7 @@ function Shinedata() {
       }
     }
 
-    bg *= data.player.accelLevelUsed + 1
+    bg *= data.player.campaign.accelLevelUsed + 1
     return bg
   }
 
@@ -155,7 +155,7 @@ function Shinedata() {
       }
     }
 
-    fg *= data.player.accelLevelUsed + 1
+    fg *= data.player.campaign.accelLevelUsed + 1
 
     return fg
 

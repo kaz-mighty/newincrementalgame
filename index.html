@@ -59,7 +59,7 @@
 				<span id="dark" v-if="(player.money.greaterThanOrEqualTo('1e200')&&player.crownResetTime.gt(0)) || player.lightGenerators[0].greaterThanOrEqualTo(1)">
 					<button type="button" @click="changeTab('light')">天上</button>
 				</span>
-				<span id="time" v-if="player.accelLevel>0">
+				<span id="time" v-if="player.campaign.accelLevel>0">
 					<button type="button" @click="changeTab('time')">時</button>
 				</span>
 				<span id="option">
@@ -188,7 +188,7 @@
 								</span>
 							</div>
 						</div>
-						<div class="accelerator" v-show="player.levelItems[3]==5 && player.accelLevel>0">
+						<div class="accelerator" v-show="player.levelItems[3]==5 && player.campaign.accelLevel>0">
 							時間加速器{{ 8 }}: {{ toFormated(player.accelerators[7],5) }}
 							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[7]) }" @click="buyAccelerator(7)">
 								購入 コスト: {{ player.acceleratorsCost[7].toExponential(1) }}
@@ -268,19 +268,19 @@
 			</div>
 
 			<div v-if="player.currentTab == 'time'">
-				<div>時間回帰力: {{ player.accelLevel }}</div>
-				<div>起動時間回帰力: {{ player.accelLevelUsed }}</div>
-				<div>使用中時間回帰力: {{ calccampaigncosts() }}</div>
+				<div>時間回帰力: {{ player.campaign.accelLevel }}</div>
+				<div>起動時間回帰力: {{ player.campaign.accelLevelUsed }}</div>
+				<div>使用中時間回帰力: {{ player.campaign.calcCampaignCosts() }}</div>
 				<div>
-					<button type="button" @click="worktime(player.accelLevelUsed-1)">起動-</button>
-					<button type="button" @click="worktime(player.accelLevelUsed+1)">起動+</button>
+					<button type="button" @click="player.campaign.addAccelLevelUsed(-1)">起動-</button>
+					<button type="button" @click="player.campaign.addAccelLevelUsed(1)">起動+</button>
 				</div>
 
 				時間回帰力選択
 
 				<div v-for="(campaign, campaignId) in Campaign.campaigns" :key="campaignId">
 
-					<button type="button" class="llbutton" :class="{ 'selected': player.activatedCampaigns.includes(campaignId)}" @click="choosecampaigns(campaignId)">
+					<button type="button" class="llbutton" :class="{ 'selected': player.activatedCampaigns.includes(campaignId)}" @click="player.campaign.chooseCampaigns(campaignId)">
 						{{ campaign.title }}
 					</button>
 					効果: {{ campaign.desc }}

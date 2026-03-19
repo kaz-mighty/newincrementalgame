@@ -270,7 +270,7 @@
 			<div v-if="player.currentTab == 'time'">
 				<div>時間回帰力: {{ player.campaign.accelLevel }}</div>
 				<div>起動時間回帰力: {{ player.campaign.accelLevelUsed }}</div>
-				<div>使用中時間回帰力: {{ player.campaign.calcCampaignCosts() }}</div>
+				<div>使用中時間回帰力: {{ player.campaign.campaignCosts }}</div>
 				<div>
 					<button type="button" @click="player.campaign.addAccelLevelUsed(-1)">起動-</button>
 					<button type="button" @click="player.campaign.addAccelLevelUsed(1)">起動+</button>

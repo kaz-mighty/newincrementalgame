@@ -23,7 +23,7 @@ type CampaignItem = {
   desc: string;
   cost: number;
   commonBonus: number;
-  predicate?: (Date) => boolean;
+  predicate?: (month: number, date: number) => boolean;
 }
 
 /* SaveData types */

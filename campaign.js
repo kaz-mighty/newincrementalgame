@@ -30,14 +30,14 @@ class Campaign {
       desc: "発生器の倍率が+4倍",
       cost: 1,
       commonBonus: 1,
-      predicate: (date) => date.getMonth() == 6 && date.getDate() <= 7,
+      predicate: (month, date) => month == 6 && date <= 7,
     },
     "aniv": {
       title: "周年キャンペーン",
       desc: "発生器の倍率が+8倍",
       cost: 2,
       commonBonus: 2,
-      predicate: (date) => (date.getMonth() == 6 && date.getDate() >= 30) || date.getMonth() == 7
+      predicate: (month, date) => (month == 6 && date >= 30) || month == 7
     },
     "sw": {
       title: "シルバーウィークキャンペーン",
@@ -68,7 +68,7 @@ class Campaign {
       desc: "天上ポイントが獲得鋳片に影響",
       cost: 4,
       commonBonus: 0,
-      predicate: (date) => date.getMonth() == 6 && date.getDate() <= 7,
+      predicate: (month, date) => month == 6 && date <= 7,
     },
     "xmas2": {
       title: "クリスマスキャンペーン2",
@@ -78,19 +78,17 @@ class Campaign {
     },
   };
 
-  /**
-   * @param {CampaignItem} campaign
-   * @param {Date} date 
-   */
-  static isDuring(campaign, date) {
-    return campaign.predicate?.(date) ?? false;
-  }
-
   /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
     this.accelLevel = playerData.accelevel;
     this.accelLevelUsed = playerData.accelevelused;
     this.activated = Vue.reactive(Array.from(playerData.activatedcampaigns));
+
+    const date = new Date();
+    /** @type {Vue.MaybeRef<number>} */
+    this._nowMonth = Vue.ref(date.getMonth());
+    /** @type {Vue.MaybeRef<number>} */
+    this._nowDate = Vue.ref(date.getDate());
 
     /** @type {Vue.MaybeRef<number>} */
     this._sumCommonBonus = Vue.computed(() => {
@@ -100,24 +98,47 @@ class Campaign {
       }
       return sum;
     });
+    /** @type {Vue.MaybeRef<number>} */
+    this._campaignCosts = Vue.computed(() => {
+      let sum = 0
+      for (const campaignsId of this.activated) {
+        const campaign = Campaign.campaigns[campaignsId];
+        if (campaign == undefined) continue;
+        if (this.isDuring(campaign)) continue;
+        sum += campaign.cost;
+      }
+      return sum;
+    });
   }
 
   /* インスタンスやその先祖がリアクティブでない場合でもアクセスできるように対応 */
-  get sumCommonBonus() {
-    return Vue.unref(this._sumCommonBonus);
+  get nowMonth() {return Vue.unref(this._nowMonth);}
+  set nowMonth(x) {
+    if (Vue.isRef(this._nowMonth)) {this._nowMonth.value = x;}
+    else {this._nowMonth = x;}
   }
+  get nowDate() {return Vue.unref(this._nowDate);}
+  set nowDate(x) {
+    if (Vue.isRef(this._nowDate)) {this._nowDate.value = x;}
+    else {this._nowDate = x;}
+  }
+  get sumCommonBonus() {return Vue.unref(this._sumCommonBonus);}
+  get campaignCosts() {return Vue.unref(this._campaignCosts);}
 
   updateCampaign() {
     // todo: 1tickの間、期間中キャンペーンが空になることがあるが、現在は元の仕様の維持を優先
-    let date = new Date()
+    // 同じ値を再代入した場合でもリアクティビティがトリガーされるので、それを回避する
+    const date = new Date()
+    if (this.nowMonth != date.getMonth()) {this.nowMonth = date.getMonth();}
+    if (this.nowDate != date.getDate()) {this.nowDate = date.getDate();}
 
     for (const campaignId in Campaign.campaigns) {
-      if (!Campaign.isDuring(Campaign.campaigns[campaignId], date)) continue;
+      if (!this.isDuring(Campaign.campaigns[campaignId])) continue;
       if (this.activated.includes(campaignId)) continue;
       this.activated.push(campaignId);
     }
 
-    if (this.calcCampaignCosts() > this.accelLevelUsed) {
+    if (this.campaignCosts > this.accelLevelUsed) {
       this.clearActivated();
       return true;
     }
@@ -134,25 +155,20 @@ class Campaign {
   /** @param {number} value */
   addAccelLevelUsed(value) {
     const newLevel = this.accelLevelUsed + value;
-    if (this.calcCampaignCosts() <= newLevel && newLevel <= this.accelLevel) {
+    if (this.campaignCosts <= newLevel && newLevel <= this.accelLevel) {
       this.accelLevelUsed = newLevel;
     }
   }
 
-  clearActivated() {
-    this.activated.splice(0);
+  /**
+   * @param {CampaignItem} campaign
+   */
+  isDuring(campaign) {
+    return campaign.predicate?.(this.nowMonth, this.nowDate) ?? false;
   }
 
-  calcCampaignCosts() {
-    let sum = 0
-    let date = new Date()
-    for (const campaignsId of this.activated) {
-      const campaign = Campaign.campaigns[campaignsId];
-      if (campaign == undefined) continue;
-      if (Campaign.isDuring(campaign, date)) continue;
-      sum += campaign.cost;
-    }
-    return sum;
+  clearActivated() {
+    this.activated.splice(0);
   }
 
   /** @param {string} campaignId */
@@ -160,7 +176,7 @@ class Campaign {
     if (this.activated.includes(campaignId)) {
       this.activated.splice(this.activated.indexOf(campaignId), 1)
     } else {
-      if (this.calcCampaignCosts() + (Campaign.campaigns[campaignId]?.cost ?? 0) > this.accelLevelUsed) return;
+      if (this.campaignCosts + (Campaign.campaigns[campaignId]?.cost ?? 0) > this.accelLevelUsed) return;
       this.activated.push(campaignId)
     }
   }

@@ -1,3 +1,12 @@
+/* 型情報インポート 
+ * 名前空間インポートと同名の変数定義があるとき、ファイル名の昇順でインポートが先だと何故か衝突するため、
+ * d.tsファイルより後ろのファイルに書く。(typescript 5.9.3で確認)
+ * 非モジュールjsファイルで@importすると何故かグローバルにインポートされるため、記載はこのファイルのみでよい。
+ * (むしろ2つ書くと衝突する)
+ */
+/** @import * as Vue from "vue" */
+/** @import Decimal from "break_infinity.js" */
+
 class Player {
   /**
    * @param {PlayerSaveData} playerData

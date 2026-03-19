@@ -36,3 +36,4 @@ IDEを最大限活用するためにライブラリの型定義を用意する�
 - IDEが補完・型サポートできるように対応したときの資料
   - [CDNから読み込んだ(Moduleではない従来型の)JSライブラリに対して、後付けで型を適用する方法](https://qiita.com/murasuke/items/a5c29940fc39ad3c7117)
   - [JS プロジェクトのまま TS の型チェックの恩恵を受ける方法](https://qiita.com/tettekete/items/9335e9d9ea00311626aa)
+  - [TypeScript 5.5 - @import Tag](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#the-jsdoc-import-tag)

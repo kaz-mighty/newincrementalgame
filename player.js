@@ -61,7 +61,7 @@ class Player {
     this.timeCrystal = Array.from(playerData.timecrystal);
     this.saveVersion = playerData.saveversion;
 
-    this.campaign = new Campaign(playerData);
+    this.campaign = Campaign.new(playerData);
 
     this.currentTab = "basic";
     this.tweeting = Array.from(playerData.tweeting);
@@ -101,7 +101,7 @@ class Player {
     this.rememberForgot = playerData.rememberforgot;
 
     this.chips = new Chips(playerData);
-    this.statues = new Statues(playerData);
+    this.statues = Statues.new(playerData);
 
     this.spiritLevelA = Array.from(playerData.spiritlevela);
     this.spiritBoughtCurrentCrown = Array.from(playerData.spiritboughtcurrentcrown);

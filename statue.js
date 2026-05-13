@@ -1,21 +1,25 @@
 class Statues {
-  /**
-   * @param {PlayerSaveData} playerData 
-   */
+  /* リアクティビティーを利用する為に、Vue.markRawを使用する。
+     インスタンス化する際は必ずnewメソッドを使用し、
+     全プロパティは手動でリアクティブ化しなければならない。
+  */
+
+  /** @param {PlayerSaveData} playerData */
+  static new(playerData) {
+    return Vue.markRaw(new Statues(playerData));
+  }
+
+  /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
     this.statue = Vue.reactive(Array.from(playerData.statue));
     this.polishedStatue = Vue.reactive(Array.from(playerData.polishedstatue));
     this.brightStatue = Vue.reactive(Array.from(playerData.polishedstatuebr));
 
-    /** @type {Vue.MaybeRef<number>} */
     this._statueSum = Vue.computed(() => this.statue.reduce((a, b) => a + b));
-    /** @type {Vue.MaybeRef<number>} */
     this._polishedStatueSum = Vue.computed(() => this.polishedStatue.reduce((a, b) => a + b));
-    /** @type {Vue.MaybeRef<number>} */
     this._brightStatueSum = Vue.computed(
       () => this.brightStatue.reduce((a, b) => a + Math.floor(b / 10), 0)
     );
-    /** @type {Vue.MaybeRef<Decimal>} */
     this._generatorMulti = Vue.computed(
       () => this.statue.reduce((a, b) => a.mul(1 + b * 0.01), new Decimal(1))
     );
@@ -29,19 +33,11 @@ class Statues {
     };
   }
 
-  /* インスタンスやその先祖がリアクティブでない場合でもアクセスできるように対応 */
-  get statueSum() {
-    return Vue.unref(this._statueSum);
-  }
-  get polishedStatueSum() {
-    return Vue.unref(this._polishedStatueSum);
-  }
-  get brightStatueSum() {
-    return Vue.unref(this._brightStatueSum);
-  }
-  get generatorMulti() {
-    return Vue.unref(this._generatorMulti);
-  }
+  /* 他のクラスとの一貫性のため、外部にはrefを使用していないかのように振る舞う。 */
+  get statueSum() {return this._statueSum.value;}
+  get polishedStatueSum() {return this._polishedStatueSum.value;}
+  get brightStatueSum() {return this._brightStatueSum.value;}
+  get generatorMulti() {return this._generatorMulti.value;}
 
   calcStatueCost(i) {
     return (this.statue[i] + 1) * 10000

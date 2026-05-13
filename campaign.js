@@ -1,4 +1,9 @@
 class Campaign {
+  /* リアクティビティーを利用する為に、Vue.markRawを使用する。
+     インスタンス化する際は必ずnewメソッドを使用し、
+     全プロパティは手動でリアクティブ化しなければならない。
+  */
+
   /** @type {Object<string, CampaignItem>} */
   static campaigns = {
     "newyear": {
@@ -79,18 +84,20 @@ class Campaign {
   };
 
   /** @param {PlayerSaveData} playerData */
+  static new(playerData) {
+    return Vue.markRaw(new Campaign(playerData));
+  }
+
+  /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
-    this.accelLevel = playerData.accelevel;
-    this.accelLevelUsed = playerData.accelevelused;
+    this._accelLevel = Vue.ref(playerData.accelevel);
+    this._accelLevelUsed = Vue.ref(playerData.accelevelused);
     this.activated = Vue.reactive(Array.from(playerData.activatedcampaigns));
 
     const date = new Date();
-    /** @type {Vue.MaybeRef<number>} */
     this._nowMonth = Vue.ref(date.getMonth());
-    /** @type {Vue.MaybeRef<number>} */
     this._nowDate = Vue.ref(date.getDate());
 
-    /** @type {Vue.MaybeRef<number>} */
     this._sumCommonBonus = Vue.computed(() => {
       let sum = 0;
       for (const campaignId of this.activated) {
@@ -98,7 +105,6 @@ class Campaign {
       }
       return sum;
     });
-    /** @type {Vue.MaybeRef<number>} */
     this._campaignCosts = Vue.computed(() => {
       let sum = 0
       for (const campaignsId of this.activated) {
@@ -111,26 +117,20 @@ class Campaign {
     });
   }
 
-  /* インスタンスやその先祖がリアクティブでない場合でもアクセスできるように対応 */
-  get nowMonth() {return Vue.unref(this._nowMonth);}
-  set nowMonth(x) {
-    if (Vue.isRef(this._nowMonth)) {this._nowMonth.value = x;}
-    else {this._nowMonth = x;}
-  }
-  get nowDate() {return Vue.unref(this._nowDate);}
-  set nowDate(x) {
-    if (Vue.isRef(this._nowDate)) {this._nowDate.value = x;}
-    else {this._nowDate = x;}
-  }
-  get sumCommonBonus() {return Vue.unref(this._sumCommonBonus);}
-  get campaignCosts() {return Vue.unref(this._campaignCosts);}
+  /* 他のクラスとの一貫性のため、外部にはrefを使用していないかのように振る舞う。 */
+  get accelLevel() {return this._accelLevel.value;}
+  set accelLevel(x) {this._accelLevel.value = x;}
+  get accelLevelUsed() {return this._accelLevelUsed.value;}
+  set accelLevelUsed(x) {this._accelLevelUsed.value = x;}
+  get sumCommonBonus() {return this._sumCommonBonus.value;}
+  get campaignCosts() {return this._campaignCosts.value;}
 
   updateCampaign() {
     // todo: 1tickの間、期間中キャンペーンが空になることがあるが、現在は元の仕様の維持を優先
     // 同じ値を再代入した場合でもリアクティビティがトリガーされるので、それを回避する
     const date = new Date()
-    if (this.nowMonth != date.getMonth()) {this.nowMonth = date.getMonth();}
-    if (this.nowDate != date.getDate()) {this.nowDate = date.getDate();}
+    if (this._nowMonth.value != date.getMonth()) {this._nowMonth.value = date.getMonth();}
+    if (this._nowDate.value != date.getDate()) {this._nowDate.value = date.getDate();}
 
     for (const campaignId in Campaign.campaigns) {
       if (!this.isDuring(Campaign.campaigns[campaignId])) continue;
@@ -164,7 +164,7 @@ class Campaign {
    * @param {CampaignItem} campaign
    */
   isDuring(campaign) {
-    return campaign.predicate?.(this.nowMonth, this.nowDate) ?? false;
+    return campaign.predicate?.(this._nowMonth.value, this._nowDate.value) ?? false;
   }
 
   clearActivated() {

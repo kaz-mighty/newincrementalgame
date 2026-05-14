@@ -95,7 +95,7 @@
 				<span id="trophy">
 					<button type="button" @click="changeTab('trophy')">実績</button>
 				</span>
-				<span id="ring" v-if="player.residue >= 100">
+				<span id="ring" v-if="player.shines.residue >= 100">
 					<button type="button" @click="changeTab('ring')">輪</button>
 				</span>
 			</div>
@@ -606,28 +606,28 @@
 						輝き消費:1000000
 					</button>
 				</div>
-				<div>輝き入手率: {{ (shinedata.calcshinepersent(whole) * 100).toFixed(1) }}%</div>
-				<div>最大輝き保有数: {{ shinedata.calcmaxshine(whole) }}</div>
+				<div>輝き入手率: {{ (player.shines.calcShinePercent(player, eachpipedsmalltrophy) * 100).toFixed(1) }}%</div>
+				<div>最大輝き保有数: {{ player.shines.calcMaxShine(player, checkremembers()) }}</div>
 				<br>
 				<div>
 					型
 					<button type="button" class="buytypebutton" :class="{ 'selected': player.boughtType[0] }" @click="buytype(0)">
-						モード型購入:コスト50000
+						モード型購入:コスト{{ Shine.shineShopCost[0] }}
 					</button>
 					<button type="button" class="buytypebutton" :class="{ 'selected': player.boughtType[1] }" @click="buytype(1)">
-						効力型1購入:コスト100000
+						効力型1購入:コスト{{ Shine.shineShopCost[1] }}
 					</button>
 					<button type="button" class="buytypebutton" :class="{ 'selected': player.boughtType[2] }" @click="buytype(2)">
-						効力型2購入:コスト100000
+						効力型2購入:コスト{{ Shine.shineShopCost[2] }}
 					</button>
 					<button type="button" class="buytypebutton" :class="{ 'selected': player.boughtType[3] }" @click="buytype(3)" v-if="player.rankChallengeCleared.length>=1">
-						上位効力型1購入:コスト300000
+						上位効力型1購入:コスト{{ Shine.shineShopCost[3] }}
 					</button>
 					<button type="button" class="buytypebutton" :class="{ 'selected': player.boughtType[4] }" @click="buytype(4)" v-if="player.rankChallengeCleared.length>=1">
-						上位効力型2購入:コスト300000
+						上位効力型2購入:コスト{{ Shine.shineShopCost[4] }}
 					</button>
 					<button type="button" class="buytypebutton" :class="{ 'selected': player.boughtType[5] }" @click="buytype(5)" v-if="player.crownResetTime.gt(0)">
-						鋳片型購入:コスト5000000
+						鋳片型購入:コスト{{ Shine.shineShopCost[5] }}
 					</button>
 				</div>
 				<br>
@@ -645,8 +645,8 @@
 					<button type="button" v-if="player.rankChallengeCleared.length>=255" class="spendbrightnessbutton" @click="spendbrightness(1000)">
 						煌き消費:1000
 					</button>
-					<div>煌き入手率: {{ (shinedata.calcbrightpersent(whole) * 100).toFixed(3) }}%</div>
-					<div>最大煌き保有数: {{ shinedata.calcmaxbright(whole)}}</div>
+					<div>煌き入手率: {{ (player.shines.calcBrightPercent(player, eachpipedsmalltrophy) * 100).toFixed(3) }}%</div>
+					<div>最大煌き保有数: {{ player.shines.calcMaxBright(player, checkremembers())}}</div>
 				</div>
 				<div v-if="pchallengestage>=1">
 					瞬き所持数:{{ player.flicker }}
@@ -654,11 +654,11 @@
 						瞬き消費:1
 					</button>
 
-					<div>瞬き入手率: {{ (flickerpersent * 100).toFixed(5) }}%</div>
-					<div>最大瞬き保有数: {{ shinedata.getmaxfl(pchallengestage) }}</div>
+					<div>瞬き入手率: {{ (player.shines.getFlickerPercent(pchallengestage) * 100).toFixed(5) }}%</div>
+					<div>最大瞬き保有数: {{ player.shines.getMaxFlicker(pchallengestage) }}</div>
 				</div>
 				<div v-if="pchallengestage>=10">
-					残滓: {{ player.residue }}
+					残滓: {{ player.shines.residue }}
 				</div>
 			</div>
 			<div v-if="player.currentTab == 'world'">

@@ -211,7 +211,6 @@ const app = Vue.createApp(Vue.defineComponent({
       timedata: new Timedata(),
       rankdata: new Rankdata(),
       levelshopdata: new Levelshopdata(),
-      shinedata: new Shinedata(),
       trophydata: new Trophydata(),
       rememberdata: new Rememberdata(),
       spiritdata: new Spiritdata(),
@@ -235,10 +234,6 @@ const app = Vue.createApp(Vue.defineComponent({
       autochallengetimerid: 0,
 
       multbyac: new Decimal(1),
-
-      shinepersent: 0,
-      brightpersent: 0,
-      flickerpersent: 0,
 
       memorysum: 0,
       remembersum: 0,
@@ -755,7 +750,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.updategenerators(new Decimal(val))
       this.updateaccelerators(new Decimal(val))
       if (this.player.trophies[9]) {
-        this.player.residue += Math.floor(num * (1 + this.pchallengestage) / 1000000)
+        this.player.shines.residue += Math.floor(num * (1 + this.pchallengestage) / 1000000)
       }
     },
     spendbrightness(num) {
@@ -779,9 +774,9 @@ const app = Vue.createApp(Vue.defineComponent({
       this.updatelightgenerators(new Decimal(vald))
     },
     buytype(num) {
-      if (this.player.shine < this.shinedata.shineshopcost[num] || this.player.boughtType[num]) return;
+      if (this.player.shine < Shine.shineShopCost[num] || this.player.boughtType[num]) return;
       if (confirm("本当に型を購入しますか？")) {
-        this.player.shine -= this.shinedata.shineshopcost[num]
+        this.player.shine -= Shine.shineShopCost[num]
         this.player.boughtType[num] = true
       }
     },
@@ -860,34 +855,10 @@ const app = Vue.createApp(Vue.defineComponent({
         alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
       }
 
-      this.shinedata.calcshinepersent(this)
-
-      let rememberlevel = Math.floor((this.checkremembers() + 16) / 16)
-
-      let shineget = this.shinedata.calcshineget(this)
-      let maxshine = this.shinedata.calcmaxshine(this)
-
-      if (this.player.shine < maxshine) {
-        this.player.shine = Math.min(this.player.shine + shineget, maxshine)
-      }
-
-      this.shinedata.calcbrightpersent(this)
-
-      let brightget = this.shinedata.calcbrightget(this)
-      let maxbright = this.shinedata.calcmaxbright(this)
-
-      if (this.player.brightness < maxbright) {
-        this.player.brightness = Math.min(this.player.brightness + brightget, maxbright);
-      }
-
-      this.flickerpersent = this.shinedata.getfp(this.pchallengestage)
-
-      let flickerget = this.shinedata.calcflickerget(this)
-
-      let maxflicker = this.shinedata.getmaxfl(this.pchallengestage)
-      if (this.player.flicker < maxflicker) {
-        this.player.flicker = Math.min(this.player.flicker + flickerget, maxflicker);
-      }
+      const remember = this.checkremembers();
+      this.player.shines.updateShine(this.player, this.eachpipedsmalltrophy, remember);
+      this.player.shines.updateBright(this.player, this.eachpipedsmalltrophy, remember);
+      this.player.shines.updateFlicker(this.player, this.pchallengestage);
 
       let autorankshine = Math.max(0, 1000 - this.checkremembers() * 10)
 
@@ -2363,4 +2334,5 @@ const app = Vue.createApp(Vue.defineComponent({
 app.config.globalProperties.Rings = Rings;
 app.config.globalProperties.Chips = Chips;
 app.config.globalProperties.Campaign = Campaign;
+app.config.globalProperties.Shine = Shine;
 app.mount('#app');

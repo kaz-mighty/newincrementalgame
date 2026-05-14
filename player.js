@@ -17,14 +17,10 @@ class Player {
     this.levelResetTime = new Decimal(playerData.levelresettime);
     this.maxLevelGained = new Decimal(playerData.maxlevelgained);
     this.token = playerData.token;
-    this.shine = playerData.shine;
-    this.brightness = playerData.brightness;
-    this.flicker = playerData.flicker;
 
+    this.shines = new Shine(playerData);
     this.shineloader = Array.from(playerData.shineloader);
     this.brightloader = Array.from(playerData.brightloader);
-
-    this.residue = playerData.residue;
 
     this.rank = new Decimal(playerData.rank);
     this.rankResetTime = new Decimal(playerData.rankresettime);
@@ -140,7 +136,7 @@ class Player {
       shineloader: this.shineloader,
       brightloader: this.brightloader,
 
-      residue: this.residue,
+      residue: this.shines.residue,
 
       rank: this.rank,
       rankresettime: this.rankResetTime,
@@ -237,6 +233,13 @@ class Player {
   }
 
   /* リファクタ中の一時的措置 */
+  get shine() {return this.shines.shine;}
+  set shine(x) {this.shines.shine = x;}
+  get brightness() {return this.shines.brightness;}
+  set brightness(x) {this.shines.brightness = x;}
+  get flicker() {return this.shines.flicker;}
+  set flicker(x) {this.shines.flicker = x;}
+
   get chip() {
     return this.chips.chip;
   }

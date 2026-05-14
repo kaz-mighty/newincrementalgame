@@ -1,6 +1,14 @@
-function Shinedata() {
+class Shine {
+  static shineShopCost = [
+    50000,
+    100000,
+    100000,
+    300000,
+    300000,
+    5000000,
+  ];
 
-  this.getp = function (clear) {
+  static getBaseShinePercent(clear) {
     if (clear >= 32 * 8 - 1) return 0.20
     if (clear >= 32 * 7) return 0.16
     if (clear >= 32 * 6) return 0.13
@@ -9,100 +17,9 @@ function Shinedata() {
     if (clear >= 32 * 3) return 0.04
     if (clear >= 32 * 2) return 0.02
     return 0
-
   }
 
-  this.calcshinepersent = function (data) {
-
-    let sp = this.getp(data.player.challengeCleared.length)
-    sp += 0.02 * data.player.setChip[30]
-    sp += 0.01 * data.eachpipedsmalltrophy[6]
-    sp += 0.001 * Math.floor(Math.pow(data.player.residue, 1 / 3))
-    sp += 0.01 * data.player.statues.polishedStatueSum
-
-    return data.shinepersent = sp
-  }
-
-  this.calcshineget = function (data) {
-
-    let sg = 0
-    let spint = Math.floor(data.shinepersent)
-    let spdec = data.shinepersent - spint
-
-    sg += spint
-
-    if (Math.random() < spdec) {
-      sg += 1
-    }
-
-
-    if (data.player.activatedCampaigns.includes("xmas2") && sg >= 1) {
-      if (Math.random() <= 0.5) {
-        sg += 1//クリスマスキャンペーン
-      }
-    }
-
-    if (data.player.rankChallengeBonuses.includes(2)) sg *= 2
-    sg *= data.player.campaign.accelLevelUsed + 1
-
-    return sg
-
-  }
-
-  this.calcmaxshine = function (data) {
-    let rememberlevel = Math.floor((data.checkremembers() + 16) / 16)
-    return this.getmaxshine(data.player.challengeCleared.length, rememberlevel, data.player.statues.polishedStatueSum)
-  }
-
-  this.getmaxshine = function (clear, remlv, polishedStatueSum) {
-    let value = 0;
-    if (clear >= 32 * 8 - 1) value = 10000000
-    else if (clear >= 32 * 7) value = 3000000
-    else if (clear >= 32 * 6) value = 1000000
-    else if (clear >= 32 * 5) value = 700000
-    else if (clear >= 32 * 4) value = 400000
-    else if (clear >= 32 * 3) value = 200000
-    else if (clear >= 32 * 2) value = 100000
-    else value = 0
-    value *= remlv
-
-    value += (value / 10) * polishedStatueSum
-
-    return Math.floor(value)
-  }
-
-  this.calcbrightpersent = function (data) {
-
-    let bp = this.getbp(data.player.rankChallengeCleared.length)
-    bp += 0.001 * data.player.setChip[49]
-    bp += 0.001 * data.eachpipedsmalltrophy[9] * 0.5
-    bp += 0.001 * data.player.statues.brightStatueSum * 0.5
-
-    return data.brightpersent = bp
-  }
-
-  this.calcbrightget = function (data) {
-    let bg = 0
-    if (Math.random() < data.brightpersent) {
-      bg += 1
-    }
-
-    if (data.player.activatedCampaigns.includes("xmas2") && bg >= 1) {
-      if (Math.random() <= 0.5) {
-        bg += 1//クリスマスキャンペーン
-      }
-    }
-
-    bg *= data.player.campaign.accelLevelUsed + 1
-    return bg
-  }
-
-  this.calcmaxbright = function (data) {
-    let rememberlevel = Math.floor((data.checkremembers() + 16) / 16)
-    return this.getmaxbr(data.player.rankChallengeCleared.length, rememberlevel, data.player.statues.brightStatueSum)
-  }
-
-  this.getbp = function (clear) {
+  static getBaseBrightPercent(clear) {
     if (clear >= 32 * 8 - 1) return 0.010
     if (clear >= 32 * 7) return 0.008
     if (clear >= 32 * 6) return 0.006
@@ -114,69 +31,171 @@ function Shinedata() {
     return 0
   }
 
-  this.getfp = function (stage) {
-    return 1 / 1000000 * stage
+  /** @param {PlayerSaveData} playerData */
+  constructor(playerData) {
+    this.shine = playerData.shine;
+    this.brightness = playerData.brightness;
+    this.flicker = playerData.flicker;
+
+    this.residue = playerData.residue;
   }
 
-  this.getmaxbr = function (clear, memlv, brightStatueSum) {
+  /**
+   * @param {Player} player 
+   * @param {number[]} eachPipedSmallTrophy 
+   */
+  calcShinePercent(player, eachPipedSmallTrophy) {
+    let sp = Shine.getBaseShinePercent(player.challengeCleared.length)
+    sp += 0.02 * player.setChip[30]
+    sp += 0.01 * eachPipedSmallTrophy[6]
+    sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3))
+    sp += 0.01 * player.statues.polishedStatueSum
+
+    return sp
+  }
+  
+  /**
+   * @param {Player} player 
+   * @param {number} remember 
+   */
+  calcMaxShine(player, remember) {
+    const clear = player.challengeCleared.length;
+    const rememberLevel = Math.floor((remember + 16) / 16);
+
     let value = 0;
-    if (clear >= 32 * 8 - 1) value = 10000
-    else if (clear >= 32 * 7) value = 6000
-    else if (clear >= 32 * 6) value = 3500
-    else if (clear >= 32 * 5) value = 2000
-    else if (clear >= 32 * 4) value = 1200
-    else if (clear >= 32 * 3) value = 700
-    else if (clear >= 32 * 2) value = 300
-    else if (clear >= 32) value = 100
-    else value = 0
-    value *= memlv
+    if (clear >= 32 * 8 - 1) value = 10000000;
+    else if (clear >= 32 * 7) value = 3000000;
+    else if (clear >= 32 * 6) value = 1000000;
+    else if (clear >= 32 * 5) value = 700000;
+    else if (clear >= 32 * 4) value = 400000;
+    else if (clear >= 32 * 3) value = 200000;
+    else if (clear >= 32 * 2) value = 100000;
+    else value = 0;
 
-    value += (value / 10) * brightStatueSum
-
-    return Math.floor(value)
+    value *= rememberLevel;
+    value += (value / 10) * player.statues.polishedStatueSum;
+    return Math.floor(value);
   }
 
-  this.getmaxfl = function (stage) {
-    return stage * stage * 2
+  /**
+   * @param {Player} player 
+   * @param {number[]} eachPipedSmallTrophy 
+   */
+  calcBrightPercent(player, eachPipedSmallTrophy) {
+    let bp = Shine.getBaseBrightPercent(player.rankChallengeCleared.length)
+    bp += 0.001 * player.setChip[49]
+    bp += 0.001 * eachPipedSmallTrophy[9] * 0.5
+    bp += 0.001 * player.statues.brightStatueSum * 0.5
+
+    return bp
+  }
+
+  /**
+   * @param {Player} player 
+   * @param {number} remember 
+   */
+  calcMaxBright(player, remember) {
+    const clear = player.rankChallengeCleared.length;
+    const rememberLevel = Math.floor((remember + 16) / 16);
+
+    let value = 0;
+    if (clear >= 32 * 8 - 1) value = 10000;
+    else if (clear >= 32 * 7) value = 6000;
+    else if (clear >= 32 * 6) value = 3500;
+    else if (clear >= 32 * 5) value = 2000;
+    else if (clear >= 32 * 4) value = 1200;
+    else if (clear >= 32 * 3) value = 700;
+    else if (clear >= 32 * 2) value = 300;
+    else if (clear >= 32) value = 100;
+    else value = 0;
+
+    value *= rememberLevel;
+    value += (value / 10) * player.statues.brightStatueSum;
+    return Math.floor(value);
+  }
+
+  getFlickerPercent(stage) {
+    return 1 / 1000000 * stage;
+  }
+
+  getMaxFlicker(stage) {
+    return stage * stage * 2;
     //max:2097152
   }
 
-  this.calcflickerget = function (data) {
+  /**
+   * @param {Player} player 
+   * @param {number[]} eachPipedSmallTrophy
+   * @param {number} remember 
+   */
+  updateShine(player, eachPipedSmallTrophy, remember) {
+    const maxShine = this.calcMaxShine(player, remember);
+    if (this.shine >= maxShine) return;
 
-    let fg = 0
-
-    if (Math.random() < data.flickerpersent) {
-      fg += 1
+    const shinePercent = this.calcShinePercent(player, eachPipedSmallTrophy);
+    let shineGain = Math.floor(shinePercent);
+    if (Math.random() < shinePercent - shineGain) {
+      shineGain += 1;
     }
 
-    if (data.player.activatedCampaigns.includes("xmas2") && fg >= 1) {
+    //クリスマスキャンペーン
+    if (player.activatedCampaigns.includes("xmas2") && shineGain >= 1) {
       if (Math.random() <= 0.5) {
-        fg += 1//クリスマスキャンペーン
+        shineGain += 1;
       }
     }
 
-    fg *= data.player.campaign.accelLevelUsed + 1
-
-    return fg
-
+    if (player.rankChallengeBonuses.includes(2)) shineGain *= 2;
+    shineGain *= player.campaign.accelLevelUsed + 1;
+    this.shine = Math.min(this.shine + shineGain, maxShine);
   }
 
-  this.shineshopcost = [
-    50000,
-    100000,
-    100000,
-    300000,
-    300000,
-    5000000,
-  ]
+  /**
+   * @param {Player} player 
+   * @param {number[]} eachPipedSmallTrophy
+   * @param {number} remember 
+   */
+  updateBright(player, eachPipedSmallTrophy, remember) {
+    const maxBright = this.calcMaxBright(player, remember);
+    if (this.brightness >= maxBright) return;
 
-  this.rankrewardtext = [
-    "モード型登録",
-    "効力型登録1",
-    "効力型登録2",
-    "上位効力型登録1",
-    "上位効力型登録2",
-    "鋳片型効力",
-  ]
+    let brightGain = 0;
+    if (Math.random() < this.calcBrightPercent(player, eachPipedSmallTrophy)) {
+      brightGain += 1;
+    }
 
+    //クリスマスキャンペーン
+    if (player.activatedCampaigns.includes("xmas2") && brightGain >= 1) {
+      if (Math.random() <= 0.5) {
+        brightGain += 1;
+      }
+    }
+
+    brightGain *= player.campaign.accelLevelUsed + 1;
+    this.brightness = Math.min(this.brightness + brightGain, maxBright);
+  }
+
+  /**
+   * @param {Player} player 
+   * @param {number} pChallengeStage
+   */
+  updateFlicker(player, pChallengeStage) {
+    const maxFlicker = this.getMaxFlicker(pChallengeStage);
+    if (this.flicker >= maxFlicker) return;
+
+    let flickerGain = 0;
+    if (Math.random() < this.getFlickerPercent(pChallengeStage)) {
+      flickerGain += 1;
+    }
+
+    //クリスマスキャンペーン
+    if (player.activatedCampaigns.includes("xmas2") && flickerGain >= 1) {
+      if (Math.random() <= 0.5) {
+        flickerGain += 1;
+      }
+    }
+
+    flickerGain *= player.campaign.accelLevelUsed + 1;
+    this.flicker = Math.min(this.flicker + flickerGain, maxFlicker);
+  }
 }

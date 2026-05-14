@@ -61,10 +61,6 @@ class Player {
 
     this.boughtType = Array.from(playerData.boughttype);
     this.setModes = Array.from(playerData.setmodes);
-    this.setChallengeBonuses1 = Array.from(playerData.setchallengebonusesfst);
-    this.setChallengeBonuses2 = Array.from(playerData.setchallengebonusessnd);
-    this.setRankChallengeBonuses1 = Array.from(playerData.setrankchallengebonusesfst);
-    this.setRankChallengeBonuses2 = Array.from(playerData.setrankchallengebonusessnd);
 
     this.trophies = Array.from(playerData.trophies);
     this.smallTrophies1st = Array.from(playerData.smalltrophies);
@@ -180,10 +176,10 @@ class Player {
 
       boughttype: this.boughtType,
       setmodes: this.setModes,
-      setchallengebonusesfst: this.setChallengeBonuses1,
-      setchallengebonusessnd: this.setChallengeBonuses2,
-      setrankchallengebonusesfst: this.setRankChallengeBonuses1,
-      setrankchallengebonusessnd: this.setRankChallengeBonuses2,
+      setchallengebonusesfst: this.challenge.setChallengeBonuses1,
+      setchallengebonusessnd: this.challenge.setChallengeBonuses2,
+      setrankchallengebonusesfst: this.challenge.setRankChallengeBonuses1,
+      setrankchallengebonusessnd: this.challenge.setRankChallengeBonuses2,
 
       rankchallengecleared: this.rankChallengeCleared,
       rankchallengebonuses: this.rankChallengeBonuses,

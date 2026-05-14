@@ -18,22 +18,22 @@
 				</button>
 			</span>
 			<span v-if="player.boughtType[1]">
-				<button type="button" @click="changebonusetype(1)">
+				<button type="button" @click="player.challenge.changeBonuseType(1)">
 					効力型適用1
 				</button>
 			</span>
 			<span v-if="player.boughtType[2]">
-				<button type="button" @click="changebonusetype(2)">
+				<button type="button" @click="player.challenge.changeBonuseType(2)">
 					効力型適用2
 				</button>
 			</span>
 			<span v-if="player.boughtType[3]">
-				<button type="button" @click="changerankbonusetype(1)">
+				<button type="button" @click="player.challenge.changeRankBonuseType(1)">
 					上位効力型適用1
 				</button>
 			</span>
 			<span v-if="player.boughtType[4]">
-				<button type="button" @click="changerankbonusetype(2)">
+				<button type="button" @click="player.challenge.changeRankBonuseType(2)">
 					上位効力型適用2
 				</button>
 			</span>
@@ -379,7 +379,7 @@
 					効力:効力とは勲章を消費して得られる強化のことです。
 					勲章:{{ player.challenge.token }}
 					<div class="challenge" v-for="i in 15" :key="i">
-						<button type="button" class="rewardbutton" :class="{ 'selected': player.challengeBonuses.includes(i-1) }" @click="buyRewards(i-1)">
+						<button type="button" class="rewardbutton" :class="{ 'selected': player.challengeBonuses.includes(i-1) }" @click="player.challenge.buyRewards(i-1)">
 							効力 {{ i }}: コスト {{ Challenge.rewardCost[i-1] }}
 						</button>
 						<span> ・{{ Challenge.rewardText[i-1] }} </span>
@@ -388,19 +388,19 @@
 				<br>
 				<div v-if="player.boughtType[1]">
 					型設定
-					<button type="button" @click="setbonusetype(1)">
+					<button type="button" @click="player.challenge.setBonuseType(1)">
 						効力型登録1
 					</button>
-					<button type="button" @click="changebonusetype(1)">
+					<button type="button" @click="player.challenge.changeBonuseType(1)">
 						効力型適用1
 					</button>
 				</div>
 				<div v-if="player.boughtType[2]">
 					型設定
-					<button type="button" @click="setbonusetype(2)">
+					<button type="button" @click="player.challenge.setBonuseType(2)">
 						効力型登録2
 					</button>
-					<button type="button" @click="changebonusetype(2)">
+					<button type="button" @click="player.challenge.changeBonuseType(2)">
 						効力型適用2
 					</button>
 				</div>
@@ -409,26 +409,26 @@
 					上位効力:上位効力とは大勲章を消費して得られる強化のことです。
 					大勲章:{{ player.challenge.rankToken }}
 					<div class="challenge" v-for="i in 15" :key="i">
-						<button type="button" class="rewardbutton" :class="{ 'selected': player.rankChallengeBonuses.includes(i-1) }" @click="buyrankRewards(i-1)">
+						<button type="button" class="rewardbutton" :class="{ 'selected': player.rankChallengeBonuses.includes(i-1) }" @click="player.challenge.buyRankRewards(i-1)">
 							効力 {{ i }}: コスト {{ Challenge.rewardCost[i-1] }}
 						</button>
 						<span> ・{{ Challenge.rankRewardText[i-1] }} </span>
 					</div>
 					<div v-if="player.boughtType[3]">
 						型設定
-						<button type="button" @click="setrankbonusetype(1)">
+						<button type="button" @click="player.challenge.setRankBonuseType(1)">
 							上位効力型登録1
 						</button>
-						<button type="button" @click="changerankbonusetype(1)">
+						<button type="button" @click="player.challenge.changeRankBonuseType(1)">
 							上位効力型適用1
 						</button>
 					</div>
 					<div v-if="player.boughtType[4]">
 						型設定
-						<button type="button" @click="setrankbonusetype(2)">
+						<button type="button" @click="player.challenge.setRankBonuseType(2)">
 							上位効力型登録2
 						</button>
-						<button type="button" @click="changerankbonusetype(2)">
+						<button type="button" @click="player.challenge.changeRankBonuseType(2)">
 							上位効力型適用2
 						</button>
 

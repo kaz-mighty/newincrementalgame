@@ -128,6 +128,11 @@ class Challenge {
     this.perfectChallengeCleared = Array.from(playerData.pchallengecleared);
     this.perfectRankChallengeCleared = Array.from(playerData.prchallengecleared);
 
+    this.setChallengeBonuses1 = Array.from(playerData.setchallengebonusesfst);
+    this.setChallengeBonuses2 = Array.from(playerData.setchallengebonusessnd);
+    this.setRankChallengeBonuses1 = Array.from(playerData.setrankchallengebonusesfst);
+    this.setRankChallengeBonuses2 = Array.from(playerData.setrankchallengebonusessnd);
+
     this.challengeWeight = Array.from(playerData.challengeweight);
     this.challengeWeightValue = Array.from(playerData.challengeweightvalue);
 
@@ -195,6 +200,70 @@ class Challenge {
       this.rankToken -= Challenge.rewardCost[index]
     }
   }
+
+  /** @param {1|2} index */
+  setBonuseType(index) {
+    if (confirm("現在の効力を登録します。よろしいですか？")) {
+      let ans = []
+      for (let i = 0; i < 15; i++) {
+        if (this.challengeBonuses.includes(i)) {
+          ans.push(i)
+        }
+      }
+      if (index == 1) this.setChallengeBonuses1 = ans
+      else if (index == 2) this.setChallengeBonuses2 = ans
+    }
+  }
+  /** @param {1|2} index */
+  setRankBonuseType(index) {
+    if (confirm("現在の上位効力を登録します。よろしいですか？")) {
+      let ans = []
+      for (let i = 0; i < 15; i++) {
+        if (this.rankChallengeBonuses.includes(i)) {
+          ans.push(i)
+        }
+      }
+      if (index == 1) this.setRankChallengeBonuses1 = ans
+      else if (index == 2) this.setRankChallengeBonuses2 = ans
+    }
+  }
+  /** @param {1|2} index */
+  changeBonuseType(index) {
+    for (let i = 0; i < 15; i++) {
+      if (this.challengeBonuses.includes(i)) {
+        this.buyRewards(i)
+      }
+    }
+
+    let setBonuses = [];
+    if (index == 1) setBonuses = this.setChallengeBonuses1;
+    else if (index == 2) setBonuses = this.setChallengeBonuses2;
+
+    for (let i = 0; i < 15; i++) {
+      if (setBonuses.includes(i)) {
+        this.buyRewards(i)
+      }
+    }
+  }
+  /** @param {1|2} index */
+  changeRankBonuseType(index) {
+    for (let i = 0; i < 15; i++) {
+      if (this.rankChallengeBonuses.includes(i)) {
+        this.buyRankRewards(i)
+      }
+    }
+
+    let setBonuses = [];
+    if (index == 1) setBonuses = this.setRankChallengeBonuses1;
+    else if (index == 2) setBonuses = this.setRankChallengeBonuses2;
+
+    for (let i = 0; i < 15; i++) {
+      if (setBonuses.includes(i)) {
+        this.buyRankRewards(i)
+      }
+    }
+  }
+
 
   configChallenge(index) {
     if (this.onChallenge) return;

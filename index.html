@@ -344,7 +344,7 @@
 					複数の挑戦を組み合わせて、新たな挑戦として受けることもできます。
 					挑戦中は効力が無効になります。
 					<div class="challenge" v-for="i in 8" :key="i">
-						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.challenges.includes(i-1) }" @click="configchallenge(i-1)">
+						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.challenges.includes(i-1) }" @click="player.challenge.configChallenge(i-1)">
 							挑戦 {{ i }}
 						</button>
 						<span> ・{{ Challenge.challengeText[i-1] }} </span>
@@ -474,7 +474,7 @@
 					改めて255個の挑戦および階位挑戦の達成を目指すことになります。
 					完全挑戦は、条件を1つも選択しなくても開始することができます。
 					<div class="challenge" v-for="i in 10" :key="i">
-						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.perfectChallenges.includes(i-1) }" @click="configpchallenge(i-1)">
+						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.perfectChallenges.includes(i-1) }" @click="player.challenge.configPChallenge(i-1)">
 							完全挑戦 {{ i }}
 						</button>
 						<span> ・{{ Challenge.pChallengeText[i-1] }} </span>

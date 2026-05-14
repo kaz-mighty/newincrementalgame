@@ -190,6 +190,22 @@ class Challenge {
     }
   }
 
+  configChallenge(index) {
+    if (this.onChallenge) return;
+    if (!this.challenges.includes(index)) {
+      this.challenges.push(index)
+    } else {
+      this.challenges.splice(this.challenges.indexOf(index), 1)
+    }
+  }
+  configPChallenge(index) {
+    if (this.onPerfectChallenge) return;
+    if (!this.perfectChallenges.includes(index)) {
+      this.perfectChallenges.push(index)
+    } else {
+      this.perfectChallenges.splice(this.perfectChallenges.indexOf(index), 1)
+    }
+  }
 
   configChallengeWeightKind(i) {
     this.challengeWeight[i] = this.getChallengeId()
@@ -265,6 +281,102 @@ class Challenge {
     } while (this.rankChallengeCleared.includes(challengeid));
 
     this.challenges = Challenge.calcChallengesArray(challengeid)
+  }
+
+  /**
+   * @param {*} data 
+   * @param {Player} player 
+   * @returns 
+   */
+  startChallenge(data, player) {
+    let challengeid = this.getChallengeId();
+
+    if (challengeid == 0) {
+      alert("挑戦が一つも選択されていません。")
+      return;
+    }
+
+    let conf = '挑戦を開始しますか？現在のポイントや発生器、時間加速器は失われます。'
+
+    if (this.challengeCleared.includes(challengeid)) {
+      if (this.challengeCleared.length < 128) {
+        alert("すでに達成した挑戦です。")
+        return;
+      }
+      conf = 'すでに達成した挑戦です。勲章は得られませんが、それでもよろしいですか？'
+      if (this.rankChallengeCleared.includes(challengeid)) {
+        conf = 'すでに階位挑戦としても達成した挑戦です。勲章や大勲章は得られませんが、それでもよろしいですか？'
+      }
+    }
+
+    if (player.auto.autoDoChallenge || confirm(conf)) {
+      if (!this.challengeBonuses.includes(4)) this.activeBonuses = [];
+      data.resetLevel(true, true);
+      this.onChallenge = true;
+      if (this.challenges.includes(3)) {
+        for (let i = 0; i < 8; i++) {
+          player.generatorsMode[i] = 0
+        }
+      }
+    }
+  }
+
+  /**
+   * @param {*} data 
+   * @param {Player} player 
+   * @returns 
+   */
+  startPChallenge(data, player) {
+    if (!(this.challengeCleared.length >= 255 && this.rankChallengeCleared.length >= 255)) {
+      alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。")
+      return;
+    }
+
+    if (this.onChallenge) {
+      alert("現在挑戦中のため、完全挑戦を開始できません。")
+      return;
+    }
+
+    for (let i = 0; i < 10; i++) {
+      if (player.statues.statue[i] < this.perfectChallenges.length - i) {
+        alert("像の作成数が不足しているため、完全挑戦を開始できません。")
+        return;
+      }
+    }
+
+    let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。'
+    if (confirm(conf)) {
+      data.resetCrown(true);
+      this.onPerfectChallenge = true;
+      this.challengeCleared = []
+      this.challengeBonuses = []
+      this.rankChallengeCleared = []
+      this.rankChallengeBonuses = []
+    }
+  }
+
+  exitChallenge(data) {
+    if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
+      this.onChallenge = false;
+      this.activeBonuses = this.challengeBonuses;
+      data.calcgncost()
+    }
+  }
+
+  exitPChallenge(data) {
+    if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
+      if (this.onChallenge) this.exitChallenge()
+      const pChallengeId = this.getPChallengeId();
+      this.onPerfectChallenge = false;
+      this.perfectChallengeCleared[pChallengeId] = Math.max(this.perfectChallengeCleared[pChallengeId], this.challengeCleared.length)
+      this.perfectRankChallengeCleared[pChallengeId] = Math.max(this.perfectRankChallengeCleared[pChallengeId], this.rankChallengeCleared.length)
+      this.challengeCleared = Challenge.challengeIds
+      this.rankChallengeCleared = Challenge.challengeIds
+      for (let i = 0; i < setchipnum; i++) {
+        data.player.chips.disabledChip[i] = false
+      }
+      data.countpchallengecleared()
+    }
   }
 
 }

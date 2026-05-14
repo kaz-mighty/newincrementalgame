@@ -905,22 +905,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.tweeting.splice(this.player.tweeting.indexOf(content), 1)
       }
     },
-    configchallenge(index) {
-      if (this.player.onChallenge) return;
-      if (!this.player.challenges.includes(index)) {
-        this.player.challenges.push(index)
-      } else {
-        this.player.challenges.splice(this.player.challenges.indexOf(index), 1)
-      }
-    },
-    configpchallenge(index) {
-      if (this.player.onPerfectChallenge) return;
-      if (!this.player.perfectChallenges.includes(index)) {
-        this.player.perfectChallenges.push(index)
-      } else {
-        this.player.perfectChallenges.splice(this.player.perfectChallenges.indexOf(index), 1)
-      }
-    },
     buyGenerator(index) {
       if (this.player.onChallenge && this.player.challenges.includes(6)) {
         if (index == 3 || index == 7) {
@@ -1508,97 +1492,19 @@ const app = Vue.createApp(Vue.defineComponent({
 
 
     startChallenge() {
-      let challengeid = this.player.challenge.getChallengeId();
-
-      if (challengeid == 0) {
-        alert("挑戦が一つも選択されていません。")
-        return;
-      }
-
-      let conf = '挑戦を開始しますか？現在のポイントや発生器、時間加速器は失われます。'
-
-      if (this.player.challengeCleared.includes(challengeid)) {
-        if (this.player.challengeCleared.length < 128) {
-          alert("すでに達成した挑戦です。")
-          return;
-        }
-        conf = 'すでに達成した挑戦です。勲章は得られませんが、それでもよろしいですか？'
-        if (this.player.rankChallengeCleared.includes(challengeid)) {
-          conf = 'すでに階位挑戦としても達成した挑戦です。勲章や大勲章は得られませんが、それでもよろしいですか？'
-        }
-      }
-
-      if (this.player.auto.autoDoChallenge || confirm(conf)) {
-        if (!this.player.challengeBonuses.includes(4)) this.player.challenge.activeBonuses = [];
-        this.resetLevel(true, true);
-        this.player.onChallenge = true;
-        if (this.player.challenges.includes(3)) {
-          for (let i = 0; i < 8; i++) {
-            this.player.generatorsMode[i] = 0
-          }
-        }
-      }
+      this.player.challenge.startChallenge(this, this.player);
     },
     startpChallenge() {
-
-      if (!(this.player.challengeCleared.length >= 255 && this.player.rankChallengeCleared.length >= 255)) {
-        alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。")
-        return;
-      }
-
-      if (this.player.onChallenge) {
-        alert("現在挑戦中のため、完全挑戦を開始できません。")
-        return;
-      }
-
-      for (let i = 0; i < 10; i++) {
-        if (this.player.statues.statue[i] < this.player.perfectChallenges.length - i) {
-          alert("像の作成数が不足しているため、完全挑戦を開始できません。")
-          return;
-        }
-      }
-
-
-      let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。'
-
-      if (confirm(conf)) {
-
-        this.resetCrown(true);
-        this.player.challenge.onPerfectChallenge = true;
-        this.player.challenge.challengeCleared = []
-        this.player.challenge.challengeBonuses = []
-        this.player.challenge.rankChallengeCleared = []
-        this.player.challenge.rankChallengeBonuses = []
-
-      }
+      this.player.challenge.startPChallenge(this, this.player);
     },
 
 
     exitChallenge() {
-      if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
-        this.player.onChallenge = false;
-        this.player.challenge.activeBonuses = this.player.challengeBonuses;
-        this.calcgncost()
-      }
+      this.player.challenge.exitChallenge(this);
     },
 
     exitpChallenge() {
-
-      if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
-        if (this.player.onChallenge) this.exitChallenge()
-        this.player.challenge.onPerfectChallenge = false;
-        this.player.perfectChallengeCleared[this.player.challenge.getPChallengeId()] = Math.max(this.player.perfectChallengeCleared[this.player.challenge.getPChallengeId()], this.player.challengeCleared.length)
-        this.player.perfectRankChallengeCleared[this.player.challenge.getPChallengeId()] = Math.max(this.player.perfectRankChallengeCleared[this.player.challenge.getPChallengeId()], this.player.rankChallengeCleared.length)
-        this.player.challenge.challengeCleared = Challenge.challengeIds
-        this.player.challenge.rankChallengeCleared = Challenge.challengeIds
-        for (let i = 0; i < setchipnum; i++) {
-          this.player.chips.disabledChip[i] = false
-        }
-        this.countpchallengecleared()
-
-
-
-      }
+      this.player.challenge.exitPChallenge(this);
     },
 
 

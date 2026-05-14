@@ -111,8 +111,8 @@
 					冠位: {{ player.crown.toNumber() }} 冠位リセット: {{ player.crownResetTime.toNumber() }}回
 				</div>
 				<div class="levelrcontents" v-if="player.levelResetTime.gt(0)">
-					<span v-if="player.onChallenge&&player.challenges.includes(0)">段位リセット条件: 1e+24</span>
-					<span v-if="!(player.onChallenge&&player.challenges.includes(0))">段位リセット条件: 1e+18</span>
+					<span v-if="player.challenge.isChallengeActive(0)">段位リセット条件: 1e+24</span>
+					<span v-if="!(player.challenge.isChallengeActive(0))">段位リセット条件: 1e+18</span>
 				</div>
 				<div class="rankrcontents" v-if="player.rankResetTime.gt(0)">
 					階位リセット条件: {{ rankdata.resetRankborder(whole).toExponential(3)}}
@@ -122,7 +122,7 @@
 				</div>
 				<div class="softreset">
 					<div id="levelreset" v-if="player.money.greaterThanOrEqualTo('1e18')">
-						<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.onChallenge && player.challenges.includes(0) }" @click="resetLevel(false,false)">昇段リセット</button>
+						<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isChallengeActive(0) }" @click="resetLevel(false,false)">昇段リセット</button>
 					</div>
 					<div id="rankreset" v-if="player.money.greaterThanOrEqualTo(rankdata.resetRankborder(whole))">
 						<button type="button" @click="resetRank(false)">昇階リセット</button>
@@ -474,7 +474,7 @@
 					改めて255個の挑戦および階位挑戦の達成を目指すことになります。
 					完全挑戦は、条件を1つも選択しなくても開始することができます。
 					<div class="challenge" v-for="i in 10" :key="i">
-						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.perfectChallenges.includes(i-1) }" @click="player.challenge.configPChallenge(i-1)">
+						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.challenge.perfectChallenges.includes(i-1) }" @click="player.challenge.configPChallenge(i-1)">
 							完全挑戦 {{ i }}
 						</button>
 						<span> ・{{ Challenge.pChallengeText[i-1] }} </span>
@@ -483,19 +483,19 @@
 					<div>
 						挑戦番号:{{ player.challenge.getPChallengeId() }}
 						進行度:
-						通常:{{ player.perfectChallengeCleared[player.challenge.getPChallengeId()] }}
-						上位:{{ player.perfectRankChallengeCleared[player.challenge.getPChallengeId()] }}
+						通常:{{ player.challenge.perfectChallengeCleared[player.challenge.getPChallengeId()] }}
+						上位:{{ player.challenge.perfectRankChallengeCleared[player.challenge.getPChallengeId()] }}
 					</div>
 					<div>
 						完全挑戦段階: {{ pchallengestage }}
 					</div>
 					<br>
-					<div v-if="!player.onPerfectChallenge">
+					<div v-if="!player.challenge.onPerfectChallenge">
 						<button type="button" class="challengeconfigbutton" @click="startpChallenge()">
 							挑戦開始
 						</button>
 					</div>
-					<div v-if="player.onPerfectChallenge">
+					<div v-if="player.challenge.onPerfectChallenge">
 						<button type="button" class="challengeconfigbutton" @click="exitpChallenge()">
 							挑戦終了
 						</button>

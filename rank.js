@@ -2,9 +2,9 @@ function Rankdata() {
 
   this.resetRankborder = function (data) {
 
-    let p = (data.player.onChallenge && data.player.challenges.includes(0)) ? 96 : 72
+    let p = (data.player.challenge.isChallengeActive(0)) ? 96 : 72
     let q = data.checkremembers()
-    if (data.player.onPerfectChallenge && data.player.perfectChallenges.includes(7)) {
+    if (data.player.challenge.isPChallengeActive(7)) {
       q = Math.pow(q, 0.5)
     }
     p -= Math.min(q / 2.0, 36)
@@ -19,7 +19,7 @@ function Rankdata() {
     dv = dv - data.player.crown.add(2).log2() * 0.1
     dv = Math.max(dv, 3)
     let gainrank = new Decimal(data.player.money.log10()).div(dv).pow_base(2).round()
-    if (data.player.onPerfectChallenge && data.player.perfectChallenges.includes(5)) {
+    if (data.player.challenge.isPChallengeActive(5)) {
       gainrank = new Decimal(gainrank.log10()).max(1)
     }
     if (data.player.rankChallengeBonuses.includes(12)) {

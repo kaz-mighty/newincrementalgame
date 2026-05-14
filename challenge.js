@@ -140,6 +140,12 @@ class Challenge {
   getPChallengeId() {
     return Challenge.getPChallengeId(this.perfectChallenges);
   }
+  isChallengeActive(index) {
+    return this.onChallenge && this.challenges.includes(index);
+  }
+  isPChallengeActive(index) {
+    return this.onPerfectChallenge && this.perfectChallenges.includes(index);
+  }
 
   calcToken() {
     let spent = 0;

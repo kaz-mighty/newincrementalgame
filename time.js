@@ -22,7 +22,7 @@ function Timedata() {
 
     //this.player.tickSpeed = 10
     let tsp = 1000
-    if (data.player.onPerfectChallenge && data.player.perfectChallenges.includes(1)) tsp = 10000
+    if (data.player.challenge.isPChallengeActive(1)) tsp = 10000
     tsp += 500 * data.player.campaign.accelLevelUsed
     tsp -= data.player.setChip[9] * 50
     tsp -= data.player.levelItems[1] * data.player.challengeBonuses.length * (1 + data.player.setChip[27] * 0.5)

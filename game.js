@@ -493,7 +493,7 @@ const app = Vue.createApp(Vue.defineComponent({
         let p = i === 0 ?
           this.player.generatorsBought[0] :
           this.player.generatorsBought[i].add(i + 1).mul(i + 1)
-        if (this.player.onChallenge && this.player.challenges.includes(1) && this.player.generatorsBought[i].gt(0)) {
+        if (this.player.challenge.isChallengeActive(1) && this.player.generatorsBought[i].gt(0)) {
           p = p.mul(2)
         }
         p = p.sub(this.eachpipedsmalltrophy[0] * 0.2)
@@ -533,7 +533,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
     calccommonmult() {
       let mult = new Decimal(1);
-      if (!(this.player.onChallenge && this.player.challenges.includes(7))) {
+      if (!(this.player.challenge.isChallengeActive(7))) {
         let cap = new Decimal(100).mul(this.player.levelItems[2] * (1 + this.player.setChip[28] * 0.3) + 1)
         mult = mult.mul(this.softCap(this.player.levelResetTime.add(1), cap))
       }
@@ -546,14 +546,14 @@ const app = Vue.createApp(Vue.defineComponent({
         mult = mult.mul(new Decimal(3))
       }
 
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(0)) {
+      if (this.player.challenge.isPChallengeActive(0)) {
         mult = mult.div(100)
       }
 
       let x1 = 0.25
       let x2 = 12
 
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(7)) {
+      if (this.player.challenge.isPChallengeActive(7)) {
         x1 = 1.0 / 81
         x2 = 27
       }
@@ -569,7 +569,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.onChallenge && this.player.rankChallengeBonuses.includes(4)) {
         mult = mult.mul(1 + this.player.challenges.length * 0.25)
       }
-      if (!(this.player.onPerfectChallenge && this.player.perfectChallenges.includes(8))) {
+      if (!(this.player.challenge.isPChallengeActive(8))) {
         if (this.player.darkMoney.greaterThanOrEqualTo(1)) {
           mult = mult.mul(new Decimal(this.player.darkMoney.add(10).log10()).pow(1 + this.player.setChip[40] * 0.1))
         }
@@ -584,7 +584,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       let camp = this.player.campaign.sumCommonBonus;
       if (this.player.activatedCampaigns.includes("newyear2025")) {
-        if (this.player.onChallenge && this.player.challenges.includes(3) && this.player.challenges.includes(4)) {
+        if (this.player.challenge.isChallengeActive(3) && this.player.challenge.isChallengeActive(4)) {
           camp = camp + 10
         }
       }
@@ -601,7 +601,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
     calcincrementmult(i, to) {
       let mult = this.incrementalmults[i]
-      if (!(this.player.onChallenge && this.player.challenges.includes(4))) {
+      if (!(this.player.challenge.isChallengeActive(4))) {
         mult = mult.mul(new Decimal(10).pow((i + 1) * (i - to)))
       }
 
@@ -612,7 +612,7 @@ const app = Vue.createApp(Vue.defineComponent({
       rk += new Decimal(this.player.rank.add(2).log2()).log2() * this.player.setChip[23]
       mult = mult.mul(new Decimal(lv.pow((i - to) * (1 + Math.max(rk, 0) * 0.05))))
 
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(3) && mult.gt("1e-100")) {
+      if (this.player.challenge.isPChallengeActive(3) && mult.gt("1e-100")) {
         let b = Math.floor(mult.log10() / 6)
         mult = new Decimal(10).pow(b * 6)
       }
@@ -624,7 +624,7 @@ const app = Vue.createApp(Vue.defineComponent({
     calcbasicincrementmult(i) {
       let mult = new Decimal(this.commonmult);
 
-      if (!(this.player.onChallenge && this.player.challenges.includes(2))) {
+      if (!(this.player.challenge.isChallengeActive(2))) {
         let mm = new Decimal(1)
         mm = mm.mul(this.player.generatorsBought[i])
         if (this.player.challenge.activeBonuses.includes(11)) {
@@ -647,7 +647,7 @@ const app = Vue.createApp(Vue.defineComponent({
           mult = mult.mul(this.player.maxLevelGained.min(100000))
         }
       }
-      if (!(this.player.onPerfectChallenge && this.player.perfectChallenges.includes(8))) {
+      if (!(this.player.challenge.isPChallengeActive(8))) {
         if (this.player.darkGenerators[i].greaterThanOrEqualTo(1)) {
           mult = mult.mul(new Decimal(i + 2 + this.player.darkGenerators[i].log10()).pow(1 + this.player.setChip[i + 32] * 0.25))
         }
@@ -657,7 +657,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       mult = mult.mul(1 + this.player.setChip[i + 1] * 0.5)
 
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(2)) {
+      if (this.player.challenge.isPChallengeActive(2)) {
         this.incrementalmults[2] = new Decimal(0)
         this.incrementalmults[5] = new Decimal(0)
       }
@@ -678,7 +678,7 @@ const app = Vue.createApp(Vue.defineComponent({
             this.player.generators[to - 1] = this.player.generators[to - 1].add(this.player.generators[i].mul(mult))
           }
         } else {
-          if (this.player.onChallenge && this.player.challenges.includes(3)) {
+          if (this.player.challenge.isChallengeActive(3)) {
             let mult = mu.mul(this.calcincrementmult(i, 0))
             mult = mult.mul(i + 1)
             this.player.money = this.player.money.add(this.player.generators[i].mul(mult))
@@ -740,7 +740,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
     spendshine(num) {
       if (this.player.shine < num) return;
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(6)) return
+      if (this.player.challenge.isPChallengeActive(6)) return
       this.player.shine -= num
       let val = new Decimal(11 + this.player.setChip[31]).pow(new Decimal(num).log10())
       this.updategenerators(new Decimal(val))
@@ -751,7 +751,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     spendbrightness(num) {
       if (this.player.brightness < num) return;
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(6)) return
+      if (this.player.challenge.isPChallengeActive(6)) return
       this.player.brightness -= num
       let val = new Decimal(11 + this.player.setChip[50]).pow(new Decimal(num * 100).log10())
       let vald = new Decimal(10 + this.player.setChip[51] * 0.25).pow(new Decimal(num).log10())
@@ -780,8 +780,8 @@ const app = Vue.createApp(Vue.defineComponent({
 
       let cnt = 0;
       for (let i = 0; i < 1024; i++) {
-        cnt += this.player.perfectChallengeCleared[i]
-        cnt += this.player.perfectRankChallengeCleared[i]
+        cnt += this.player.challenge.perfectChallengeCleared[i]
+        cnt += this.player.challenge.perfectRankChallengeCleared[i]
       }
 
       cnt /= 510;
@@ -851,7 +851,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
       if (this.remembersum >= 100) {
-        if (!(this.player.onChallenge || this.player.onPerfectChallenge)) {
+        if (!(this.player.onChallenge || this.player.challenge.onPerfectChallenge)) {
           this.player.level = this.player.level.add(1)
           this.player.levelResetTime = this.player.levelResetTime.add(1)
         }
@@ -906,7 +906,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     buyGenerator(index) {
-      if (this.player.onChallenge && this.player.challenges.includes(6)) {
+      if (this.player.challenge.isChallengeActive(6)) {
         if (index == 3 || index == 7) {
           return;
         }
@@ -919,7 +919,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     buyAccelerator(index) {
-      if (this.player.onChallenge && this.player.challenges.includes(5)) return;
+      if (this.player.challenge.isChallengeActive(5)) return;
       if (index >= 1 && this.player.levelResetTime.lessThanOrEqualTo(0)) return;
 
       if (this.player.money.greaterThanOrEqualTo(this.player.acceleratorsCost[index])) {
@@ -1137,7 +1137,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     changemodetype() {
-      if (this.player.onChallenge && this.player.challenges.includes(3)) return;
+      if (this.player.challenge.isChallengeActive(3)) return;
       for (let i = 0; i < 8; i++) {
         while (this.player.setModes[i] != this.player.generatorsMode[i]) {
           this.changeMode(i)
@@ -1145,7 +1145,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     changeMode(index) {
-      if (this.player.onChallenge && this.player.challenges.includes(3)) return;
+      if (this.player.challenge.isChallengeActive(3)) return;
       this.player.generatorsMode[index] += 1;
       if (this.player.generatorsMode[index] > index) {
         this.player.generatorsMode[index] = 0;
@@ -1161,7 +1161,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     calcgainlevel() {
 
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(4)) {
+      if (this.player.challenge.isPChallengeActive(4)) {
 
       }
       let dividing = 19 - this.player.rank.add(2).log2()
@@ -1187,7 +1187,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       }
 
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(4)) {
+      if (this.player.challenge.isPChallengeActive(4)) {
         gainlevel = new Decimal(gainlevel.log2()).max(1)
       }
 
@@ -1234,7 +1234,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
 
     resetLevel(force, exit) {
-      if (this.player.onChallenge && this.player.challenges.includes(0)) {
+      if (this.player.challenge.isChallengeActive(0)) {
         if (this.player.money.lt(new Decimal('1e24'))) {
           alert('現在挑戦1が適用されているため、まだ昇段リセットができません。')
           return;
@@ -1245,7 +1245,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if (dividing < 1) dividing = 1
       let gainlevel = this.calcgainlevel()
       let rst = this.player.rankResetTime.add(1)
-      if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(4)) {
+      if (this.player.challenge.isPChallengeActive(4)) {
         rst = rst.pow(0.1).round()
       }
       let gainlevelreset = rst.mul(1 + this.player.setChip[20]).mul(new Decimal(exit ? 0 : this.player.challenge.activeBonuses.includes(8) ? 2 : 1))
@@ -1253,7 +1253,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       if (force || confirm('昇段リセットして、段位' + gainlevel + 'を得ますか？')) {
 
-        let disa = this.player.onPerfectChallenge && this.player.perfectChallenges.includes(9) && (!exit)
+        let disa = this.player.challenge.isPChallengeActive(9) && (!exit)
         if (this.player.onChallenge) {
           this.player.onChallenge = false;
           if (this.player.challenges.length >= 6) {
@@ -1343,13 +1343,13 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
     resetLevelborder() {
-      let p = (this.player.onChallenge && this.player.challenges.includes(0)) ? 24 : 18
+      let p = (this.player.challenge.isChallengeActive(0)) ? 24 : 18
       return new Decimal(10).pow(p)
     },
 
     resetRank(force) {
 
-      if (this.player.onChallenge && this.player.challenges.includes(0)) {
+      if (this.player.challenge.isChallengeActive(0)) {
         if (this.player.money.lt(this.rankdata.resetRankborder(this))) {
           alert('現在挑戦1が適用されているため、まだ昇階リセットができません。')
           return;
@@ -1427,7 +1427,7 @@ const app = Vue.createApp(Vue.defineComponent({
         //あとで消す
         return;
       }
-      if (this.player.onChallenge && this.player.challenges.includes(0)) {
+      if (this.player.challenge.isChallengeActive(0)) {
         if (this.player.money.lt(this.resetCrownborder())) {
           alert('現在挑戦1が適用されているため、まだ昇冠リセットができません。')
           return;

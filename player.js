@@ -173,10 +173,10 @@ class Player {
       challengeweight: this.challenge.challengeWeight,
       challengeweightvalue: this.challenge.challengeWeightValue,
 
-      onpchallenge: this.onPerfectChallenge,
-      pchallenges: this.perfectChallenges,
-      pchallengecleared: this.perfectChallengeCleared,
-      prchallengecleared: this.perfectRankChallengeCleared,
+      onpchallenge: this.challenge.onPerfectChallenge,
+      pchallenges: this.challenge.perfectChallenges,
+      pchallengecleared: this.challenge.perfectChallengeCleared,
+      prchallengecleared: this.challenge.perfectRankChallengeCleared,
 
       boughttype: this.boughtType,
       setmodes: this.setModes,
@@ -233,11 +233,6 @@ class Player {
   get challengeBonuses() {return this.challenge.challengeBonuses;}
   get rankChallengeCleared() {return this.challenge.rankChallengeCleared;}
   get rankChallengeBonuses() {return this.challenge.rankChallengeBonuses;}
-
-  get onPerfectChallenge() {return this.challenge.onPerfectChallenge;}
-  get perfectChallenges() {return this.challenge.perfectChallenges;}
-  get perfectChallengeCleared() {return this.challenge.perfectChallengeCleared;}
-  get perfectRankChallengeCleared() {return this.challenge.perfectRankChallengeCleared;}
 
   get chip() {
     return this.chips.chip;

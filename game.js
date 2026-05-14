@@ -207,7 +207,6 @@ const app = Vue.createApp(Vue.defineComponent({
       showmult: true,
       trophycheck: true,
 
-      challengedata: new Challengedata(),
       timedata: new Timedata(),
       rankdata: new Rankdata(),
       levelshopdata: new Levelshopdata(),
@@ -215,7 +214,6 @@ const app = Vue.createApp(Vue.defineComponent({
       rememberdata: new Rememberdata(),
       spiritdata: new Spiritdata(),
       exported: "",
-      activechallengebonuses: [],
       genautobuy: false,
       accautobuy: false,
       autolevel: false,
@@ -427,8 +425,6 @@ const app = Vue.createApp(Vue.defineComponent({
 
       this.player = new Player(saveData)
 
-      if (!this.player.onChallenge || this.player.challengeBonuses.includes(4)) this.activechallengebonuses = this.player.challengeBonuses
-
       this.checktrophies()
       this.checkmemories()
       this.checkremembers()
@@ -542,7 +538,7 @@ const app = Vue.createApp(Vue.defineComponent({
         mult = mult.mul(this.softCap(this.player.levelResetTime.add(1), cap))
       }
 
-      if (this.activechallengebonuses.includes(3)) {
+      if (this.player.challenge.activeBonuses.includes(3)) {
         mult = mult.mul(new Decimal(2))
       }
 
@@ -631,20 +627,20 @@ const app = Vue.createApp(Vue.defineComponent({
       if (!(this.player.onChallenge && this.player.challenges.includes(2))) {
         let mm = new Decimal(1)
         mm = mm.mul(this.player.generatorsBought[i])
-        if (this.activechallengebonuses.includes(11)) {
+        if (this.player.challenge.activeBonuses.includes(11)) {
           mm = mm.mul(new Decimal(mm.add(2).log2()))
         }
 
         if (i < this.highest && mm.greaterThanOrEqualTo(1)) {
           mult = mult.mul(mm)
         } else {
-          if (this.activechallengebonuses.includes(2) && mm.greaterThanOrEqualTo(1)) {
+          if (this.player.challenge.activeBonuses.includes(2) && mm.greaterThanOrEqualTo(1)) {
             mult = mult.mul(mm)
           }
         }
       }
 
-      if (i == 0 && this.activechallengebonuses.includes(7)) {
+      if (i == 0 && this.player.challenge.activeBonuses.includes(7)) {
         if (this.player.rankChallengeBonuses.includes(7)) {
           mult = mult.mul(this.strongsoftcap(this.player.maxLevelGained, new Decimal(100000)))
         } else {
@@ -673,7 +669,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
     updategenerators(mu) {
       for (let i = 0; i < 8; i++) {
-        if (!this.activechallengebonuses.includes(13)) {
+        if (!this.player.challenge.activeBonuses.includes(13)) {
           let to = this.player.generatorsMode[i];
           let mult = mu.mul(this.calcincrementmult(i, to))
           if (to === 0) {
@@ -705,7 +701,7 @@ const app = Vue.createApp(Vue.defineComponent({
     updateaccelerators(mu) {
       for (let i = 1; i < 8; i++) {
         let mult = new Decimal(1)
-        if (i == 1 && this.activechallengebonuses.includes(10)) {
+        if (i == 1 && this.player.challenge.activeBonuses.includes(10)) {
           mult = this.player.rankChallengeBonuses.includes(10) ? mult.add(this.player.acceleratorsBought[i].pow_base(2)) : mult.add(this.player.acceleratorsBought[i])
         } else if (i != 1 && this.player.rankChallengeBonuses.includes(6)) {
           mult = this.player.rankChallengeBonuses.includes(10) ? mult.add(this.player.acceleratorsBought[i].pow_base(2)) : mult.add(this.player.acceleratorsBought[i])
@@ -784,23 +780,23 @@ const app = Vue.createApp(Vue.defineComponent({
 
       let spent = 0;
       for (let i of this.player.challengeBonuses) {
-        spent += this.challengedata.rewardcost[i]
+        spent += Challenge.rewardCost[i]
       }
       let t = this.player.challengeCleared.length
       if (this.player.onPerfectChallenge) {
         t = Math.max(t, this.player.perfectChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)])
       }
-      this.player.token = t - spent
+      this.player.challenge.token = t - spent
 
       let rspent = 0;
       for (let i of this.player.rankChallengeBonuses) {
-        rspent += this.challengedata.rewardcost[i]
+        rspent += Challenge.rewardCost[i]
       }
       let rt = this.player.rankChallengeCleared.length
       if (this.player.onPerfectChallenge) {
         rt = Math.max(rt, this.player.perfectRankChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)])
       }
-      this.player.rankToken = rt - rspent
+      this.player.challenge.rankToken = rt - rspent
 
     },
     countpchallengecleared() {
@@ -829,7 +825,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.diff = Date.now() - this.time - this.player.tickSpeed
 
       this.time = Date.now()
-      this.activechallengebonuses = (this.player.challengeBonuses.includes(4) || !this.player.onChallenge) ? this.player.challengeBonuses : []
+      this.player.challenge.activeBonuses = (!this.player.onChallenge || this.player.challengeBonuses.includes(4)) ? this.player.challengeBonuses : []
 
       if (this.trophycheck) this.checktrophies()
       this.checkmemories()
@@ -885,7 +881,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
 
-      if ((this.player.auto.autoDoChallenge || !this.player.onChallenge) && this.activechallengebonuses.includes(14) && this.autolevel) {
+      if ((this.player.auto.autoDoChallenge || !this.player.onChallenge) && this.player.challenge.activeBonuses.includes(14) && this.autolevel) {
         if (this.player.money.greaterThanOrEqualTo(this.resetLevelborder()) && this.player.level.lt(this.autolevelstopnumber)) {
           if (this.calcgainlevel().greaterThanOrEqualTo(this.autolevelnumber)) {
             this.resetLevel(true, false)
@@ -894,13 +890,13 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
 
-      if (this.activechallengebonuses.includes(5) && this.genautobuy) {
+      if (this.player.challenge.activeBonuses.includes(5) && this.genautobuy) {
         for (let i = 7; i >= 0; i--) {
           this.buyGenerator(i)
         }
       }
 
-      if (this.activechallengebonuses.includes(9) && this.accautobuy) {
+      if (this.player.challenge.activeBonuses.includes(9) && this.accautobuy) {
         let ha = this.player.levelItems[3] + 1
         for (let i = ha; i >= 0; i--) {
           this.buyAccelerator(i)
@@ -1150,25 +1146,25 @@ const app = Vue.createApp(Vue.defineComponent({
     buyRewards(index) {
       if (this.player.challengeBonuses.includes(index)) {
         this.player.challengeBonuses.splice(this.player.challengeBonuses.indexOf(index), 1)
-        this.player.token += this.challengedata.rewardcost[index]
+        this.player.challenge.token += Challenge.rewardCost[index]
       } else {
-        if (this.player.token < this.challengedata.rewardcost[index]) {
+        if (this.player.challenge.token < Challenge.rewardCost[index]) {
           return;
         }
         this.player.challengeBonuses.push(index)
-        this.player.token -= this.challengedata.rewardcost[index]
+        this.player.challenge.token -= Challenge.rewardCost[index]
       }
     },
     buyrankRewards(index) {
       if (this.player.rankChallengeBonuses.includes(index)) {
         this.player.rankChallengeBonuses.splice(this.player.rankChallengeBonuses.indexOf(index), 1)
-        this.player.rankToken += this.challengedata.rewardcost[index]
+        this.player.challenge.rankToken += Challenge.rewardCost[index]
       } else {
-        if (this.player.rankToken < this.challengedata.rewardcost[index]) {
+        if (this.player.challenge.rankToken < Challenge.rewardCost[index]) {
           return;
         }
         this.player.rankChallengeBonuses.push(index)
-        this.player.rankToken -= this.challengedata.rewardcost[index]
+        this.player.challenge.rankToken -= Challenge.rewardCost[index]
       }
     },
     calclevelitemcost(index) {
@@ -1255,7 +1251,7 @@ const app = Vue.createApp(Vue.defineComponent({
       gainlevel = gainlevel.round().max(1)
 
       gainlevel = gainlevel.mul(new Decimal(this.eachpipedsmalltrophy[2] / 5.0).pow_base(2))
-      if (this.activechallengebonuses.includes(12)) gainlevel = gainlevel.mul(new Decimal(2))
+      if (this.player.challenge.activeBonuses.includes(12)) gainlevel = gainlevel.mul(new Decimal(2))
       return gainlevel;
     },
 
@@ -1309,7 +1305,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.onPerfectChallenge && this.player.perfectChallenges.includes(4)) {
         rst = rst.pow(0.1).round()
       }
-      let gainlevelreset = rst.mul(1 + this.player.setChip[20]).mul(new Decimal(exit ? 0 : this.activechallengebonuses.includes(8) ? 2 : 1))
+      let gainlevelreset = rst.mul(1 + this.player.setChip[20]).mul(new Decimal(exit ? 0 : this.player.challenge.activeBonuses.includes(8) ? 2 : 1))
 
 
       if (force || confirm('昇段リセットして、段位' + gainlevel + 'を得ますか？')) {
@@ -1325,7 +1321,7 @@ const app = Vue.createApp(Vue.defineComponent({
             this.player.challengeCleared.push(this.calcchallengeid())
             disa = false
           }
-          this.activechallengebonuses = this.player.challengeBonuses;
+          this.player.challenge.activeBonuses = this.player.challengeBonuses;
         }
 
         if (disa) {
@@ -1393,8 +1389,8 @@ const app = Vue.createApp(Vue.defineComponent({
 
         this.player.tickSpeed = 1000
 
-        if (this.activechallengebonuses.includes(0)) this.player.money = new Decimal(10001)
-        if (this.activechallengebonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
+        if (this.player.challenge.activeBonuses.includes(0)) this.player.money = new Decimal(10001)
+        if (this.player.challenge.activeBonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
         if (this.player.rankChallengeBonuses.includes(0)) this.player.money = this.player.money.add(new Decimal("1e9"))
         if (this.player.rankChallengeBonuses.includes(1)) this.player.accelerators[0] = this.player.accelerators[0].add(256)
 
@@ -1422,7 +1418,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
         if (this.player.onChallenge) {
           this.player.onChallenge = false;
-          this.activechallengebonuses = this.player.challengeBonuses;
+          this.player.challenge.activeBonuses = this.player.challengeBonuses;
           if (this.player.challengeCleared.length >= 128 && !this.player.rankChallengeCleared.includes(this.calcchallengeid())) {
             this.player.rankChallengeCleared.push(this.calcchallengeid())
           }
@@ -1466,10 +1462,10 @@ const app = Vue.createApp(Vue.defineComponent({
 
         this.player.levelItems = [0, 0, 0, 0, 0]
 
-        this.activechallengebonuses = this.player.challengeBonuses
+        this.player.challenge.activeBonuses = this.player.challengeBonuses
 
-        if (this.activechallengebonuses.includes(0)) this.player.money = new Decimal(10001)
-        if (this.activechallengebonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
+        if (this.player.challenge.activeBonuses.includes(0)) this.player.money = new Decimal(10001)
+        if (this.player.challenge.activeBonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
         if (this.player.rankChallengeBonuses.includes(0)) this.player.money = this.player.money.add(new Decimal("1e9"))
         if (this.player.rankChallengeBonuses.includes(1)) this.player.accelerators[0] = this.player.accelerators[0].add(256)
 
@@ -1541,10 +1537,10 @@ const app = Vue.createApp(Vue.defineComponent({
 
         this.player.levelItems = [0, 0, 0, 0, 0]
 
-        this.activechallengebonuses = this.player.challengeBonuses
+        this.player.challenge.activeBonuses = this.player.challengeBonuses
 
-        if (this.activechallengebonuses.includes(0)) this.player.money = new Decimal(10001)
-        if (this.activechallengebonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
+        if (this.player.challenge.activeBonuses.includes(0)) this.player.money = new Decimal(10001)
+        if (this.player.challenge.activeBonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
         if (this.player.rankChallengeBonuses.includes(0)) this.player.money = this.player.money.add(new Decimal("1e9"))
         if (this.player.rankChallengeBonuses.includes(1)) this.player.accelerators[0] = this.player.accelerators[0].add(256)
 
@@ -1583,12 +1579,12 @@ const app = Vue.createApp(Vue.defineComponent({
       return challengeid;
     },
     configchallengeweightkind(i) {
-      this.player.challengeWeight[i] = this.calcchallengeid()
+      this.player.challenge.challengeWeight[i] = this.calcchallengeid()
     },
     configchallengeweightvalue(i) {
       let input = parseInt(window.prompt("重みを設定", ""))
       if (isNaN(input)) return
-      this.player.challengeWeightValue[i] = input
+      this.player.challenge.challengeWeightValue[i] = input
     },
     showunclearedchallenges() {
       if (this.player.challengeCleared.length == 255) return;
@@ -1600,9 +1596,9 @@ const app = Vue.createApp(Vue.defineComponent({
         let ans = 0;
         for (let j = 0; j < 20; j++) {
 
-          if ((i | this.player.challengeWeight[j]) == i) {
+          if ((i | this.player.challenge.challengeWeight[j]) == i) {
 
-            ans += this.player.challengeWeightValue[j]
+            ans += this.player.challenge.challengeWeightValue[j]
           }
         }
         challengeweightpairs.push({
@@ -1625,7 +1621,7 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       } while (this.player.challengeCleared.includes(challengeid));
 
-      this.player.challenges = this.calcchallengesarray(challengeid)
+      this.player.challenge.challenges = this.calcchallengesarray(challengeid)
     },
     showunclearedrankchallenges() {
       if (this.player.rankChallengeCleared.length == 255) return;
@@ -1637,9 +1633,9 @@ const app = Vue.createApp(Vue.defineComponent({
         let ans = 0;
         for (let j = 0; j < 20; j++) {
 
-          if ((i | this.player.challengeWeight[j]) == i) {
+          if ((i | this.player.challenge.challengeWeight[j]) == i) {
 
-            ans += this.player.challengeWeightValue[j]
+            ans += this.player.challenge.challengeWeightValue[j]
           }
         }
         challengeweightpairs.push({
@@ -1660,7 +1656,7 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       } while (this.player.rankChallengeCleared.includes(challengeid));
 
-      this.player.challenges = this.calcchallengesarray(challengeid)
+      this.player.challenge.challenges = this.calcchallengesarray(challengeid)
     },
     calcchallengesarray(challengeid) {
       let ans = [];
@@ -1693,7 +1689,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
       if (this.player.auto.autoDoChallenge || confirm(conf)) {
-        if (!this.player.challengeBonuses.includes(4)) this.activechallengebonuses = [];
+        if (!this.player.challengeBonuses.includes(4)) this.player.challenge.activeBonuses = [];
         this.resetLevel(true, true);
         this.player.onChallenge = true;
         if (this.player.challenges.includes(3)) {
@@ -1728,11 +1724,11 @@ const app = Vue.createApp(Vue.defineComponent({
       if (confirm(conf)) {
 
         this.resetCrown(true);
-        this.player.onPerfectChallenge = true;
-        this.player.challengeCleared = []
-        this.player.challengeBonuses = []
-        this.player.rankChallengeCleared = []
-        this.player.rankChallengeBonuses = []
+        this.player.challenge.onPerfectChallenge = true;
+        this.player.challenge.challengeCleared = []
+        this.player.challenge.challengeBonuses = []
+        this.player.challenge.rankChallengeCleared = []
+        this.player.challenge.rankChallengeBonuses = []
 
       }
     },
@@ -1741,7 +1737,7 @@ const app = Vue.createApp(Vue.defineComponent({
     exitChallenge() {
       if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
         this.player.onChallenge = false;
-        this.activechallengebonuses = this.player.challengeBonuses;
+        this.player.challenge.activeBonuses = this.player.challengeBonuses;
         this.calcgncost()
       }
     },
@@ -1750,11 +1746,11 @@ const app = Vue.createApp(Vue.defineComponent({
 
       if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
         if (this.player.onChallenge) this.exitChallenge()
-        this.player.onPerfectChallenge = false;
+        this.player.challenge.onPerfectChallenge = false;
         this.player.perfectChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)] = Math.max(this.player.perfectChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)], this.player.challengeCleared.length)
         this.player.perfectRankChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)] = Math.max(this.player.perfectRankChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)], this.player.rankChallengeCleared.length)
-        this.player.challengeCleared = this.challengedata.challengeids
-        this.player.rankChallengeCleared = this.challengedata.challengeids
+        this.player.challenge.challengeCleared = Challenge.challengeIds
+        this.player.challenge.rankChallengeCleared = Challenge.challengeIds
         for (let i = 0; i < setchipnum; i++) {
           this.player.chips.disabledChip[i] = false
         }
@@ -2331,8 +2327,9 @@ const app = Vue.createApp(Vue.defineComponent({
 
   },
 }));
-app.config.globalProperties.Rings = Rings;
-app.config.globalProperties.Chips = Chips;
 app.config.globalProperties.Campaign = Campaign;
+app.config.globalProperties.Challenge = Challenge;
+app.config.globalProperties.Chips = Chips;
+app.config.globalProperties.Rings = Rings;
 app.config.globalProperties.Shine = Shine;
 app.mount('#app');

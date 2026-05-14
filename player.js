@@ -16,7 +16,6 @@ class Player {
     this.level = new Decimal(playerData.level);
     this.levelResetTime = new Decimal(playerData.levelresettime);
     this.maxLevelGained = new Decimal(playerData.maxlevelgained);
-    this.token = playerData.token;
 
     this.shines = new Shine(playerData);
 
@@ -25,8 +24,6 @@ class Player {
 
     this.crown = new Decimal(playerData.crown);
     this.crownResetTime = new Decimal(playerData.crownresettime);
-
-    this.rankToken = playerData.ranktoken;
 
     this.generators = playerData.generators.map(v => new Decimal(v));
     this.generatorsBought = playerData.generatorsBought.map(v => new Decimal(v));
@@ -60,18 +57,7 @@ class Player {
     this.currentTab = "basic";
     this.tweeting = Array.from(playerData.tweeting);
 
-    this.onChallenge = playerData.onchallenge;
-    this.challenges = Array.from(playerData.challenges);
-    this.challengeCleared = Array.from(playerData.challengecleared);
-    this.challengeBonuses = Array.from(playerData.challengebonuses);
-
-    this.challengeWeight = Array.from(playerData.challengeweight);
-    this.challengeWeightValue = Array.from(playerData.challengeweightvalue);
-
-    this.onPerfectChallenge = playerData.onpchallenge;
-    this.perfectChallenges = Array.from(playerData.pchallenges);
-    this.perfectChallengeCleared = Array.from(playerData.pchallengecleared);
-    this.perfectRankChallengeCleared = Array.from(playerData.prchallengecleared);
+    this.challenge = new Challenge(playerData);
 
     this.boughtType = Array.from(playerData.boughttype);
     this.setModes = Array.from(playerData.setmodes);
@@ -79,9 +65,6 @@ class Player {
     this.setChallengeBonuses2 = Array.from(playerData.setchallengebonusessnd);
     this.setRankChallengeBonuses1 = Array.from(playerData.setrankchallengebonusesfst);
     this.setRankChallengeBonuses2 = Array.from(playerData.setrankchallengebonusessnd);
-
-    this.rankChallengeCleared = Array.from(playerData.rankchallengecleared);
-    this.rankChallengeBonuses = Array.from(playerData.rankchallengebonuses);
 
     this.trophies = Array.from(playerData.trophies);
     this.smallTrophies1st = Array.from(playerData.smalltrophies);
@@ -131,7 +114,7 @@ class Player {
       level: this.level,
       levelresettime: this.levelResetTime,
       maxlevelgained: this.maxLevelGained,
-      token: this.token,
+      token: this.challenge.token,
       shine: this.shine,
       brightness: this.brightness,
       flicker: this.flicker,
@@ -147,7 +130,7 @@ class Player {
       crown: this.crown,
       crownresettime: this.crownResetTime,
 
-      ranktoken: this.rankToken,
+      ranktoken: this.challenge.rankToken,
 
       generators: this.generators,
       generatorsBought: this.generatorsBought,
@@ -187,8 +170,8 @@ class Player {
       challengecleared: this.challengeCleared,
       challengebonuses: this.challengeBonuses,
 
-      challengeweight: this.challengeWeight,
-      challengeweightvalue: this.challengeWeightValue,
+      challengeweight: this.challenge.challengeWeight,
+      challengeweightvalue: this.challenge.challengeWeightValue,
 
       onpchallenge: this.onPerfectChallenge,
       pchallenges: this.perfectChallenges,
@@ -242,6 +225,19 @@ class Player {
   set brightness(x) {this.shines.brightness = x;}
   get flicker() {return this.shines.flicker;}
   set flicker(x) {this.shines.flicker = x;}
+
+  get onChallenge() {return this.challenge.onChallenge;}
+  set onChallenge(x) {this.challenge.onChallenge = x;}
+  get challenges() {return this.challenge.challenges;}
+  get challengeCleared() {return this.challenge.challengeCleared;}
+  get challengeBonuses() {return this.challenge.challengeBonuses;}
+  get rankChallengeCleared() {return this.challenge.rankChallengeCleared;}
+  get rankChallengeBonuses() {return this.challenge.rankChallengeBonuses;}
+
+  get onPerfectChallenge() {return this.challenge.onPerfectChallenge;}
+  get perfectChallenges() {return this.challenge.perfectChallenges;}
+  get perfectChallengeCleared() {return this.challenge.perfectChallengeCleared;}
+  get perfectRankChallengeCleared() {return this.challenge.perfectRankChallengeCleared;}
 
   get chip() {
     return this.chips.chip;

@@ -3,7 +3,7 @@ function Timedata() {
   this.calctickspeed = function (data) {
 
     let amult = new Decimal(1)
-    if (data.activechallengebonuses.includes(6)) {
+    if (data.player.challenge.activeBonuses.includes(6)) {
       if (data.player.rankChallengeBonuses.includes(10)) {
         amult = amult.mul(data.player.acceleratorsBought[0].pow_base(2))
       } else {

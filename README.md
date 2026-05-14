@@ -14,6 +14,8 @@ this is an incremental game project I(twitter:@dem08656775) created. I threw old
   - (おそらく)自動セーブを挟まずに2連続で世界を変更した場合でも最新の状態が保存されるように
   - 世界の解放条件を満たしてもセーブされるまで世界が解放されない
     - this.playersへthis.playerが反映されるのがセーブ時のため。後でなんとかする。
+- 変数が適切に初期化されず、最初の1tickまで直前の状態が反映されるバグを一部修正。
+  - ロード/世界切り替え/完全なリセット時などに発生
 
 ## Getting Started with Development
 

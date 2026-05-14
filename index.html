@@ -152,7 +152,7 @@
 								変更
 							</button>
 						</div>
-						<span v-show="showmult  && !activechallengebonuses.includes(13)">
+						<span v-show="showmult  && !player.challenge.activeBonuses.includes(13)">
 							倍率: {{ calcincrementmult(i-1,player.generatorsMode[i-1]).toExponential(2) }}
 						</span>
 					</div>
@@ -347,7 +347,7 @@
 						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.challenges.includes(i-1) }" @click="configchallenge(i-1)">
 							挑戦 {{ i }}
 						</button>
-						<span> ・{{ challengedata.challengetext[i-1] }} </span>
+						<span> ・{{ Challenge.challengeText[i-1] }} </span>
 					</div>
 					<br>
 					<div>
@@ -377,12 +377,12 @@
 				</div>
 				<div class="challengebonuses-container">
 					効力:効力とは勲章を消費して得られる強化のことです。
-					勲章:{{ player.token }}
+					勲章:{{ player.challenge.token }}
 					<div class="challenge" v-for="i in 15" :key="i">
 						<button type="button" class="rewardbutton" :class="{ 'selected': player.challengeBonuses.includes(i-1) }" @click="buyRewards(i-1)">
-							効力 {{ i }}: コスト {{ challengedata.rewardcost[i-1] }}
+							効力 {{ i }}: コスト {{ Challenge.rewardCost[i-1] }}
 						</button>
-						<span> ・{{ challengedata.rewardtext[i-1] }} </span>
+						<span> ・{{ Challenge.rewardText[i-1] }} </span>
 					</div>
 				</div>
 				<br>
@@ -407,12 +407,12 @@
 
 				<div v-if="player.rankChallengeCleared.length>=1">
 					上位効力:上位効力とは大勲章を消費して得られる強化のことです。
-					大勲章:{{ player.rankToken }}
+					大勲章:{{ player.challenge.rankToken }}
 					<div class="challenge" v-for="i in 15" :key="i">
 						<button type="button" class="rewardbutton" :class="{ 'selected': player.rankChallengeBonuses.includes(i-1) }" @click="buyrankRewards(i-1)">
-							効力 {{ i }}: コスト {{ challengedata.rewardcost[i-1] }}
+							効力 {{ i }}: コスト {{ Challenge.rewardCost[i-1] }}
 						</button>
-						<span> ・{{ challengedata.rankrewardtext[i-1] }} </span>
+						<span> ・{{ Challenge.rankRewardText[i-1] }} </span>
 					</div>
 					<div v-if="player.boughtType[3]">
 						型設定
@@ -445,8 +445,8 @@
 						<button type="button" @click="configchallengeweightvalue(i-1)">
 							重み登録
 						</button>
-						現在種類: {{ calcchallengesarray(player.challengeWeight[i-1]).map((e) => e+1) }}
-						現在重み: {{ player.challengeWeightValue[i-1] }}
+						現在種類: {{ calcchallengesarray(player.challenge.challengeWeight[i-1]).map((e) => e+1) }}
+						現在重み: {{ player.challenge.challengeWeightValue[i-1] }}
 					</div>
 				</div>
 			</div>
@@ -477,7 +477,7 @@
 						<button type="button" class="challengeconfigbutton" :class="{ 'selected': player.perfectChallenges.includes(i-1) }" @click="configpchallenge(i-1)">
 							完全挑戦 {{ i }}
 						</button>
-						<span> ・{{ challengedata.pchallengetext[i-1] }} </span>
+						<span> ・{{ Challenge.pChallengeText[i-1] }} </span>
 					</div>
 					<br>
 					<div>

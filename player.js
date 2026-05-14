@@ -19,8 +19,6 @@ class Player {
     this.token = playerData.token;
 
     this.shines = new Shine(playerData);
-    this.shineloader = Array.from(playerData.shineloader);
-    this.brightloader = Array.from(playerData.brightloader);
 
     this.rank = new Decimal(playerData.rank);
     this.rankResetTime = new Decimal(playerData.rankresettime);
@@ -93,14 +91,11 @@ class Player {
     this.levelItemBought = playerData.levelitembought;
 
     this.remember = playerData.remember;
-    this.rememberSpent = playerData.rememberspent;
-    this.rememberForgot = playerData.rememberforgot;
 
     this.chips = new Chips(playerData);
     this.statues = Statues.new(playerData);
 
     this.spiritLevelA = Array.from(playerData.spiritlevela);
-    this.spiritBoughtCurrentCrown = Array.from(playerData.spiritboughtcurrentcrown);
 
     this.worldPipe = Array.from(playerData.worldpipe);
     this.rings = new Rings(playerData.rings);
@@ -114,6 +109,14 @@ class Player {
         autoDarkLevelResetBorder: playerData.rings.outsideauto.autodarklevelresetborder,
         autoDoChallenge: playerData.rings.outsideauto.autodochallenge,
         autoRing: playerData.rings.auto.doauto,
+    };
+
+    this.unUsed = {
+      shineLoader: Array.from(playerData.shineloader),
+      brightLoader: Array.from(playerData.brightloader),
+      rememberSpent: playerData.rememberspent,
+      rememberForgot: playerData.rememberforgot,
+      spiritBoughtCurrentCrown: Array.from(playerData.spiritboughtcurrentcrown),
     };
   }
 
@@ -133,8 +136,8 @@ class Player {
       brightness: this.brightness,
       flicker: this.flicker,
 
-      shineloader: this.shineloader,
-      brightloader: this.brightloader,
+      shineloader: this.unUsed.shineLoader,
+      brightloader: this.unUsed.brightLoader,
 
       residue: this.shines.residue,
 
@@ -210,8 +213,8 @@ class Player {
       levelitembought: this.levelItemBought,
 
       remember: this.remember,
-      rememberspent: this.rememberSpent,
-      rememberforgot: this.rememberForgot,
+      rememberspent: this.unUsed.rememberSpent,
+      rememberforgot: this.unUsed.rememberForgot,
 
       chip: chips.chip,
       setchip: chips.setchip,
@@ -223,7 +226,7 @@ class Player {
       polishedstatuebr: statues.polishedstatuebr,
 
       spiritlevela: this.spiritLevelA,
-      spiritboughtcurrentcrown: this.spiritBoughtCurrentCrown,
+      spiritboughtcurrentcrown: this.unUsed.spiritBoughtCurrentCrown,
 
       setchiptypefst: chips.setchiptypefst,
 

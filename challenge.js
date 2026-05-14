@@ -75,6 +75,41 @@ class Challenge {
     "鋳片効力は、新規挑戦達成でない段位リセットを行うごとにランダムで1つが無効になります。",
   ];
 
+
+  /** @param {number[]} array */
+  static getChallengeId(array) {
+    let challengeid = 0;
+    for (let i = 0; i < 8; i++) {
+      challengeid *= 2
+      if (array.includes(i)) {
+        challengeid += 1
+      }
+    }
+    return challengeid;
+  }
+  /** @param {number[]} array */
+  static getPChallengeId(array) {
+    let challengeid = 0;
+    for (let i = 9; i >= 0; i--) {
+      challengeid *= 2
+      if (array.includes(i)) {
+        challengeid += 1
+      }
+    }
+    return challengeid;
+  }
+  /** @param {number} challengeId */
+  static calcChallengesArray(challengeId) {
+    let ans = [];
+    for (let i = 7; i >= 0; i--) {
+      if (challengeId % 2 == 1) ans.push(i)
+      challengeId = challengeId >>> 1
+    }
+    ans.sort()
+    return ans
+  }
+
+
   /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
     this.token = playerData.token;
@@ -99,5 +134,137 @@ class Challenge {
     this.activeBonuses = (!this.onChallenge || this.challengeBonuses.includes(4)) ? this.challengeBonuses : [];
   }
 
+  getChallengeId() {
+    return Challenge.getChallengeId(this.challenges);
+  }
+  getPChallengeId() {
+    return Challenge.getPChallengeId(this.perfectChallenges);
+  }
+
+  calcToken() {
+    let spent = 0;
+    for (let i of this.challengeBonuses) {
+      spent += Challenge.rewardCost[i]
+    }
+    let t = this.challengeCleared.length
+    if (this.onPerfectChallenge) {
+      t = Math.max(t, this.perfectChallengeCleared[this.getPChallengeId()])
+    }
+    this.token = t - spent
+
+    let rspent = 0;
+    for (let i of this.rankChallengeBonuses) {
+      rspent += Challenge.rewardCost[i]
+    }
+    let rt = this.rankChallengeCleared.length
+    if (this.onPerfectChallenge) {
+      rt = Math.max(rt, this.perfectRankChallengeCleared[this.getPChallengeId()])
+    }
+    this.rankToken = rt - rspent
+  }
+
+  /** @param {number} index */
+  buyRewards(index) {
+    if (this.challengeBonuses.includes(index)) {
+      this.challengeBonuses.splice(this.challengeBonuses.indexOf(index), 1)
+      this.token += Challenge.rewardCost[index]
+    } else {
+      if (this.token < Challenge.rewardCost[index]) {
+        return;
+      }
+      this.challengeBonuses.push(index)
+      this.token -= Challenge.rewardCost[index]
+    }
+  }
+  /** @param {number} index */
+  buyRankRewards(index) {
+    if (this.rankChallengeBonuses.includes(index)) {
+      this.rankChallengeBonuses.splice(this.rankChallengeBonuses.indexOf(index), 1)
+      this.rankToken += Challenge.rewardCost[index]
+    } else {
+      if (this.rankToken < Challenge.rewardCost[index]) {
+        return;
+      }
+      this.rankChallengeBonuses.push(index)
+      this.rankToken -= Challenge.rewardCost[index]
+    }
+  }
+
+
+  configChallengeWeightKind(i) {
+    this.challengeWeight[i] = this.getChallengeId()
+  }
+  configChallengeWeightValue(i) {
+    let input = parseInt(window.prompt("重みを設定", ""))
+    if (isNaN(input)) return
+    this.challengeWeightValue[i] = input
+  }
+  showUnclearedChallenges() {
+    if (this.challengeCleared.length == 255) return;
+    if (this.onChallenge) return;
+
+    let challengeWeightPairs = []
+    for (let i = 1; i <= 255; i++) {
+      let ans = 0;
+      for (let j = 0; j < 20; j++) {
+        if ((i | this.challengeWeight[j]) == i) {
+          ans += this.challengeWeightValue[j]
+        }
+      }
+      challengeWeightPairs.push({
+        id: i,
+        weight: ans
+      })
+    }
+
+    challengeWeightPairs.sort((a, b) => a.weight - b.weight)
+    console.log("challenge weights:", challengeWeightPairs)
+
+    let challengeId = this.getChallengeId();
+    do {
+      if (challengeId == 0) {
+        challengeId = challengeWeightPairs[0].id
+      } else {
+        let idx = challengeWeightPairs.findIndex((e) => e.id == challengeId) + 1
+        if (idx == 255) idx = 0
+        challengeId = challengeWeightPairs[idx].id
+      }
+    } while (this.challengeCleared.includes(challengeId));
+
+    this.challenges = Challenge.calcChallengesArray(challengeId)
+  }
+  showUnclearedRankChallenges() {
+    if (this.rankChallengeCleared.length == 255) return;
+    if (this.onChallenge) return;
+
+    let challengeweightpairs = []
+    for (let i = 1; i <= 255; i++) {
+      let ans = 0;
+      for (let j = 0; j < 20; j++) {
+        if ((i | this.challengeWeight[j]) == i) {
+          ans += this.challengeWeightValue[j]
+        }
+      }
+      challengeweightpairs.push({
+        id: i,
+        weight: ans
+      })
+    }
+
+    challengeweightpairs.sort((a, b) => a.weight - b.weight)
+
+    let challengeid = this.getChallengeId();
+    do {
+      if (challengeid == 0) {
+        challengeid = challengeweightpairs[0].id
+      } else {
+        let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1
+        if (idx == 255) idx = 0
+        challengeid = challengeweightpairs[idx].id
+      }
+    } while (this.rankChallengeCleared.includes(challengeid));
+
+    this.challenges = Challenge.calcChallengesArray(challengeid)
+  }
 
 }

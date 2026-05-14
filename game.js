@@ -776,29 +776,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.boughtType[num] = true
       }
     },
-    calctoken() {
-
-      let spent = 0;
-      for (let i of this.player.challengeBonuses) {
-        spent += Challenge.rewardCost[i]
-      }
-      let t = this.player.challengeCleared.length
-      if (this.player.onPerfectChallenge) {
-        t = Math.max(t, this.player.perfectChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)])
-      }
-      this.player.challenge.token = t - spent
-
-      let rspent = 0;
-      for (let i of this.player.rankChallengeBonuses) {
-        rspent += Challenge.rewardCost[i]
-      }
-      let rt = this.player.rankChallengeCleared.length
-      if (this.player.onPerfectChallenge) {
-        rt = Math.max(rt, this.player.perfectRankChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)])
-      }
-      this.player.challenge.rankToken = rt - rspent
-
-    },
     countpchallengecleared() {
 
       let cnt = 0;
@@ -845,7 +822,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.updategenerators(new Decimal(1))
       this.updateaccelerators(new Decimal(1))
 
-      this.calctoken()
+      this.player.challenge.calcToken()
 
       if (this.player.campaign.updateCampaign()) {
         alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
@@ -1018,8 +995,8 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     autochallenge() {
       if (this.player.challengeCleared.length == 255) return;
-      if (this.player.challengeCleared.includes(this.getchallengeid(this.player.challenges)) || this.player.challenges.length == 0) {
-        this.showunclearedchallenges()
+      if (this.player.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenges.length == 0) {
+        this.player.challenge.showUnclearedChallenges()
       }
       if (!this.player.onChallenge) {
         this.startChallenge()
@@ -1144,28 +1121,10 @@ const app = Vue.createApp(Vue.defineComponent({
 
     },
     buyRewards(index) {
-      if (this.player.challengeBonuses.includes(index)) {
-        this.player.challengeBonuses.splice(this.player.challengeBonuses.indexOf(index), 1)
-        this.player.challenge.token += Challenge.rewardCost[index]
-      } else {
-        if (this.player.challenge.token < Challenge.rewardCost[index]) {
-          return;
-        }
-        this.player.challengeBonuses.push(index)
-        this.player.challenge.token -= Challenge.rewardCost[index]
-      }
+      this.player.challenge.buyRewards(index);
     },
     buyrankRewards(index) {
-      if (this.player.rankChallengeBonuses.includes(index)) {
-        this.player.rankChallengeBonuses.splice(this.player.rankChallengeBonuses.indexOf(index), 1)
-        this.player.challenge.rankToken += Challenge.rewardCost[index]
-      } else {
-        if (this.player.challenge.rankToken < Challenge.rewardCost[index]) {
-          return;
-        }
-        this.player.rankChallengeBonuses.push(index)
-        this.player.challenge.rankToken -= Challenge.rewardCost[index]
-      }
+      this.player.challenge.buyRankRewards(index);
     },
     calclevelitemcost(index) {
       let d = index + 1
@@ -1316,9 +1275,9 @@ const app = Vue.createApp(Vue.defineComponent({
           if (this.player.challenges.length >= 6) {
             this.player.trophies[3] = true;
           }
-          let id = this.calcchallengeid()
+          let id = this.player.challenge.getChallengeId()
           if (!this.player.challengeCleared.includes(id)) {
-            this.player.challengeCleared.push(this.calcchallengeid())
+            this.player.challengeCleared.push(this.player.challenge.getChallengeId())
             disa = false
           }
           this.player.challenge.activeBonuses = this.player.challengeBonuses;
@@ -1419,8 +1378,8 @@ const app = Vue.createApp(Vue.defineComponent({
         if (this.player.onChallenge) {
           this.player.onChallenge = false;
           this.player.challenge.activeBonuses = this.player.challengeBonuses;
-          if (this.player.challengeCleared.length >= 128 && !this.player.rankChallengeCleared.includes(this.calcchallengeid())) {
-            this.player.rankChallengeCleared.push(this.calcchallengeid())
+          if (this.player.challengeCleared.length >= 128 && !this.player.rankChallengeCleared.includes(this.player.challenge.getChallengeId())) {
+            this.player.rankChallengeCleared.push(this.player.challenge.getChallengeId())
           }
         }
 
@@ -1548,127 +1507,8 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
 
-    calcchallengeid() {
-      let challengeid = 0;
-      for (let i = 0; i < 8; i++) {
-        challengeid *= 2
-        if (this.player.challenges.includes(i)) {
-          challengeid += 1
-        }
-      }
-      return challengeid;
-    },
-    getchallengeid(arr) {
-      let challengeid = 0;
-      for (let i = 0; i < 8; i++) {
-        challengeid *= 2
-        if (arr.includes(i)) {
-          challengeid += 1
-        }
-      }
-      return challengeid;
-    },
-    getpchallengeid(arr) {
-      let challengeid = 0;
-      for (let i = 9; i >= 0; i--) {
-        challengeid *= 2
-        if (arr.includes(i)) {
-          challengeid += 1
-        }
-      }
-      return challengeid;
-    },
-    configchallengeweightkind(i) {
-      this.player.challenge.challengeWeight[i] = this.calcchallengeid()
-    },
-    configchallengeweightvalue(i) {
-      let input = parseInt(window.prompt("重みを設定", ""))
-      if (isNaN(input)) return
-      this.player.challenge.challengeWeightValue[i] = input
-    },
-    showunclearedchallenges() {
-      if (this.player.challengeCleared.length == 255) return;
-      if (this.player.onChallenge) return;
-      let challengeid = this.calcchallengeid();
-
-      let challengeweightpairs = []
-      for (let i = 1; i <= 255; i++) {
-        let ans = 0;
-        for (let j = 0; j < 20; j++) {
-
-          if ((i | this.player.challenge.challengeWeight[j]) == i) {
-
-            ans += this.player.challenge.challengeWeightValue[j]
-          }
-        }
-        challengeweightpairs.push({
-          id: i,
-          weight: ans
-        })
-      }
-
-      challengeweightpairs.sort((a, b) => a.weight - b.weight)
-
-      console.log("challenge weights:", challengeweightpairs)
-
-      do {
-        if (challengeid == 0) {
-          challengeid = challengeweightpairs[0].id
-        } else {
-          let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1
-          if (idx == 255) idx = 0
-          challengeid = challengeweightpairs[idx].id
-        }
-      } while (this.player.challengeCleared.includes(challengeid));
-
-      this.player.challenge.challenges = this.calcchallengesarray(challengeid)
-    },
-    showunclearedrankchallenges() {
-      if (this.player.rankChallengeCleared.length == 255) return;
-      if (this.player.onChallenge) return;
-      let challengeid = this.calcchallengeid();
-
-      let challengeweightpairs = []
-      for (let i = 1; i <= 255; i++) {
-        let ans = 0;
-        for (let j = 0; j < 20; j++) {
-
-          if ((i | this.player.challenge.challengeWeight[j]) == i) {
-
-            ans += this.player.challenge.challengeWeightValue[j]
-          }
-        }
-        challengeweightpairs.push({
-          id: i,
-          weight: ans
-        })
-      }
-
-      challengeweightpairs.sort((a, b) => a.weight - b.weight)
-
-      do {
-        if (challengeid == 0) {
-          challengeid = challengeweightpairs[0].id
-        } else {
-          let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1
-          if (idx == 255) idx = 0
-          challengeid = challengeweightpairs[idx].id
-        }
-      } while (this.player.rankChallengeCleared.includes(challengeid));
-
-      this.player.challenge.challenges = this.calcchallengesarray(challengeid)
-    },
-    calcchallengesarray(challengeid) {
-      let ans = [];
-      for (let i = 7; i >= 0; i--) {
-        if (challengeid % 2 == 1) ans.push(i)
-        challengeid = challengeid >>> 1
-      }
-      ans.sort()
-      return ans
-    },
     startChallenge() {
-      let challengeid = this.calcchallengeid();
+      let challengeid = this.player.challenge.getChallengeId();
 
       if (challengeid == 0) {
         alert("挑戦が一つも選択されていません。")
@@ -1747,8 +1587,8 @@ const app = Vue.createApp(Vue.defineComponent({
       if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
         if (this.player.onChallenge) this.exitChallenge()
         this.player.challenge.onPerfectChallenge = false;
-        this.player.perfectChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)] = Math.max(this.player.perfectChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)], this.player.challengeCleared.length)
-        this.player.perfectRankChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)] = Math.max(this.player.perfectRankChallengeCleared[this.getpchallengeid(this.player.perfectChallenges)], this.player.rankChallengeCleared.length)
+        this.player.perfectChallengeCleared[this.player.challenge.getPChallengeId()] = Math.max(this.player.perfectChallengeCleared[this.player.challenge.getPChallengeId()], this.player.challengeCleared.length)
+        this.player.perfectRankChallengeCleared[this.player.challenge.getPChallengeId()] = Math.max(this.player.perfectRankChallengeCleared[this.player.challenge.getPChallengeId()], this.player.rankChallengeCleared.length)
         this.player.challenge.challengeCleared = Challenge.challengeIds
         this.player.challenge.rankChallengeCleared = Challenge.challengeIds
         for (let i = 0; i < setchipnum; i++) {
@@ -1816,42 +1656,42 @@ const app = Vue.createApp(Vue.defineComponent({
         if (r >= 16) this.players[i].rankresettime = new Decimal(34)
         if (r >= 17) {
           for (let j = 0; j < this.rememberdata.givenchalenges[0].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[0][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[0][j]))
           }
         }
         if (r >= 18) {
           for (let j = 0; j < this.rememberdata.givenchalenges[1].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[1][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[1][j]))
           }
         }
         if (r >= 19) {
           for (let j = 0; j < this.rememberdata.givenchalenges[2].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[2][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[2][j]))
           }
         }
         if (r >= 20) {
           for (let j = 0; j < this.rememberdata.givenchalenges[3].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[3][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[3][j]))
           }
         }
         if (r >= 21) {
           for (let j = 0; j < this.rememberdata.givenchalenges[4].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[4][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[4][j]))
           }
         }
         if (r >= 22) {
           for (let j = 0; j < this.rememberdata.givenchalenges[5].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[5][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[5][j]))
           }
         }
         if (r >= 23) {
           for (let j = 0; j < this.rememberdata.givenchalenges[6].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[6][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[6][j]))
           }
         }
         if (r >= 24) {
           for (let j = 0; j < this.rememberdata.givenchalenges[7].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[7][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[7][j]))
           }
         }
         if (r >= 25) this.players[i].rank = new Decimal(64)
@@ -1865,25 +1705,25 @@ const app = Vue.createApp(Vue.defineComponent({
         if (r >= 33) this.players[i].maxlevelgained = new Decimal(1000)
         if (r >= 34) {
           for (let j = 0; j < this.rememberdata.givenchalenges[8].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[8][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[8][j]))
           }
         }
         if (r >= 35) this.players[i].maxlevelgained = new Decimal(3000)
         if (r >= 36) {
           for (let j = 0; j < this.rememberdata.givenchalenges[9].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[9][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[9][j]))
           }
         }
         if (r >= 37) this.players[i].maxlevelgained = new Decimal(10000)
         if (r >= 38) {
           for (let j = 0; j < this.rememberdata.givenchalenges[10].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[10][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[10][j]))
           }
         }
         if (r >= 39) this.players[i].maxlevelgained = new Decimal(30000)
         if (r >= 40) {
           for (let j = 0; j < this.rememberdata.givenchalenges[11].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[11][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[11][j]))
           }
         }
         if (r >= 41) this.players[i].levelresettime = new Decimal(1000)
@@ -1894,52 +1734,52 @@ const app = Vue.createApp(Vue.defineComponent({
         if (r >= 46) this.players[i].levelitembought = 6400
         if (r >= 47) {
           for (let j = 0; j < this.rememberdata.givenchalenges[12].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[12][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[12][j]))
           }
         }
         if (r >= 48) {
           for (let j = 0; j < this.rememberdata.givenchalenges[13].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[13][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[13][j]))
           }
         }
         if (r >= 49) {
           for (let j = 0; j < this.rememberdata.givenchalenges[14].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[14][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[14][j]))
           }
         }
         if (r >= 50) {
           for (let j = 0; j < this.rememberdata.givenchalenges[15].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[15][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[15][j]))
           }
         }
         if (r >= 51) {
           for (let j = 0; j < this.rememberdata.givenchalenges[16].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[16][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[16][j]))
           }
         }
         if (r >= 52) {
           for (let j = 0; j < this.rememberdata.givenchalenges[17].length; j++) {
-            this.players[i].challengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[17][j]))
+            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[17][j]))
           }
         }
         if (r >= 53) {
           for (let j = 0; j < this.rememberdata.givenchalenges[0].length; j++) {
-            this.players[i].rankchallengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[0][j]))
+            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[0][j]))
           }
         }
         if (r >= 54) {
           for (let j = 0; j < this.rememberdata.givenchalenges[1].length; j++) {
-            this.players[i].rankchallengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[1][j]))
+            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[1][j]))
           }
         }
         if (r >= 55) {
           for (let j = 0; j < this.rememberdata.givenchalenges[2].length; j++) {
-            this.players[i].rankchallengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[2][j]))
+            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[2][j]))
           }
         }
         if (r >= 56) {
           for (let j = 0; j < this.rememberdata.givenchalenges[3].length; j++) {
-            this.players[i].rankchallengecleared.push(this.getchallengeid(this.rememberdata.givenchalenges[3][j]))
+            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[3][j]))
           }
         }
         if (r >= 57) this.players[i].chip[0] = 1;

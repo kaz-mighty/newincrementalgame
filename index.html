@@ -351,12 +351,12 @@
 					</div>
 					<br>
 					<div>
-						<button type="button" class="showclearedchallengesbutton" @click="showunclearedchallenges()">
+						<button type="button" class="showclearedchallengesbutton" @click="player.challenge.showUnclearedChallenges()">
 							未達成挑戦
 						</button>
 					</div>
 					<div>
-						<button v-if="player.rankChallengeCleared.length>=1" type="button" class="showclearedchallengesbutton" @click="showunclearedrankchallenges()">
+						<button v-if="player.rankChallengeCleared.length>=1" type="button" class="showclearedchallengesbutton" @click="player.challenge.showUnclearedRankChallenges()">
 							未達成階位挑戦
 						</button>
 					</div>
@@ -439,13 +439,13 @@
 					未達成挑戦:優先度設定
 					<div v-for="i in 20" :key="i">
 						設定 {{ i }}
-						<button type="button" @click="configchallengeweightkind(i-1)">
+						<button type="button" @click="player.challenge.configChallengeWeightKind(i-1)">
 							種類登録
 						</button>
-						<button type="button" @click="configchallengeweightvalue(i-1)">
+						<button type="button" @click="player.challenge.configChallengeWeightValue(i-1)">
 							重み登録
 						</button>
-						現在種類: {{ calcchallengesarray(player.challenge.challengeWeight[i-1]).map((e) => e+1) }}
+						現在種類: {{ Challenge.calcChallengesArray(player.challenge.challengeWeight[i-1]).map((e) => e+1) }}
 						現在重み: {{ player.challenge.challengeWeightValue[i-1] }}
 					</div>
 				</div>
@@ -481,10 +481,10 @@
 					</div>
 					<br>
 					<div>
-						挑戦番号:{{ getpchallengeid(player.perfectChallenges) }}
+						挑戦番号:{{ player.challenge.getPChallengeId() }}
 						進行度:
-						通常:{{ player.perfectChallengeCleared[getpchallengeid(player.perfectChallenges)] }}
-						上位:{{ player.perfectRankChallengeCleared[getpchallengeid(player.perfectChallenges)] }}
+						通常:{{ player.perfectChallengeCleared[player.challenge.getPChallengeId()] }}
+						上位:{{ player.perfectRankChallengeCleared[player.challenge.getPChallengeId()] }}
 					</div>
 					<div>
 						完全挑戦段階: {{ pchallengestage }}

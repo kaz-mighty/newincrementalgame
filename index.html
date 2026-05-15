@@ -74,7 +74,7 @@
 				<span id="rank" v-if="player.crownResetTime.gt(0)">
 					<button type="button" @click="changeTab('crown')">冠位</button>
 				</span>
-				<span id="rank" v-if="pchallengestage>=10">
+				<span id="rank" v-if="player.challenge.perfectChallengeStage>=10">
 					<button type="button" @click="changeTab('spirit')">精霊</button>
 				</span>
 				<span id="auto" v-if="player.levelResetTime.gt(0) || player.rankResetTime.gt(0) || player.crownResetTime.gt(0)">
@@ -249,7 +249,7 @@
 			</div>
 
 			<div v-if="player.currentTab == 'light'">
-				<div id="lightcoinamount" v-show="pchallengestage>=1">天上ポイント: {{ player.lightMoney.toExponential(3) }}</div>
+				<div id="lightcoinamount" v-show="player.challenge.perfectChallengeStage>=1">天上ポイント: {{ player.lightMoney.toExponential(3) }}</div>
 				天上発生器iは裏発生器iを強化します。
 
 				<div class="lightgenerator" v-for="i in 8" :key="i">
@@ -308,7 +308,7 @@
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('darklevel') }" @click="configtweet('darklevel')" v-if="player.darkLevel.gt(0)">裏段位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('achieved') }" @click="configtweet('achieved')" v-if="player.levelResetTime.gt(0)||player.rankResetTime.gt(0)">挑戦達成</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('rankachieved') }" @click="configtweet('rankachieved')" v-if="player.rankChallengeCleared.length>=1">上位挑戦達成</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('pachieved') }" @click="configtweet('pachieved')" v-if="pchallengestage>=1">完全挑戦段階</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('pachieved') }" @click="configtweet('pachieved')" v-if="player.challenge.perfectChallengeStage>=1">完全挑戦段階</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('rank') }" @click="configtweet('rank')" v-if="player.rankResetTime.gt(0)">階位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('levelitemboughttime') }" @click="configtweet('levelitemboughttime')" v-if="player.rankResetTime.gt(0)">段位効力購入</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('world') }" @click="configtweet('world')" v-if="worldopened[1] || worldopened[2]">世界</button>
@@ -487,7 +487,7 @@
 						上位:{{ player.challenge.perfectRankChallengeCleared[player.challenge.getPChallengeId()] }}
 					</div>
 					<div>
-						完全挑戦段階: {{ pchallengestage }}
+						完全挑戦段階: {{ player.challenge.perfectChallengeStage }}
 					</div>
 					<br>
 					<div v-if="!player.challenge.onPerfectChallenge">
@@ -602,7 +602,7 @@
 					<button type="button" class="spendshinebutton" v-if="player.challengeCleared.length >= 224" @click="spendshine(100000)">
 						輝き消費:100000
 					</button>
-					<button type="button" class="spendshinebutton" v-if="pchallengestage>=10" @click="spendshine(1000000)">
+					<button type="button" class="spendshinebutton" v-if="player.challenge.perfectChallengeStage>=10" @click="spendshine(1000000)">
 						輝き消費:1000000
 					</button>
 				</div>
@@ -648,16 +648,16 @@
 					<div>煌き入手率: {{ (player.shines.calcBrightPercent(player, eachpipedsmalltrophy) * 100).toFixed(3) }}%</div>
 					<div>最大煌き保有数: {{ player.shines.calcMaxBright(player, checkremembers())}}</div>
 				</div>
-				<div v-if="pchallengestage>=1">
+				<div v-if="player.challenge.perfectChallengeStage>=1">
 					瞬き所持数:{{ player.flicker }}
 					<button type="button" class="spendbrightnessbutton" @click="spendflicker(1)">
 						瞬き消費:1
 					</button>
 
-					<div>瞬き入手率: {{ (player.shines.getFlickerPercent(pchallengestage) * 100).toFixed(5) }}%</div>
-					<div>最大瞬き保有数: {{ player.shines.getMaxFlicker(pchallengestage) }}</div>
+					<div>瞬き入手率: {{ (player.shines.getFlickerPercent(player.challenge.perfectChallengeStage) * 100).toFixed(5) }}%</div>
+					<div>最大瞬き保有数: {{ player.shines.getMaxFlicker(player.challenge.perfectChallengeStage) }}</div>
 				</div>
-				<div v-if="pchallengestage>=10">
+				<div v-if="player.challenge.perfectChallengeStage>=10">
 					残滓: {{ player.shines.residue }}
 				</div>
 			</div>

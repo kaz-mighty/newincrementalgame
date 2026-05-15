@@ -175,16 +175,13 @@ class Shine {
     this.brightness = Math.min(this.brightness + brightGain, maxBright);
   }
 
-  /**
-   * @param {Player} player 
-   * @param {number} pChallengeStage
-   */
-  updateFlicker(player, pChallengeStage) {
-    const maxFlicker = this.getMaxFlicker(pChallengeStage);
+  /** @param {Player} player */
+  updateFlicker(player) {
+    const maxFlicker = this.getMaxFlicker(player.challenge.perfectChallengeStage);
     if (this.flicker >= maxFlicker) return;
 
     let flickerGain = 0;
-    if (Math.random() < this.getFlickerPercent(pChallengeStage)) {
+    if (Math.random() < this.getFlickerPercent(player.challenge.perfectChallengeStage)) {
       flickerGain += 1;
     }
 

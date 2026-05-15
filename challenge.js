@@ -137,6 +137,8 @@ class Challenge {
     this.challengeWeightValue = Array.from(playerData.challengeweightvalue);
 
     this.activeBonuses = (!this.onChallenge || this.challengeBonuses.includes(4)) ? this.challengeBonuses : [];
+    this.perfectChallengeStage = 0;
+    this.countPChallengeCleared();
   }
 
   getChallengeId() {
@@ -173,6 +175,17 @@ class Challenge {
     }
     this.rankToken = rt - rspent
   }
+  countPChallengeCleared() {
+    let cnt = 0;
+    for (let i = 0; i < 1024; i++) {
+      cnt += this.perfectChallengeCleared[i]
+      cnt += this.perfectRankChallengeCleared[i]
+    }
+
+    cnt /= 510;
+    this.perfectChallengeStage = Math.floor(cnt);
+  }
+
 
   /** @param {number} index */
   buyRewards(index) {
@@ -450,7 +463,7 @@ class Challenge {
       for (let i = 0; i < setchipnum; i++) {
         data.player.chips.disabledChip[i] = false
       }
-      data.countpchallengecleared()
+      this.countPChallengeCleared()
     }
   }
 

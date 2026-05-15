@@ -241,9 +241,6 @@ const app = Vue.createApp(Vue.defineComponent({
       pipedsmalltrophy: 0,
       worldopened: new Array(worldnum).fill(false),
 
-
-      pchallengestage: 0,
-
       world: 0,
 
       time: 0,
@@ -291,7 +288,7 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '上位挑戦達成:' + this.player.rankChallengeCleared.length + '%0A';
       }
       if (this.player.tweeting.includes('pachieved')) {
-        tweetText += '完全挑戦段階:' + this.pchallengestage + '%0A';
+        tweetText += '完全挑戦段階:' + this.player.challenge.perfectChallengeStage + '%0A';
       }
       if (this.player.tweeting.includes('rank')) {
         tweetText += '階位:' + this.player.rank + '%0A';
@@ -433,8 +430,6 @@ const app = Vue.createApp(Vue.defineComponent({
       this.findhighestgenerator()
 
       this.checkpipedsmalltrophies()
-
-      this.countpchallengecleared()
 
       this.calcgncost()
       this.calcaccost()
@@ -745,7 +740,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.updategenerators(new Decimal(val))
       this.updateaccelerators(new Decimal(val))
       if (this.player.trophies[9]) {
-        this.player.shines.residue += Math.floor(num * (1 + this.pchallengestage) / 1000000)
+        this.player.shines.residue += Math.floor(num * (1 + this.player.challenge.perfectChallengeStage) / 1000000)
       }
     },
     spendbrightness(num) {
@@ -774,18 +769,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.shine -= Shine.shineShopCost[num]
         this.player.boughtType[num] = true
       }
-    },
-    countpchallengecleared() {
-
-      let cnt = 0;
-      for (let i = 0; i < 1024; i++) {
-        cnt += this.player.challenge.perfectChallengeCleared[i]
-        cnt += this.player.challenge.perfectRankChallengeCleared[i]
-      }
-
-      cnt /= 510;
-      this.pchallengestage = Math.floor(cnt);
-
     },
     findhighestgenerator() {
       this.highest = 0;
@@ -830,7 +813,7 @@ const app = Vue.createApp(Vue.defineComponent({
       const remember = this.checkremembers();
       this.player.shines.updateShine(this.player, this.eachpipedsmalltrophy, remember);
       this.player.shines.updateBright(this.player, this.eachpipedsmalltrophy, remember);
-      this.player.shines.updateFlicker(this.player, this.pchallengestage);
+      this.player.shines.updateFlicker(this.player);
 
       let autorankshine = Math.max(0, 1000 - this.checkremembers() * 10)
 

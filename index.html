@@ -178,7 +178,7 @@
 							</span>
 						</div>
 						<div class="accelerator" v-for="i in 6" :key="i">
-							<div v-show="player.levelItems[3]>=i">
+							<div v-show="player.levelShop.levelItems[3]>=i">
 								時間加速器{{i+2}}: {{ toFormated(player.accelerators[i+1],5) }}
 								<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[i+1]) }" @click="buyAccelerator(i+1)">
 									購入 コスト: {{ player.acceleratorsCost[i+1].toExponential(1) }}
@@ -188,7 +188,7 @@
 								</span>
 							</div>
 						</div>
-						<div class="accelerator" v-show="player.levelItems[3]==5 && player.campaign.accelLevel>0">
+						<div class="accelerator" v-show="player.levelShop.levelItems[3]==5 && player.campaign.accelLevel>0">
 							時間加速器{{ 8 }}: {{ toFormated(player.accelerators[7],5) }}
 							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[7]) }" @click="buyAccelerator(7)">
 								購入 コスト: {{ player.acceleratorsCost[7].toExponential(1) }}
@@ -457,13 +457,13 @@
 					段位効力は、種類ごとに5回まで購入することができます。
 					<br>
 					<div class="levelitem" v-for="i in 5" :key="i">
-						<button type="button" class="lbutton" :class="{ 'unavailable': player.level.lt(calclevelitemcost(i-1)) || player.levelItems[i-1] >= 5 }" @click="buylevelitems(i-1)">
-							段位効力 {{ i }}: コスト {{ calclevelitemcost(i-1).toExponential(1) }}
+						<button type="button" class="lbutton" :class="{ 'unavailable': player.level.lt(player.levelShop.calcLevelItemCost(i-1)) || player.levelShop.levelItems[i-1] >= 5 }" @click="player.levelShop.buyLevelItems(player, i-1)">
+							段位効力 {{ i }}: コスト {{ player.levelShop.calcLevelItemCost(i-1).toExponential(1) }}
 						</button>
-						<span> ・{{ levelshopdata.itemtext[i-1] }} </span>
-						<span> 取得数: {{ player.levelItems[i-1] }} </span>
+						<span> ・{{ LevelShop.itemText[i-1] }} </span>
+						<span> 取得数: {{ player.levelShop.levelItems[i-1] }} </span>
 					</div>
-					累計購入回数: {{player.levelItemBought}}
+					累計購入回数: {{player.levelShop.levelItemBought}}
 				</div>
 			</div>
 			<div v-if="player.currentTab == 'crown'">

@@ -209,7 +209,6 @@ const app = Vue.createApp(Vue.defineComponent({
 
       timedata: new Timedata(),
       rankdata: new Rankdata(),
-      levelshopdata: new Levelshopdata(),
       trophydata: new Trophydata(),
       rememberdata: new Rememberdata(),
       spiritdata: new Spiritdata(),
@@ -298,7 +297,7 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '階位:' + this.player.rank + '%0A';
       }
       if (this.player.tweeting.includes('levelitemboughttime')) {
-        tweetText += '段位効力購入:' + this.player.levelItemBought + '%0A';
+        tweetText += '段位効力購入:' + this.player.levelShop.levelItemBought + '%0A';
       }
       if (this.player.tweeting.includes('crown')) {
         tweetText += '冠位:' + this.player.crown + '%0A';
@@ -534,7 +533,7 @@ const app = Vue.createApp(Vue.defineComponent({
     calccommonmult() {
       let mult = new Decimal(1);
       if (!(this.player.challenge.isChallengeActive(7))) {
-        let cap = new Decimal(100).mul(this.player.levelItems[2] * (1 + this.player.setChip[28] * 0.3) + 1)
+        let cap = new Decimal(100).mul(this.player.levelShop.levelItems[2] * (1 + this.player.setChip[28] * 0.3) + 1)
         mult = mult.mul(this.softCap(this.player.levelResetTime.add(1), cap))
       }
 
@@ -846,7 +845,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       if (this.player.rankChallengeBonuses.includes(5) && this.litemautobuy) {
         for (let i = 0; i < 5; i++) {
-          this.buylevelitems(i)
+          this.player.levelShop.buyLevelItems(this.player, i)
         }
       }
 
@@ -874,7 +873,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
       if (this.player.challenge.activeBonuses.includes(9) && this.accautobuy) {
-        let ha = this.player.levelItems[3] + 1
+        let ha = this.player.levelShop.levelItems[3] + 1
         for (let i = ha; i >= 0; i--) {
           this.buyAccelerator(i)
         }
@@ -1026,25 +1025,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.auto.autoSpendBrightNumber = input
       }
     },
-    calclevelitemcost(index) {
-      let d = index + 1
-      let cost = this.levelshopdata.itemcost[index].pow(this.player.levelItems[index] + 1)
-      let dec = 0;
-      for (let i = 1; i <= 5; i++) {
-        if (4 * i * i * d * d * d <= this.player.levelItemBought) dec = i;
-      }
-      cost = cost.div(new Decimal(10).pow(dec)).max(1)
-      return cost
-    },
-    buylevelitems(index) {
-      let cost = this.calclevelitemcost(index)
-      if (this.player.level.lessThan(cost) || this.player.levelItems[index] >= 5) {
-        return;
-      }
-      this.player.level = this.player.level.sub(cost);
-      this.player.levelItems[index] = this.player.levelItems[index] + 1;
-      if (this.player.levelItemBought < 100000) this.player.levelItemBought = this.player.levelItemBought + 1;
-    },
     setmodetype() {
       if (confirm('現在のモードを登録します。よろしいですか？')) {
         for (let i = 0; i < 8; i++) {
@@ -1092,10 +1072,10 @@ const app = Vue.createApp(Vue.defineComponent({
         if (gainlevel.lt(glmax)) {
           let persent = new Decimal(1).sub(gainlevel.sub(glmin).div(glmax.sub(glmin)))
 
-          persent = persent.pow(1 + this.player.levelItems[0] * (1 + this.player.setChip[26] * 2))
+          persent = persent.pow(1 + this.player.levelShop.levelItems[0] * (1 + this.player.setChip[26] * 2))
           persent = new Decimal(1).sub(persent)
           if (persent.lt("1e-5")) {
-            gainlevel = gainlevel.mul(1 + this.player.levelItems[0] * (1 + this.player.setChip[26] * 2))
+            gainlevel = gainlevel.mul(1 + this.player.levelShop.levelItems[0] * (1 + this.player.setChip[26] * 2))
           } else {
             gainlevel = glmax.sub(glmin).mul(persent).add(glmin)
           }
@@ -1319,7 +1299,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.rank = this.player.rank.add(gainrank)
         this.player.rankResetTime = this.player.rankResetTime.add((this.player.rankChallengeBonuses.includes(8) ? new Decimal(3) : new Decimal(1)).mul(this.player.setChip[24] + 1).mul(this.player.crownResetTime.add(1)))
 
-        this.player.levelItems = [0, 0, 0, 0, 0]
+        this.player.levelShop.levelItems = [0, 0, 0, 0, 0]
 
         this.player.challenge.activeBonuses = this.player.challengeBonuses
 
@@ -1394,7 +1374,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
         this.player.tickSpeed = 1000
 
-        this.player.levelItems = [0, 0, 0, 0, 0]
+        this.player.levelShop.levelItems = [0, 0, 0, 0, 0]
 
         this.player.challenge.activeBonuses = this.player.challengeBonuses
 
@@ -1733,11 +1713,11 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.rankResetTime.greaterThan(9)) this.player.smallTrophies1st[44] = true
       if (this.player.rankResetTime.greaterThan(99)) this.player.smallTrophies1st[45] = true
       if (this.player.rankResetTime.greaterThan(999)) this.player.smallTrophies1st[46] = true
-      if (this.player.levelItemBought >= 4) this.player.smallTrophies1st[47] = true
-      if (this.player.levelItemBought >= 108) this.player.smallTrophies1st[48] = true
-      if (this.player.levelItemBought >= 256) this.player.smallTrophies1st[49] = true
-      if (this.player.levelItemBought >= 1728) this.player.smallTrophies1st[50] = true
-      if (this.player.levelItemBought >= 12500) this.player.smallTrophies1st[51] = true
+      if (this.player.levelShop.levelItemBought >= 4) this.player.smallTrophies1st[47] = true
+      if (this.player.levelShop.levelItemBought >= 108) this.player.smallTrophies1st[48] = true
+      if (this.player.levelShop.levelItemBought >= 256) this.player.smallTrophies1st[49] = true
+      if (this.player.levelShop.levelItemBought >= 1728) this.player.smallTrophies1st[50] = true
+      if (this.player.levelShop.levelItemBought >= 12500) this.player.smallTrophies1st[51] = true
       if (this.player.shine >= 100) this.player.smallTrophies1st[52] = true
       if (this.player.shine >= 1000) this.player.smallTrophies1st[53] = true
       if (this.player.shine >= 10000) this.player.smallTrophies1st[54] = true
@@ -1992,6 +1972,7 @@ const app = Vue.createApp(Vue.defineComponent({
 app.config.globalProperties.Campaign = Campaign;
 app.config.globalProperties.Challenge = Challenge;
 app.config.globalProperties.Chips = Chips;
+app.config.globalProperties.LevelShop = LevelShop;
 app.config.globalProperties.Rings = Rings;
 app.config.globalProperties.Shine = Shine;
 app.mount('#app');

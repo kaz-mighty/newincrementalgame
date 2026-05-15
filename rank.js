@@ -14,7 +14,7 @@ function Rankdata() {
 
   this.calcgainrank = function (data) {
 
-    let dv = 36 - 0.25 * data.checkremembers() - 1.2 * data.player.levelItems[4] * (1 + 0.2 * data.player.setChip[29])
+    let dv = 36 - 0.25 * data.checkremembers() - 1.2 * data.player.levelShop.levelItems[4] * (1 + 0.2 * data.player.setChip[29])
     dv = Math.max(dv, 6)
     dv = dv - data.player.crown.add(2).log2() * 0.1
     dv = Math.max(dv, 3)

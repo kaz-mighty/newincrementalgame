@@ -66,8 +66,7 @@ class Player {
     this.smallTrophies1st = Array.from(playerData.smalltrophies);
     this.smallTrophies2nd = Array.from(playerData.smalltrophies2nd);
 
-    this.levelItems = Array.from(playerData.levelitems);
-    this.levelItemBought = playerData.levelitembought;
+    this.levelShop = new LevelShop(playerData);
 
     this.remember = playerData.remember;
 
@@ -188,8 +187,8 @@ class Player {
       smalltrophies: this.smallTrophies1st,
       smalltrophies2nd: this.smallTrophies2nd,
 
-      levelitems: this.levelItems,
-      levelitembought: this.levelItemBought,
+      levelitems: this.levelShop.levelItems,
+      levelitembought: this.levelShop.levelItemBought,
 
       remember: this.remember,
       rememberspent: this.unUsed.rememberSpent,

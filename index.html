@@ -45,7 +45,7 @@
 
 			<div id="tickspeed">
 				間隙: {{ Math.round(player.tickSpeed) }}毛秒
-				<span v-if="player.accelerators[0].gt(0)">
+				<span v-if="player.accelerator.accelerators[0].gt(0)">
 					時間加速器効果: {{ (1000/player.tickSpeed).toFixed(3) }} 倍
 				</span>
 			</div>
@@ -159,9 +159,9 @@
 				</div>
 				<div class="accelerators-container">
 					<div>
-						<div class="accelerator">時間加速器1: {{ toFormated(player.accelerators[0],5) }}
-							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[0]) }" @click="buyAccelerator(0)">
-								購入 コスト: {{ player.acceleratorsCost[0].toExponential(1) }}
+						<div class="accelerator">時間加速器1: {{ toFormated(player.accelerator.accelerators[0],5) }}
+							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[0]) }" @click="player.accelerator.buyAccelerator(player, 0)">
+								購入 コスト: {{ player.accelerator.acceleratorsCost[0].toExponential(1) }}
 							</button>
 							<span>
 								購入数: {{ player.acceleratorsBought[0].toNumber()+' '}}
@@ -169,9 +169,9 @@
 						</div>
 					</div>
 					<div v-if="player.levelResetTime.gt(0)">
-						<div class="accelerator">時間加速器2: {{ toFormated(player.accelerators[1],5) }}
-							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[1]) }" @click="buyAccelerator(1)">
-								購入 コスト: {{ player.acceleratorsCost[1].toExponential(1) }}
+						<div class="accelerator">時間加速器2: {{ toFormated(player.accelerator.accelerators[1],5) }}
+							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[1]) }" @click="player.accelerator.buyAccelerator(player, 1)">
+								購入 コスト: {{ player.accelerator.acceleratorsCost[1].toExponential(1) }}
 							</button>
 							<span>
 								購入数: {{ player.acceleratorsBought[1].toNumber()+' '}}
@@ -179,9 +179,9 @@
 						</div>
 						<div class="accelerator" v-for="i in 6" :key="i">
 							<div v-show="player.levelShop.levelItems[3]>=i">
-								時間加速器{{i+2}}: {{ toFormated(player.accelerators[i+1],5) }}
-								<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[i+1]) }" @click="buyAccelerator(i+1)">
-									購入 コスト: {{ player.acceleratorsCost[i+1].toExponential(1) }}
+								時間加速器{{i+2}}: {{ toFormated(player.accelerator.accelerators[i+1],5) }}
+								<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[i+1]) }" @click="player.accelerator.buyAccelerator(player, i+1)">
+									購入 コスト: {{ player.accelerator.acceleratorsCost[i+1].toExponential(1) }}
 								</button>
 								<span>
 									購入数: {{ player.acceleratorsBought[i+1].toNumber()+' '}}
@@ -189,9 +189,9 @@
 							</div>
 						</div>
 						<div class="accelerator" v-show="player.levelShop.levelItems[3]==5 && player.campaign.accelLevel>0">
-							時間加速器{{ 8 }}: {{ toFormated(player.accelerators[7],5) }}
-							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.acceleratorsCost[7]) }" @click="buyAccelerator(7)">
-								購入 コスト: {{ player.acceleratorsCost[7].toExponential(1) }}
+							時間加速器{{ 8 }}: {{ toFormated(player.accelerator.accelerators[7],5) }}
+							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[7]) }" @click="player.accelerator.buyAccelerator(player, 7)">
+								購入 コスト: {{ player.accelerator.acceleratorsCost[7].toExponential(1) }}
 							</button>
 							<span>
 								購入数: {{ player.acceleratorsBought[7].toNumber()+' '}}
@@ -290,7 +290,7 @@
 				時の結晶
 				<div class="lightgenerator" v-for="i in 8" :key="i">
 					<span>
-						時の結晶{{ i }}: {{ player.timeCrystal[i-1]}}
+						時の結晶{{ i }}: {{ player.accelerator.timeCrystal[i-1]}}
 					</span>
 				</div>
 
@@ -950,7 +950,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue@3.4.5/dist/vue.global.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/break_infinity.js@1.2.0/dist/break_infinity.js"></script>
 	<script type="text/javascript" src="campaign.js"></script>
-	<script type="text/javascript" src="time.js"></script>
 	<script type="text/javascript" src="challenge.js"></script>
 	<script type="text/javascript" src="rank.js"></script>
 	<script type="text/javascript" src="levelshop.js"></script>
@@ -963,6 +962,7 @@
 	<script type="text/javascript" src="statue.js"></script>
 	<script type="text/javascript" src="player.js"></script>
 	<script type="text/javascript" src="generator.js"></script>
+	<script type="text/javascript" src="accelerator.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 </body>
 

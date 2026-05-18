@@ -204,7 +204,6 @@ const app = Vue.createApp(Vue.defineComponent({
       showmult: true,
       trophycheck: true,
 
-      timedata: new Timedata(),
       rankdata: new Rankdata(),
       trophydata: new Trophydata(),
       rememberdata: new Rememberdata(),
@@ -425,7 +424,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
       this.player.generator.calcGnCost(this.player)
-      this.calcaccost()
+      this.player.accelerator.calcAcCost(this.player)
       this.calcdgcost()
       this.calclgcost()
 
@@ -462,15 +461,6 @@ const app = Vue.createApp(Vue.defineComponent({
       this.showmult = !this.showmult
     },
 
-    calcaccost() {
-      for (let i = 0; i < 8; i++) {
-        let p = this.player.acceleratorsBought[i].add(1)
-        p = p.mul(p.add(1)).div(2)
-        p = p.mul(i === 0 ? 1 : new Decimal(10).mul(new Decimal(2).pow(i - 1)))
-        p = p.sub(this.player.eachPipedSmallTrophy[3] * 0.2 * (i + 1))
-        this.player.acceleratorsCost[i] = p.pow_base(10)
-      }
-    },
     calcdgcost() {
       for (let i = 0; i < 8; i++) {
         let p = 100 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1))
@@ -487,21 +477,6 @@ const app = Vue.createApp(Vue.defineComponent({
         let q = this.player.lightGeneratorsBought[i].mul(i + 1).mul(i + 1).mul(i + 1)
         q = q.add(p)
         this.player.lightGeneratorsCost[i] = new Decimal(10).pow(q)
-      }
-    },
-
-    updateaccelerators(mu) {
-      for (let i = 1; i < 8; i++) {
-        let mult = new Decimal(1)
-        if (i == 1 && this.player.challenge.activeBonuses.includes(10)) {
-          mult = this.player.rankChallengeBonuses.includes(10) ? mult.add(this.player.acceleratorsBought[i].pow_base(2)) : mult.add(this.player.acceleratorsBought[i])
-        } else if (i != 1 && this.player.rankChallengeBonuses.includes(6)) {
-          mult = this.player.rankChallengeBonuses.includes(10) ? mult.add(this.player.acceleratorsBought[i].pow_base(2)) : mult.add(this.player.acceleratorsBought[i])
-        }
-        mult = mult.mul(new Decimal(1.5).pow(this.player.setChip[i + 10]))
-        mult = mult.mul(1 + this.player.eachPipedSmallTrophy[1] * 0.2)
-        this.player.accelerators[i - 1] = this.player.accelerators[i - 1].add(this.player.accelerators[i].mul(mult).mul(mu))
-
       }
     },
 
@@ -536,7 +511,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.shine -= num
       let val = new Decimal(11 + this.player.setChip[31]).pow(new Decimal(num).log10())
       this.player.generator.updateGenerators(this.player, new Decimal(val))
-      this.updateaccelerators(new Decimal(val))
+      this.player.accelerator.updateAccelerators(this.player, new Decimal(val))
       if (this.player.trophies[9]) {
         this.player.shines.residue += Math.floor(num * (1 + this.player.challenge.perfectChallengeStage) / 1000000)
       }
@@ -548,7 +523,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let val = new Decimal(11 + this.player.setChip[50]).pow(new Decimal(num * 100).log10())
       let vald = new Decimal(10 + this.player.setChip[51] * 0.25).pow(new Decimal(num).log10())
       this.player.generator.updateGenerators(this.player, new Decimal(val))
-      this.updateaccelerators(new Decimal(val))
+      this.player.accelerator.updateAccelerators(this.player, new Decimal(val))
       this.updatedarkgenerators(new Decimal(vald))
     },
     spendflicker(num) {
@@ -557,7 +532,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let val = new Decimal(11 + this.player.setChip[50]).pow(new Decimal(num * 10000).log10())
       let vald = new Decimal(10 + this.player.setChip[51] * 0.25).pow(new Decimal(num).log10())
       this.player.generator.updateGenerators(this.player, new Decimal(val))
-      this.updateaccelerators(new Decimal(val))
+      this.player.accelerator.updateAccelerators(this.player, new Decimal(val))
       this.updatedarkgenerators(new Decimal(vald))
       this.updatelightgenerators(new Decimal(vald))
     },
@@ -587,12 +562,12 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
       this.player.generator.calcGnCost(this.player)
-      this.calcaccost()
+      this.player.accelerator.calcAcCost(this.player)
       this.calcdgcost()
       this.calclgcost()
 
       this.player.generator.updateGenerators(this.player, new Decimal(1))
-      this.updateaccelerators(new Decimal(1))
+      this.player.accelerator.updateAccelerators(this.player, new Decimal(1))
 
       this.player.challenge.calcToken()
 
@@ -647,7 +622,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.challenge.activeBonuses.includes(9) && this.accautobuy) {
         let ha = this.player.levelShop.levelItems[3] + 1
         for (let i = ha; i >= 0; i--) {
-          this.buyAccelerator(i)
+          this.player.accelerator.buyAccelerator(this.player, i)
         }
       }
 
@@ -656,7 +631,7 @@ const app = Vue.createApp(Vue.defineComponent({
       setTimeout(this.update, Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
     },
     updateTickSpeed() {
-      this.player.tickSpeed = this.timedata.calctickspeed(this)
+      this.player.tickSpeed = this.player.calcTickSpeed()
 
       if (this.player.rankChallengeBonuses.includes(9)) {
         this.player.multByAc = new Decimal(50).div(this.player.tickSpeed)
@@ -675,17 +650,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.tweeting.push(content)
       } else {
         this.player.tweeting.splice(this.player.tweeting.indexOf(content), 1)
-      }
-    },
-    buyAccelerator(index) {
-      if (this.player.challenge.isChallengeActive(5)) return;
-      if (index >= 1 && this.player.levelResetTime.lessThanOrEqualTo(0)) return;
-
-      if (this.player.money.greaterThanOrEqualTo(this.player.acceleratorsCost[index])) {
-        this.player.money = this.player.money.sub(this.player.acceleratorsCost[index])
-        this.player.accelerators[index] = this.player.accelerators[index].add(1)
-        this.player.acceleratorsBought[index] = this.player.acceleratorsBought[index].add(1)
-        this.calcaccost()
       }
     },
     buydarkgenerator(index) {
@@ -927,36 +891,16 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.levelResetTime = this.player.levelResetTime.add(gainlevelreset)
         this.player.maxLevelGained = this.player.maxLevelGained.max(exit ? new Decimal(0) : gainlevel)
         if (this.player.campaign.accelLevel > 0) {
-          for (let i = 0; i < 8; i++) {
-            let crystalnum = Math.floor(this.player.accelerators[i].log10()) - 10
-            if (crystalnum < 0) crystalnum = 0
-            if (crystalnum > 100) crystalnum = 100
-            this.player.timeCrystal[i] = Math.max(this.player.timeCrystal[i], crystalnum)
-          }
-
+          this.player.accelerator.gainTimeCrystal()
         }
 
         this.player.generator.reset()
-
-        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.acceleratorsCost = [
-          new Decimal(10),
-          new Decimal('1e10'),
-          new Decimal('1e20'),
-          new Decimal('1e40'),
-          new Decimal('1e80'),
-          new Decimal('1e160'),
-          new Decimal('1e320'),
-          new Decimal('1e640'),
-        ]
+        this.player.accelerator.reset(this.player.challenge)
 
         this.player.tickSpeed = 1000
 
         if (this.player.challenge.activeBonuses.includes(0)) this.player.money = new Decimal(10001)
-        if (this.player.challenge.activeBonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
         if (this.player.rankChallengeBonuses.includes(0)) this.player.money = this.player.money.add(new Decimal("1e9"))
-        if (this.player.rankChallengeBonuses.includes(1)) this.player.accelerators[0] = this.player.accelerators[0].add(256)
 
 
 
@@ -993,19 +937,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.levelResetTime = new Decimal(0)
 
         this.player.generator.reset()
-
-        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.acceleratorsCost = [
-          new Decimal(10),
-          new Decimal('1e10'),
-          new Decimal('1e20'),
-          new Decimal('1e40'),
-          new Decimal('1e80'),
-          new Decimal('1e160'),
-          new Decimal('1e320'),
-          new Decimal('1e640'),
-        ]
+        this.player.accelerator.reset(this.player.challenge)
 
         this.player.tickSpeed = 1000
 
@@ -1017,9 +949,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.challenge.activeBonuses = this.player.challengeBonuses
 
         if (this.player.challenge.activeBonuses.includes(0)) this.player.money = new Decimal(10001)
-        if (this.player.challenge.activeBonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
         if (this.player.rankChallengeBonuses.includes(0)) this.player.money = this.player.money.add(new Decimal("1e9"))
-        if (this.player.rankChallengeBonuses.includes(1)) this.player.accelerators[0] = this.player.accelerators[0].add(256)
 
       }
     },
@@ -1054,19 +984,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.rankResetTime = new Decimal(0)
 
         this.player.generator.reset()
-
-        this.player.accelerators = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.acceleratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.acceleratorsCost = [
-          new Decimal(10),
-          new Decimal('1e10'),
-          new Decimal('1e20'),
-          new Decimal('1e40'),
-          new Decimal('1e80'),
-          new Decimal('1e160'),
-          new Decimal('1e320'),
-          new Decimal('1e640'),
-        ]
+        this.player.accelerator.reset(this.player.challenge)
 
         if (!force) {
           this.player.crown = this.player.crown.add(gaincrown)
@@ -1080,9 +998,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.challenge.activeBonuses = this.player.challengeBonuses
 
         if (this.player.challenge.activeBonuses.includes(0)) this.player.money = new Decimal(10001)
-        if (this.player.challenge.activeBonuses.includes(1)) this.player.accelerators[0] = new Decimal(10)
         if (this.player.rankChallengeBonuses.includes(0)) this.player.money = this.player.money.add(new Decimal("1e9"))
-        if (this.player.rankChallengeBonuses.includes(1)) this.player.accelerators[0] = this.player.accelerators[0].add(256)
 
       }
     },

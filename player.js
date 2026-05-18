@@ -47,10 +47,7 @@ class Player {
     this.crownResetTime = new Decimal(playerData.crownresettime);
 
     this.generator = new GameGenerator(playerData);
-
-    this.accelerators = playerData.accelerators.map(v => new Decimal(v));
-    this.acceleratorsBought = playerData.acceleratorsBought.map(v => new Decimal(v));
-    this.acceleratorsCost = playerData.acceleratorsCost.map(v => new Decimal(v));
+    this.accelerator = new Accelerator(playerData);
 
     this.darkMoney = new Decimal(playerData.darkmoney);
 
@@ -67,7 +64,6 @@ class Player {
     this.lightGeneratorsCost = playerData.lightgeneratorsCost.map(v => new Decimal(v));
 
     this.tickSpeed = playerData.tickspeed;
-    this.timeCrystal = Array.from(playerData.timecrystal);
     this.saveVersion = playerData.saveversion;
 
     this.campaign = Campaign.new(playerData);
@@ -156,9 +152,9 @@ class Player {
       generatorsCost: this.generator.generatorsCost,
       generatorsMode: this.generator.generatorsMode,
 
-      accelerators: this.accelerators,
-      acceleratorsBought: this.acceleratorsBought,
-      acceleratorsCost: this.acceleratorsCost,
+      accelerators: this.accelerator.accelerators,
+      acceleratorsBought: this.accelerator.acceleratorsBought,
+      acceleratorsCost: this.accelerator.acceleratorsCost,
 
       darkmoney: this.darkMoney,
 
@@ -178,7 +174,7 @@ class Player {
       accelevel: this.campaign.accelLevel,
       accelevelused: this.campaign.accelLevelUsed,
       activatedcampaigns: this.activatedCampaigns,
-      timecrystal: this.timeCrystal,
+      timecrystal: this.accelerator.timeCrystal,
       saveversion: this.saveVersion,
 
       currenttab: this.currentTab,
@@ -239,6 +235,7 @@ class Player {
 
   /* リファクタ中の一時的措置 */
   get generatorsBought() {return this.generator.generatorsBought;}
+  get acceleratorsBought() {return this.accelerator.acceleratorsBought;}
 
   get shine() {return this.shines.shine;}
   set shine(x) {this.shines.shine = x;}
@@ -400,4 +397,17 @@ class Player {
     return mult
   }
 
+  calcTickSpeed() {
+    let tsp = 1000
+    if (this.challenge.isPChallengeActive(1)) tsp = 10000
+    tsp += 500 * this.campaign.accelLevelUsed
+    tsp -= this.setChip[9] * 50
+    tsp -= this.levelShop.levelItems[1] * this.challengeBonuses.length * (1 + this.setChip[27] * 0.5)
+    tsp -= this.accelerator.timeCrystalSum
+    if (tsp < 1) tsp = 1
+    tsp /= this.accelerator.calcSpeed(this.challenge, this.setChip[10])
+
+    return tsp
+  }
+  
 }

@@ -48,14 +48,7 @@ class Player {
 
     this.generator = new GameGenerator(playerData);
     this.accelerator = new Accelerator(playerData);
-
-    this.darkMoney = new Decimal(playerData.darkmoney);
-
-    this.darkGenerators = playerData.darkgenerators.map(v => new Decimal(v));
-    this.darkGeneratorsBought = playerData.darkgeneratorsBought.map(v => new Decimal(v));
-    this.darkGeneratorsCost = playerData.darkgeneratorsCost.map(v => new Decimal(v));
-
-    this.darkLevel = new Decimal(playerData.darklevel);
+    this.dark = new Dark(playerData);
 
     this.lightMoney = new Decimal(playerData.lightmoney);
 
@@ -156,13 +149,13 @@ class Player {
       acceleratorsBought: this.accelerator.acceleratorsBought,
       acceleratorsCost: this.accelerator.acceleratorsCost,
 
-      darkmoney: this.darkMoney,
+      darkmoney: this.dark.darkMoney,
 
-      darkgenerators: this.darkGenerators,
-      darkgeneratorsBought: this.darkGeneratorsBought,
-      darkgeneratorsCost: this.darkGeneratorsCost,
+      darkgenerators: this.dark.darkGenerators,
+      darkgeneratorsBought: this.dark.darkGeneratorsBought,
+      darkgeneratorsCost: this.dark.darkGeneratorsCost,
 
-      darklevel: this.darkLevel,
+      darklevel: this.dark.darkLevel,
 
       lightmoney: this.lightMoney,
 
@@ -236,6 +229,7 @@ class Player {
   /* リファクタ中の一時的措置 */
   get generatorsBought() {return this.generator.generatorsBought;}
   get acceleratorsBought() {return this.accelerator.acceleratorsBought;}
+  get darkGenerators() {return this.dark.darkGenerators;}
 
   get shine() {return this.shines.shine;}
   set shine(x) {this.shines.shine = x;}
@@ -301,8 +295,8 @@ class Player {
       mult = mult.mul(1 + this.challenges.length * 0.25)
     }
     if (!(this.challenge.isPChallengeActive(8))) {
-      if (this.darkMoney.greaterThanOrEqualTo(1)) {
-        mult = mult.mul(new Decimal(this.darkMoney.add(10).log10()).pow(1 + this.setChip[40] * 0.1))
+      if (this.dark.darkMoney.greaterThanOrEqualTo(1)) {
+        mult = mult.mul(new Decimal(this.dark.darkMoney.add(10).log10()).pow(1 + this.setChip[40] * 0.1))
       }
     }
 
@@ -358,8 +352,8 @@ class Player {
       }
     }
     if (!(this.challenge.isPChallengeActive(8))) {
-      if (this.darkGenerators[i].greaterThanOrEqualTo(1)) {
-        mult = mult.mul(new Decimal(i + 2 + this.darkGenerators[i].log10()).pow(1 + this.setChip[i + 32] * 0.25))
+      if (this.dark.darkGenerators[i].greaterThanOrEqualTo(1)) {
+        mult = mult.mul(new Decimal(i + 2 + this.dark.darkGenerators[i].log10()).pow(1 + this.setChip[i + 32] * 0.25))
       }
     }
 

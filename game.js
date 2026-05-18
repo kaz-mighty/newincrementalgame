@@ -255,8 +255,8 @@ const app = Vue.createApp(Vue.defineComponent({
           '(' + this.player.money.toExponential().replace('+', '%2B') + ')%0A';
       }
       if (this.player.tweeting.includes('darkmoney')) {
-        tweetText += '裏ポイント:' + this.player.darkMoney +
-          '(' + this.player.darkMoney.toExponential().replace('+', '%2B') + ')%0A';
+        tweetText += '裏ポイント:' + this.player.dark.darkMoney +
+          '(' + this.player.dark.darkMoney.toExponential().replace('+', '%2B') + ')%0A';
       }
       if (this.player.tweeting.includes('lightmoney')) {
         tweetText += '天上ポイント:' + this.player.lightMoney +
@@ -267,7 +267,7 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '段位:' + this.player.level + '%0A';
       }
       if (this.player.tweeting.includes('darklevel')) {
-        tweetText += '裏段位:' + this.player.darkLevel + '%0A';
+        tweetText += '裏段位:' + this.player.dark.darkLevel + '%0A';
       }
       if (this.player.tweeting.includes('achieved')) {
         tweetText += '挑戦達成:' + this.player.challengeCleared.length + '%0A';
@@ -425,7 +425,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       this.player.generator.calcGnCost(this.player)
       this.player.accelerator.calcAcCost(this.player)
-      this.calcdgcost()
+      this.player.dark.calcDgCost(this.player)
       this.calclgcost()
 
       if (this.player.auto.autoRing) {
@@ -461,16 +461,6 @@ const app = Vue.createApp(Vue.defineComponent({
       this.showmult = !this.showmult
     },
 
-    calcdgcost() {
-      for (let i = 0; i < 8; i++) {
-        let p = 100 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1))
-        let q = this.player.darkGeneratorsBought[i].mul(i + 1).mul(i + 1)
-        q = q.add(p)
-        q = q.sub(this.player.eachPipedSmallTrophy[8] * 0.02 * (i + 1) * (i + 1))
-        this.player.darkGeneratorsCost[i] = new Decimal(10).pow(q)
-      }
-    },
-
     calclgcost() {
       for (let i = 0; i < 8; i++) {
         let p = 200 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1) * (i + 1))
@@ -480,21 +470,6 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
 
-    updatedarkgenerators(mu) {
-      let darkmult = this.player.darkLevel.add(1)
-      darkmult = Player.softCap(darkmult, new Decimal(1e3))
-      if (this.player.lightMoney.greaterThanOrEqualTo(1)) {
-        darkmult = darkmult.mul(this.player.lightMoney.log10() + 1)
-      }
-      let dgtocalc = Array.from(this.player.darkGenerators)
-      for (let i = 0; i < 8; i++) {
-        dgtocalc[i] = dgtocalc[i].mul(this.player.lightGenerators[i].add(1))
-      }
-      this.player.darkMoney = this.player.darkMoney.add(dgtocalc[0].mul(mu).mul(darkmult).mul(1 + this.player.setChip[41] * 0.25).mul(1 + this.player.eachPipedSmallTrophy[5] * 0.2))
-      for (let i = 1; i < 8; i++) {
-        this.player.darkGenerators[i - 1] = this.player.darkGenerators[i - 1].add(dgtocalc[i].mul(mu).mul(darkmult).mul(1 + this.player.setChip[41 + i] * 0.25).mul(1 + this.player.eachPipedSmallTrophy[5] * 0.2))
-      }
-    },
     updatelightgenerators(mu) {
 
       let pipemult = 1 + this.player.eachPipedSmallTrophy[10] * 0.1
@@ -524,7 +499,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let vald = new Decimal(10 + this.player.setChip[51] * 0.25).pow(new Decimal(num).log10())
       this.player.generator.updateGenerators(this.player, new Decimal(val))
       this.player.accelerator.updateAccelerators(this.player, new Decimal(val))
-      this.updatedarkgenerators(new Decimal(vald))
+      this.player.dark.updateDarkGenerators(this.player, new Decimal(vald))
     },
     spendflicker(num) {
       if (this.player.flicker < num) return;
@@ -533,7 +508,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let vald = new Decimal(10 + this.player.setChip[51] * 0.25).pow(new Decimal(num).log10())
       this.player.generator.updateGenerators(this.player, new Decimal(val))
       this.player.accelerator.updateAccelerators(this.player, new Decimal(val))
-      this.updatedarkgenerators(new Decimal(vald))
+      this.player.dark.updateDarkGenerators(this.player, new Decimal(vald))
       this.updatelightgenerators(new Decimal(vald))
     },
     buytype(num) {
@@ -563,7 +538,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       this.player.generator.calcGnCost(this.player)
       this.player.accelerator.calcAcCost(this.player)
-      this.calcdgcost()
+      this.player.dark.calcDgCost(this.player)
       this.calclgcost()
 
       this.player.generator.updateGenerators(this.player, new Decimal(1))
@@ -650,14 +625,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.tweeting.push(content)
       } else {
         this.player.tweeting.splice(this.player.tweeting.indexOf(content), 1)
-      }
-    },
-    buydarkgenerator(index) {
-      if (this.player.money.greaterThanOrEqualTo(this.player.darkGeneratorsCost[index])) {
-        this.player.money = this.player.money.sub(this.player.darkGeneratorsCost[index])
-        this.player.darkGenerators[index] = this.player.darkGenerators[index].add(1)
-        this.player.darkGeneratorsBought[index] = this.player.darkGeneratorsBought[index].add(1)
-        this.calcdgcost()
       }
     },
     buylightgenerator(index) {
@@ -803,31 +770,6 @@ const app = Vue.createApp(Vue.defineComponent({
       if (input < 0 || input > maxspend) return
       this.player.chips.spendChip[i] = input
     },
-
-
-    resetDarklevel() {
-      let dv = 18 - this.player.crown.add(2).log2()
-      dv = Math.max(dv, 1)
-      let gaindarklevel = new Decimal(this.player.darkMoney.log10()).div(dv).pow_base(2).round()
-      if (confirm('裏昇段リセットして、裏段位' + gaindarklevel + 'を得ますか？')) {
-        this.player.darkMoney = new Decimal(0)
-        this.player.darkGenerators = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.darkGeneratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
-        this.player.darkGeneratorsCost = [
-          new Decimal('1e100'),
-          new Decimal('1e108'),
-          new Decimal('1e127'),
-          new Decimal('1e164'),
-          new Decimal('1e225'),
-          new Decimal('1e316'),
-          new Decimal('1e443'),
-          new Decimal('1e612')
-        ]
-        this.player.darkLevel = this.player.darkLevel.add(gaindarklevel)
-      }
-    },
-
-
 
 
 
@@ -1363,11 +1305,11 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.brightness >= 100) this.player.smallTrophies1st[77] = true
       if (this.player.brightness >= 1000) this.player.smallTrophies1st[78] = true
       if (this.player.brightness >= 10000) this.player.smallTrophies1st[79] = true
-      if (this.player.darkMoney.greaterThanOrEqualTo(1)) this.player.smallTrophies1st[80] = true
-      if (this.player.darkMoney.greaterThanOrEqualTo(777)) this.player.smallTrophies1st[81] = true
-      if (this.player.darkMoney.greaterThanOrEqualTo(7777777)) this.player.smallTrophies1st[82] = true
-      if (this.player.darkMoney.greaterThanOrEqualTo("1e18")) this.player.smallTrophies1st[83] = true
-      if (this.player.darkMoney.greaterThanOrEqualTo("1e72")) this.player.smallTrophies1st[84] = true
+      if (this.player.dark.darkMoney.greaterThanOrEqualTo(1)) this.player.smallTrophies1st[80] = true
+      if (this.player.dark.darkMoney.greaterThanOrEqualTo(777)) this.player.smallTrophies1st[81] = true
+      if (this.player.dark.darkMoney.greaterThanOrEqualTo(7777777)) this.player.smallTrophies1st[82] = true
+      if (this.player.dark.darkMoney.greaterThanOrEqualTo("1e18")) this.player.smallTrophies1st[83] = true
+      if (this.player.dark.darkMoney.greaterThanOrEqualTo("1e72")) this.player.smallTrophies1st[84] = true
       if (this.player.chip[0] > 0) this.player.smallTrophies1st[85] = true
       if (this.player.chip[0] >= 210) this.player.smallTrophies1st[86] = true
       if (this.player.chip[0] >= 1275) this.player.smallTrophies1st[87] = true
@@ -1380,9 +1322,9 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.chip[3] > 0) this.player.smallTrophies1st[94] = true
       if (this.player.chip[3] >= 210) this.player.smallTrophies1st[95] = true
       if (this.player.chip[3] >= 1275) this.player.smallTrophies1st[96] = true
-      if (this.player.darkLevel.greaterThan(0)) this.player.smallTrophies1st[97] = true
-      if (this.player.darkLevel.greaterThan('1e3')) this.player.smallTrophies1st[98] = true
-      if (this.player.darkLevel.greaterThan('1e10')) this.player.smallTrophies1st[99] = true
+      if (this.player.dark.darkLevel.greaterThan(0)) this.player.smallTrophies1st[97] = true
+      if (this.player.dark.darkLevel.greaterThan('1e3')) this.player.smallTrophies1st[98] = true
+      if (this.player.dark.darkLevel.greaterThan('1e10')) this.player.smallTrophies1st[99] = true
 
       if (this.player.crownResetTime.gt(0)) {
 

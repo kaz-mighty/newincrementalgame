@@ -46,10 +46,7 @@ class Player {
     this.crown = new Decimal(playerData.crown);
     this.crownResetTime = new Decimal(playerData.crownresettime);
 
-    this.generators = playerData.generators.map(v => new Decimal(v));
-    this.generatorsBought = playerData.generatorsBought.map(v => new Decimal(v));
-    this.generatorsCost = playerData.generatorsCost.map(v => new Decimal(v));
-    this.generatorsMode = Array.from(playerData.generatorsMode);
+    this.generator = new GameGenerator(playerData);
 
     this.accelerators = playerData.accelerators.map(v => new Decimal(v));
     this.acceleratorsBought = playerData.acceleratorsBought.map(v => new Decimal(v));
@@ -81,7 +78,6 @@ class Player {
     this.challenge = new Challenge(playerData);
 
     this.boughtType = Array.from(playerData.boughttype);
-    this.setModes = Array.from(playerData.setmodes);
 
     this.trophies = Array.from(playerData.trophies);
     this.smallTrophies1st = Array.from(playerData.smalltrophies);
@@ -110,7 +106,6 @@ class Player {
         autoRing: playerData.rings.auto.doauto,
     };
 
-    this.highestGenerator = 0;
     this.commonMult = new Decimal(0);
     this.incrementalMults = new Array(8).fill(null).map(() => new Decimal(1));
     this.memorySum = 0;
@@ -156,10 +151,10 @@ class Player {
 
       ranktoken: this.challenge.rankToken,
 
-      generators: this.generators,
-      generatorsBought: this.generatorsBought,
-      generatorsCost: this.generatorsCost,
-      generatorsMode: this.generatorsMode,
+      generators: this.generator.generators,
+      generatorsBought: this.generator.generatorsBought,
+      generatorsCost: this.generator.generatorsCost,
+      generatorsMode: this.generator.generatorsMode,
 
       accelerators: this.accelerators,
       acceleratorsBought: this.acceleratorsBought,
@@ -203,7 +198,7 @@ class Player {
       prchallengecleared: this.challenge.perfectRankChallengeCleared,
 
       boughttype: this.boughtType,
-      setmodes: this.setModes,
+      setmodes: this.generator.setModes,
       setchallengebonusesfst: this.challenge.setChallengeBonuses1,
       setchallengebonusessnd: this.challenge.setChallengeBonuses2,
       setrankchallengebonusesfst: this.challenge.setRankChallengeBonuses1,
@@ -243,6 +238,8 @@ class Player {
   }
 
   /* リファクタ中の一時的措置 */
+  get generatorsBought() {return this.generator.generatorsBought;}
+
   get shine() {return this.shines.shine;}
   set shine(x) {this.shines.shine = x;}
   get brightness() {return this.shines.brightness;}
@@ -267,4 +264,140 @@ class Player {
   get activatedCampaigns() {
     return this.campaign.activated;
   }
+
+  calcCommonMult() {
+    let mult = new Decimal(1);
+    if (!(this.challenge.isChallengeActive(7))) {
+      let cap = new Decimal(100).mul(this.levelShop.levelItems[2] * (1 + this.setChip[28] * 0.3) + 1)
+      mult = mult.mul(Player.softCap(this.levelResetTime.add(1), cap))
+    }
+
+    if (this.challenge.activeBonuses.includes(3)) {
+      mult = mult.mul(new Decimal(2))
+    }
+
+    if (this.rankChallengeBonuses.includes(3)) {
+      mult = mult.mul(new Decimal(3))
+    }
+
+    if (this.challenge.isPChallengeActive(0)) {
+      mult = mult.div(100)
+    }
+
+    let x1 = 0.25
+    let x2 = 12
+
+    if (this.challenge.isPChallengeActive(7)) {
+      x1 = 1.0 / 81
+      x2 = 27
+    }
+
+    mult = mult.mul(1 + this.smallTrophy * 0.01 + this.memorySum * x1)
+
+    if (this.rankChallengeBonuses.includes(11)) {
+      mult = mult.mul(new Decimal(2).pow(new Decimal(this.memorySum).div(x2)))
+    }
+
+    mult = mult.mul(1 + Math.sqrt(this.pipedSmallTrophy))
+
+    if (this.onChallenge && this.rankChallengeBonuses.includes(4)) {
+      mult = mult.mul(1 + this.challenges.length * 0.25)
+    }
+    if (!(this.challenge.isPChallengeActive(8))) {
+      if (this.darkMoney.greaterThanOrEqualTo(1)) {
+        mult = mult.mul(new Decimal(this.darkMoney.add(10).log10()).pow(1 + this.setChip[40] * 0.1))
+      }
+    }
+
+    mult = mult.mul(this.multByAc)
+    if (this.multByAc.gt(1)) mult = mult.mul(this.multByAc)
+
+    mult = mult.mul(1 + this.setChip[0] * 0.1)
+
+    mult = mult.mul(this.statues.generatorMulti)
+
+    let camp = this.campaign.sumCommonBonus;
+    if (this.activatedCampaigns.includes("newyear2025")) {
+      if (this.challenge.isChallengeActive(3) && this.challenge.isChallengeActive(4)) {
+        camp = camp + 10
+      }
+    }
+
+    mult = mult.mul(1 + 4 * camp)
+
+    if (this.auto.autoDoChallenge) {
+      mult = mult.mul(0.001)
+    }
+
+
+    this.commonMult = mult
+  }
+
+  /** @param {number} i */
+  calcBasicIncrementMult(i) {
+    let mult = new Decimal(this.commonMult);
+
+    if (!(this.challenge.isChallengeActive(2))) {
+      let mm = new Decimal(1)
+      mm = mm.mul(this.generator.generatorsBought[i])
+      if (this.challenge.activeBonuses.includes(11)) {
+        mm = mm.mul(new Decimal(mm.add(2).log2()))
+      }
+
+      if (i < this.generator.highestGenerator && mm.greaterThanOrEqualTo(1)) {
+        mult = mult.mul(mm)
+      } else {
+        if (this.challenge.activeBonuses.includes(2) && mm.greaterThanOrEqualTo(1)) {
+          mult = mult.mul(mm)
+        }
+      }
+    }
+
+    if (i == 0 && this.challenge.activeBonuses.includes(7)) {
+      if (this.rankChallengeBonuses.includes(7)) {
+        mult = mult.mul(Player.strongSoftCap(this.maxLevelGained, new Decimal(100000)))
+      } else {
+        mult = mult.mul(this.maxLevelGained.min(100000))
+      }
+    }
+    if (!(this.challenge.isPChallengeActive(8))) {
+      if (this.darkGenerators[i].greaterThanOrEqualTo(1)) {
+        mult = mult.mul(new Decimal(i + 2 + this.darkGenerators[i].log10()).pow(1 + this.setChip[i + 32] * 0.25))
+      }
+    }
+
+    mult = mult.mul(1 + this.setChip[i + 1] * 0.5)
+
+    if (this.challenge.isPChallengeActive(2)) {
+      this.incrementalMults[2] = new Decimal(0)
+      this.incrementalMults[5] = new Decimal(0)
+    }
+
+    this.incrementalMults[i] = mult
+  }
+
+  /**
+   * @param {number} i 
+   * @param {number} to 
+   */
+  calcIncrementMult(i, to) {
+    let mult = this.incrementalMults[i]
+    if (!(this.challenge.isChallengeActive(4))) {
+      mult = mult.mul(new Decimal(10).pow((i + 1) * (i - to)))
+    }
+
+    let lv = new Decimal(this.level.pow(1 + 0.5 * this.setChip[19]).add(2).log2())
+
+    let rk = this.rank.add(2).div(262142).log2()
+    rk += new Decimal(this.rank.add(2).log2()).log2() * this.setChip[23]
+    mult = mult.mul(new Decimal(lv.pow((i - to) * (1 + Math.max(rk, 0) * 0.05))))
+
+    if (this.challenge.isPChallengeActive(3) && mult.gt("1e-100")) {
+      let b = Math.floor(mult.log10() / 6)
+      mult = new Decimal(10).pow(b * 6)
+    }
+
+    return mult
+  }
+
 }

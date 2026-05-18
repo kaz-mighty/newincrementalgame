@@ -408,7 +408,7 @@ class Challenge {
       this.onChallenge = true;
       if (this.challenges.includes(3)) {
         for (let i = 0; i < 8; i++) {
-          player.generatorsMode[i] = 0
+          player.generator.generatorsMode[i] = 0
         }
       }
     }
@@ -447,18 +447,19 @@ class Challenge {
     }
   }
 
-  exitChallenge(data) {
+  /** @param {Player} player */
+  exitChallenge(player) {
     if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       this.onChallenge = false;
       this.activeBonuses = this.challengeBonuses;
-      data.calcgncost()
+      player.generator.calcGnCost(player)
     }
   }
 
   /** @param {Player} player */
   exitPChallenge(player) {
     if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
-      if (this.onChallenge) this.exitChallenge()
+      if (this.onChallenge) this.exitChallenge(player)
       const pChallengeId = this.getPChallengeId();
       this.onPerfectChallenge = false;
       this.perfectChallengeCleared[pChallengeId] = Math.max(this.perfectChallengeCleared[pChallengeId], this.challengeCleared.length)

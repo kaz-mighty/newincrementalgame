@@ -13,7 +13,7 @@
 		<div class="container" v-cloak>
 			<div id="coinamount">ポイント: {{ player.money.toExponential(3) }}</div>
 			<span v-if="player.boughtType[0]">
-				<button type="button" @click="changemodetype()">
+				<button type="button" @click="player.generator.changeModeType(player)">
 					モード型適用
 				</button>
 			</span>
@@ -138,22 +138,22 @@
 				<div class="generators-container">
 					<div class="generator" v-for="i in 8" :key="i">
 						<span>
-							発生器{{ i }}: {{ player.generators[i-1].toExponential(3)+' '}}
+							発生器{{ i }}: {{ player.generator.generators[i-1].toExponential(3)+' '}}
 						</span>
-						<button type="button" class="gbutton" :class="{ 'unavailable': player.money.lt(player.generatorsCost[i-1]) }" @click="buyGenerator(i-1)">
-							購入 コスト: {{ player.generatorsCost[i-1].toExponential(1) }}
+						<button type="button" class="gbutton" :class="{ 'unavailable': player.money.lt(player.generator.generatorsCost[i-1]) }" @click="player.generator.buyGenerator(player, i-1)">
+							購入 コスト: {{ player.generator.generatorsCost[i-1].toExponential(1) }}
 						</button>
 						<span>
-							購入数: {{ player.generatorsBought[i-1].toNumber()+' '}}
+							購入数: {{ player.generator.generatorsBought[i-1].toNumber()+' '}}
 						</span>
 						<div class="mode-container" v-if="i > 1 && !player.challengeBonuses.includes(13)">
-							<span>モード: {{ player.generatorsMode[i-1] }}</span>
-							<button class="mode-button" @click="changeMode(i-1)">
+							<span>モード: {{ player.generator.generatorsMode[i-1] }}</span>
+							<button class="mode-button" @click="player.generator.changeMode(player, i-1)">
 								変更
 							</button>
 						</div>
 						<span v-show="showmult  && !player.challenge.activeBonuses.includes(13)">
-							倍率: {{ calcincrementmult(i-1,player.generatorsMode[i-1]).toExponential(2) }}
+							倍率: {{ player.calcIncrementMult(i-1,player.generator.generatorsMode[i-1]).toExponential(2) }}
 						</span>
 					</div>
 				</div>
@@ -201,10 +201,10 @@
 				</div>
 				<div v-if="player.boughtType[0]">
 					<div>型設定</div>
-					<button type="button" @click="setmodetype()">
+					<button type="button" @click="player.generator.setModeType()">
 						モード型登録
 					</button>
-					<button type="button" @click="changemodetype()">
+					<button type="button" @click="player.generator.changeModeType(player)">
 						モード型適用
 					</button>
 				</div>
@@ -962,6 +962,7 @@
 	<script type="text/javascript" src="ring.js"></script>
 	<script type="text/javascript" src="statue.js"></script>
 	<script type="text/javascript" src="player.js"></script>
+	<script type="text/javascript" src="generator.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 </body>
 

@@ -8,6 +8,29 @@
 /** @import Decimal from "break_infinity.js" */
 
 class Player {
+  /**
+   * @param {Decimal} num 
+   * @param {Decimal} cap 
+   */
+  static softCap(num, cap) {
+    if (num.lessThanOrEqualTo(cap)) return num;
+    let capped = num.div(cap)
+    capped = new Decimal(capped.log2()).add(1)
+    return cap.mul(capped).min(num)
+  }
+  /**
+   * @param {Decimal} num 
+   * @param {Decimal} cap 
+   */
+  static strongSoftCap(num, cap) {
+    if (num.lessThanOrEqualTo(cap)) return num;
+    let capped = num.div(cap)
+    capped = new Decimal(capped.log2()).add(1)
+    capped = new Decimal(capped.log2()).add(1)
+    return cap.mul(capped).min(num)
+  }
+
+
   /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
     this.money = new Decimal(playerData.money);

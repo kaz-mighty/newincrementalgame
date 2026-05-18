@@ -461,19 +461,6 @@ const app = Vue.createApp(Vue.defineComponent({
     configshowmult() {
       this.showmult = !this.showmult
     },
-    softCap(num, cap) {
-      if (num.lessThanOrEqualTo(cap)) return num;
-      let capped = num.div(cap)
-      capped = new Decimal(capped.log2()).add(1)
-      return cap.mul(capped).min(num)
-    },
-    strongsoftcap(num, cap) {
-      if (num.lessThanOrEqualTo(cap)) return num;
-      let capped = num.div(cap)
-      capped = new Decimal(capped.log2()).add(1)
-      capped = new Decimal(capped.log2()).add(1)
-      return cap.mul(capped).min(num)
-    },
 
     calcgncost() {
       for (let i = 0; i < 8; i++) {
@@ -522,7 +509,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let mult = new Decimal(1);
       if (!(this.player.challenge.isChallengeActive(7))) {
         let cap = new Decimal(100).mul(this.player.levelShop.levelItems[2] * (1 + this.player.setChip[28] * 0.3) + 1)
-        mult = mult.mul(this.softCap(this.player.levelResetTime.add(1), cap))
+        mult = mult.mul(Player.softCap(this.player.levelResetTime.add(1), cap))
       }
 
       if (this.player.challenge.activeBonuses.includes(3)) {
@@ -629,7 +616,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       if (i == 0 && this.player.challenge.activeBonuses.includes(7)) {
         if (this.player.rankChallengeBonuses.includes(7)) {
-          mult = mult.mul(this.strongsoftcap(this.player.maxLevelGained, new Decimal(100000)))
+          mult = mult.mul(Player.strongSoftCap(this.player.maxLevelGained, new Decimal(100000)))
         } else {
           mult = mult.mul(this.player.maxLevelGained.min(100000))
         }
@@ -702,7 +689,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
     updatedarkgenerators(mu) {
       let darkmult = this.player.darkLevel.add(1)
-      darkmult = this.softCap(darkmult, new Decimal(1e3))
+      darkmult = Player.softCap(darkmult, new Decimal(1e3))
       if (this.player.lightMoney.greaterThanOrEqualTo(1)) {
         darkmult = darkmult.mul(this.player.lightMoney.log10() + 1)
       }

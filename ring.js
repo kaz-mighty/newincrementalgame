@@ -28,6 +28,7 @@ class Rings {
   .map((v) => Math.floor(v))
   */
   
+  /** @type {{[x: number]: number}[]} */
   static levelSkills = [
     {
       1: 0,
@@ -469,6 +470,7 @@ class Rings {
     },
   ];
 
+  /** @param {number} fst */
   static statusTable(fst) {
     let ret = [fst]
 
@@ -481,6 +483,11 @@ class Rings {
     return ret
   }
 
+  /**
+   * @param {number} ringId 
+   * @param {number} statusId 
+   * @param {number} level 
+   */
   static getStatus(ringId, statusId, level) {
     return Rings.statusTable(Rings.statusDataType[ringId][statusId])[level - 1]
   }
@@ -489,9 +496,7 @@ class Rings {
     return 30
   }
 
-  /**
-   * @param {RingSaveData} ringData
-   */
+  /** @param {RingSaveData} ringData */
   constructor(ringData) {
       this.setRings = Array.from(ringData.setrings);
       this.ringsExp = Array.from(ringData.ringsexp);
@@ -556,6 +561,7 @@ class Rings {
     };
   }
 
+  /** @param {number} ringId */
   getLevel(ringId) {
     let exp = this.ringsExp[ringId]
     let lv = 0
@@ -568,11 +574,13 @@ class Rings {
     return Math.min(lv, Rings.levelCap())
   }
 
+  /** @param {number} statusId */
   shortGetStatus(statusId) {
     const ringId = this.setRings[this.missionState.activeRing]
     return Rings.getStatus(ringId, statusId, this.getLevel(ringId))
   }
 
+  /** @param {number} ringId */
   availableSkills(ringId) {
     let ret = []
     let level = this.getLevel(ringId)
@@ -584,10 +592,14 @@ class Rings {
     return ret
   }
 
-  affect(prop, value) {
+  /**
+   * @param {string} property
+   * @param {number} value
+   */
+  affect(property, value) {
     let v = {
       state: this.missionState,
-      prop: prop,
+      prop: property,
       value: value,
     }
     for (let e of this.missionState.fieldEffect) {
@@ -600,10 +612,18 @@ class Rings {
     this.missionState[v.prop] += v.value
   }
 
+  /**
+   * @param {number} fieldId 
+   * @param {number} value 
+   */
   affectField(fieldId, value) {
     this.missionState.fieldEffect.push([fieldId, value]);
   }
 
+  /** 
+   * @param {number} worldId
+   * @param {number} ringId
+   */
   isAvailableRing(worldId, ringId) {
     if (ringId == 0 || ringId == 1 || ringId == 2) return true
     if (worldId >= 3) return false
@@ -613,6 +633,10 @@ class Rings {
     return false
   }
 
+  /**
+   * @param {number} worldId 
+   * @param {number} ringId 
+   */
   configSetRings(worldId, ringId) {
     if (this.onMission) return
     if (!this.isAvailableRing(worldId, ringId)) return
@@ -623,7 +647,7 @@ class Rings {
     }
   }
 
-  autoplaymission() {
+  autoPlayMission() {
     if (this.missionState.turn >= Rings.missionInfo[this.missionId].turn) this.endMission()
     if (this.onMission) {
       this.useSkill(0)
@@ -632,15 +656,17 @@ class Rings {
     }
   }
 
+  /** @param {number} missionId */
   isAvailableMission(missionId) {
     return Rings.missionInfo[missionId].preventchallenge.every((v) => this.clearedMission.includes(v))
   }
 
-  startMission(i) {
-    if (this.setRings.length < Rings.missionInfo[i].setsizemin || Rings.missionInfo[i].setsizemax < this.setRings.length) return
+  /** @param {number} missionId */
+  startMission(missionId) {
+    if (this.setRings.length < Rings.missionInfo[missionId].setsizemin || Rings.missionInfo[missionId].setsizemax < this.setRings.length) return
     if (this.onMission) return
     this.onMission = true
-    this.missionId = i
+    this.missionId = missionId
     this.missionState.turn = 0
     this.missionState.activeRing = 0
     this.missionState.flowerPoint = 0
@@ -656,12 +682,13 @@ class Rings {
       this.missionState.tps.push(Rings.getStatus(r, 6, lv))//6:tp status id
     }
     this.missionState.fieldEffect = []
-    console.log("Starting mission:" + i)
-    for (let e of Rings.missionInfo[i].passivefunction) {
+    console.log("Starting mission:" + missionId)
+    for (let e of Rings.missionInfo[missionId].passivefunction) {
       this.missionState.fieldEffect.push([e, -1])
     }
   }
 
+  /** @param {number} skillId */
   useSkill(skillId) {
     let ringId = this.setRings[this.missionState.activeRing]
     let skill = Rings.skills[this.availableSkills(ringId)[skillId]]

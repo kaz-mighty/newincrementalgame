@@ -8,6 +8,7 @@ class Shine {
     5000000,
   ];
 
+  /** @param {number} clear */
   static getBaseShinePercent(clear) {
     if (clear >= 32 * 8 - 1) return 0.20
     if (clear >= 32 * 7) return 0.16
@@ -19,6 +20,7 @@ class Shine {
     return 0
   }
 
+  /** @param {number} clear */
   static getBaseBrightPercent(clear) {
     if (clear >= 32 * 8 - 1) return 0.010
     if (clear >= 32 * 7) return 0.008
@@ -102,10 +104,12 @@ class Shine {
     return Math.floor(value);
   }
 
+  /** @param {number} stage */
   getFlickerPercent(stage) {
     return 1 / 1000000 * stage;
   }
 
+  /** @param {number} stage */
   getMaxFlicker(stage) {
     return stage * stage * 2;
     //max:2097152

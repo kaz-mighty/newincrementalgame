@@ -431,7 +431,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.calclgcost()
 
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(() => this.player.rings.autoplaymission(), 1000)
+        this.automissiontimerid = setInterval(() => this.player.rings.autoPlayMission(), 1000)
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0
@@ -1376,7 +1376,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
     exitpChallenge() {
-      this.player.challenge.exitPChallenge(this);
+      this.player.challenge.exitPChallenge(this.player);
     },
 
 
@@ -1822,7 +1822,7 @@ const app = Vue.createApp(Vue.defineComponent({
     configautomission() {
       this.player.auto.autoRing = !this.player.auto.autoRing
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(() => this.player.rings.autoplaymission(), 1000)
+        this.automissiontimerid = setInterval(() => this.player.rings.autoPlayMission(), 1000)
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0

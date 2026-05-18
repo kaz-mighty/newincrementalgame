@@ -39,10 +39,15 @@ class Statues {
   get brightStatueSum() {return this._brightStatueSum.value;}
   get generatorMulti() {return this._generatorMulti.value;}
 
+  /** @param {number} i */
   calcStatueCost(i) {
     return (this.statue[i] + 1) * 10000
   }
 
+  /**
+   * @param {Player} player
+   * @param {number} i
+   */
   buildStatue(player, i) {
     let cost = this.calcStatueCost(i)
     if (player.chip[i] < cost) return
@@ -50,10 +55,15 @@ class Statues {
     this.statue[i] += 1
   }
 
+  /** @param {number} i */
   calcPolishCost(i) {
     return (this.polishedStatue[i] + 1) * 1000000
   }
 
+  /**
+   * @param {Player} player
+   * @param {number} i
+   */
   polishStatue(player, i) {
     let cost = this.calcPolishCost(i)
     if (this.polishedStatue[i] >= this.statue[i] || player.shine < cost) return;
@@ -61,10 +71,15 @@ class Statues {
     this.polishedStatue[i] += 1
   }
 
+  /** @param {number} i */
   calcPolishCostBright(i) {
     return (this.brightStatue[i] + 10) * 100
   }
 
+  /**
+   * @param {Player} player 
+   * @param {number} i 
+   */
   polishStatueBright(player, i) {
     let cost = this.calcPolishCostBright(i)
     if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.brightness < cost) return;

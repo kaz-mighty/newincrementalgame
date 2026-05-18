@@ -147,9 +147,11 @@ class Challenge {
   getPChallengeId() {
     return Challenge.getPChallengeId(this.perfectChallenges);
   }
+  /** @param {number} index */
   isChallengeActive(index) {
     return this.onChallenge && this.challenges.includes(index);
   }
+  /** @param {number} index */
   isPChallengeActive(index) {
     return this.onPerfectChallenge && this.perfectChallenges.includes(index);
   }
@@ -278,6 +280,7 @@ class Challenge {
   }
 
 
+  /** @param {number} index */
   configChallenge(index) {
     if (this.onChallenge) return;
     if (!this.challenges.includes(index)) {
@@ -286,6 +289,7 @@ class Challenge {
       this.challenges.splice(this.challenges.indexOf(index), 1)
     }
   }
+  /** @param {number} index */
   configPChallenge(index) {
     if (this.onPerfectChallenge) return;
     if (!this.perfectChallenges.includes(index)) {
@@ -295,9 +299,11 @@ class Challenge {
     }
   }
 
-  configChallengeWeightKind(i) {
+  /** @param {number} i */
+ configChallengeWeightKind(i) {
     this.challengeWeight[i] = this.getChallengeId()
   }
+  /** @param {number} i */
   configChallengeWeightValue(i) {
     let input = parseInt(window.prompt("重みを設定", ""))
     if (isNaN(input)) return
@@ -374,7 +380,6 @@ class Challenge {
   /**
    * @param {*} data 
    * @param {Player} player 
-   * @returns 
    */
   startChallenge(data, player) {
     let challengeid = this.getChallengeId();
@@ -412,7 +417,6 @@ class Challenge {
   /**
    * @param {*} data 
    * @param {Player} player 
-   * @returns 
    */
   startPChallenge(data, player) {
     if (!(this.challengeCleared.length >= 255 && this.rankChallengeCleared.length >= 255)) {
@@ -451,7 +455,8 @@ class Challenge {
     }
   }
 
-  exitPChallenge(data) {
+  /** @param {Player} player */
+  exitPChallenge(player) {
     if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       if (this.onChallenge) this.exitChallenge()
       const pChallengeId = this.getPChallengeId();
@@ -461,7 +466,7 @@ class Challenge {
       this.challengeCleared = Challenge.challengeIds
       this.rankChallengeCleared = Challenge.challengeIds
       for (let i = 0; i < setchipnum; i++) {
-        data.player.chips.disabledChip[i] = false
+        player.chips.disabledChip[i] = false
       }
       this.countPChallengeCleared()
     }

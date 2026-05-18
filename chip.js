@@ -126,9 +126,7 @@ class Chips {
     }
   }
 
-  /**
-   * @param {PlayerSaveData} playerData 
-   */
+  /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
     this.chip = Array.from(playerData.chip);
     this.setChip = Array.from(playerData.setchip);
@@ -173,11 +171,9 @@ class Chips {
   }
 
   /**
-   * 
    * @param {number} kind 
    * @param {number} chipDoubleProb
    * @param {boolean} isGw2
-   * @returns 
    */
   calcChipGetNum(kind, chipDoubleProb, isGw2) {
     let hit = 0
@@ -214,6 +210,10 @@ class Chips {
     }
   }
 
+  /**
+   * @param {number} i 対象の鋳片効力 0-indexed
+   * @param {number} j 鋳片の種類 1-indexed (0=None)
+   */
   chipSet(i, j) {
     if (this.disabledChip[i]) return
     if (this.setChip[i] == j) return
@@ -238,6 +238,7 @@ class Chips {
     }
   }
 
+  /** @param {number} i */
   disableChip(i) {
     this.chipSet(i, 0)
     this.disabledChip[i] = true

@@ -8,9 +8,7 @@
 /** @import Decimal from "break_infinity.js" */
 
 class Player {
-  /**
-   * @param {PlayerSaveData} playerData
-   */
+  /** @param {PlayerSaveData} playerData */
   constructor(playerData) {
     this.money = new Decimal(playerData.money);
     this.level = new Decimal(playerData.level);
@@ -107,9 +105,7 @@ class Player {
     };
   }
 
-  /**
-   * @returns {PlayerSaveData}
-   */
+  /** @returns {PlayerSaveData} */
   toSaveObject() {
     const statues = this.statues.toSaveObject();
     const chips = this.chips.toSaveObject();

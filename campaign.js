@@ -160,9 +160,7 @@ class Campaign {
     }
   }
 
-  /**
-   * @param {CampaignItem} campaign
-   */
+  /** @param {CampaignItem} campaign */
   isDuring(campaign) {
     return campaign.predicate?.(this._nowMonth.value, this._nowDate.value) ?? false;
   }

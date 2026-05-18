@@ -95,6 +95,7 @@ class Player {
     this.smallTrophy = 0;
     this.eachPipedSmallTrophy = new Array(worldnum).fill(0);
     this.pipedSmallTrophy = 0;
+    this.multByAc = new Decimal(1);
 
     this.unUsed = {
       shineLoader: Array.from(playerData.shineloader),

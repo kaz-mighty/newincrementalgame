@@ -19,6 +19,7 @@ this is an incremental game project I(twitter:@dem08656775) created. I threw old
 - 上記の変数の一部が、ロード/世界切り替え時にも初期化されていないバグを修正
   - 現在効果を発揮している下位効力
   - 発生器の倍率
+  - 上位効力10の倍率
 
 ## Getting Started with Development
 

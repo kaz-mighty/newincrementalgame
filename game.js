@@ -227,8 +227,6 @@ const app = Vue.createApp(Vue.defineComponent({
       autobrighttimerid: 0,
       autochallengetimerid: 0,
 
-      multbyac: new Decimal(1),
-
       trophynumber: new Array(10).fill(0),
       worldopened: new Array(worldnum).fill(false),
 
@@ -419,6 +417,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.countsmalltrophies()
       this.checkpipedsmalltrophies()
 
+      this.updateTickSpeed()
       this.calccommonmult()
       this.findhighestgenerator()
       for (let i = 0; i < 8; i++) {
@@ -563,8 +562,8 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
 
-      mult = mult.mul(this.multbyac)
-      if (this.multbyac.gt(1)) mult = mult.mul(this.multbyac)
+      mult = mult.mul(this.player.multByAc)
+      if (this.player.multByAc.gt(1)) mult = mult.mul(this.player.multByAc)
 
       mult = mult.mul(1 + this.player.setChip[0] * 0.1)
 
@@ -855,19 +854,20 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
 
+      this.updateTickSpeed();
+
+      setTimeout(this.update, Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
+    },
+    updateTickSpeed() {
       this.player.tickSpeed = this.timedata.calctickspeed(this)
 
       if (this.player.rankChallengeBonuses.includes(9)) {
-        this.multbyac = new Decimal(50).div(this.player.tickSpeed)
+        this.player.multByAc = new Decimal(50).div(this.player.tickSpeed)
         this.player.tickSpeed = 50
       } else {
-        this.multbyac = new Decimal(1)
+        this.player.multByAc = new Decimal(1)
       }
       this.player.campaign.updateAccelLevel(this.player.tickSpeed);
-
-
-
-      setTimeout(this.update, Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
     },
 
     changeTab(tabname) {

@@ -259,8 +259,8 @@ const app = Vue.createApp(Vue.defineComponent({
           '(' + this.player.dark.darkMoney.toExponential().replace('+', '%2B') + ')%0A';
       }
       if (this.player.tweeting.includes('lightmoney')) {
-        tweetText += '天上ポイント:' + this.player.lightMoney +
-          '(' + this.player.lightMoney.toExponential().replace('+', '%2B') + ')%0A';
+        tweetText += '天上ポイント:' + this.player.light.lightMoney +
+          '(' + this.player.light.lightMoney.toExponential().replace('+', '%2B') + ')%0A';
       }
 
       if (this.player.tweeting.includes('level')) {
@@ -426,7 +426,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.generator.calcGnCost(this.player)
       this.player.accelerator.calcAcCost(this.player)
       this.player.dark.calcDgCost(this.player)
-      this.calclgcost()
+      this.player.light.calcLgCost()
 
       if (this.player.auto.autoRing) {
         this.automissiontimerid = setInterval(() => this.player.rings.autoPlayMission(), 1000)
@@ -461,25 +461,6 @@ const app = Vue.createApp(Vue.defineComponent({
       this.showmult = !this.showmult
     },
 
-    calclgcost() {
-      for (let i = 0; i < 8; i++) {
-        let p = 200 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1) * (i + 1))
-        let q = this.player.lightGeneratorsBought[i].mul(i + 1).mul(i + 1).mul(i + 1)
-        q = q.add(p)
-        this.player.lightGeneratorsCost[i] = new Decimal(10).pow(q)
-      }
-    },
-
-    updatelightgenerators(mu) {
-
-      let pipemult = 1 + this.player.eachPipedSmallTrophy[10] * 0.1
-
-      this.player.lightMoney = this.player.lightMoney.add(this.player.lightGenerators[0].mul(mu).mul(pipemult))
-      for (let i = 1; i < 8; i++) {
-        this.player.lightGenerators[i - 1] = this.player.lightGenerators[i - 1].add(this.player.lightGenerators[i].mul(pipemult))
-      }
-    },
-
     spendshine(num) {
       if (this.player.shine < num) return;
       if (this.player.challenge.isPChallengeActive(6)) return
@@ -509,7 +490,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.generator.updateGenerators(this.player, new Decimal(val))
       this.player.accelerator.updateAccelerators(this.player, new Decimal(val))
       this.player.dark.updateDarkGenerators(this.player, new Decimal(vald))
-      this.updatelightgenerators(new Decimal(vald))
+      this.player.light.updateLightGenerators(this.player, new Decimal(vald))
     },
     buytype(num) {
       if (this.player.shine < Shine.shineShopCost[num] || this.player.boughtType[num]) return;
@@ -539,7 +520,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.generator.calcGnCost(this.player)
       this.player.accelerator.calcAcCost(this.player)
       this.player.dark.calcDgCost(this.player)
-      this.calclgcost()
+      this.player.light.calcLgCost()
 
       this.player.generator.updateGenerators(this.player, new Decimal(1))
       this.player.accelerator.updateAccelerators(this.player, new Decimal(1))
@@ -625,14 +606,6 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.tweeting.push(content)
       } else {
         this.player.tweeting.splice(this.player.tweeting.indexOf(content), 1)
-      }
-    },
-    buylightgenerator(index) {
-      if (this.player.money.greaterThanOrEqualTo(this.player.lightGeneratorsCost[index])) {
-        this.player.money = this.player.money.sub(this.player.lightGeneratorsCost[index])
-        this.player.lightGenerators[index] = this.player.lightGenerators[index].add(1)
-        this.player.lightGeneratorsBought[index] = this.player.lightGeneratorsBought[index].add(1)
-        this.calclgcost()
       }
     },
     configautobuyer(index) {
@@ -818,7 +791,7 @@ const app = Vue.createApp(Vue.defineComponent({
           
           let bonus = new Decimal(10).pow(this.player.eachPipedSmallTrophy[7] * 0.4)
           if (this.player.activatedCampaigns.includes("tanabata2")) {
-            bonus = bonus.mul(this.player.lightMoney.add(1))
+            bonus = bonus.mul(this.player.light.lightMoney.add(1))
           }
           console.log("gain chip bonus:" + bonus)
 
@@ -1357,10 +1330,10 @@ const app = Vue.createApp(Vue.defineComponent({
         if (this.player.crown.greaterThanOrEqualTo(100)) this.player.smallTrophies2nd[26] = true
         if (this.player.crown.greaterThanOrEqualTo(10000)) this.player.smallTrophies2nd[27] = true
         if (this.player.crown.greaterThanOrEqualTo("1e8")) this.player.smallTrophies2nd[28] = true
-        if (this.player.lightMoney.greaterThanOrEqualTo(1)) this.player.smallTrophies2nd[29] = true
-        if (this.player.lightMoney.greaterThanOrEqualTo("1e9")) this.player.smallTrophies2nd[30] = true
-        if (this.player.lightMoney.greaterThanOrEqualTo("1e18")) this.player.smallTrophies2nd[31] = true
-        if (this.player.lightMoney.greaterThanOrEqualTo("1e36")) this.player.smallTrophies2nd[32] = true
+        if (this.player.light.lightMoney.greaterThanOrEqualTo(1)) this.player.smallTrophies2nd[29] = true
+        if (this.player.light.lightMoney.greaterThanOrEqualTo("1e9")) this.player.smallTrophies2nd[30] = true
+        if (this.player.light.lightMoney.greaterThanOrEqualTo("1e18")) this.player.smallTrophies2nd[31] = true
+        if (this.player.light.lightMoney.greaterThanOrEqualTo("1e36")) this.player.smallTrophies2nd[32] = true
         if (this.player.flicker >= 10) this.player.smallTrophies2nd[33] = true
         if (this.player.flicker >= 100) this.player.smallTrophies2nd[34] = true
         if (this.player.flicker >= 1000) this.player.smallTrophies2nd[35] = true

@@ -27,12 +27,12 @@ class Dark {
   updateDarkGenerators(player, mu) {
     let darkmult = this.darkLevel.add(1)
     darkmult = Player.softCap(darkmult, new Decimal(1e3))
-    if (player.lightMoney.greaterThanOrEqualTo(1)) {
-      darkmult = darkmult.mul(player.lightMoney.log10() + 1)
+    if (player.light.lightMoney.greaterThanOrEqualTo(1)) {
+      darkmult = darkmult.mul(player.light.lightMoney.log10() + 1)
     }
     let dgtocalc = Array.from(this.darkGenerators)
     for (let i = 0; i < 8; i++) {
-      dgtocalc[i] = dgtocalc[i].mul(player.lightGenerators[i].add(1))
+      dgtocalc[i] = dgtocalc[i].mul(player.light.lightGenerators[i].add(1))
     }
     this.darkMoney = this.darkMoney.add(dgtocalc[0].mul(mu).mul(darkmult).mul(1 + player.setChip[41] * 0.25).mul(1 + player.eachPipedSmallTrophy[5] * 0.2))
     for (let i = 1; i < 8; i++) {

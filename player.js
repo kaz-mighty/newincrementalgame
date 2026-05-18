@@ -49,12 +49,7 @@ class Player {
     this.generator = new GameGenerator(playerData);
     this.accelerator = new Accelerator(playerData);
     this.dark = new Dark(playerData);
-
-    this.lightMoney = new Decimal(playerData.lightmoney);
-
-    this.lightGenerators = playerData.lightgenerators.map(v => new Decimal(v));
-    this.lightGeneratorsBought = playerData.lightgeneratorsBought.map(v => new Decimal(v));
-    this.lightGeneratorsCost = playerData.lightgeneratorsCost.map(v => new Decimal(v));
+    this.light = new Light(playerData);
 
     this.tickSpeed = playerData.tickspeed;
     this.saveVersion = playerData.saveversion;
@@ -157,11 +152,11 @@ class Player {
 
       darklevel: this.dark.darkLevel,
 
-      lightmoney: this.lightMoney,
+      lightmoney: this.light.lightMoney,
 
-      lightgenerators: this.lightGenerators,
-      lightgeneratorsBought: this.lightGeneratorsBought,
-      lightgeneratorsCost: this.lightGeneratorsCost,
+      lightgenerators: this.light.lightGenerators,
+      lightgeneratorsBought: this.light.lightGeneratorsBought,
+      lightgeneratorsCost: this.light.lightGeneratorsCost,
 
       tickspeed: this.tickSpeed,
       accelevel: this.campaign.accelLevel,
@@ -230,6 +225,7 @@ class Player {
   get generatorsBought() {return this.generator.generatorsBought;}
   get acceleratorsBought() {return this.accelerator.acceleratorsBought;}
   get darkGenerators() {return this.dark.darkGenerators;}
+  get lightGenerators() {return this.light.lightGenerators;}
 
   get shine() {return this.shines.shine;}
   set shine(x) {this.shines.shine = x;}

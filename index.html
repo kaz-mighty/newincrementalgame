@@ -56,7 +56,7 @@
 				<span id="dark" v-if="player.money.greaterThanOrEqualTo('1e100') || player.dark.darkGenerators[0].greaterThanOrEqualTo(1)">
 					<button type="button" @click="changeTab('dark')">裏</button>
 				</span>
-				<span id="dark" v-if="(player.money.greaterThanOrEqualTo('1e200')&&player.crownResetTime.gt(0)) || player.lightGenerators[0].greaterThanOrEqualTo(1)">
+				<span id="dark" v-if="(player.money.greaterThanOrEqualTo('1e200')&&player.crownResetTime.gt(0)) || player.light.lightGenerators[0].greaterThanOrEqualTo(1)">
 					<button type="button" @click="changeTab('light')">天上</button>
 				</span>
 				<span id="time" v-if="player.campaign.accelLevel>0">
@@ -249,18 +249,18 @@
 			</div>
 
 			<div v-if="player.currentTab == 'light'">
-				<div id="lightcoinamount" v-show="player.challenge.perfectChallengeStage>=1">天上ポイント: {{ player.lightMoney.toExponential(3) }}</div>
+				<div id="lightcoinamount" v-show="player.challenge.perfectChallengeStage>=1">天上ポイント: {{ player.light.lightMoney.toExponential(3) }}</div>
 				天上発生器iは裏発生器iを強化します。
 
 				<div class="lightgenerator" v-for="i in 8" :key="i">
 					<span>
-						天上発生器{{ i }}: {{ player.lightGenerators[i-1].toExponential(3)+' '}}
+						天上発生器{{ i }}: {{ player.light.lightGenerators[i-1].toExponential(3)+' '}}
 					</span>
-					<button type="button" class="gbutton" :class="{ 'unavailable': player.money.lt(player.lightGeneratorsCost[i-1]) }" @click="buylightgenerator(i-1)">
-						購入 コスト: {{ player.lightGeneratorsCost[i-1].toExponential(1) }}
+					<button type="button" class="gbutton" :class="{ 'unavailable': player.money.lt(player.light.lightGeneratorsCost[i-1]) }" @click="player.light.buyLightGenerator(player, i-1)">
+						購入 コスト: {{ player.light.lightGeneratorsCost[i-1].toExponential(1) }}
 					</button>
 					<span>
-						購入数: {{ player.lightGeneratorsBought[i-1].toNumber()+' '}}
+						購入数: {{ player.light.lightGeneratorsBought[i-1].toNumber()+' '}}
 					</span>
 				</div>
 
@@ -303,7 +303,7 @@
 					ツイート機能設定
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('money') }" @click="configtweet('money')">ポイント</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('darkmoney') }" @click="configtweet('darkmoney')" v-if="player.dark.darkMoney.gt(0)">裏ポイント</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('lightmoney') }" @click="configtweet('lightmoney')" v-if="player.lightMoney.gt(0)">天上ポイント</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('lightmoney') }" @click="configtweet('lightmoney')" v-if="player.light.lightMoney.gt(0)">天上ポイント</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('level') }" @click="configtweet('level')" v-if="player.levelResetTime.gt(0)||player.rankResetTime.gt(0)">段位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('darklevel') }" @click="configtweet('darklevel')" v-if="player.dark.darkLevel.gt(0)">裏段位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('achieved') }" @click="configtweet('achieved')" v-if="player.levelResetTime.gt(0)||player.rankResetTime.gt(0)">挑戦達成</button>
@@ -964,6 +964,7 @@
 	<script type="text/javascript" src="generator.js"></script>
 	<script type="text/javascript" src="accelerator.js"></script>
 	<script type="text/javascript" src="dark.js"></script>
+	<script type="text/javascript" src="light.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 </body>
 

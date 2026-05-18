@@ -201,9 +201,6 @@ const app = Vue.createApp(Vue.defineComponent({
 
       players: new Array(worldnum).fill(null).map(() => initialData()),
 
-      highest: 0,
-      commonmult: new Decimal(0),
-      incrementalmults: new Array(8).fill(null).map(() => new Decimal(1)),
       showmult: true,
       trophycheck: true,
 
@@ -232,13 +229,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       multbyac: new Decimal(1),
 
-      memorysum: 0,
-      remembersum: 0,
-
       trophynumber: new Array(10).fill(0),
-      smalltrophy: 0,
-      eachpipedsmalltrophy: new Array(worldnum).fill(0),
-      pipedsmalltrophy: 0,
       worldopened: new Array(worldnum).fill(false),
 
       world: 0,
@@ -257,10 +248,10 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '在住世界:' + (this.world + 1) + '%0A';
       }
       if (this.player.tweeting.includes('memory')) {
-        tweetText += '記憶:' + this.memorysum + '%0A';
+        tweetText += '記憶:' + this.player.memorySum + '%0A';
       }
       if (this.player.tweeting.includes('remember')) {
-        tweetText += '思い出:' + this.checkremembers() + '%0A';
+        tweetText += '思い出:' + this.player.rememberSum + '%0A';
       }
       if (this.player.tweeting.includes('money')) {
         tweetText += 'ポイント:' + this.player.money +
@@ -426,10 +417,13 @@ const app = Vue.createApp(Vue.defineComponent({
       this.checkremembers()
       this.checkworlds()
       this.countsmalltrophies()
+      this.checkpipedsmalltrophies()
+
       this.calccommonmult()
       this.findhighestgenerator()
-
-      this.checkpipedsmalltrophies()
+      for (let i = 0; i < 8; i++) {
+        this.calcbasicincrementmult(i)
+      }
 
       this.calcgncost()
       this.calcaccost()
@@ -490,7 +484,7 @@ const app = Vue.createApp(Vue.defineComponent({
         if (this.player.challenge.isChallengeActive(1) && this.player.generatorsBought[i].gt(0)) {
           p = p.mul(2)
         }
-        p = p.sub(this.eachpipedsmalltrophy[0] * 0.2)
+        p = p.sub(this.player.eachPipedSmallTrophy[0] * 0.2)
 
         this.player.generatorsCost[i] = new Decimal(10).pow(p)
 
@@ -502,7 +496,7 @@ const app = Vue.createApp(Vue.defineComponent({
         let p = this.player.acceleratorsBought[i].add(1)
         p = p.mul(p.add(1)).div(2)
         p = p.mul(i === 0 ? 1 : new Decimal(10).mul(new Decimal(2).pow(i - 1)))
-        p = p.sub(this.eachpipedsmalltrophy[3] * 0.2 * (i + 1))
+        p = p.sub(this.player.eachPipedSmallTrophy[3] * 0.2 * (i + 1))
         this.player.acceleratorsCost[i] = p.pow_base(10)
       }
     },
@@ -511,7 +505,7 @@ const app = Vue.createApp(Vue.defineComponent({
         let p = 100 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1))
         let q = this.player.darkGeneratorsBought[i].mul(i + 1).mul(i + 1)
         q = q.add(p)
-        q = q.sub(this.eachpipedsmalltrophy[8] * 0.02 * (i + 1) * (i + 1))
+        q = q.sub(this.player.eachPipedSmallTrophy[8] * 0.02 * (i + 1) * (i + 1))
         this.player.darkGeneratorsCost[i] = new Decimal(10).pow(q)
       }
     },
@@ -552,13 +546,13 @@ const app = Vue.createApp(Vue.defineComponent({
         x2 = 27
       }
 
-      mult = mult.mul(1 + this.smalltrophy * 0.01 + this.memorysum * x1)
+      mult = mult.mul(1 + this.player.smallTrophy * 0.01 + this.player.memorySum * x1)
 
       if (this.player.rankChallengeBonuses.includes(11)) {
-        mult = mult.mul(new Decimal(2).pow(new Decimal(this.memorysum).div(x2)))
+        mult = mult.mul(new Decimal(2).pow(new Decimal(this.player.memorySum).div(x2)))
       }
 
-      mult = mult.mul(1 + Math.sqrt(this.pipedsmalltrophy))
+      mult = mult.mul(1 + Math.sqrt(this.player.pipedSmallTrophy))
 
       if (this.player.onChallenge && this.player.rankChallengeBonuses.includes(4)) {
         mult = mult.mul(1 + this.player.challenges.length * 0.25)
@@ -590,11 +584,11 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
 
-      this.commonmult = mult
+      this.player.commonMult = mult
     },
 
     calcincrementmult(i, to) {
-      let mult = this.incrementalmults[i]
+      let mult = this.player.incrementalMults[i]
       if (!(this.player.challenge.isChallengeActive(4))) {
         mult = mult.mul(new Decimal(10).pow((i + 1) * (i - to)))
       }
@@ -616,7 +610,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
     calcbasicincrementmult(i) {
-      let mult = new Decimal(this.commonmult);
+      let mult = new Decimal(this.player.commonMult);
 
       if (!(this.player.challenge.isChallengeActive(2))) {
         let mm = new Decimal(1)
@@ -625,7 +619,7 @@ const app = Vue.createApp(Vue.defineComponent({
           mm = mm.mul(new Decimal(mm.add(2).log2()))
         }
 
-        if (i < this.highest && mm.greaterThanOrEqualTo(1)) {
+        if (i < this.player.highestGenerator && mm.greaterThanOrEqualTo(1)) {
           mult = mult.mul(mm)
         } else {
           if (this.player.challenge.activeBonuses.includes(2) && mm.greaterThanOrEqualTo(1)) {
@@ -652,11 +646,11 @@ const app = Vue.createApp(Vue.defineComponent({
       mult = mult.mul(1 + this.player.setChip[i + 1] * 0.5)
 
       if (this.player.challenge.isPChallengeActive(2)) {
-        this.incrementalmults[2] = new Decimal(0)
-        this.incrementalmults[5] = new Decimal(0)
+        this.player.incrementalMults[2] = new Decimal(0)
+        this.player.incrementalMults[5] = new Decimal(0)
       }
 
-      this.incrementalmults[i] = mult
+      this.player.incrementalMults[i] = mult
 
     },
 
@@ -701,7 +695,7 @@ const app = Vue.createApp(Vue.defineComponent({
           mult = this.player.rankChallengeBonuses.includes(10) ? mult.add(this.player.acceleratorsBought[i].pow_base(2)) : mult.add(this.player.acceleratorsBought[i])
         }
         mult = mult.mul(new Decimal(1.5).pow(this.player.setChip[i + 10]))
-        mult = mult.mul(1 + this.eachpipedsmalltrophy[1] * 0.2)
+        mult = mult.mul(1 + this.player.eachPipedSmallTrophy[1] * 0.2)
         this.player.accelerators[i - 1] = this.player.accelerators[i - 1].add(this.player.accelerators[i].mul(mult).mul(mu))
 
       }
@@ -717,14 +711,14 @@ const app = Vue.createApp(Vue.defineComponent({
       for (let i = 0; i < 8; i++) {
         dgtocalc[i] = dgtocalc[i].mul(this.player.lightGenerators[i].add(1))
       }
-      this.player.darkMoney = this.player.darkMoney.add(dgtocalc[0].mul(mu).mul(darkmult).mul(1 + this.player.setChip[41] * 0.25).mul(1 + this.eachpipedsmalltrophy[5] * 0.2))
+      this.player.darkMoney = this.player.darkMoney.add(dgtocalc[0].mul(mu).mul(darkmult).mul(1 + this.player.setChip[41] * 0.25).mul(1 + this.player.eachPipedSmallTrophy[5] * 0.2))
       for (let i = 1; i < 8; i++) {
-        this.player.darkGenerators[i - 1] = this.player.darkGenerators[i - 1].add(dgtocalc[i].mul(mu).mul(darkmult).mul(1 + this.player.setChip[41 + i] * 0.25).mul(1 + this.eachpipedsmalltrophy[5] * 0.2))
+        this.player.darkGenerators[i - 1] = this.player.darkGenerators[i - 1].add(dgtocalc[i].mul(mu).mul(darkmult).mul(1 + this.player.setChip[41 + i] * 0.25).mul(1 + this.player.eachPipedSmallTrophy[5] * 0.2))
       }
     },
     updatelightgenerators(mu) {
 
-      let pipemult = 1 + this.eachpipedsmalltrophy[10] * 0.1
+      let pipemult = 1 + this.player.eachPipedSmallTrophy[10] * 0.1
 
       this.player.lightMoney = this.player.lightMoney.add(this.player.lightGenerators[0].mul(mu).mul(pipemult))
       for (let i = 1; i < 8; i++) {
@@ -771,10 +765,10 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     findhighestgenerator() {
-      this.highest = 0;
+      this.player.highestGenerator = 0;
       for (let j = 0; j < 8; j++) {
         if (this.player.generators[j].greaterThan(0)) {
-          this.highest = j;
+          this.player.highestGenerator = j;
         }
       }
     },
@@ -810,12 +804,11 @@ const app = Vue.createApp(Vue.defineComponent({
         alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
       }
 
-      const remember = this.checkremembers();
-      this.player.shines.updateShine(this.player, this.eachpipedsmalltrophy, remember);
-      this.player.shines.updateBright(this.player, this.eachpipedsmalltrophy, remember);
+      this.player.shines.updateShine(this.player);
+      this.player.shines.updateBright(this.player);
       this.player.shines.updateFlicker(this.player);
 
-      let autorankshine = Math.max(0, 1000 - this.checkremembers() * 10)
+      let autorankshine = Math.max(0, 1000 - this.player.rememberSum * 10)
 
       if (!this.player.onChallenge && this.player.rankChallengeBonuses.includes(14) && this.autorank) {
         if (this.player.shine >= autorankshine && this.player.money.greaterThanOrEqualTo(this.rankdata.resetRankborder(this))) {
@@ -832,7 +825,7 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
 
-      if (this.remembersum >= 100) {
+      if (this.player.rememberSum >= 100) {
         if (!(this.player.onChallenge || this.player.challenge.onPerfectChallenge)) {
           this.player.level = this.player.level.add(1)
           this.player.levelResetTime = this.player.levelResetTime.add(1)
@@ -1072,7 +1065,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       gainlevel = gainlevel.round().max(1)
 
-      gainlevel = gainlevel.mul(new Decimal(this.eachpipedsmalltrophy[2] / 5.0).pow_base(2))
+      gainlevel = gainlevel.mul(new Decimal(this.player.eachPipedSmallTrophy[2] / 5.0).pow_base(2))
       if (this.player.challenge.activeBonuses.includes(12)) gainlevel = gainlevel.mul(new Decimal(2))
       return gainlevel;
     },
@@ -1155,13 +1148,13 @@ const app = Vue.createApp(Vue.defineComponent({
           let money = this.player.money;
           if (this.chipthresholduse) money = money.min(this.chipthreshold)
           
-          let bonus = new Decimal(10).pow(this.eachpipedsmalltrophy[7] * 0.4)
+          let bonus = new Decimal(10).pow(this.player.eachPipedSmallTrophy[7] * 0.4)
           if (this.player.activatedCampaigns.includes("tanabata2")) {
             bonus = bonus.mul(this.player.lightMoney.add(1))
           }
           console.log("gain chip bonus:" + bonus)
 
-          const chipDoubleProb = 0.01 * (1 + 0.1 * this.eachpipedsmalltrophy[11])
+          const chipDoubleProb = 0.01 * (1 + 0.1 * this.player.eachPipedSmallTrophy[11])
           const isGw2 = this.player.activatedCampaigns.includes("gw2")
 
           this.player.chips.gainRandomChip(money.mul(bonus), chipDoubleProb, isGw2);
@@ -1410,7 +1403,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if (confirm("世界" + (i + 1) + "を収縮させ、記憶を思い出に変化させますか？収縮した世界は最初からになります。")) {
         let u = this.trophynumber[i]
         let rg = this.players[i].rings
-        let r = this.checkremembers()
+        let r = this.player.rememberSum
         let rd = this.players[i].residue
         let dl = this.players[i].darklevel
         let st = this.players[i].statue
@@ -1618,7 +1611,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       if (this.player.worldPipe[i] >= maxpipe) return
 
-      let havepipe = Math.floor((this.smalltrophy - 72) / 3)
+      let havepipe = Math.floor((this.player.smallTrophy - 72) / 3)
       for (let j = 0; j < worldnum; j++) {
         havepipe -= this.player.worldPipe[j]
       }
@@ -1642,7 +1635,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if (this.player.brightness > 0) this.player.trophies[5] = true;
       if (this.player.remember > 0) this.player.trophies[6] = true;
       if (this.world == 0) {
-        if (this.checkremembers() > 0) this.player.trophies[6] = true;
+        if (this.player.rememberSum > 0) this.player.trophies[6] = true;
       }
       if (this.player.crownResetTime.greaterThan(0)) this.player.trophies[7] = true;
       if (this.player.lightGenerators[0].greaterThan(0)) this.player.trophies[8] = true;
@@ -1847,7 +1840,8 @@ const app = Vue.createApp(Vue.defineComponent({
 
     },
     checkpipedsmalltrophies() {
-      let sum = 0
+      this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
+      this.player.pipedSmallTrophy = 0;
       for (let i = 0; i < worldnum; i++) {
         let cnt = 0
         if (this.players[i].worldpipe[this.world] >= 1) {
@@ -1862,13 +1856,10 @@ const app = Vue.createApp(Vue.defineComponent({
           if (this.players[i].remember >= 10) {
             cnt = Math.floor(cnt * (0.1 + this.players[i].remember / 10))
           }
-          this.eachpipedsmalltrophy[i] = cnt;
-          sum += cnt
-        } else {
-          this.eachpipedsmalltrophy[i] = 0;
+          this.player.eachPipedSmallTrophy[i] = cnt;
+          this.player.pipedSmallTrophy += cnt;
         }
       }
-      this.pipedsmalltrophy = sum
     },
     countsmalltrophies(index) {
       let cnt = 0;
@@ -1878,7 +1869,7 @@ const app = Vue.createApp(Vue.defineComponent({
       for (let i = 0; i < 100; i++) {
         if (this.player.smallTrophies2nd[i]) cnt++;
       }
-      this.smalltrophy = cnt
+      this.player.smallTrophy = cnt
     },
     checkmemories() {
       let cnt = 0;
@@ -1888,7 +1879,7 @@ const app = Vue.createApp(Vue.defineComponent({
         if (this.world == i) continue
         cnt += this.trophynumber[i]
       }
-      this.memorysum = cnt
+      this.player.memorySum = cnt
     },
     checkremembers() {
       let cnt = 0;
@@ -1896,7 +1887,7 @@ const app = Vue.createApp(Vue.defineComponent({
         cnt += this.players[i].remember
       }
 
-      return this.remembersum = cnt
+      this.player.rememberSum = cnt
     },
     checkworlds() {
 

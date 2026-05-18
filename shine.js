@@ -40,27 +40,21 @@ class Shine {
     this.residue = playerData.residue;
   }
 
-  /**
-   * @param {Player} player 
-   * @param {number[]} eachPipedSmallTrophy 
-   */
-  calcShinePercent(player, eachPipedSmallTrophy) {
+  /** @param {Player} player */
+  calcShinePercent(player) {
     let sp = Shine.getBaseShinePercent(player.challengeCleared.length)
     sp += 0.02 * player.setChip[30]
-    sp += 0.01 * eachPipedSmallTrophy[6]
+    sp += 0.01 * player.eachPipedSmallTrophy[6]
     sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3))
     sp += 0.01 * player.statues.polishedStatueSum
 
     return sp
   }
   
-  /**
-   * @param {Player} player 
-   * @param {number} remember 
-   */
-  calcMaxShine(player, remember) {
+  /** @param {Player} player */
+  calcMaxShine(player) {
     const clear = player.challengeCleared.length;
-    const rememberLevel = Math.floor((remember + 16) / 16);
+    const rememberLevel = Math.floor((player.rememberSum + 16) / 16);
 
     let value = 0;
     if (clear >= 32 * 8 - 1) value = 10000000;
@@ -77,26 +71,20 @@ class Shine {
     return Math.floor(value);
   }
 
-  /**
-   * @param {Player} player 
-   * @param {number[]} eachPipedSmallTrophy 
-   */
-  calcBrightPercent(player, eachPipedSmallTrophy) {
+  /** @param {Player} player */
+  calcBrightPercent(player) {
     let bp = Shine.getBaseBrightPercent(player.rankChallengeCleared.length)
     bp += 0.001 * player.setChip[49]
-    bp += 0.001 * eachPipedSmallTrophy[9] * 0.5
+    bp += 0.001 * player.eachPipedSmallTrophy[9] * 0.5
     bp += 0.001 * player.statues.brightStatueSum * 0.5
 
     return bp
   }
 
-  /**
-   * @param {Player} player 
-   * @param {number} remember 
-   */
-  calcMaxBright(player, remember) {
+  /** @param {Player} player */
+  calcMaxBright(player) {
     const clear = player.rankChallengeCleared.length;
-    const rememberLevel = Math.floor((remember + 16) / 16);
+    const rememberLevel = Math.floor((player.rememberSum + 16) / 16);
 
     let value = 0;
     if (clear >= 32 * 8 - 1) value = 10000;
@@ -123,16 +111,12 @@ class Shine {
     //max:2097152
   }
 
-  /**
-   * @param {Player} player 
-   * @param {number[]} eachPipedSmallTrophy
-   * @param {number} remember 
-   */
-  updateShine(player, eachPipedSmallTrophy, remember) {
-    const maxShine = this.calcMaxShine(player, remember);
+  /** @param {Player} player */
+  updateShine(player) {
+    const maxShine = this.calcMaxShine(player);
     if (this.shine >= maxShine) return;
 
-    const shinePercent = this.calcShinePercent(player, eachPipedSmallTrophy);
+    const shinePercent = this.calcShinePercent(player);
     let shineGain = Math.floor(shinePercent);
     if (Math.random() < shinePercent - shineGain) {
       shineGain += 1;
@@ -150,17 +134,13 @@ class Shine {
     this.shine = Math.min(this.shine + shineGain, maxShine);
   }
 
-  /**
-   * @param {Player} player 
-   * @param {number[]} eachPipedSmallTrophy
-   * @param {number} remember 
-   */
-  updateBright(player, eachPipedSmallTrophy, remember) {
-    const maxBright = this.calcMaxBright(player, remember);
+  /** @param {Player} player */
+  updateBright(player) {
+    const maxBright = this.calcMaxBright(player);
     if (this.brightness >= maxBright) return;
 
     let brightGain = 0;
-    if (Math.random() < this.calcBrightPercent(player, eachPipedSmallTrophy)) {
+    if (Math.random() < this.calcBrightPercent(player)) {
       brightGain += 1;
     }
 

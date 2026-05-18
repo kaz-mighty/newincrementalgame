@@ -89,6 +89,15 @@ class Player {
         autoRing: playerData.rings.auto.doauto,
     };
 
+    this.highestGenerator = 0;
+    this.commonMult = new Decimal(0);
+    this.incrementalMults = new Array(8).fill(null).map(() => new Decimal(1));
+    this.memorySum = 0;
+    this.rememberSum = 0;
+    this.smallTrophy = 0;
+    this.eachPipedSmallTrophy = new Array(worldnum).fill(0);
+    this.pipedSmallTrophy = 0;
+
     this.unUsed = {
       shineLoader: Array.from(playerData.shineloader),
       brightLoader: Array.from(playerData.brightloader),

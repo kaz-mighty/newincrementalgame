@@ -313,7 +313,7 @@
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('levelitemboughttime') }" @click="configtweet('levelitemboughttime')" v-if="player.rankResetTime.gt(0)">段位効力購入</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('world') }" @click="configtweet('world')" v-if="worldopened[1] || worldopened[2]">世界</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('memory') }" @click="configtweet('memory')" v-if="worldopened[1] || worldopened[2]">記憶</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('remember') }" @click="configtweet('remember')" v-if="checkremembers()>0">思い出</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('remember') }" @click="configtweet('remember')" v-if="player.rememberSum>0">思い出</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('crown') }" @click="configtweet('crown')" v-if="player.crownResetTime.gt(0)">冠位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('statue') }" @click="configtweet('statue')" v-if="player.statues.statue[0]>0">像</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('polishedstatue') }" @click="configtweet('polishedstatue')" v-if="player.statues.polishedStatue[0]>0">輝像</button>
@@ -553,7 +553,7 @@
 						自動昇階器設定:入手階位
 					</button>
 					現在: {{ autoranknumber.toNumber() }}
-					消費輝き: {{ 1000 - checkremembers()*10 }}
+					消費輝き: {{ 1000 - player.rememberSum*10 }}
 				</div>
 				<div v-if="player.rings.clearedMission.includes(4)">輪自動化器設定</div>
 				<div v-if="player.rings.clearedMission.includes(4)">
@@ -606,8 +606,8 @@
 						輝き消費:1000000
 					</button>
 				</div>
-				<div>輝き入手率: {{ (player.shines.calcShinePercent(player, eachpipedsmalltrophy) * 100).toFixed(1) }}%</div>
-				<div>最大輝き保有数: {{ player.shines.calcMaxShine(player, checkremembers()) }}</div>
+				<div>輝き入手率: {{ (player.shines.calcShinePercent(player) * 100).toFixed(1) }}%</div>
+				<div>最大輝き保有数: {{ player.shines.calcMaxShine(player) }}</div>
 				<br>
 				<div>
 					型
@@ -645,8 +645,8 @@
 					<button type="button" v-if="player.rankChallengeCleared.length>=255" class="spendbrightnessbutton" @click="spendbrightness(1000)">
 						煌き消費:1000
 					</button>
-					<div>煌き入手率: {{ (player.shines.calcBrightPercent(player, eachpipedsmalltrophy) * 100).toFixed(3) }}%</div>
-					<div>最大煌き保有数: {{ player.shines.calcMaxBright(player, checkremembers())}}</div>
+					<div>煌き入手率: {{ (player.shines.calcBrightPercent(player) * 100).toFixed(3) }}%</div>
+					<div>最大煌き保有数: {{ player.shines.calcMaxBright(player)}}</div>
 				</div>
 				<div v-if="player.challenge.perfectChallengeStage>=1">
 					瞬き所持数:{{ player.flicker }}
@@ -662,12 +662,12 @@
 				</div>
 			</div>
 			<div v-if="player.currentTab == 'world'">
-				記憶: {{ memorysum }}
+				記憶: {{ player.memorySum }}
 				<div>
 					記憶は、他世界での実績の個数の合計です。記憶が多くなるほど、発生器の生産量が増加します。
 				</div>
 				<div v-if="trophynumber[0]>=6">
-					合計思い出: {{ checkremembers() }}
+					合計思い出: {{ player.rememberSum }}
 					<button type="button" v-if="false" @click="spendremember()">
 						思い出消費
 					</button>
@@ -675,8 +675,8 @@
 						思い出は、自分より番号が大きい世界の思い出の合計です。思い出が多くなるほど、階位リセットに必要なポイントが減少します。
 					</div>
 				</div>
-				<div v-if="smalltrophy>=75">
-					世界管所持数: {{ Math.floor((smalltrophy-72)/3) }}
+				<div v-if="player.smallTrophy>=75">
+					世界管所持数: {{ Math.floor((player.smallTrophy-72)/3) }}
 					<div>
 						世界管を開通すると、開通先の世界での生産力が、開通元の世界の里程の個数に応じて強化されます。
 					</div>
@@ -692,7 +692,7 @@
 					<button type="button" v-if="trophynumber[0]>=6 && world==0 && i!=1" class="wdbutton" :class="{'unavailable': players[i-1].remember >= trophynumber[i-1] ||  trophynumber[i-1] < 4}" @click="shrinkworld(i-1)">
 						収縮
 					</button>
-					<button type="button" v-if="i-1!=world && worldopened[i-1] && smalltrophy>=75" class="wdbutton" :class="{'unavailable': player.worldPipe[i-1] >= calcmaxpipe() }" @click="openpipe(i-1)">
+					<button type="button" v-if="i-1!=world && worldopened[i-1] && player.smallTrophy>=75" class="wdbutton" :class="{'unavailable': player.worldPipe[i-1] >= calcmaxpipe() }" @click="openpipe(i-1)">
 						開通
 					</button>
 					<span>
@@ -701,14 +701,14 @@
 					<span v-if="trophynumber[0]>=6">
 						思い出:{{ players[i-1].remember }}
 					</span>
-					<span v-if="smalltrophy>=75">
+					<span v-if="player.smallTrophy>=75">
 						世界管開通数:{{ player.worldPipe[i-1] }}
 					</span>
 
 				</div>
-				<div v-if="checkremembers()>0">
+				<div v-if="player.rememberSum>0">
 					思い出ボーナス:世界収縮後、思い出ボーナスに応じた状態から新しい世界をスタートすることができます。
-					<div v-for="i in checkremembers()" :key="i">
+					<div v-for="i in player.rememberSum" :key="i">
 						達成数 {{ i }} : {{ rememberdata.contents[i-1] }}
 					</div>
 				</div>
@@ -773,7 +773,7 @@
 					</button>
 					現在: {{ player.setChip[i-1]==0?"なし":Chips.chipName[player.setChip[i-1]-1] +"片"}}
 				</div>
-				<div v-if="checkremembers()>=16" v-for="i in 20" :key="i">
+				<div v-if="player.rememberSum>=16" v-for="i in 20" :key="i">
 					鋳片効力 {{ i+32 }} : {{ Chips.chipBonusName[i+32-1] }}
 					<span v-show="player.chips.disabledChip[i+32-1]">（無効）</span>
 					<span v-for="j in 10" :key="j">
@@ -904,8 +904,8 @@
 					</button>
 				</div>
 				里程
-				取得数: {{ smalltrophy }}
-				<div class="smalltrophy">
+				取得数: {{ player.smallTrophy }}
+				<div class="player.smallTrophy">
 					<table border="1">
 						<template v-for="i in 10" :key="i">
 							<tr>

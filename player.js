@@ -31,8 +31,11 @@ class Player {
   }
 
 
-  /** @param {PlayerSaveData} playerData */
-  constructor(playerData) {
+  /** 
+   * @param {PlayerSaveData} playerData 
+   * @param {CommonData} commonData 
+   */
+  constructor(playerData, commonData) {
     this.money = new Decimal(playerData.money);
     this.level = new Decimal(playerData.level);
     this.levelResetTime = new Decimal(playerData.levelresettime);
@@ -88,6 +91,7 @@ class Player {
         autoRing: playerData.rings.auto.doauto,
     };
 
+    this.common = commonData;
     this.commonMult = new Decimal(0);
     this.incrementalMults = new Array(8).fill(null).map(() => new Decimal(1));
     this.memorySum = 0;
@@ -483,10 +487,8 @@ class Player {
   /**
    * @param {boolean} force 
    * @param {boolean} exit 
-   * @param {boolean} chipThresholdUse
-   * @param {Decimal} chipThreshold 
    */
-  resetLevel(force, exit, chipThresholdUse, chipThreshold) {
+  resetLevel(force, exit) {
     if (this.challenge.isChallengeActive(0)) {
       if (this.money.lt(new Decimal('1e24'))) {
         alert('現在挑戦1が適用されているため、まだ昇段リセットができません。')
@@ -527,7 +529,7 @@ class Player {
 
       if (this.money.greaterThan(1e80)) {
         let money = this.money;
-        if (chipThresholdUse) money = money.min(chipThreshold)
+        if (this.common.chipThresholdUse) money = money.min(this.common.chipThreshold)
         
         let bonus = new Decimal(10).pow(this.eachPipedSmallTrophy[7] * 0.4)
         if (this.activatedCampaigns.includes("tanabata2")) {
@@ -717,6 +719,10 @@ class Player {
     if (this.lightGenerators[0].greaterThan(0)) this.trophies[8] = true;
     if (this.flicker > 0) this.trophies[9] = true;
 
+    this.common.trophyNumber[world] = this.countTrophies();
+    if (world === 0 && this.common.trophyNumber[0] >= 6) {
+      this.remember = Math.max(this.remember, this.common.trophyNumber[0]);
+    }
 
     if (this.money.greaterThan(0)) this.smallTrophies1st[0] = true
     if (this.money.greaterThan(777)) this.smallTrophies1st[1] = true
@@ -881,5 +887,48 @@ class Player {
       if (this.brightness >= 100000) this.smallTrophies2nd[57] = true
       if (this.brightness >= 1000000) this.smallTrophies2nd[58] = true
     }
+  }
+  countTrophies() {
+    let cnt = 0;
+    for (let i = 0; i < trophynum; i++) {
+      if (this.trophies[i]) cnt++;
+    }
+    return cnt;
+  }
+  countSmallTrophies() {
+    let cnt = 0;
+    for (let i = 0; i < 100; i++) {
+      if (this.smallTrophies1st[i]) cnt++;
+    }
+    for (let i = 0; i < 100; i++) {
+      if (this.smallTrophies2nd[i]) cnt++;
+    }
+    this.smallTrophy = cnt
+  }
+
+  /** @param {number} world */
+  checkWorlds(world) {
+    if (world !== 0) return;
+
+    this.common.worldOpened[0] = true
+    
+    if (new Decimal(this.crownResetTime).gt(0)) {
+      for (let i = 1; i < 10; i++) {
+        this.common.worldOpened[i] = true
+      }
+    } else {
+      if (this.challengeCleared.includes(238)) this.common.worldOpened[1] = true
+      if (this.challengeCleared.length >= 100) this.common.worldOpened[2] = true
+      if (this.rankChallengeCleared.length >= 16) this.common.worldOpened[3] = true
+      if (this.levelShop.levelItemBought >= 12500) this.common.worldOpened[4] = true
+      if (this.dark.darkMoney.greaterThanOrEqualTo('1e8')) this.common.worldOpened[5] = true
+      if (this.rank.greaterThanOrEqualTo(262142)) this.common.worldOpened[6] = true
+      if (this.rankChallengeCleared.includes(238)) this.common.worldOpened[7] = true
+      if (this.challengeCleared.length >= 200) this.common.worldOpened[8] = true
+      if (this.rankChallengeCleared.length >= 200) this.common.worldOpened[9] = true
+    }
+
+    if (this.light.lightMoney.greaterThanOrEqualTo('1e8')) this.common.worldOpened[10] = true
+    if (this.statues.statue[2] >= 16) this.common.worldOpened[11] = true
   }
 }

@@ -187,9 +187,20 @@ const initialData = () => {
   };
 }
 
+/** @typedef {ReturnType<typeof initialCommonData>} CommonData */
+function initialCommonData() {
+  return {
+    chipThresholdUse: false,
+    chipThreshold: new Decimal("1e999"),
+
+    trophyNumber: new Array(trophynum).fill(0),
+
+    worldOpened: new Array(worldnum).fill(false),
+  };
+}
 
 /** @type {Vue.Ref<Player>} */
-const currentPlayer = Vue.ref(new Player(initialData()));
+const currentPlayer = Vue.ref(new Player(initialData(), initialCommonData()));
 
 
 const app = Vue.createApp(Vue.defineComponent({
@@ -200,6 +211,7 @@ const app = Vue.createApp(Vue.defineComponent({
       player: currentPlayer,
 
       players: new Array(worldnum).fill(null).map(() => initialData()),
+      common: initialCommonData(),
 
       showmult: true,
       trophycheck: true,
@@ -217,24 +229,15 @@ const app = Vue.createApp(Vue.defineComponent({
       litemautobuy: false,
       autorank: false,
 
-      chipthresholduse: false,
-      chipthreshold: new Decimal("1e999"),
-
       automissiontimerid: 0,
       autoshinetimerid: 0,
       autobrighttimerid: 0,
       autochallengetimerid: 0,
 
-      trophynumber: new Array(10).fill(0),
-      worldopened: new Array(worldnum).fill(false),
-
       world: 0,
 
       time: 0,
       diff: 0,
-
-
-
     }
   },
   computed: {
@@ -406,13 +409,13 @@ const app = Vue.createApp(Vue.defineComponent({
       this.world = world
       console.log(saveData)
 
-      this.player = new Player(saveData)
+      this.player = new Player(saveData, this.common)
 
-      this.player.checkTrophies(this.world, this.exported)
       this.checkmemories()
       this.checkremembers()
-      this.checkworlds()
-      this.countsmalltrophies()
+      this.player.checkTrophies(this.world, this.exported)
+      this.player.checkWorlds(this.world)
+      this.player.countSmallTrophies()
       this.checkpipedsmalltrophies()
 
       this.updateTickSpeed()
@@ -468,10 +471,11 @@ const app = Vue.createApp(Vue.defineComponent({
       this.time = Date.now()
       this.player.challenge.activeBonuses = (!this.player.onChallenge || this.player.challengeBonuses.includes(4)) ? this.player.challengeBonuses : []
 
-      if (this.trophycheck) this.player.checkTrophies(this.world, this.exported)
-      this.checkmemories()
-      this.checkworlds()
-      this.countsmalltrophies()
+      if (this.trophycheck) {
+          this.player.checkTrophies(this.world, this.exported)
+          this.player.countSmallTrophies()
+      }
+      this.player.checkWorlds(this.world)
       this.player.calcCommonMult()
       this.player.generator.findHighestGenerator()
       for (let i = 0; i < 8; i++) {
@@ -524,7 +528,7 @@ const app = Vue.createApp(Vue.defineComponent({
       if ((this.player.auto.autoDoChallenge || !this.player.onChallenge) && this.player.challenge.activeBonuses.includes(14) && this.autolevel) {
         if (this.player.money.greaterThanOrEqualTo(this.player.resetLevelBorder()) && this.player.level.lt(this.autolevelstopnumber)) {
           if (this.player.calcGainLevel().greaterThanOrEqualTo(this.autolevelnumber)) {
-            this.resetLevel(true, false)
+            this.player.resetLevel(true, false)
           }
         }
       }
@@ -582,11 +586,11 @@ const app = Vue.createApp(Vue.defineComponent({
       if (index == 5) this.autorank = !this.autorank
     },
     togglechipthresholduse() {
-      this.chipthresholduse = !this.chipthresholduse
+      this.common.chipThresholdUse = !this.common.chipThresholdUse
     },
     configchipthresholdnumber() {
       let input = new Decimal(window.prompt("閾値を設定", ""))
-      this.chipthreshold = input
+      this.common.chipThreshold = input
     },
     autoshine() {
       this.player.spendShine(this.player.auto.autoSpendShineNumber)
@@ -645,7 +649,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     resetData(force) {
       if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-        this.player = new Player(initialData())
+        this.player = new Player(initialData(), this.common)
         for (let i = 0; i < worldnum; i++) {
           this.players[i] = initialData()
         }
@@ -653,13 +657,8 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
 
-    resetLevel(force, exit) {
-      this.player.resetLevel(force, exit, this.chipthresholduse, this.chipthreshold);
-    },
-
-
     startChallenge() {
-      this.player.challenge.startChallenge(this, this.player);
+      this.player.challenge.startChallenge(this.player);
     },
     startpChallenge() {
       this.player.challenge.startPChallenge(this.player);
@@ -681,22 +680,22 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     moveworld(i) {
       // @ts-expect-error
-      if (world == i || !this.worldopened[i]) return // bug
+      if (world == i || !this.common.worldOpened[i]) return // bug
       this.save()
       this.load(i)
       this.world = i
     },
     shrinkworld(i) {
-      if (4 > this.trophynumber[i]) {
+      if (4 > this.common.trophyNumber[i]) {
         alert("実績が4つ未満なので、世界を収縮できません。")
         return
       }
-      if (this.players[i].remember >= this.trophynumber[i]) {
+      if (this.players[i].remember >= this.common.trophyNumber[i]) {
         alert("実績が思い出より多くありません。")
         return
       }
       if (confirm("世界" + (i + 1) + "を収縮させ、記憶を思い出に変化させますか？収縮した世界は最初からになります。")) {
-        let u = this.trophynumber[i]
+        let u = this.common.trophyNumber[i]
         let rg = this.players[i].rings
         let r = this.player.rememberSum
         let rd = this.players[i].residue
@@ -918,10 +917,7 @@ const app = Vue.createApp(Vue.defineComponent({
       for (let i = 0; i < trophynum; i++) {
         if (this.players[index].trophies[i]) cnt++;
       }
-      this.trophynumber[index] = cnt
-
-      if (this.trophynumber[0] >= 6) this.players[0].remember = Math.max(this.players[0].remember, this.trophynumber[0])
-
+      this.common.trophyNumber[index] = cnt;
     },
     checkpipedsmalltrophies() {
       this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
@@ -945,23 +941,13 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
     },
-    countsmalltrophies(index) {
-      let cnt = 0;
-      for (let i = 0; i < 100; i++) {
-        if (this.player.smallTrophies1st[i]) cnt++;
-      }
-      for (let i = 0; i < 100; i++) {
-        if (this.player.smallTrophies2nd[i]) cnt++;
-      }
-      this.player.smallTrophy = cnt
-    },
     checkmemories() {
       let cnt = 0;
 
       for (let i = 0; i < worldnum; i++) {
         this.counttrophies(i)
         if (this.world == i) continue
-        cnt += this.trophynumber[i]
+        cnt += this.common.trophyNumber[i]
       }
       this.player.memorySum = cnt
     },
@@ -972,37 +958,6 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
       this.player.rememberSum = cnt
-    },
-    checkworlds() {
-
-      this.worldopened[0] = true
-      if (new Decimal(this.players[0].crownresettime).gt(0)) {
-        for (let i = 1; i < 10; i++) {
-          this.worldopened[i] = true
-        }
-      }
-
-      if (this.players[0].challengecleared.includes(238)) this.worldopened[1] = true
-      if (this.players[0].challengecleared.length >= 100) this.worldopened[2] = true
-      if (this.players[0].rankchallengecleared.length >= 16) this.worldopened[3] = true
-      if (this.players[0].levelitembought >= 12500) this.worldopened[4] = true
-      if (new Decimal(this.players[0].darkmoney).greaterThanOrEqualTo('1e8')) this.worldopened[5] = true
-      if (new Decimal(this.players[0].rank).greaterThanOrEqualTo(262142)) this.worldopened[6] = true
-      if (this.players[0].rankchallengecleared.includes(238)) this.worldopened[7] = true
-      if (this.players[0].challengecleared.length >= 200) this.worldopened[8] = true
-      if (this.players[0].rankchallengecleared.length >= 200) this.worldopened[9] = true
-
-      if (new Decimal(this.players[0].crownresettime).gt(0)) {
-        for (let i = 1; i < 10; i++) {
-          this.worldopened[i] = true
-        }
-      }
-
-      if (new Decimal(this.players[0].lightmoney).greaterThanOrEqualTo('1e8')) this.worldopened[10] = true
-      if (this.players[0].statue[2] >= 16) this.worldopened[11] = true
-
-
-
     },
 
     toFormated(dec, exp) {
@@ -1015,9 +970,6 @@ const app = Vue.createApp(Vue.defineComponent({
   mounted() {
     this.dataload();
     this.load(0);
-
-    this.checkmemories();
-    this.checkworlds();
 
     this.time = Date.now()
 

@@ -377,11 +377,8 @@ class Challenge {
     this.challenges = Challenge.calcChallengesArray(challengeid)
   }
 
-  /**
-   * @param {*} data 
-   * @param {Player} player 
-   */
-  startChallenge(data, player) {
+  /** @param {Player} player */
+  startChallenge(player) {
     let challengeid = this.getChallengeId();
 
     if (challengeid == 0) {
@@ -404,7 +401,7 @@ class Challenge {
 
     if (player.auto.autoDoChallenge || confirm(conf)) {
       if (!this.challengeBonuses.includes(4)) this.activeBonuses = [];
-      data.resetLevel(true, true);
+      player.resetLevel(true, true);
       this.onChallenge = true;
       if (this.challenges.includes(3)) {
         for (let i = 0; i < 8; i++) {

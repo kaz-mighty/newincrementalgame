@@ -83,7 +83,7 @@
 				<span id="shine" v-if="player.challengeCleared.length >= 64">
 					<button type="button" @click="changeTab('shine')">輝き</button>
 				</span>
-				<span id="world" v-if="worldopened[1] || worldopened[2]">
+				<span id="world" v-if="common.worldOpened[1] || common.worldOpened[2]">
 					<button type="button" @click="changeTab('world')">世界</button>
 				</span>
 				<span id="chip" v-if="player.smallTrophies1st[5]">
@@ -122,7 +122,7 @@
 				</div>
 				<div class="softreset">
 					<div id="levelreset" v-if="player.money.greaterThanOrEqualTo('1e18')">
-						<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isChallengeActive(0) }" @click="resetLevel(false,false)">昇段リセット</button>
+						<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isChallengeActive(0) }" @click="player.resetLevel(false,false)">昇段リセット</button>
 					</div>
 					<div id="rankreset" v-if="player.money.greaterThanOrEqualTo(player.resetRankBorder())">
 						<button type="button" @click="player.resetRank(false)">昇階リセット</button>
@@ -311,8 +311,8 @@
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('pachieved') }" @click="player.configTweet('pachieved')" v-if="player.challenge.perfectChallengeStage>=1">完全挑戦段階</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('rank') }" @click="player.configTweet('rank')" v-if="player.rankResetTime.gt(0)">階位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('levelitemboughttime') }" @click="player.configTweet('levelitemboughttime')" v-if="player.rankResetTime.gt(0)">段位効力購入</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('world') }" @click="player.configTweet('world')" v-if="worldopened[1] || worldopened[2]">世界</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('memory') }" @click="player.configTweet('memory')" v-if="worldopened[1] || worldopened[2]">記憶</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('world') }" @click="player.configTweet('world')" v-if="common.worldOpened[1] || common.worldOpened[2]">世界</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('memory') }" @click="player.configTweet('memory')" v-if="common.worldOpened[1] || common.worldOpened[2]">記憶</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('remember') }" @click="player.configTweet('remember')" v-if="player.rememberSum>0">思い出</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('crown') }" @click="player.configTweet('crown')" v-if="player.crownResetTime.gt(0)">冠位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('statue') }" @click="player.configTweet('statue')" v-if="player.statues.statue[0]>0">像</button>
@@ -666,7 +666,7 @@
 				<div>
 					記憶は、他世界での実績の個数の合計です。記憶が多くなるほど、発生器の生産量が増加します。
 				</div>
-				<div v-if="trophynumber[0]>=6">
+				<div v-if="common.trophyNumber[0]>=6">
 					合計思い出: {{ player.rememberSum }}
 					<button type="button" v-if="false" @click="spendremember()">
 						思い出消費
@@ -686,19 +686,19 @@
 
 				</div>
 				<div class="worlds" v-for="i in 12" :key="i">
-					<button type="button" class="wdbutton" :class="{ 'selected': world == i-1 , 'unavailable': !worldopened[i-1] }" @click="moveworld(i-1)">
+					<button type="button" class="wdbutton" :class="{ 'selected': world == i-1 , 'unavailable': !common.worldOpened[i-1] }" @click="moveworld(i-1)">
 						世界 {{ i }}
 					</button>
-					<button type="button" v-if="trophynumber[0]>=6 && world==0 && i!=1" class="wdbutton" :class="{'unavailable': players[i-1].remember >= trophynumber[i-1] ||  trophynumber[i-1] < 4}" @click="shrinkworld(i-1)">
+					<button type="button" v-if="common.trophyNumber[0]>=6 && world==0 && i!=1" class="wdbutton" :class="{'unavailable': players[i-1].remember >= common.trophyNumber[i-1] ||  common.trophyNumber[i-1] < 4}" @click="shrinkworld(i-1)">
 						収縮
 					</button>
-					<button type="button" v-if="i-1!=world && worldopened[i-1] && player.smallTrophy>=75" class="wdbutton" :class="{'unavailable': player.worldPipe[i-1] >= player.calcMaxPipe() }" @click="player.openPipe(i-1)">
+					<button type="button" v-if="i-1!=world && common.worldOpened[i-1] && player.smallTrophy>=75" class="wdbutton" :class="{'unavailable': player.worldPipe[i-1] >= player.calcMaxPipe() }" @click="player.openPipe(i-1)">
 						開通
 					</button>
 					<span>
-						記憶: {{ trophynumber[i-1] }}
+						記憶: {{ common.trophyNumber[i-1] }}
 					</span>
-					<span v-if="trophynumber[0]>=6">
+					<span v-if="common.trophyNumber[0]>=6">
 						思い出:{{ players[i-1].remember }}
 					</span>
 					<span v-if="player.smallTrophy>=75">
@@ -723,14 +723,14 @@
 				<br>
 
 				<div>
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': chipthresholduse }" @click="togglechipthresholduse()">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.chipThresholdUse }" @click="togglechipthresholduse()">
 						閾値使用
 					</button>
 					<button type="button" @click="configchipthresholdnumber()">
 						閾値設定
 					</button>
 
-					閾値:{{chipthreshold}}
+					閾値:{{common.chipThreshold}}
 				</div>
 
 				入手可能鋳片

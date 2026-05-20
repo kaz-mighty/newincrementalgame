@@ -422,7 +422,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.countSmallTrophies()
       this.checkpipedsmalltrophies()
 
-      this.updateTickSpeed()
+      this.player.updateTickSpeed()
       this.player.calcCommonMult()
       this.player.generator.findHighestGenerator()
       for (let i = 0; i < 8; i++) {
@@ -468,103 +468,14 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
     update() {
-
       let diffm = this.diff
       this.diff = Date.now() - this.time - this.player.tickSpeed
 
       this.time = Date.now()
-      this.player.challenge.activeBonuses = (!this.player.onChallenge || this.player.challengeBonuses.includes(4)) ? this.player.challengeBonuses : []
 
-      if (this.common.trophyCheck) {
-          this.player.checkTrophies()
-          this.player.countSmallTrophies()
-      }
-      this.player.checkWorlds()
-      this.player.calcCommonMult()
-      this.player.generator.findHighestGenerator()
-      for (let i = 0; i < 8; i++) {
-        this.player.calcBasicIncrementMult(i)
-      }
-
-      this.player.generator.calcGnCost(this.player)
-      this.player.accelerator.calcAcCost(this.player)
-      this.player.dark.calcDgCost(this.player)
-      this.player.light.calcLgCost()
-
-      this.player.generator.updateGenerators(this.player, new Decimal(1))
-      this.player.accelerator.updateAccelerators(this.player, new Decimal(1))
-
-      this.player.challenge.calcToken()
-
-      if (this.player.campaign.updateCampaign()) {
-        alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
-      }
-
-      this.player.shines.updateShine(this.player);
-      this.player.shines.updateBright(this.player);
-      this.player.shines.updateFlicker(this.player);
-
-      let autorankshine = Math.max(0, 1000 - this.player.rememberSum * 10)
-
-      if (!this.player.onChallenge && this.player.rankChallengeBonuses.includes(14) && this.common.autoRank) {
-        if (this.player.shine >= autorankshine && this.player.money.greaterThanOrEqualTo(this.player.resetRankBorder())) {
-          if (this.player.calcGainRank().greaterThanOrEqualTo(this.common.autoRankNumber)) {
-            this.player.resetRank(true)
-            this.player.shine -= autorankshine
-          }
-        }
-      }
-
-      if (this.player.rankChallengeBonuses.includes(5) && this.common.levelItemAutoBuy) {
-        for (let i = 0; i < 5; i++) {
-          this.player.levelShop.buyLevelItems(this.player, i)
-        }
-      }
-
-      if (this.player.rememberSum >= 100) {
-        if (!(this.player.onChallenge || this.player.challenge.onPerfectChallenge)) {
-          this.player.level = this.player.level.add(1)
-          this.player.levelResetTime = this.player.levelResetTime.add(1)
-        }
-      }
-
-
-      if ((this.player.auto.autoDoChallenge || !this.player.onChallenge) && this.player.challenge.activeBonuses.includes(14) && this.common.autoLevel) {
-        if (this.player.money.greaterThanOrEqualTo(this.player.resetLevelBorder()) && this.player.level.lt(this.common.autoLevelStopNumber)) {
-          if (this.player.calcGainLevel().greaterThanOrEqualTo(this.common.autoLevelNumber)) {
-            this.player.resetLevel(true, false)
-          }
-        }
-      }
-
-
-      if (this.player.challenge.activeBonuses.includes(5) && this.common.genAutoBuy) {
-        for (let i = 7; i >= 0; i--) {
-          this.player.generator.buyGenerator(this.player, i)
-        }
-      }
-
-      if (this.player.challenge.activeBonuses.includes(9) && this.common.accAutoBuy) {
-        let ha = this.player.levelShop.levelItems[3] + 1
-        for (let i = ha; i >= 0; i--) {
-          this.player.accelerator.buyAccelerator(this.player, i)
-        }
-      }
-
-      this.updateTickSpeed();
+      this.player.update()
 
       setTimeout(this.update, Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
-    },
-    updateTickSpeed() {
-      this.player.tickSpeed = this.player.calcTickSpeed()
-
-      if (this.player.rankChallengeBonuses.includes(9)) {
-        this.player.multByAc = new Decimal(50).div(this.player.tickSpeed)
-        this.player.tickSpeed = 50
-      } else {
-        this.player.multByAc = new Decimal(1)
-      }
-      this.player.campaign.updateAccelLevel(this.player.tickSpeed);
     },
 
     changeTab(tabname) {

@@ -929,4 +929,98 @@ class Player {
     if (this.light.lightMoney.greaterThanOrEqualTo('1e8')) this.common.worldOpened[10] = true
     if (this.statues.statue[2] >= 16) this.common.worldOpened[11] = true
   }
+
+
+  update() {
+    this.challenge.activeBonuses = (!this.onChallenge || this.challengeBonuses.includes(4)) ? this.challengeBonuses : []
+
+    if (this.common.trophyCheck) {
+        this.checkTrophies()
+        this.countSmallTrophies()
+    }
+    this.checkWorlds()
+    this.calcCommonMult()
+    this.generator.findHighestGenerator()
+    for (let i = 0; i < 8; i++) {
+      this.calcBasicIncrementMult(i)
+    }
+
+    this.generator.calcGnCost(this)
+    this.accelerator.calcAcCost(this)
+    this.dark.calcDgCost(this)
+    this.light.calcLgCost()
+
+    this.generator.updateGenerators(this, new Decimal(1))
+    this.accelerator.updateAccelerators(this, new Decimal(1))
+
+    this.challenge.calcToken()
+
+    if (this.campaign.updateCampaign()) {
+      alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
+    }
+
+    this.shines.updateShine(this);
+    this.shines.updateBright(this);
+    this.shines.updateFlicker(this);
+
+    let autorankshine = Math.max(0, 1000 - this.rememberSum * 10)
+
+    if (!this.onChallenge && this.rankChallengeBonuses.includes(14) && this.common.autoRank) {
+      if (this.shine >= autorankshine && this.money.greaterThanOrEqualTo(this.resetRankBorder())) {
+        if (this.calcGainRank().greaterThanOrEqualTo(this.common.autoRankNumber)) {
+          this.resetRank(true)
+          this.shine -= autorankshine
+        }
+      }
+    }
+
+    if (this.rankChallengeBonuses.includes(5) && this.common.levelItemAutoBuy) {
+      for (let i = 0; i < 5; i++) {
+        this.levelShop.buyLevelItems(this, i)
+      }
+    }
+
+    if (this.rememberSum >= 100) {
+      if (!(this.onChallenge || this.challenge.onPerfectChallenge)) {
+        this.level = this.level.add(1)
+        this.levelResetTime = this.levelResetTime.add(1)
+      }
+    }
+
+
+    if ((this.auto.autoDoChallenge || !this.onChallenge) && this.challenge.activeBonuses.includes(14) && this.common.autoLevel) {
+      if (this.money.greaterThanOrEqualTo(this.resetLevelBorder()) && this.level.lt(this.common.autoLevelStopNumber)) {
+        if (this.calcGainLevel().greaterThanOrEqualTo(this.common.autoLevelNumber)) {
+          this.resetLevel(true, false)
+        }
+      }
+    }
+
+
+    if (this.challenge.activeBonuses.includes(5) && this.common.genAutoBuy) {
+      for (let i = 7; i >= 0; i--) {
+        this.generator.buyGenerator(this, i)
+      }
+    }
+
+    if (this.challenge.activeBonuses.includes(9) && this.common.accAutoBuy) {
+      let ha = this.levelShop.levelItems[3] + 1
+      for (let i = ha; i >= 0; i--) {
+        this.accelerator.buyAccelerator(this, i)
+      }
+    }
+
+    this.updateTickSpeed();
+  }
+  updateTickSpeed() {
+    this.tickSpeed = this.calcTickSpeed()
+
+    if (this.rankChallengeBonuses.includes(9)) {
+      this.multByAc = new Decimal(50).div(this.tickSpeed)
+      this.tickSpeed = 50
+    } else {
+      this.multByAc = new Decimal(1)
+    }
+    this.campaign.updateAccelLevel(this.tickSpeed);
+  }
 }

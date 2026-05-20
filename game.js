@@ -188,10 +188,24 @@ const initialData = () => {
 }
 
 /** @typedef {ReturnType<typeof initialCommonData>} CommonData */
+/** 全世界で共有され、(UIを除く)ゲームの動作にも影響する変数 */
 function initialCommonData() {
   return {
+    trophyCheck: true,
+
+    genAutoBuy: false,
+    accAutoBuy: false,
+    autoLevel: false,
+    autoLevelNumber: new Decimal(2),
+    autoRankNumber: new Decimal(4),
+    autoLevelStopNumber: new Decimal("1e100"),
+    levelItemAutoBuy: false,
+    autoRank: false,
+
     chipThresholdUse: false,
     chipThreshold: new Decimal("1e999"),
+
+    exported: "", // UIだけでなく里程にも影響するため
 
     trophyNumber: new Array(trophynum).fill(0),
 
@@ -200,7 +214,7 @@ function initialCommonData() {
 }
 
 /** @type {Vue.Ref<Player>} */
-const currentPlayer = Vue.ref(new Player(initialData(), initialCommonData()));
+const currentPlayer = Vue.ref(new Player(0, initialData(), initialCommonData()));
 
 
 const app = Vue.createApp(Vue.defineComponent({
@@ -214,20 +228,10 @@ const app = Vue.createApp(Vue.defineComponent({
       common: initialCommonData(),
 
       showmult: true,
-      trophycheck: true,
 
       trophydata: new Trophydata(),
       rememberdata: new Rememberdata(),
       spiritdata: new Spiritdata(),
-      exported: "",
-      genautobuy: false,
-      accautobuy: false,
-      autolevel: false,
-      autolevelnumber: new Decimal(2),
-      autoranknumber: new Decimal(4),
-      autolevelstopnumber: new Decimal("1e100"),
-      litemautobuy: false,
-      autorank: false,
 
       automissiontimerid: 0,
       autoshinetimerid: 0,
@@ -316,7 +320,7 @@ const app = Vue.createApp(Vue.defineComponent({
   methods: {
 
     exportsave() {
-      this.exported = btoa(JSON.stringify(this.players))
+      this.common.exported = btoa(JSON.stringify(this.players))
     },
     exportsavefile() {
       let result = btoa(JSON.stringify(this.players))
@@ -409,12 +413,12 @@ const app = Vue.createApp(Vue.defineComponent({
       this.world = world
       console.log(saveData)
 
-      this.player = new Player(saveData, this.common)
+      this.player = new Player(this.world, saveData, this.common)
 
       this.checkmemories()
       this.checkremembers()
-      this.player.checkTrophies(this.world, this.exported)
-      this.player.checkWorlds(this.world)
+      this.player.checkTrophies()
+      this.player.checkWorlds()
       this.player.countSmallTrophies()
       this.checkpipedsmalltrophies()
 
@@ -471,11 +475,11 @@ const app = Vue.createApp(Vue.defineComponent({
       this.time = Date.now()
       this.player.challenge.activeBonuses = (!this.player.onChallenge || this.player.challengeBonuses.includes(4)) ? this.player.challengeBonuses : []
 
-      if (this.trophycheck) {
-          this.player.checkTrophies(this.world, this.exported)
+      if (this.common.trophyCheck) {
+          this.player.checkTrophies()
           this.player.countSmallTrophies()
       }
-      this.player.checkWorlds(this.world)
+      this.player.checkWorlds()
       this.player.calcCommonMult()
       this.player.generator.findHighestGenerator()
       for (let i = 0; i < 8; i++) {
@@ -502,16 +506,16 @@ const app = Vue.createApp(Vue.defineComponent({
 
       let autorankshine = Math.max(0, 1000 - this.player.rememberSum * 10)
 
-      if (!this.player.onChallenge && this.player.rankChallengeBonuses.includes(14) && this.autorank) {
+      if (!this.player.onChallenge && this.player.rankChallengeBonuses.includes(14) && this.common.autoRank) {
         if (this.player.shine >= autorankshine && this.player.money.greaterThanOrEqualTo(this.player.resetRankBorder())) {
-          if (this.player.calcGainRank().greaterThanOrEqualTo(this.autoranknumber)) {
+          if (this.player.calcGainRank().greaterThanOrEqualTo(this.common.autoRankNumber)) {
             this.player.resetRank(true)
             this.player.shine -= autorankshine
           }
         }
       }
 
-      if (this.player.rankChallengeBonuses.includes(5) && this.litemautobuy) {
+      if (this.player.rankChallengeBonuses.includes(5) && this.common.levelItemAutoBuy) {
         for (let i = 0; i < 5; i++) {
           this.player.levelShop.buyLevelItems(this.player, i)
         }
@@ -525,22 +529,22 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
 
-      if ((this.player.auto.autoDoChallenge || !this.player.onChallenge) && this.player.challenge.activeBonuses.includes(14) && this.autolevel) {
-        if (this.player.money.greaterThanOrEqualTo(this.player.resetLevelBorder()) && this.player.level.lt(this.autolevelstopnumber)) {
-          if (this.player.calcGainLevel().greaterThanOrEqualTo(this.autolevelnumber)) {
+      if ((this.player.auto.autoDoChallenge || !this.player.onChallenge) && this.player.challenge.activeBonuses.includes(14) && this.common.autoLevel) {
+        if (this.player.money.greaterThanOrEqualTo(this.player.resetLevelBorder()) && this.player.level.lt(this.common.autoLevelStopNumber)) {
+          if (this.player.calcGainLevel().greaterThanOrEqualTo(this.common.autoLevelNumber)) {
             this.player.resetLevel(true, false)
           }
         }
       }
 
 
-      if (this.player.challenge.activeBonuses.includes(5) && this.genautobuy) {
+      if (this.player.challenge.activeBonuses.includes(5) && this.common.genAutoBuy) {
         for (let i = 7; i >= 0; i--) {
           this.player.generator.buyGenerator(this.player, i)
         }
       }
 
-      if (this.player.challenge.activeBonuses.includes(9) && this.accautobuy) {
+      if (this.player.challenge.activeBonuses.includes(9) && this.common.accAutoBuy) {
         let ha = this.player.levelShop.levelItems[3] + 1
         for (let i = ha; i >= 0; i--) {
           this.player.accelerator.buyAccelerator(this.player, i)
@@ -569,21 +573,21 @@ const app = Vue.createApp(Vue.defineComponent({
     configautobuyer(index) {
       if (index == 0) {
         let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
-        this.autolevelnumber = input
+        this.common.autoLevelNumber = input
       } else if (index == 1) {
         let input = new Decimal(window.prompt("昇段停止段位を設定", ""))
-        this.autolevelstopnumber = input
+        this.common.autoLevelStopNumber = input
       } else if (index == 2) {
         let input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
-        this.autoranknumber = input
+        this.common.autoRankNumber = input
       }
     },
     toggleautobuyer(index) {
-      if (index == 0) this.genautobuy = !this.genautobuy
-      if (index == 1) this.accautobuy = !this.accautobuy
-      if (index == 2) this.autolevel = !this.autolevel
-      if (index == 3) this.litemautobuy = !this.litemautobuy
-      if (index == 5) this.autorank = !this.autorank
+      if (index == 0) this.common.genAutoBuy = !this.common.genAutoBuy
+      if (index == 1) this.common.accAutoBuy = !this.common.accAutoBuy
+      if (index == 2) this.common.autoLevel = !this.common.autoLevel
+      if (index == 3) this.common.levelItemAutoBuy = !this.common.levelItemAutoBuy
+      if (index == 5) this.common.autoRank = !this.common.autoRank
     },
     togglechipthresholduse() {
       this.common.chipThresholdUse = !this.common.chipThresholdUse
@@ -649,7 +653,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
     resetData(force) {
       if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-        this.player = new Player(initialData(), this.common)
+        this.player = new Player(this.world, initialData(), this.common)
         for (let i = 0; i < worldnum; i++) {
           this.players[i] = initialData()
         }
@@ -683,7 +687,6 @@ const app = Vue.createApp(Vue.defineComponent({
       if (world == i || !this.common.worldOpened[i]) return // bug
       this.save()
       this.load(i)
-      this.world = i
     },
     shrinkworld(i) {
       if (4 > this.common.trophyNumber[i]) {
@@ -894,7 +897,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
     confchecktrophies() {
-      this.trophycheck = !this.trophycheck
+      this.common.trophyCheck = !this.common.trophyCheck
     },
 
     buyspirit(i) {

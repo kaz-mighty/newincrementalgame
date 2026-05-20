@@ -32,10 +32,13 @@ class Player {
 
 
   /** 
+   * @param {number} world 
    * @param {PlayerSaveData} playerData 
    * @param {CommonData} commonData 
    */
-  constructor(playerData, commonData) {
+  constructor(world, playerData, commonData) {
+    this.world = world;
+
     this.money = new Decimal(playerData.money);
     this.level = new Decimal(playerData.level);
     this.levelResetTime = new Decimal(playerData.levelresettime);
@@ -700,11 +703,7 @@ class Player {
   }
 
   
-  /**
-   * @param {number} world 
-   * @param {string} exported 
-   */
-  checkTrophies(world, exported) {
+  checkTrophies() {
     if (this.levelResetTime.greaterThan(0)) this.trophies[0] = true;
     if (this.rankResetTime.greaterThan(0)) this.trophies[1] = true;
     if (this.shine > 0) this.trophies[2] = true;
@@ -712,15 +711,15 @@ class Player {
     if (this.darkGenerators[0].greaterThan(0)) this.trophies[4] = true;
     if (this.brightness > 0) this.trophies[5] = true;
     if (this.remember > 0) this.trophies[6] = true;
-    if (world == 0) {
+    if (this.world == 0) {
       if (this.rememberSum > 0) this.trophies[6] = true;
     }
     if (this.crownResetTime.greaterThan(0)) this.trophies[7] = true;
     if (this.lightGenerators[0].greaterThan(0)) this.trophies[8] = true;
     if (this.flicker > 0) this.trophies[9] = true;
 
-    this.common.trophyNumber[world] = this.countTrophies();
-    if (world === 0 && this.common.trophyNumber[0] >= 6) {
+    this.common.trophyNumber[this.world] = this.countTrophies();
+    if (this.world === 0 && this.common.trophyNumber[0] >= 6) {
       this.remember = Math.max(this.remember, this.common.trophyNumber[0]);
     }
 
@@ -782,7 +781,7 @@ class Player {
     if (this.shine >= 100000) this.smallTrophies1st[55] = true
     if (this.shine >= 1000000) this.smallTrophies1st[56] = true
     if (this.shine >= 10000000) this.smallTrophies1st[57] = true
-    if (exported.length >= 2) this.smallTrophies1st[58] = true
+    if (this.common.exported.length >= 2) this.smallTrophies1st[58] = true
     if (this.tweeting.length >= 2) this.smallTrophies1st[59] = true
     if (this.darkGenerators[0].greaterThanOrEqualTo(1)) this.smallTrophies1st[60] = true
     if (this.darkGenerators[1].greaterThanOrEqualTo(1)) this.smallTrophies1st[61] = true
@@ -906,9 +905,8 @@ class Player {
     this.smallTrophy = cnt
   }
 
-  /** @param {number} world */
-  checkWorlds(world) {
-    if (world !== 0) return;
+  checkWorlds() {
+    if (this.world !== 0) return;
 
     this.common.worldOpened[0] = true
     

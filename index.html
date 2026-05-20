@@ -329,7 +329,7 @@
 					データ
 					<button type="button" id="exportsave" @click="exportsave()">データ吐き出し</button>
 					<button type="button" id="exportsave" @click="exportsavefile()">データダウンロード</button>
-					{{ exported }}
+					{{ common.exported }}
 				</div>
 				<div class="import">
 					データ
@@ -519,17 +519,17 @@
 			<div v-if="player.currentTab == 'auto'">
 				自動購入器設定
 				<div v-if="player.challengeBonuses.includes(5)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': genautobuy }" @click="toggleautobuyer(0)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.genAutoBuy }" @click="toggleautobuyer(0)">
 						発生器自動購入器
 					</button>
 				</div>
 				<div v-if="player.challengeBonuses.includes(9)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': accautobuy }" @click="toggleautobuyer(1)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.accAutoBuy }" @click="toggleautobuyer(1)">
 						時間加速器自動購入器
 					</button>
 				</div>
 				<div v-if="player.challengeBonuses.includes(14)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': autolevel }" @click="toggleautobuyer(2)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.autoLevel }" @click="toggleautobuyer(2)">
 						自動昇段器
 					</button>
 					<button type="button" class="autobuyerbutton" @click="configautobuyer(0)">
@@ -538,21 +538,21 @@
 					<button type="button" class="autobuyerbutton" @click="configautobuyer(1)">
 						自動昇段器設定:停止段位
 					</button>
-					現在: {{ autolevelnumber.toNumber() }}, {{ autolevelstopnumber.toExponential(3) }}
+					現在: {{ common.autoLevelNumber.toNumber() }}, {{ common.autoLevelStopNumber.toExponential(3) }}
 				</div>
 				<div v-if="player.rankChallengeBonuses.includes(5)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': litemautobuy }" @click="toggleautobuyer(3)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.levelItemAutoBuy }" @click="toggleautobuyer(3)">
 						段位効力自動購入器
 					</button>
 				</div>
 				<div v-if="player.rankChallengeBonuses.includes(14)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': autorank }" @click="toggleautobuyer(5)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.autoRank }" @click="toggleautobuyer(5)">
 						自動昇階器
 					</button>
 					<button type="button" class="autobuyerbutton" @click="configautobuyer(2)">
 						自動昇階器設定:入手階位
 					</button>
-					現在: {{ autoranknumber.toNumber() }}
+					現在: {{ common.autoRankNumber.toNumber() }}
 					消費輝き: {{ 1000 - player.rememberSum*10 }}
 				</div>
 				<div v-if="player.rings.clearedMission.includes(4)">輪自動化器設定</div>
@@ -836,8 +836,8 @@
 				<div v-if="!player.rings.onMission">
 					<div>
 						<div v-for="i in 13" :key="i">
-							<div v-if="player.rings.isAvailableRing(world, i-1)">
-								<button type="button" @click="player.rings.configSetRings(world, i-1)">
+							<div v-if="player.rings.isAvailableRing(player.world, i-1)">
+								<button type="button" @click="player.rings.configSetRings(player.world, i-1)">
 									使用輪設定 {{ i }}
 								</button>
 								輪 {{ i }}: 経験値:{{ player.rings.ringsExp[i-1] }} 級位:{{ player.rings.getLevel(i-1) }}
@@ -895,7 +895,7 @@
 				<button type="button" @click="confchecktrophies()">
 					実績更新:
 				</button>
-				現在 {{ trophycheck?"する":"しない" }}
+				現在 {{ common.trophyCheck?"する":"しない" }}
 				<br>
 				実績
 				<div class="levelitem" v-for="i in 10" :key="i">

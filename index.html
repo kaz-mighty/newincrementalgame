@@ -507,11 +507,11 @@
 
 			<div v-if="player.currentTab == 'spirit'">
 				精霊
-				<div v-for="i in spiritdata.spiritnuma" :key="i">
+				<div v-for="i in Spirit.spiritNumA" :key="i">
 					<button type="button" class="spendshinebutton" @click="buyspirit(i-1)">
-						精霊購入: {{spiritdata.spiritnamea[i-1]}} (準備中)
+						精霊購入: {{ Spirit.spiritNameA[i-1] }} (準備中)
 					</button>
-					{{spiritdata.spiritnamea[i-1]}}: 等級 {{player.spiritLevelA[i-1]}}
+					{{ Spirit.spiritNameA[i-1] }}: 等級 {{ player.spiritLevelA[i-1] }}
 					効果:
 				</div>
 			</div>
@@ -709,7 +709,7 @@
 				<div v-if="player.rememberSum>0">
 					思い出ボーナス:世界収縮後、思い出ボーナスに応じた状態から新しい世界をスタートすることができます。
 					<div v-for="i in player.rememberSum" :key="i">
-						達成数 {{ i }} : {{ rememberdata.contents[i-1] }}
+						達成数 {{ i }} : {{ Remember.contents[i-1] }}
 					</div>
 				</div>
 

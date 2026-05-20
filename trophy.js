@@ -1,6 +1,5 @@
-function Trophydata() {
-
-  this.contents = [
+class Trophy {
+  static contents = [
     "有段者",
     "有階者",
     "輝く者",
@@ -10,7 +9,6 @@ function Trophydata() {
     "想い出す者",
     "有冠者",
     "天上の者",
-    "瞬く者"
+    "瞬く者",
   ]
-
 }

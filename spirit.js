@@ -1,12 +1,12 @@
-function Spiritdata() {
+class Spirit {
 
-  this.spiritnuma = 1;
+  static spiritNumA = 1;
 
-  this.spiritnamea = [
+  static spiritNameA = [
     "鼠"
   ]
 
-  this.spiritcosta = [
+  static spiritCostA = [
     new Decimal("1e180")
   ]
 

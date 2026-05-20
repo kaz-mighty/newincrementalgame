@@ -220,18 +220,11 @@ const currentPlayer = Vue.ref(new Player(0, initialData(), initialCommonData()))
 const app = Vue.createApp(Vue.defineComponent({
   data() {
     return {
-
-      whole: this,
       player: currentPlayer,
-
       players: new Array(worldnum).fill(null).map(() => initialData()),
       common: initialCommonData(),
 
       showmult: true,
-
-      trophydata: new Trophydata(),
-      rememberdata: new Rememberdata(),
-      spiritdata: new Spiritdata(),
 
       automissiontimerid: 0,
       autoshinetimerid: 0,
@@ -390,11 +383,11 @@ const app = Vue.createApp(Vue.defineComponent({
           saveData.rings.ringsexp.push(0)
         }
 
-        while (saveData.spiritlevela.length < this.spiritdata.spiritnuma) {
+        while (saveData.spiritlevela.length < Spirit.spiritNumA) {
           saveData.spiritlevela.push(0)
         }
 
-        while (saveData.spiritboughtcurrentcrown.length < this.spiritdata.spiritnuma) {
+        while (saveData.spiritboughtcurrentcrown.length < Spirit.spiritNumA) {
           saveData.spiritboughtcurrentcrown.push(0)
         }
 
@@ -591,7 +584,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
 
     gettrophyname(i) {
-      return this.player.trophies[i] ? this.trophydata.contents[i] : "???"
+      return this.player.trophies[i] ? Trophy.contents[i] : "???"
     },
     moveworld(i) {
       // @ts-expect-error
@@ -600,211 +593,12 @@ const app = Vue.createApp(Vue.defineComponent({
       this.load(i)
     },
     shrinkworld(i) {
-      if (4 > this.common.trophyNumber[i]) {
-        alert("実績が4つ未満なので、世界を収縮できません。")
-        return
-      }
-      if (this.players[i].remember >= this.common.trophyNumber[i]) {
-        alert("実績が思い出より多くありません。")
-        return
-      }
-      if (confirm("世界" + (i + 1) + "を収縮させ、記憶を思い出に変化させますか？収縮した世界は最初からになります。")) {
-        let u = this.common.trophyNumber[i]
-        let rg = this.players[i].rings
-        let r = this.player.rememberSum
-        let rd = this.players[i].residue
-        let dl = this.players[i].darklevel
-        let st = this.players[i].statue
-        let cw = this.players[i].challengeweight
-        let cwv = this.players[i].challengeweightvalue
-        this.players[i] = initialData()
-        this.players[i].remember = u
-        this.players[i].rings = rg
-        this.players[i].residue = rd
-        this.players[i].challengeweight = cw
-        this.players[i].challengeweightvalue = cwv
+      let newData = Remember.shrinkWorld(i, this.players[i], this.common.trophyNumber[i], this.player.rememberSum);
+      if (newData == undefined) return;
 
-        if (r >= 1) this.players[i].levelresettime = new Decimal(1)
-        if (r >= 2) this.players[i].levelresettime = new Decimal(2)
-        if (r >= 3) this.players[i].levelresettime = new Decimal(3)
-        if (r >= 4) this.players[i].levelresettime = new Decimal(5)
-        if (r >= 5) this.players[i].levelresettime = new Decimal(8)
-        if (r >= 6) this.players[i].levelresettime = new Decimal(13)
-        if (r >= 7) this.players[i].levelresettime = new Decimal(21)
-        if (r >= 8) this.players[i].levelresettime = new Decimal(34)
-        if (r >= 9) this.players[i].rankresettime = new Decimal(1)
-        if (r >= 10) this.players[i].rankresettime = new Decimal(2)
-        if (r >= 11) this.players[i].rankresettime = new Decimal(3)
-        if (r >= 12) this.players[i].rankresettime = new Decimal(5)
-        if (r >= 13) this.players[i].rankresettime = new Decimal(8)
-        if (r >= 14) this.players[i].rankresettime = new Decimal(13)
-        if (r >= 15) this.players[i].rankresettime = new Decimal(21)
-        if (r >= 16) this.players[i].rankresettime = new Decimal(34)
-        if (r >= 17) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[0].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[0][j]))
-          }
-        }
-        if (r >= 18) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[1].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[1][j]))
-          }
-        }
-        if (r >= 19) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[2].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[2][j]))
-          }
-        }
-        if (r >= 20) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[3].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[3][j]))
-          }
-        }
-        if (r >= 21) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[4].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[4][j]))
-          }
-        }
-        if (r >= 22) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[5].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[5][j]))
-          }
-        }
-        if (r >= 23) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[6].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[6][j]))
-          }
-        }
-        if (r >= 24) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[7].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[7][j]))
-          }
-        }
-        if (r >= 25) this.players[i].rank = new Decimal(64)
-        if (r >= 26) this.players[i].levelitembought = 108
-        if (r >= 27) this.players[i].rank = new Decimal(128)
-        if (r >= 28) this.players[i].levelitembought = 256
-        if (r >= 29) this.players[i].rank = new Decimal(256)
-        if (r >= 30) this.players[i].levelitembought = 800
-        if (r >= 31) this.players[i].rank = new Decimal(512)
-        if (r >= 32) this.players[i].levelitembought = 1728
-        if (r >= 33) this.players[i].maxlevelgained = new Decimal(1000)
-        if (r >= 34) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[8].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[8][j]))
-          }
-        }
-        if (r >= 35) this.players[i].maxlevelgained = new Decimal(3000)
-        if (r >= 36) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[9].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[9][j]))
-          }
-        }
-        if (r >= 37) this.players[i].maxlevelgained = new Decimal(10000)
-        if (r >= 38) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[10].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[10][j]))
-          }
-        }
-        if (r >= 39) this.players[i].maxlevelgained = new Decimal(30000)
-        if (r >= 40) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[11].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[11][j]))
-          }
-        }
-        if (r >= 41) this.players[i].levelresettime = new Decimal(1000)
-        if (r >= 42) this.players[i].rankresettime = new Decimal(300)
-        if (r >= 43) this.players[i].rank = new Decimal(4096)
-        if (r >= 44) this.players[i].shine = 100000
-        if (r >= 45) this.players[i].maxlevelgained = new Decimal(100000)
-        if (r >= 46) this.players[i].levelitembought = 6400
-        if (r >= 47) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[12].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[12][j]))
-          }
-        }
-        if (r >= 48) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[13].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[13][j]))
-          }
-        }
-        if (r >= 49) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[14].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[14][j]))
-          }
-        }
-        if (r >= 50) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[15].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[15][j]))
-          }
-        }
-        if (r >= 51) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[16].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[16][j]))
-          }
-        }
-        if (r >= 52) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[17].length; j++) {
-            this.players[i].challengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[17][j]))
-          }
-        }
-        if (r >= 53) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[0].length; j++) {
-            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[0][j]))
-          }
-        }
-        if (r >= 54) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[1].length; j++) {
-            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[1][j]))
-          }
-        }
-        if (r >= 55) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[2].length; j++) {
-            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[2][j]))
-          }
-        }
-        if (r >= 56) {
-          for (let j = 0; j < this.rememberdata.givenchalenges[3].length; j++) {
-            this.players[i].rankchallengecleared.push(Challenge.getChallengeId(this.rememberdata.givenchalenges[3][j]))
-          }
-        }
-        if (r >= 57) this.players[i].chip[0] = 1;
-        if (r >= 58) this.players[i].chip[0] = 15;
-        if (r >= 59) this.players[i].chip[0] = 55;
-        if (r >= 60) this.players[i].chip[0] = 120;
-        if (r >= 61) this.players[i].chip[1] = 1;
-        if (r >= 62) this.players[i].chip[1] = 15;
-        if (r >= 63) this.players[i].chip[1] = 55;
-        if (r >= 64) this.players[i].chip[1] = 120;
-        if (r >= 65) this.players[i].chip[2] = 1;
-        if (r >= 66) this.players[i].chip[2] = 15;
-        if (r >= 67) this.players[i].chip[2] = 55;
-        if (r >= 68) this.players[i].chip[2] = 120;
-        if (r >= 69) this.players[i].chip[3] = 1;
-        if (r >= 70) this.players[i].chip[3] = 15;
-        if (r >= 71) this.players[i].chip[3] = 55;
-        if (r >= 72) this.players[i].chip[3] = 120;
-
-        if (r >= 73) this.players[i].darklevel = new Decimal(100);
-        if (r >= 74) this.players[i].brightness = 30000;
-        if (r >= 75) this.players[i].darklevel = new Decimal(500);
-        if (r >= 76) this.players[i].shine = 10000000;
-        if (r >= 77) this.players[i].darklevel = new Decimal(2000);
-        if (r >= 78) this.players[i].chip[0] += st[0] * 1000
-        if (r >= 79) this.players[i].chip[1] += st[1] * 1000
-        if (r >= 80) this.players[i].chip[2] += st[2] * 1000
-        if (r >= 81) this.players[i].chip[3] += st[3] * 1000
-
-
-
-
-
-
-        this.players[i].token = this.players[i].challengecleared.length
-
-        this.checkpipedsmalltrophies()
-
-      }
+      this.players[i] = newData;
+      // bug: 収縮直後に合計思い出や記憶が再計算されていない
+      this.checkpipedsmalltrophies()
     },
 
     confchecktrophies() {
@@ -897,6 +691,8 @@ app.config.globalProperties.Campaign = Campaign;
 app.config.globalProperties.Challenge = Challenge;
 app.config.globalProperties.Chips = Chips;
 app.config.globalProperties.LevelShop = LevelShop;
+app.config.globalProperties.Remember = Remember;
 app.config.globalProperties.Rings = Rings;
 app.config.globalProperties.Shine = Shine;
+app.config.globalProperties.Spirit = Spirit;
 app.mount('#app');

@@ -211,6 +211,18 @@ class Chips {
   }
 
   /**
+   * @param {number} statue 
+   * @param {number} i 
+   */
+  configSpendChip(statue, i) {
+    let maxspend = statue * statue
+    let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), ""))
+    if (isNaN(input)) return
+    if (input < 0 || input > maxspend) return
+    this.spendChip[i] = input
+  }
+
+  /**
    * @param {number} i 対象の鋳片効力 0-indexed
    * @param {number} j 鋳片の種類 1-indexed (0=None)
    */

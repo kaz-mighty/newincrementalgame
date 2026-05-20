@@ -40,6 +40,8 @@ class Shine {
     this.flicker = playerData.flicker;
 
     this.residue = playerData.residue;
+
+    this.boughtType = Array.from(playerData.boughttype);
   }
 
   /** @param {Player} player */
@@ -178,5 +180,14 @@ class Shine {
 
     flickerGain *= player.campaign.accelLevelUsed + 1;
     this.flicker = Math.min(this.flicker + flickerGain, maxFlicker);
+  }
+
+  /** @param {number} num */
+  buyType(num) {
+    if (this.shine < Shine.shineShopCost[num] || this.boughtType[num]) return;
+    if (confirm("本当に型を購入しますか？")) {
+      this.shine -= Shine.shineShopCost[num]
+      this.boughtType[num] = true
+    }
   }
 }

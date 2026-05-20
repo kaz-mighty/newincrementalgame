@@ -414,11 +414,8 @@ class Challenge {
     }
   }
 
-  /**
-   * @param {*} data 
-   * @param {Player} player 
-   */
-  startPChallenge(data, player) {
+  /** @param {Player} player */
+  startPChallenge(player) {
     if (!(this.challengeCleared.length >= 255 && this.rankChallengeCleared.length >= 255)) {
       alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。")
       return;
@@ -438,7 +435,7 @@ class Challenge {
 
     let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。'
     if (confirm(conf)) {
-      data.resetCrown(true);
+      player.resetCrown(true);
       this.onPerfectChallenge = true;
       this.challengeCleared = []
       this.challengeBonuses = []

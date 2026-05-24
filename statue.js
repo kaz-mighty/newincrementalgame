@@ -15,13 +15,15 @@ class Statue {
     this.polishedStatue = Vue.reactive(Array.from(playerData.polishedstatue));
     this.brightStatue = Vue.reactive(Array.from(playerData.polishedstatuebr));
 
-    this._statueSum = Vue.computed(() => this.statue.reduce((a, b) => a + b));
-    this._polishedStatueSum = Vue.computed(() => this.polishedStatue.reduce((a, b) => a + b));
+    this._statueSum = Vue.computed(() => this.statue.slice(0, setchipkind).reduce((a, b) => a + b));
+    this._polishedStatueSum = Vue.computed(
+      () => this.polishedStatue.slice(0, setchipkind).reduce((a, b) => a + b)
+    );
     this._brightStatueSum = Vue.computed(
-      () => this.brightStatue.reduce((a, b) => a + Math.floor(b / 10), 0)
+      () => this.brightStatue.slice(0, setchipkind).reduce((a, b) => a + Math.floor(b / 10), 0)
     );
     this._generatorMulti = Vue.computed(
-      () => this.statue.reduce((a, b) => a.mul(1 + b * 0.01), new Decimal(1))
+      () => this.statue.slice(0, setchipkind).reduce((a, b) => a.mul(1 + b * 0.01), new Decimal(1))
     );
   }
 

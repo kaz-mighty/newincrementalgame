@@ -83,7 +83,7 @@
 				<span id="shine" v-if="player.challenge.challengeCleared.length >= 64">
 					<button type="button" @click="changeTab('shine')">輝き</button>
 				</span>
-				<span id="world" v-if="common.worldOpened[1] || common.worldOpened[2]">
+				<span id="world" v-if="nig.common.worldOpened[1] || nig.common.worldOpened[2]">
 					<button type="button" @click="changeTab('world')">世界</button>
 				</span>
 				<span id="chip" v-if="player.smallTrophies1st[5]">
@@ -298,7 +298,7 @@
 
 
 			<div v-if="player.currentTab == 'option'">
-				<button type="button" id="resetbutton" @click="resetData(false)">リセット</button>
+				<button type="button" id="resetbutton" @click="nig.resetData(false)">リセット</button>
 				<div class="tweetconfig">
 					ツイート機能設定
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('money') }" @click="player.configTweet('money')">ポイント</button>
@@ -311,8 +311,8 @@
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('pachieved') }" @click="player.configTweet('pachieved')" v-if="player.challenge.perfectChallengeStage>=1">完全挑戦段階</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('rank') }" @click="player.configTweet('rank')" v-if="player.rankResetTime.gt(0)">階位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('levelitemboughttime') }" @click="player.configTweet('levelitemboughttime')" v-if="player.rankResetTime.gt(0)">段位効力購入</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('world') }" @click="player.configTweet('world')" v-if="common.worldOpened[1] || common.worldOpened[2]">世界</button>
-					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('memory') }" @click="player.configTweet('memory')" v-if="common.worldOpened[1] || common.worldOpened[2]">記憶</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('world') }" @click="player.configTweet('world')" v-if="nig.common.worldOpened[1] || nig.common.worldOpened[2]">世界</button>
+					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('memory') }" @click="player.configTweet('memory')" v-if="nig.common.worldOpened[1] || nig.common.worldOpened[2]">記憶</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('remember') }" @click="player.configTweet('remember')" v-if="player.rememberSum>0">思い出</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('crown') }" @click="player.configTweet('crown')" v-if="player.crownResetTime.gt(0)">冠位</button>
 					<button type="button" class="tweetconfigbutton" :class="{ 'selected': player.tweeting.includes('statue') }" @click="player.configTweet('statue')" v-if="player.statue.statue[0]>0">像</button>
@@ -322,14 +322,14 @@
 				</div>
 				<div>
 					データ
-					<button type="button" @click="save()">強制セーブ</button>
+					<button type="button" @click="nig.save()">強制セーブ</button>
 					※20秒毎に自動でセーブされます
 				</div>
 				<div class="export">
 					データ
 					<button type="button" id="exportsave" @click="exportSave()">データ吐き出し</button>
 					<button type="button" id="exportsave" @click="exportSaveFile()">データダウンロード</button>
-					{{ common.exported }}
+					{{ nig.common.exported }}
 				</div>
 				<div class="import">
 					データ
@@ -362,12 +362,12 @@
 					</div>
 					<br>
 					<div v-if="!player.challenge.onChallenge">
-						<button type="button" class="challengeconfigbutton" @click="startChallenge()">
+						<button type="button" class="challengeconfigbutton" @click="nig.startChallenge()">
 							挑戦開始
 						</button>
 					</div>
 					<div v-if="player.challenge.onChallenge">
-						<button type="button" class="challengeconfigbutton" @click="exitChallenge()">
+						<button type="button" class="challengeconfigbutton" @click="nig.exitChallenge()">
 							挑戦放棄
 						</button>
 					</div>
@@ -491,12 +491,12 @@
 					</div>
 					<br>
 					<div v-if="!player.challenge.onPerfectChallenge">
-						<button type="button" class="challengeconfigbutton" @click="startPChallenge()">
+						<button type="button" class="challengeconfigbutton" @click="nig.startPChallenge()">
 							挑戦開始
 						</button>
 					</div>
 					<div v-if="player.challenge.onPerfectChallenge">
-						<button type="button" class="challengeconfigbutton" @click="exitPChallenge()">
+						<button type="button" class="challengeconfigbutton" @click="nig.exitPChallenge()">
 							挑戦終了
 						</button>
 					</div>
@@ -519,63 +519,63 @@
 			<div v-if="player.currentTab == 'auto'">
 				自動購入器設定
 				<div v-if="player.challenge.challengeBonuses.includes(5)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.genAutoBuy }" @click="toggleAutoBuyer(0)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.genAutoBuy }" @click="nig.toggleAutoBuyer(0)">
 						発生器自動購入器
 					</button>
 				</div>
 				<div v-if="player.challenge.challengeBonuses.includes(9)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.accAutoBuy }" @click="toggleAutoBuyer(1)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.accAutoBuy }" @click="nig.toggleAutoBuyer(1)">
 						時間加速器自動購入器
 					</button>
 				</div>
 				<div v-if="player.challenge.challengeBonuses.includes(14)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.autoLevel }" @click="toggleAutoBuyer(2)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.autoLevel }" @click="nig.toggleAutoBuyer(2)">
 						自動昇段器
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configAutoBuyer(0)">
+					<button type="button" class="autobuyerbutton" @click="nig.configAutoBuyer(0)">
 						自動昇段器設定:入手段位
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configAutoBuyer(1)">
+					<button type="button" class="autobuyerbutton" @click="nig.configAutoBuyer(1)">
 						自動昇段器設定:停止段位
 					</button>
-					現在: {{ common.autoLevelNumber.toNumber() }}, {{ common.autoLevelStopNumber.toExponential(3) }}
+					現在: {{ nig.common.autoLevelNumber.toNumber() }}, {{ nig.common.autoLevelStopNumber.toExponential(3) }}
 				</div>
 				<div v-if="player.challenge.rankChallengeBonuses.includes(5)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.levelItemAutoBuy }" @click="toggleAutoBuyer(3)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.levelItemAutoBuy }" @click="nig.toggleAutoBuyer(3)">
 						段位効力自動購入器
 					</button>
 				</div>
 				<div v-if="player.challenge.rankChallengeBonuses.includes(14)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.autoRank }" @click="toggleAutoBuyer(5)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.autoRank }" @click="nig.toggleAutoBuyer(5)">
 						自動昇階器
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configAutoBuyer(2)">
+					<button type="button" class="autobuyerbutton" @click="nig.configAutoBuyer(2)">
 						自動昇階器設定:入手階位
 					</button>
-					現在: {{ common.autoRankNumber.toNumber() }}
+					現在: {{ nig.common.autoRankNumber.toNumber() }}
 					消費輝き: {{ 1000 - player.rememberSum*10 }}
 				</div>
 				<div v-if="player.ring.clearedMission.includes(4)">輪自動化器設定</div>
 				<div v-if="player.ring.clearedMission.includes(4)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendShine }" @click="toggleRingAutoBuyer(0)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendShine }" @click="nig.toggleRingAutoBuyer(0)">
 						輝き自動消費器　
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configRingAutoBuyer(0)">
+					<button type="button" class="autobuyerbutton" @click="nig.configRingAutoBuyer(0)">
 						輝き自動消費器設定
 					</button>
 					消費輝き: {{ player.auto.autoSpendShineNumber }}　ご了承:オンにすると2秒ほどゲームが停止します
 				</div>
 				<div v-if="player.ring.clearedMission.includes(11)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendBright }" @click="toggleRingAutoBuyer(1)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendBright }" @click="nig.toggleRingAutoBuyer(1)">
 						煌き自動消費器
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configRingAutoBuyer(1)">
+					<button type="button" class="autobuyerbutton" @click="nig.configRingAutoBuyer(1)">
 						煌き自動消費器設定
 					</button>
 					消費煌き: {{ player.auto.autoSpendBrightNumber }}　ご了承:オンにすると2秒ほどゲームが停止します
 				</div>
 				<div v-if="player.ring.clearedMission.includes(12)">
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoDoChallenge }" @click="toggleRingAutoBuyer(2)">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoDoChallenge }" @click="nig.toggleRingAutoBuyer(2)">
 						自動挑戦器
 					</button>
 					ご了承:オンにすると発生器の出力が低下します
@@ -666,7 +666,7 @@
 				<div>
 					記憶は、他世界での実績の個数の合計です。記憶が多くなるほど、発生器の生産量が増加します。
 				</div>
-				<div v-if="common.trophyNumber[0]>=6">
+				<div v-if="nig.common.trophyNumber[0]>=6">
 					合計思い出: {{ player.rememberSum }}
 					<button type="button" v-if="false" @click="spendremember()">
 						思い出消費
@@ -686,20 +686,20 @@
 
 				</div>
 				<div class="worlds" v-for="i in 12" :key="i">
-					<button type="button" class="wdbutton" :class="{ 'selected': world == i-1 , 'unavailable': !common.worldOpened[i-1] }" @click="moveWorld(i-1)">
+					<button type="button" class="wdbutton" :class="{ 'selected': nig.world == i-1 , 'unavailable': !nig.common.worldOpened[i-1] }" @click="nig.moveWorld(i-1)">
 						世界 {{ i }}
 					</button>
-					<button type="button" v-if="common.trophyNumber[0]>=6 && world==0 && i!=1" class="wdbutton" :class="{'unavailable': players[i-1].remember >= common.trophyNumber[i-1] ||  common.trophyNumber[i-1] < 4}" @click="shrinkWorld(i-1)">
+					<button type="button" v-if="nig.common.trophyNumber[0]>=6 && nig.world==0 && i!=1" class="wdbutton" :class="{'unavailable': nig.players[i-1].remember >= nig.common.trophyNumber[i-1] ||  nig.common.trophyNumber[i-1] < 4}" @click="nig.shrinkWorld(i-1)">
 						収縮
 					</button>
-					<button type="button" v-if="i-1!=world && common.worldOpened[i-1] && player.smallTrophy>=75" class="wdbutton" :class="{'unavailable': player.worldPipe[i-1] >= player.calcMaxPipe() }" @click="player.openPipe(i-1)">
+					<button type="button" v-if="i-1!=nig.world && nig.common.worldOpened[i-1] && player.smallTrophy>=75" class="wdbutton" :class="{'unavailable': player.worldPipe[i-1] >= player.calcMaxPipe() }" @click="player.openPipe(i-1)">
 						開通
 					</button>
 					<span>
-						記憶: {{ common.trophyNumber[i-1] }}
+						記憶: {{ nig.common.trophyNumber[i-1] }}
 					</span>
-					<span v-if="common.trophyNumber[0]>=6">
-						思い出:{{ players[i-1].remember }}
+					<span v-if="nig.common.trophyNumber[0]>=6">
+						思い出:{{ nig.players[i-1].remember }}
 					</span>
 					<span v-if="player.smallTrophy>=75">
 						世界管開通数:{{ player.worldPipe[i-1] }}
@@ -723,14 +723,14 @@
 				<br>
 
 				<div>
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': common.chipThresholdUse }" @click="toggleChipThresholdUse()">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.chipThresholdUse }" @click="nig.toggleChipThresholdUse()">
 						閾値使用
 					</button>
-					<button type="button" @click="configChipThresholdNumber()">
+					<button type="button" @click="nig.configChipThresholdNumber()">
 						閾値設定
 					</button>
 
-					閾値:{{common.chipThreshold}}
+					閾値:{{nig.common.chipThreshold}}
 				</div>
 
 				入手可能鋳片
@@ -827,7 +827,7 @@
 			<div v-if="player.currentTab == 'ring'">
 				使用輪:{{ player.ring.setRings.map((e) => e+1) }}
 				<div>
-					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoRing }" @click="configAutoMission()">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoRing }" @click="nig.configAutoMission()">
 						自動周回設定
 					</button>
 					周回試練:{{ Ring.missionInfo[player.ring.missionId].name }}
@@ -892,10 +892,10 @@
 				</div>
 			</div>
 			<div v-if="player.currentTab == 'trophy'">
-				<button type="button" @click="confCheckTrophies()">
+				<button type="button" @click="nig.confCheckTrophies()">
 					実績更新:
 				</button>
-				現在 {{ common.trophyCheck?"する":"しない" }}
+				現在 {{ nig.common.trophyCheck?"する":"しない" }}
 				<br>
 				実績
 				<div class="levelitem" v-for="i in 10" :key="i">
@@ -959,11 +959,11 @@
 	<script type="text/javascript" src="chip.js"></script>
 	<script type="text/javascript" src="ring.js"></script>
 	<script type="text/javascript" src="statue.js"></script>
-	<script type="text/javascript" src="player.js"></script>
 	<script type="text/javascript" src="generator.js"></script>
 	<script type="text/javascript" src="accelerator.js"></script>
 	<script type="text/javascript" src="dark.js"></script>
 	<script type="text/javascript" src="light.js"></script>
+	<script type="text/javascript" src="player.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 </body>
 

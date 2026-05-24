@@ -213,35 +213,365 @@ function initialCommonData() {
   };
 }
 
-/** @type {Vue.Ref<Player>} */
-const currentPlayer = Vue.ref(new Player(0, initialData(), initialCommonData()));
+class Nig { // New Incremental Game
+  constructor() {
+    const common = initialCommonData();
 
+    this.world = 0;
+    this.player = new Player(this.world, initialData(), common);
+    this.players = new Array(worldnum).fill(null).map(() => initialData());
+    this.common = common;
+
+    this.autoMissionTimerId = 0;
+    this.autoShineTimerId = 0;
+    this.autoBrightTimerId = 0;
+    this.autoChallengeTimerId = 0;
+
+    this.time = 0;
+    this.diff = 0;
+  }
+
+  awake() {
+    this.dataLoad();
+    this.load(0);
+
+    this.time = Date.now();
+
+    setTimeout(() => this.update(), this.player.tickSpeed);
+    setInterval(() => this.save(), 20000);
+  }
+  save() {
+    this.players[this.world] = deepmerge(this.players[this.world], this.player.toSaveObject(), {
+      isMergeableObject: isPlainObject
+    });
+
+    localStorage.setItem("playerStoredb", btoa(JSON.stringify(this.players)));
+    console.log("save succeeded" + Date.now())
+  }
+  dataLoad() {
+    const store = localStorage.getItem("playerStoredb");
+    if (!store) return
+    console.log(atob(store))
+    this.players = JSON.parse(atob(store))
+
+    while (this.players.length < worldnum) {
+      this.players.push(initialData())
+    }
+
+    for (let i = 0; i < worldnum; i++) {
+      const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
+
+      let saveData = deepmerge(initialData(), this.players[i], {
+        arrayMerge: overwriteMerge,
+        isMergeableObject: isPlainObject
+      })
+
+      while (saveData.trophies.length < trophynum) {
+        saveData.trophies.push(false)
+      }
+      while (saveData.boughttype.length < 6) {
+        saveData.boughttype.push(false)
+      }
+      while (saveData.chip.length < setchipkind) {
+        saveData.chip.push(0)
+      }
+      while (saveData.statue.length < setchipkind) {
+        saveData.statue.push(0)
+      }
+      while (saveData.rings.ringsexp.length < 13) {
+        saveData.rings.ringsexp.push(0)
+      }
+      while (saveData.spiritlevela.length < Spirit.spiritNumA) {
+        saveData.spiritlevela.push(0)
+      }
+      while (saveData.spiritboughtcurrentcrown.length < Spirit.spiritNumA) {
+        saveData.spiritboughtcurrentcrown.push(0)
+      }
+      while (saveData.worldpipe.length < worldnum) {
+        saveData.worldpipe.push(0)
+      }
+
+      this.players[i] = saveData
+    }
+  }
+  /** @param {number} world */
+  load(world) {
+    let saveData = this.players[world]
+    this.world = world
+    console.log(saveData)
+
+    this.player = new Player(this.world, saveData, this.common)
+
+    this.checkMemories()
+    this.checkRemembers()
+    this.player.checkTrophies()
+    this.player.checkWorlds()
+    this.player.countSmallTrophies()
+    this.checkPipedSmallTrophies()
+
+    this.player.updateTickSpeed()
+    this.player.calcCommonMult()
+    this.player.generator.findHighestGenerator()
+    for (let i = 0; i < 8; i++) {
+      this.player.calcBasicIncrementMult(i)
+    }
+
+    this.player.generator.calcGnCost(this.player)
+    this.player.accelerator.calcAcCost(this.player)
+    this.player.dark.calcDgCost(this.player)
+    this.player.light.calcLgCost()
+
+    if (this.player.auto.autoRing) {
+      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+    } else {
+      clearInterval(this.autoMissionTimerId)
+      this.autoMissionTimerId = 0
+    }
+    if (this.player.auto.autoSpendShine) {
+      this.autoShineTimerId = setInterval(() => this.autoShine(), 1000)
+    } else {
+      clearInterval(this.autoShineTimerId)
+      this.autoShineTimerId = 0
+    }
+    if (this.player.auto.autoSpendBright) {
+      this.autoBrightTimerId = setInterval(() => this.autoBright(), 1000)
+    } else {
+      clearInterval(this.autoBrightTimerId)
+      this.autoBrightTimerId = 0
+    }
+    if (this.player.auto.autoDoChallenge) {
+      this.autoChallengeTimerId = setInterval(() => this.autoChallenge(), 1000)
+    } else {
+      clearInterval(this.autoChallengeTimerId)
+      this.autoChallengeTimerId = 0
+    }
+  }
+
+  update() {
+    let diffm = this.diff
+    this.diff = Date.now() - this.time - this.player.tickSpeed
+    this.time = Date.now()
+
+    this.player.update()
+
+    setTimeout(() => this.update(), Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
+  }
+
+  /** @param {number} index */
+  configAutoBuyer(index) {
+    if (index == 0) {
+      let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
+      this.common.autoLevelNumber = input
+    } else if (index == 1) {
+      let input = new Decimal(window.prompt("昇段停止段位を設定", ""))
+      this.common.autoLevelStopNumber = input
+    } else if (index == 2) {
+      let input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
+      this.common.autoRankNumber = input
+    }
+  }
+  /** @param {number} index */
+  toggleAutoBuyer(index) {
+    if (index == 0) this.common.genAutoBuy = !this.common.genAutoBuy
+    if (index == 1) this.common.accAutoBuy = !this.common.accAutoBuy
+    if (index == 2) this.common.autoLevel = !this.common.autoLevel
+    if (index == 3) this.common.levelItemAutoBuy = !this.common.levelItemAutoBuy
+    if (index == 5) this.common.autoRank = !this.common.autoRank
+  }
+  toggleChipThresholdUse() {
+    this.common.chipThresholdUse = !this.common.chipThresholdUse
+  }
+  configChipThresholdNumber() {
+    let input = new Decimal(window.prompt("閾値を設定", ""))
+    this.common.chipThreshold = input
+  }
+  autoShine() {
+    this.player.spendShine(this.player.auto.autoSpendShineNumber)
+  }
+  autoBright() {
+    this.player.spendBrightness(this.player.auto.autoSpendBrightNumber)
+  }
+  autoChallenge() {
+    if (this.player.challenge.challengeCleared.length == 255) return;
+    if (this.player.challenge.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.challenges.length == 0) {
+      this.player.challenge.showUnclearedChallenges()
+    }
+    if (!this.player.challenge.onChallenge) {
+      this.startChallenge()
+    }
+  }
+  /** @param {number} index */
+  toggleRingAutoBuyer(index) {
+    if (index == 0) {
+      this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine
+      if (this.player.auto.autoSpendShine) {
+        this.autoShineTimerId = setInterval(() => this.autoShine(), 1000)
+      } else {
+        clearInterval(this.autoShineTimerId)
+        this.autoShineTimerId = 0
+      }
+    }
+    if (index == 1) {
+      this.player.auto.autoSpendBright = !this.player.auto.autoSpendBright
+      if (this.player.auto.autoSpendBright) {
+        this.autoBrightTimerId = setInterval(() => this.autoBright(), 1000)
+      } else {
+        clearInterval(this.autoBrightTimerId)
+        this.autoBrightTimerId = 0
+      }
+    }
+    if (index == 2) {
+      this.player.auto.autoDoChallenge = !this.player.auto.autoDoChallenge
+      if (this.player.auto.autoDoChallenge) {
+        this.autoChallengeTimerId = setInterval(() => this.autoChallenge(), 1000)
+      } else {
+        clearInterval(this.autoChallengeTimerId)
+        this.autoChallengeTimerId = 0
+      }
+    }
+  }
+  /** @param {number} index */
+  configRingAutoBuyer(index) {
+    let input = parseInt(window.prompt("消費量を設定:最大1000", ""))
+    if (isNaN(input)) return
+    if (input < 0 || input > 1000) return
+    if (index == 0) {
+      this.player.auto.autoSpendShineNumber = input
+    }
+    if (index == 1) {
+      this.player.auto.autoSpendBrightNumber = input
+    }
+  }
+
+  /** @param {boolean} force */
+  resetData(force) {
+    if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
+      this.player = new Player(this.world, initialData(), this.common)
+      for (let i = 0; i < worldnum; i++) {
+        this.players[i] = initialData()
+      }
+    }
+  }
+
+
+  startChallenge() {
+    this.player.challenge.startChallenge(this.player);
+  }
+  startPChallenge() {
+    this.player.challenge.startPChallenge(this.player);
+  }
+  exitChallenge() {
+    this.player.challenge.exitChallenge(this.player);
+  }
+  exitPChallenge() {
+    this.player.challenge.exitPChallenge(this.player);
+  }
+
+
+  /** @param {number} i */
+  moveWorld(i) {
+    // @ts-expect-error
+    if (world == i || !this.common.worldOpened[i]) return // bug
+    this.save()
+    this.load(i)
+  }
+  /** @param {number} i */
+  shrinkWorld(i) {
+    let newData = Remember.shrinkWorld(i, this.players[i], this.common.trophyNumber[i], this.player.rememberSum);
+    if (newData == undefined) return;
+
+    this.players[i] = newData;
+    // bug: 収縮直後に合計思い出や記憶が再計算されていない
+    this.checkPipedSmallTrophies()
+  }
+
+  confCheckTrophies() {
+    this.common.trophyCheck = !this.common.trophyCheck
+  }
+
+  configAutoMission() {
+    this.player.auto.autoRing = !this.player.auto.autoRing
+    if (this.player.auto.autoRing) {
+      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+    } else {
+      clearInterval(this.autoMissionTimerId)
+      this.autoMissionTimerId = 0
+    }
+  }
+
+  /** @param {number} index */
+  countTrophies(index) {
+    let cnt = 0
+    for (let i = 0; i < trophynum; i++) {
+      if (this.players[index].trophies[i]) cnt++;
+    }
+    this.common.trophyNumber[index] = cnt;
+  }
+  checkPipedSmallTrophies() {
+    this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
+    this.player.pipedSmallTrophy = 0;
+    for (let i = 0; i < worldnum; i++) {
+      let cnt = 0
+      if (this.players[i].worldpipe[this.world] >= 1) {
+        for (let j = 0; j < 100; j++) {
+          if (this.players[i].smalltrophies[j]) cnt++;
+        }
+        for (let j = 0; j < 100; j++) {
+          if (this.players[i].smalltrophies2nd[j]) cnt++;
+        }
+        cnt -= 75
+        cnt *= this.players[i].worldpipe[this.world]
+        if (this.players[i].remember >= 10) {
+          cnt = Math.floor(cnt * (0.1 + this.players[i].remember / 10))
+        }
+        this.player.eachPipedSmallTrophy[i] = cnt;
+        this.player.pipedSmallTrophy += cnt;
+      }
+    }
+  }
+  checkMemories() {
+    let cnt = 0;
+
+    for (let i = 0; i < worldnum; i++) {
+      this.countTrophies(i)
+      if (this.world == i) continue
+      cnt += this.common.trophyNumber[i]
+    }
+    this.player.memorySum = cnt
+  }
+  checkRemembers() {
+    let cnt = 0;
+    for (let i = this.world + 1; i < worldnum; i++) {
+      cnt += this.players[i].remember
+    }
+
+    this.player.rememberSum = cnt
+  }
+}
+
+/** @type {Vue.Ref<Nig>} */
+const nigInstance = Vue.ref(new Nig());
+/** @type {Vue.Ref<Player>} */
+const currentPlayer = Vue.ref(nigInstance.value.player);
+Vue.watchEffect(() => {
+  console.log("player change");
+  currentPlayer.value = nigInstance.value.player;
+});
 
 const app = Vue.createApp(Vue.defineComponent({
   data() {
     return {
+      nig: nigInstance,
       player: currentPlayer,
-      players: new Array(worldnum).fill(null).map(() => initialData()),
-      common: initialCommonData(),
 
       showMult: true,
-
-      autoMissionTimerId: 0,
-      autoShineTimerId: 0,
-      autoBrightTimerId: 0,
-      autoChallengeTimerId: 0,
-
-      world: 0,
-
-      time: 0,
-      diff: 0,
     }
   },
   computed: {
     tweetLink() {
       let tweetText = "";
       if (this.player.tweeting.includes('world')) {
-        tweetText += '在住世界:' + (this.world + 1) + '%0A';
+        tweetText += '在住世界:' + (this.nig.world + 1) + '%0A';
       }
       if (this.player.tweeting.includes('memory')) {
         tweetText += '記憶:' + this.player.memorySum + '%0A';
@@ -313,10 +643,10 @@ const app = Vue.createApp(Vue.defineComponent({
   methods: {
 
     exportSave() {
-      this.common.exported = btoa(JSON.stringify(this.players))
+      this.nig.common.exported = btoa(JSON.stringify(this.nig.players))
     },
     exportSaveFile() {
-      let result = btoa(JSON.stringify(this.players))
+      let result = btoa(JSON.stringify(this.nig.players))
       const file = new Blob([result], { type: 'text/plain' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(file)
@@ -331,261 +661,17 @@ const app = Vue.createApp(Vue.defineComponent({
       let k = atob(input).charAt(0)
       if (k == '{') return
       localStorage.setItem("playerStoredb", input)
-      this.dataLoad()
-      this.load(0)
-    },
-    save() {
-
-      this.players[this.world] = deepmerge(this.players[this.world], this.player.toSaveObject(), {
-        isMergeableObject: (object) => isPlainObject(object)
-      });
-
-      localStorage.setItem("playerStoredb", btoa(JSON.stringify(this.players)));
-
-      console.log("save succeeded" + Date.now())
-    },
-    dataLoad() {
-      const store = localStorage.getItem("playerStoredb");
-      if (!store) return
-      console.log(atob(store))
-      this.players = JSON.parse(atob(store))
-
-      while (this.players.length < worldnum) {
-        this.players.push(initialData())
-      }
-
-      for (let i = 0; i < worldnum; i++) {
-
-        const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
-
-        let saveData = deepmerge(initialData(), this.players[i], {
-          arrayMerge: overwriteMerge,
-          isMergeableObject: isPlainObject
-        })
-
-        while (saveData.trophies.length < trophynum) {
-          saveData.trophies.push(false)
-        }
-
-
-        while (saveData.boughttype.length < 6) {
-          saveData.boughttype.push(false)
-        }
-
-        while (saveData.chip.length < setchipkind) {
-          saveData.chip.push(0)
-        }
-
-        while (saveData.statue.length < setchipkind) {
-          saveData.statue.push(0)
-        }
-
-        while (saveData.rings.ringsexp.length < 13) {
-          saveData.rings.ringsexp.push(0)
-        }
-
-        while (saveData.spiritlevela.length < Spirit.spiritNumA) {
-          saveData.spiritlevela.push(0)
-        }
-
-        while (saveData.spiritboughtcurrentcrown.length < Spirit.spiritNumA) {
-          saveData.spiritboughtcurrentcrown.push(0)
-        }
-
-        while (saveData.worldpipe.length < worldnum) {
-          saveData.worldpipe.push(0)
-        }
-
-
-        this.players[i] = saveData
-      }
-
-    },
-    /** @param {number} world */
-    load(world) {
-
-      let saveData = this.players[world]
-      this.world = world
-      console.log(saveData)
-
-      this.player = new Player(this.world, saveData, this.common)
-
-      this.checkMemories()
-      this.checkRemembers()
-      this.player.checkTrophies()
-      this.player.checkWorlds()
-      this.player.countSmallTrophies()
-      this.checkPipedSmallTrophies()
-
-      this.player.updateTickSpeed()
-      this.player.calcCommonMult()
-      this.player.generator.findHighestGenerator()
-      for (let i = 0; i < 8; i++) {
-        this.player.calcBasicIncrementMult(i)
-      }
-
-      this.player.generator.calcGnCost(this.player)
-      this.player.accelerator.calcAcCost(this.player)
-      this.player.dark.calcDgCost(this.player)
-      this.player.light.calcLgCost()
-
-      if (this.player.auto.autoRing) {
-        this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
-      } else {
-        clearInterval(this.autoMissionTimerId)
-        this.autoMissionTimerId = 0
-      }
-      if (this.player.auto.autoSpendShine) {
-        this.autoShineTimerId = setInterval(this.autoShine, 1000)
-      } else {
-        clearInterval(this.autoShineTimerId)
-        this.autoShineTimerId = 0
-      }
-      if (this.player.auto.autoSpendBright) {
-        this.autoBrightTimerId = setInterval(this.autoBright, 1000)
-      } else {
-        clearInterval(this.autoBrightTimerId)
-        this.autoBrightTimerId = 0
-      }
-      if (this.player.auto.autoDoChallenge) {
-        this.autoChallengeTimerId = setInterval(this.autoChallenge, 1000)
-      } else {
-        clearInterval(this.autoChallengeTimerId)
-        this.autoChallengeTimerId = 0
-      }
-
-
-
+      this.nig.dataLoad()
+      this.nig.load(0)
     },
 
     configShowMult() {
       this.showMult = !this.showMult
     },
 
-    update() {
-      let diffm = this.diff
-      this.diff = Date.now() - this.time - this.player.tickSpeed
-
-      this.time = Date.now()
-
-      this.player.update()
-
-      setTimeout(this.update, Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
-    },
     /** @param {string} tabname */
     changeTab(tabname) {
       this.player.currentTab = tabname;
-    },
-    /** @param {number} index */
-    configAutoBuyer(index) {
-      if (index == 0) {
-        let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
-        this.common.autoLevelNumber = input
-      } else if (index == 1) {
-        let input = new Decimal(window.prompt("昇段停止段位を設定", ""))
-        this.common.autoLevelStopNumber = input
-      } else if (index == 2) {
-        let input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
-        this.common.autoRankNumber = input
-      }
-    },
-    /** @param {number} index */
-    toggleAutoBuyer(index) {
-      if (index == 0) this.common.genAutoBuy = !this.common.genAutoBuy
-      if (index == 1) this.common.accAutoBuy = !this.common.accAutoBuy
-      if (index == 2) this.common.autoLevel = !this.common.autoLevel
-      if (index == 3) this.common.levelItemAutoBuy = !this.common.levelItemAutoBuy
-      if (index == 5) this.common.autoRank = !this.common.autoRank
-    },
-    toggleChipThresholdUse() {
-      this.common.chipThresholdUse = !this.common.chipThresholdUse
-    },
-    configChipThresholdNumber() {
-      let input = new Decimal(window.prompt("閾値を設定", ""))
-      this.common.chipThreshold = input
-    },
-    autoShine() {
-      this.player.spendShine(this.player.auto.autoSpendShineNumber)
-    },
-    autoBright() {
-      this.player.spendBrightness(this.player.auto.autoSpendBrightNumber)
-    },
-    autoChallenge() {
-      if (this.player.challenge.challengeCleared.length == 255) return;
-      if (this.player.challenge.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.challenges.length == 0) {
-        this.player.challenge.showUnclearedChallenges()
-      }
-      if (!this.player.challenge.onChallenge) {
-        this.startChallenge()
-      }
-    },
-    /** @param {number} index */
-    toggleRingAutoBuyer(index) {
-      if (index == 0) {
-        this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine
-        if (this.player.auto.autoSpendShine) {
-          this.autoShineTimerId = setInterval(this.autoShine, 1000)
-        } else {
-          clearInterval(this.autoShineTimerId)
-          this.autoShineTimerId = 0
-        }
-      }
-      if (index == 1) {
-        this.player.auto.autoSpendBright = !this.player.auto.autoSpendBright
-        if (this.player.auto.autoSpendBright) {
-          this.autoBrightTimerId = setInterval(this.autoBright, 1000)
-        } else {
-          clearInterval(this.autoBrightTimerId)
-          this.autoBrightTimerId = 0
-        }
-      }
-      if (index == 2) {
-        this.player.auto.autoDoChallenge = !this.player.auto.autoDoChallenge
-        if (this.player.auto.autoDoChallenge) {
-          this.autoChallengeTimerId = setInterval(this.autoChallenge, 1000)
-        } else {
-          clearInterval(this.autoChallengeTimerId)
-          this.autoChallengeTimerId = 0
-        }
-      }
-    },
-    /** @param {number} index */
-    configRingAutoBuyer(index) {
-      let input = parseInt(window.prompt("消費量を設定:最大1000", ""))
-      if (isNaN(input)) return
-      if (input < 0 || input > 1000) return
-      if (index == 0) {
-        this.player.auto.autoSpendShineNumber = input
-      }
-      if (index == 1) {
-        this.player.auto.autoSpendBrightNumber = input
-      }
-    },
-    /** @param {boolean} force */
-    resetData(force) {
-      if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-        this.player = new Player(this.world, initialData(), this.common)
-        for (let i = 0; i < worldnum; i++) {
-          this.players[i] = initialData()
-        }
-      }
-    },
-
-
-    startChallenge() {
-      this.player.challenge.startChallenge(this.player);
-    },
-    startPChallenge() {
-      this.player.challenge.startPChallenge(this.player);
-    },
-
-
-    exitChallenge() {
-      this.player.challenge.exitChallenge(this.player);
-    },
-
-    exitPChallenge() {
-      this.player.challenge.exitPChallenge(this.player);
     },
 
 
@@ -593,90 +679,11 @@ const app = Vue.createApp(Vue.defineComponent({
     getTrophyName(i) {
       return this.player.trophies[i] ? Trophy.contents[i] : "???"
     },
-    /** @param {number} i */
-    moveWorld(i) {
-      // @ts-expect-error
-      if (world == i || !this.common.worldOpened[i]) return // bug
-      this.save()
-      this.load(i)
-    },
-    /** @param {number} i */
-    shrinkWorld(i) {
-      let newData = Remember.shrinkWorld(i, this.players[i], this.common.trophyNumber[i], this.player.rememberSum);
-      if (newData == undefined) return;
-
-      this.players[i] = newData;
-      // bug: 収縮直後に合計思い出や記憶が再計算されていない
-      this.checkPipedSmallTrophies()
-    },
-
-    confCheckTrophies() {
-      this.common.trophyCheck = !this.common.trophyCheck
-    },
 
     /** @param {number} i */
     buySpirit(i) {
       return
       this.player.spiritLevelA[i] += 1;
-    },
-
-    configAutoMission() {
-      this.player.auto.autoRing = !this.player.auto.autoRing
-      if (this.player.auto.autoRing) {
-        this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
-      } else {
-        clearInterval(this.autoMissionTimerId)
-        this.autoMissionTimerId = 0
-      }
-    },
-
-    /** @param {number} index */
-    countTrophies(index) {
-      let cnt = 0
-      for (let i = 0; i < trophynum; i++) {
-        if (this.players[index].trophies[i]) cnt++;
-      }
-      this.common.trophyNumber[index] = cnt;
-    },
-    checkPipedSmallTrophies() {
-      this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
-      this.player.pipedSmallTrophy = 0;
-      for (let i = 0; i < worldnum; i++) {
-        let cnt = 0
-        if (this.players[i].worldpipe[this.world] >= 1) {
-          for (let j = 0; j < 100; j++) {
-            if (this.players[i].smalltrophies[j]) cnt++;
-          }
-          for (let j = 0; j < 100; j++) {
-            if (this.players[i].smalltrophies2nd[j]) cnt++;
-          }
-          cnt -= 75
-          cnt *= this.players[i].worldpipe[this.world]
-          if (this.players[i].remember >= 10) {
-            cnt = Math.floor(cnt * (0.1 + this.players[i].remember / 10))
-          }
-          this.player.eachPipedSmallTrophy[i] = cnt;
-          this.player.pipedSmallTrophy += cnt;
-        }
-      }
-    },
-    checkMemories() {
-      let cnt = 0;
-
-      for (let i = 0; i < worldnum; i++) {
-        this.countTrophies(i)
-        if (this.world == i) continue
-        cnt += this.common.trophyNumber[i]
-      }
-      this.player.memorySum = cnt
-    },
-    checkRemembers() {
-      let cnt = 0;
-      for (let i = this.world + 1; i < worldnum; i++) {
-        cnt += this.players[i].remember
-      }
-
-      this.player.rememberSum = cnt
     },
 
     /**
@@ -691,15 +698,7 @@ const app = Vue.createApp(Vue.defineComponent({
   },
 
   mounted() {
-    this.dataLoad();
-    this.load(0);
-
-    this.time = Date.now()
-
-
-    setTimeout(this.update, this.player.tickSpeed);
-    setInterval(this.save, 20000);
-
+    this.nig.awake();
   },
 }));
 app.config.globalProperties.Campaign = Campaign;

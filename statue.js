@@ -1,4 +1,4 @@
-class Statues {
+class Statue {
   /* リアクティビティーを利用する為に、Vue.markRawを使用する。
      インスタンス化する際は必ずnewメソッドを使用し、
      全プロパティは手動でリアクティブ化しなければならない。
@@ -6,7 +6,7 @@ class Statues {
 
   /** @param {PlayerSaveData} playerData */
   static new(playerData) {
-    return Vue.markRaw(new Statues(playerData));
+    return Vue.markRaw(new Statue(playerData));
   }
 
   /** @param {PlayerSaveData} playerData */
@@ -50,8 +50,8 @@ class Statues {
    */
   buildStatue(player, i) {
     let cost = this.calcStatueCost(i)
-    if (player.chips.chip[i] < cost) return
-    player.chips.chip[i] -= cost
+    if (player.chip.chip[i] < cost) return
+    player.chip.chip[i] -= cost
     this.statue[i] += 1
   }
 
@@ -66,8 +66,8 @@ class Statues {
    */
   polishStatue(player, i) {
     let cost = this.calcPolishCost(i)
-    if (this.polishedStatue[i] >= this.statue[i] || player.shines.shine < cost) return;
-    player.shines.shine -= cost
+    if (this.polishedStatue[i] >= this.statue[i] || player.shine.shine < cost) return;
+    player.shine.shine -= cost
     this.polishedStatue[i] += 1
   }
 
@@ -82,8 +82,8 @@ class Statues {
    */
   polishStatueBright(player, i) {
     let cost = this.calcPolishCostBright(i)
-    if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.shines.brightness < cost) return;
-    player.shines.brightness -= cost
+    if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.shine.brightness < cost) return;
+    player.shine.brightness -= cost
     this.brightStatue[i] += 1
 
   }

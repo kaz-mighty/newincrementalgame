@@ -47,10 +47,10 @@ class Shine {
   /** @param {Player} player */
   calcShinePercent(player) {
     let sp = Shine.getBaseShinePercent(player.challenge.challengeCleared.length)
-    sp += 0.02 * player.chips.setChip[30]
+    sp += 0.02 * player.chip.setChip[30]
     sp += 0.01 * player.eachPipedSmallTrophy[6]
     sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3))
-    sp += 0.01 * player.statues.polishedStatueSum
+    sp += 0.01 * player.statue.polishedStatueSum
 
     return sp
   }
@@ -71,16 +71,16 @@ class Shine {
     else value = 0;
 
     value *= rememberLevel;
-    value += (value / 10) * player.statues.polishedStatueSum;
+    value += (value / 10) * player.statue.polishedStatueSum;
     return Math.floor(value);
   }
 
   /** @param {Player} player */
   calcBrightPercent(player) {
     let bp = Shine.getBaseBrightPercent(player.challenge.rankChallengeCleared.length)
-    bp += 0.001 * player.chips.setChip[49]
+    bp += 0.001 * player.chip.setChip[49]
     bp += 0.001 * player.eachPipedSmallTrophy[9] * 0.5
-    bp += 0.001 * player.statues.brightStatueSum * 0.5
+    bp += 0.001 * player.statue.brightStatueSum * 0.5
 
     return bp
   }
@@ -102,7 +102,7 @@ class Shine {
     else value = 0;
 
     value *= rememberLevel;
-    value += (value / 10) * player.statues.brightStatueSum;
+    value += (value / 10) * player.statue.brightStatueSum;
     return Math.floor(value);
   }
 

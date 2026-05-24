@@ -290,13 +290,13 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '冠位リセット:' + this.player.crownResetTime + '%0A';
       }
       if (this.player.tweeting.includes('statue')) {
-        tweetText += '像:' + this.player.statues.statueSum + '%0A';
+        tweetText += '像:' + this.player.statue.statueSum + '%0A';
       }
       if (this.player.tweeting.includes('polishedstatue')) {
-        tweetText += '輝像:' + this.player.statues.polishedStatueSum + '%0A';
+        tweetText += '輝像:' + this.player.statue.polishedStatueSum + '%0A';
       }
       if (this.player.tweeting.includes('polishedstatuebr')) {
-        tweetText += '煌像:' + this.player.statues.brightStatueSum + '%0A';
+        tweetText += '煌像:' + this.player.statue.brightStatueSum + '%0A';
       }
 
       let tweetUrl = 'dem08656775.github.io/newincrementalgame';
@@ -430,7 +430,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.light.calcLgCost()
 
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(() => this.player.rings.autoPlayMission(), 1000)
+        this.automissiontimerid = setInterval(() => this.player.ring.autoPlayMission(), 1000)
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0
@@ -623,7 +623,7 @@ const app = Vue.createApp(Vue.defineComponent({
     configautomission() {
       this.player.auto.autoRing = !this.player.auto.autoRing
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(() => this.player.rings.autoPlayMission(), 1000)
+        this.automissiontimerid = setInterval(() => this.player.ring.autoPlayMission(), 1000)
       } else {
         clearInterval(this.automissiontimerid)
         this.automissiontimerid = 0
@@ -704,10 +704,10 @@ const app = Vue.createApp(Vue.defineComponent({
 }));
 app.config.globalProperties.Campaign = Campaign;
 app.config.globalProperties.Challenge = Challenge;
-app.config.globalProperties.Chips = Chips;
+app.config.globalProperties.Chip = Chip;
 app.config.globalProperties.LevelShop = LevelShop;
 app.config.globalProperties.Remember = Remember;
-app.config.globalProperties.Rings = Rings;
+app.config.globalProperties.Ring = Ring;
 app.config.globalProperties.Shine = Shine;
 app.config.globalProperties.Spirit = Spirit;
 app.mount('#app');

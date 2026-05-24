@@ -62,10 +62,10 @@ class Player {
 
     this.challenge = new Challenge(playerData);
     this.levelShop = new LevelShop(playerData);
-    this.shines = new Shine(playerData);
-    this.chips = new Chips(playerData);
-    this.statues = Statues.new(playerData);
-    this.rings = new Rings(playerData.rings);
+    this.shine = new Shine(playerData);
+    this.chip = new Chip(playerData);
+    this.statue = Statue.new(playerData);
+    this.ring = new Ring(playerData.rings);
     this.spiritLevelA = Array.from(playerData.spiritlevela);
 
     this.trophies = Array.from(playerData.trophies);
@@ -107,22 +107,22 @@ class Player {
 
   /** @returns {PlayerSaveData} */
   toSaveObject() {
-    const statues = this.statues.toSaveObject();
-    const chips = this.chips.toSaveObject();
+    const statue = this.statue.toSaveObject();
+    const chip = this.chip.toSaveObject();
     return {
       money: this.money,
       level: this.level,
       levelresettime: this.levelResetTime,
       maxlevelgained: this.maxLevelGained,
       token: this.challenge.token,
-      shine: this.shines.shine,
-      brightness: this.shines.brightness,
-      flicker: this.shines.flicker,
+      shine: this.shine.shine,
+      brightness: this.shine.brightness,
+      flicker: this.shine.flicker,
 
       shineloader: this.unUsed.shineLoader,
       brightloader: this.unUsed.brightLoader,
 
-      residue: this.shines.residue,
+      residue: this.shine.residue,
 
       rank: this.rank,
       rankresettime: this.rankResetTime,
@@ -178,7 +178,7 @@ class Player {
       pchallengecleared: this.challenge.perfectChallengeCleared,
       prchallengecleared: this.challenge.perfectRankChallengeCleared,
 
-      boughttype: this.shines.boughtType,
+      boughttype: this.shine.boughtType,
       setmodes: this.generator.setModes,
       setchallengebonusesfst: this.challenge.setChallengeBonuses1,
       setchallengebonusessnd: this.challenge.setChallengeBonuses2,
@@ -199,29 +199,29 @@ class Player {
       rememberspent: this.unUsed.rememberSpent,
       rememberforgot: this.unUsed.rememberForgot,
 
-      chip: chips.chip,
-      setchip: chips.setchip,
-      disabledchip: chips.disabledchip,
-      spendchip: chips.spendchip,
+      chip: chip.chip,
+      setchip: chip.setchip,
+      disabledchip: chip.disabledchip,
+      spendchip: chip.spendchip,
 
-      statue: statues.statue,
-      polishedstatue: statues.polishedstatue,
-      polishedstatuebr: statues.polishedstatuebr,
+      statue: statue.statue,
+      polishedstatue: statue.polishedstatue,
+      polishedstatuebr: statue.polishedstatuebr,
 
       spiritlevela: this.spiritLevelA,
       spiritboughtcurrentcrown: this.unUsed.spiritBoughtCurrentCrown,
 
-      setchiptypefst: chips.setchiptypefst,
+      setchiptypefst: chip.setchiptypefst,
 
       worldpipe: this.worldPipe,
-      rings: this.rings.toSaveObject(this),
+      rings: this.ring.toSaveObject(this),
     };
   }
 
   calcCommonMult() {
     let mult = new Decimal(1);
     if (!(this.challenge.isChallengeActive(7))) {
-      let cap = new Decimal(100).mul(this.levelShop.levelItems[2] * (1 + this.chips.setChip[28] * 0.3) + 1)
+      let cap = new Decimal(100).mul(this.levelShop.levelItems[2] * (1 + this.chip.setChip[28] * 0.3) + 1)
       mult = mult.mul(Player.softCap(this.levelResetTime.add(1), cap))
     }
 
@@ -258,16 +258,16 @@ class Player {
     }
     if (!(this.challenge.isPChallengeActive(8))) {
       if (this.dark.darkMoney.greaterThanOrEqualTo(1)) {
-        mult = mult.mul(new Decimal(this.dark.darkMoney.add(10).log10()).pow(1 + this.chips.setChip[40] * 0.1))
+        mult = mult.mul(new Decimal(this.dark.darkMoney.add(10).log10()).pow(1 + this.chip.setChip[40] * 0.1))
       }
     }
 
     mult = mult.mul(this.multByAc)
     if (this.multByAc.gt(1)) mult = mult.mul(this.multByAc)
 
-    mult = mult.mul(1 + this.chips.setChip[0] * 0.1)
+    mult = mult.mul(1 + this.chip.setChip[0] * 0.1)
 
-    mult = mult.mul(this.statues.generatorMulti)
+    mult = mult.mul(this.statue.generatorMulti)
 
     let camp = this.campaign.sumCommonBonus;
     if (this.campaign.activated.includes("newyear2025")) {
@@ -315,11 +315,11 @@ class Player {
     }
     if (!(this.challenge.isPChallengeActive(8))) {
       if (this.dark.darkGenerators[i].greaterThanOrEqualTo(1)) {
-        mult = mult.mul(new Decimal(i + 2 + this.dark.darkGenerators[i].log10()).pow(1 + this.chips.setChip[i + 32] * 0.25))
+        mult = mult.mul(new Decimal(i + 2 + this.dark.darkGenerators[i].log10()).pow(1 + this.chip.setChip[i + 32] * 0.25))
       }
     }
 
-    mult = mult.mul(1 + this.chips.setChip[i + 1] * 0.5)
+    mult = mult.mul(1 + this.chip.setChip[i + 1] * 0.5)
 
     if (this.challenge.isPChallengeActive(2)) {
       this.incrementalMults[2] = new Decimal(0)
@@ -339,10 +339,10 @@ class Player {
       mult = mult.mul(new Decimal(10).pow((i + 1) * (i - to)))
     }
 
-    let lv = new Decimal(this.level.pow(1 + 0.5 * this.chips.setChip[19]).add(2).log2())
+    let lv = new Decimal(this.level.pow(1 + 0.5 * this.chip.setChip[19]).add(2).log2())
 
     let rk = this.rank.add(2).div(262142).log2()
-    rk += new Decimal(this.rank.add(2).log2()).log2() * this.chips.setChip[23]
+    rk += new Decimal(this.rank.add(2).log2()).log2() * this.chip.setChip[23]
     mult = mult.mul(new Decimal(lv.pow((i - to) * (1 + Math.max(rk, 0) * 0.05))))
 
     if (this.challenge.isPChallengeActive(3) && mult.gt("1e-100")) {
@@ -357,44 +357,44 @@ class Player {
     let tsp = 1000
     if (this.challenge.isPChallengeActive(1)) tsp = 10000
     tsp += 500 * this.campaign.accelLevelUsed
-    tsp -= this.chips.setChip[9] * 50
-    tsp -= this.levelShop.levelItems[1] * this.challenge.challengeBonuses.length * (1 + this.chips.setChip[27] * 0.5)
+    tsp -= this.chip.setChip[9] * 50
+    tsp -= this.levelShop.levelItems[1] * this.challenge.challengeBonuses.length * (1 + this.chip.setChip[27] * 0.5)
     tsp -= this.accelerator.timeCrystalSum
     if (tsp < 1) tsp = 1
-    tsp /= this.accelerator.calcSpeed(this.challenge, this.chips.setChip[10])
+    tsp /= this.accelerator.calcSpeed(this.challenge, this.chip.setChip[10])
 
     return tsp
   }
   
   /** @param {number} num */
   spendShine(num) {
-    if (this.shines.shine < num) return;
+    if (this.shine.shine < num) return;
     if (this.challenge.isPChallengeActive(6)) return
-    this.shines.shine -= num
-    let val = new Decimal(11 + this.chips.setChip[31]).pow(new Decimal(num).log10())
+    this.shine.shine -= num
+    let val = new Decimal(11 + this.chip.setChip[31]).pow(new Decimal(num).log10())
     this.generator.updateGenerators(this, new Decimal(val))
     this.accelerator.updateAccelerators(this, new Decimal(val))
     if (this.trophies[9]) {
-      this.shines.residue += Math.floor(num * (1 + this.challenge.perfectChallengeStage) / 1000000)
+      this.shine.residue += Math.floor(num * (1 + this.challenge.perfectChallengeStage) / 1000000)
     }
   }
   /** @param {number} num */
   spendBrightness(num) {
-    if (this.shines.brightness < num) return;
+    if (this.shine.brightness < num) return;
     if (this.challenge.isPChallengeActive(6)) return
-    this.shines.brightness -= num
-    let val = new Decimal(11 + this.chips.setChip[50]).pow(new Decimal(num * 100).log10())
-    let vald = new Decimal(10 + this.chips.setChip[51] * 0.25).pow(new Decimal(num).log10())
+    this.shine.brightness -= num
+    let val = new Decimal(11 + this.chip.setChip[50]).pow(new Decimal(num * 100).log10())
+    let vald = new Decimal(10 + this.chip.setChip[51] * 0.25).pow(new Decimal(num).log10())
     this.generator.updateGenerators(this, new Decimal(val))
     this.accelerator.updateAccelerators(this, new Decimal(val))
     this.dark.updateDarkGenerators(this, new Decimal(vald))
   }
   /** @param {number} num */
   spendFlicker(num) {
-    if (this.shines.flicker < num) return;
-    this.shines.flicker -= num
-    let val = new Decimal(11 + this.chips.setChip[50]).pow(new Decimal(num * 10000).log10())
-    let vald = new Decimal(10 + this.chips.setChip[51] * 0.25).pow(new Decimal(num).log10())
+    if (this.shine.flicker < num) return;
+    this.shine.flicker -= num
+    let val = new Decimal(11 + this.chip.setChip[50]).pow(new Decimal(num * 10000).log10())
+    let vald = new Decimal(10 + this.chip.setChip[51] * 0.25).pow(new Decimal(num).log10())
     this.generator.updateGenerators(this, new Decimal(val))
     this.accelerator.updateAccelerators(this, new Decimal(val))
     this.dark.updateDarkGenerators(this, new Decimal(vald))
@@ -418,7 +418,7 @@ class Player {
   calcGainLevel() {
     let dividing = 19 - this.rank.add(2).log2()
     if (dividing < 1) dividing = 1
-    let mny = Math.pow(this.money.log10() - 17, this.chips.setChip[18])
+    let mny = Math.pow(this.money.log10() - 17, this.chip.setChip[18])
     let gainLevel = new Decimal(this.money.mul(mny).log10()).div(dividing).pow_base(2)
 
     let glMin = new Decimal(18).div(dividing).pow_base(2)
@@ -428,10 +428,10 @@ class Player {
       if (gainLevel.lt(glMax)) {
         let percent = new Decimal(1).sub(gainLevel.sub(glMin).div(glMax.sub(glMin)))
 
-        percent = percent.pow(1 + this.levelShop.levelItems[0] * (1 + this.chips.setChip[26] * 2))
+        percent = percent.pow(1 + this.levelShop.levelItems[0] * (1 + this.chip.setChip[26] * 2))
         percent = new Decimal(1).sub(percent)
         if (percent.lt("1e-5")) {
-          gainLevel = gainLevel.mul(1 + this.levelShop.levelItems[0] * (1 + this.chips.setChip[26] * 2))
+          gainLevel = gainLevel.mul(1 + this.levelShop.levelItems[0] * (1 + this.chip.setChip[26] * 2))
         } else {
           gainLevel = glMax.sub(glMin).mul(percent).add(glMin)
         }
@@ -468,7 +468,7 @@ class Player {
     if (this.challenge.isPChallengeActive(4)) {
       rst = rst.pow(0.1).round()
     }
-    let gainLevelReset = rst.mul(1 + this.chips.setChip[20]).mul(new Decimal(exit ? 0 : this.challenge.activeBonuses.includes(8) ? 2 : 1))
+    let gainLevelReset = rst.mul(1 + this.chip.setChip[20]).mul(new Decimal(exit ? 0 : this.challenge.activeBonuses.includes(8) ? 2 : 1))
 
 
     if (force || confirm('昇段リセットして、段位' + gainLevel + 'を得ますか？')) {
@@ -489,7 +489,7 @@ class Player {
 
       if (disa) {
         let randomint = Math.floor(Math.random() * 100)
-        this.chips.disableChip(randomint)
+        this.chip.disableChip(randomint)
       }
 
       if (this.money.greaterThan(1e80)) {
@@ -505,7 +505,7 @@ class Player {
         const chipDoubleProb = 0.01 * (1 + 0.1 * this.eachPipedSmallTrophy[11])
         const isGw2 = this.campaign.activated.includes("gw2")
 
-        this.chips.gainRandomChip(money.mul(bonus), chipDoubleProb, isGw2);
+        this.chip.gainRandomChip(money.mul(bonus), chipDoubleProb, isGw2);
       }
 
       this.money = new Decimal(1)
@@ -537,7 +537,7 @@ class Player {
     return new Decimal(10).pow(p)
   }
   calcGainRank() {
-    let dv = 36 - 0.25 * this.rememberSum - 1.2 * this.levelShop.levelItems[4] * (1 + 0.2 * this.chips.setChip[29])
+    let dv = 36 - 0.25 * this.rememberSum - 1.2 * this.levelShop.levelItems[4] * (1 + 0.2 * this.chip.setChip[29])
     dv = Math.max(dv, 6)
     dv = dv - this.crown.add(2).log2() * 0.1
     dv = Math.max(dv, 3)
@@ -548,7 +548,7 @@ class Player {
     if (this.challenge.rankChallengeBonuses.includes(12)) {
       gainRank = gainRank.mul(3)
     }
-    gainRank = gainRank.mul(1 + this.chips.setChip[22] * 0.5)
+    gainRank = gainRank.mul(1 + this.chip.setChip[22] * 0.5)
     gainRank = gainRank.mul(1 + this.eachPipedSmallTrophy[4] * 0.2)
     return gainRank
   }
@@ -582,7 +582,7 @@ class Player {
       this.tickSpeed = 1000
 
       this.rank = this.rank.add(gainRank)
-      this.rankResetTime = this.rankResetTime.add((this.challenge.rankChallengeBonuses.includes(8) ? new Decimal(3) : new Decimal(1)).mul(this.chips.setChip[24] + 1).mul(this.crownResetTime.add(1)))
+      this.rankResetTime = this.rankResetTime.add((this.challenge.rankChallengeBonuses.includes(8) ? new Decimal(3) : new Decimal(1)).mul(this.chip.setChip[24] + 1).mul(this.crownResetTime.add(1)))
 
       this.levelShop.levelItems = [0, 0, 0, 0, 0]
 
@@ -668,17 +668,17 @@ class Player {
   checkTrophies() {
     if (this.levelResetTime.greaterThan(0)) this.trophies[0] = true;
     if (this.rankResetTime.greaterThan(0)) this.trophies[1] = true;
-    if (this.shines.shine > 0) this.trophies[2] = true;
+    if (this.shine.shine > 0) this.trophies[2] = true;
     if (this.challenge.challengeCleared.includes(238) || this.challenge.challengeCleared.length >= 100) this.trophies[3] = true;
     if (this.dark.darkGenerators[0].greaterThan(0)) this.trophies[4] = true;
-    if (this.shines.brightness > 0) this.trophies[5] = true;
+    if (this.shine.brightness > 0) this.trophies[5] = true;
     if (this.remember > 0) this.trophies[6] = true;
     if (this.world == 0) {
       if (this.rememberSum > 0) this.trophies[6] = true;
     }
     if (this.crownResetTime.greaterThan(0)) this.trophies[7] = true;
     if (this.light.lightGenerators[0].greaterThan(0)) this.trophies[8] = true;
-    if (this.shines.flicker > 0) this.trophies[9] = true;
+    if (this.shine.flicker > 0) this.trophies[9] = true;
 
     this.common.trophyNumber[this.world] = this.countTrophies();
     if (this.world === 0 && this.common.trophyNumber[0] >= 6) {
@@ -737,12 +737,12 @@ class Player {
     if (this.levelShop.levelItemBought >= 256) this.smallTrophies1st[49] = true
     if (this.levelShop.levelItemBought >= 1728) this.smallTrophies1st[50] = true
     if (this.levelShop.levelItemBought >= 12500) this.smallTrophies1st[51] = true
-    if (this.shines.shine >= 100) this.smallTrophies1st[52] = true
-    if (this.shines.shine >= 1000) this.smallTrophies1st[53] = true
-    if (this.shines.shine >= 10000) this.smallTrophies1st[54] = true
-    if (this.shines.shine >= 100000) this.smallTrophies1st[55] = true
-    if (this.shines.shine >= 1000000) this.smallTrophies1st[56] = true
-    if (this.shines.shine >= 10000000) this.smallTrophies1st[57] = true
+    if (this.shine.shine >= 100) this.smallTrophies1st[52] = true
+    if (this.shine.shine >= 1000) this.smallTrophies1st[53] = true
+    if (this.shine.shine >= 10000) this.smallTrophies1st[54] = true
+    if (this.shine.shine >= 100000) this.smallTrophies1st[55] = true
+    if (this.shine.shine >= 1000000) this.smallTrophies1st[56] = true
+    if (this.shine.shine >= 10000000) this.smallTrophies1st[57] = true
     if (this.common.exported.length >= 2) this.smallTrophies1st[58] = true
     if (this.tweeting.length >= 2) this.smallTrophies1st[59] = true
     if (this.dark.darkGenerators[0].greaterThanOrEqualTo(1)) this.smallTrophies1st[60] = true
@@ -761,27 +761,27 @@ class Player {
     if (this.challenge.rankChallengeCleared.length >= 192) this.smallTrophies1st[73] = true
     if (this.challenge.rankChallengeCleared.length >= 224) this.smallTrophies1st[74] = true
     if (this.challenge.rankChallengeCleared.length >= 255) this.smallTrophies1st[75] = true
-    if (this.shines.brightness >= 10) this.smallTrophies1st[76] = true
-    if (this.shines.brightness >= 100) this.smallTrophies1st[77] = true
-    if (this.shines.brightness >= 1000) this.smallTrophies1st[78] = true
-    if (this.shines.brightness >= 10000) this.smallTrophies1st[79] = true
+    if (this.shine.brightness >= 10) this.smallTrophies1st[76] = true
+    if (this.shine.brightness >= 100) this.smallTrophies1st[77] = true
+    if (this.shine.brightness >= 1000) this.smallTrophies1st[78] = true
+    if (this.shine.brightness >= 10000) this.smallTrophies1st[79] = true
     if (this.dark.darkMoney.greaterThanOrEqualTo(1)) this.smallTrophies1st[80] = true
     if (this.dark.darkMoney.greaterThanOrEqualTo(777)) this.smallTrophies1st[81] = true
     if (this.dark.darkMoney.greaterThanOrEqualTo(7777777)) this.smallTrophies1st[82] = true
     if (this.dark.darkMoney.greaterThanOrEqualTo("1e18")) this.smallTrophies1st[83] = true
     if (this.dark.darkMoney.greaterThanOrEqualTo("1e72")) this.smallTrophies1st[84] = true
-    if (this.chips.chip[0] > 0) this.smallTrophies1st[85] = true
-    if (this.chips.chip[0] >= 210) this.smallTrophies1st[86] = true
-    if (this.chips.chip[0] >= 1275) this.smallTrophies1st[87] = true
-    if (this.chips.chip[1] > 0) this.smallTrophies1st[88] = true
-    if (this.chips.chip[1] >= 210) this.smallTrophies1st[89] = true
-    if (this.chips.chip[1] >= 1275) this.smallTrophies1st[90] = true
-    if (this.chips.chip[2] > 0) this.smallTrophies1st[91] = true
-    if (this.chips.chip[2] >= 210) this.smallTrophies1st[92] = true
-    if (this.chips.chip[2] >= 1275) this.smallTrophies1st[93] = true
-    if (this.chips.chip[3] > 0) this.smallTrophies1st[94] = true
-    if (this.chips.chip[3] >= 210) this.smallTrophies1st[95] = true
-    if (this.chips.chip[3] >= 1275) this.smallTrophies1st[96] = true
+    if (this.chip.chip[0] > 0) this.smallTrophies1st[85] = true
+    if (this.chip.chip[0] >= 210) this.smallTrophies1st[86] = true
+    if (this.chip.chip[0] >= 1275) this.smallTrophies1st[87] = true
+    if (this.chip.chip[1] > 0) this.smallTrophies1st[88] = true
+    if (this.chip.chip[1] >= 210) this.smallTrophies1st[89] = true
+    if (this.chip.chip[1] >= 1275) this.smallTrophies1st[90] = true
+    if (this.chip.chip[2] > 0) this.smallTrophies1st[91] = true
+    if (this.chip.chip[2] >= 210) this.smallTrophies1st[92] = true
+    if (this.chip.chip[2] >= 1275) this.smallTrophies1st[93] = true
+    if (this.chip.chip[3] > 0) this.smallTrophies1st[94] = true
+    if (this.chip.chip[3] >= 210) this.smallTrophies1st[95] = true
+    if (this.chip.chip[3] >= 1275) this.smallTrophies1st[96] = true
     if (this.dark.darkLevel.greaterThan(0)) this.smallTrophies1st[97] = true
     if (this.dark.darkLevel.greaterThan('1e3')) this.smallTrophies1st[98] = true
     if (this.dark.darkLevel.greaterThan('1e10')) this.smallTrophies1st[99] = true
@@ -807,13 +807,13 @@ class Player {
       if (this.light.lightGenerators[5].greaterThanOrEqualTo(1)) this.smallTrophies2nd[16] = true
       if (this.light.lightGenerators[6].greaterThanOrEqualTo(1)) this.smallTrophies2nd[17] = true
       if (this.light.lightGenerators[7].greaterThanOrEqualTo(1)) this.smallTrophies2nd[18] = true
-      if (this.chips.chip[4] > 0) this.smallTrophies2nd[19] = true
-      if (this.chips.chip[4] >= 210) this.smallTrophies2nd[20] = true
-      if (this.chips.chip[4] >= 1275) this.smallTrophies2nd[21] = true
-      if (this.statues.statue[0] >= 10) this.smallTrophies2nd[22] = true
-      if (this.statues.statue[1] >= 10) this.smallTrophies2nd[23] = true
-      if (this.statues.statue[2] >= 10) this.smallTrophies2nd[24] = true
-      if (this.statues.statue[3] >= 10) this.smallTrophies2nd[25] = true
+      if (this.chip.chip[4] > 0) this.smallTrophies2nd[19] = true
+      if (this.chip.chip[4] >= 210) this.smallTrophies2nd[20] = true
+      if (this.chip.chip[4] >= 1275) this.smallTrophies2nd[21] = true
+      if (this.statue.statue[0] >= 10) this.smallTrophies2nd[22] = true
+      if (this.statue.statue[1] >= 10) this.smallTrophies2nd[23] = true
+      if (this.statue.statue[2] >= 10) this.smallTrophies2nd[24] = true
+      if (this.statue.statue[3] >= 10) this.smallTrophies2nd[25] = true
       if (this.crown.greaterThanOrEqualTo(100)) this.smallTrophies2nd[26] = true
       if (this.crown.greaterThanOrEqualTo(10000)) this.smallTrophies2nd[27] = true
       if (this.crown.greaterThanOrEqualTo("1e8")) this.smallTrophies2nd[28] = true
@@ -821,32 +821,32 @@ class Player {
       if (this.light.lightMoney.greaterThanOrEqualTo("1e9")) this.smallTrophies2nd[30] = true
       if (this.light.lightMoney.greaterThanOrEqualTo("1e18")) this.smallTrophies2nd[31] = true
       if (this.light.lightMoney.greaterThanOrEqualTo("1e36")) this.smallTrophies2nd[32] = true
-      if (this.shines.flicker >= 10) this.smallTrophies2nd[33] = true
-      if (this.shines.flicker >= 100) this.smallTrophies2nd[34] = true
-      if (this.shines.flicker >= 1000) this.smallTrophies2nd[35] = true
-      if (this.shines.flicker >= 10000) this.smallTrophies2nd[36] = true
-      if (this.shines.flicker >= 100000) this.smallTrophies2nd[37] = true
-      if (this.shines.flicker >= 1000000) this.smallTrophies2nd[38] = true
-      if (this.chips.chip[5] > 0) this.smallTrophies2nd[39] = true
-      if (this.chips.chip[5] >= 210) this.smallTrophies2nd[40] = true
-      if (this.chips.chip[5] >= 1275) this.smallTrophies2nd[41] = true
-      if (this.chips.chip[6] > 0) this.smallTrophies2nd[42] = true
-      if (this.chips.chip[6] >= 210) this.smallTrophies2nd[43] = true
-      if (this.chips.chip[6] >= 1275) this.smallTrophies2nd[44] = true
-      if (this.statues.statue[4] >= 10) this.smallTrophies2nd[45] = true
-      if (this.statues.statue[5] >= 10) this.smallTrophies2nd[46] = true
-      if (this.statues.statue[6] >= 10) this.smallTrophies2nd[47] = true
-      if (this.statues.statue[0] >= 64) this.smallTrophies2nd[48] = true
-      if (this.statues.statue[1] >= 64) this.smallTrophies2nd[49] = true
-      if (this.statues.statue[2] >= 64) this.smallTrophies2nd[50] = true
-      if (this.statues.statue[3] >= 64) this.smallTrophies2nd[51] = true
-      if (this.statues.statue[4] >= 64) this.smallTrophies2nd[52] = true
-      if (this.statues.statue[5] >= 64) this.smallTrophies2nd[53] = true
-      if (this.statues.statue[6] >= 64) this.smallTrophies2nd[54] = true
-      if (this.shines.shine >= 100000000) this.smallTrophies2nd[55] = true
-      if (this.shines.shine >= 1000000000) this.smallTrophies2nd[56] = true
-      if (this.shines.brightness >= 100000) this.smallTrophies2nd[57] = true
-      if (this.shines.brightness >= 1000000) this.smallTrophies2nd[58] = true
+      if (this.shine.flicker >= 10) this.smallTrophies2nd[33] = true
+      if (this.shine.flicker >= 100) this.smallTrophies2nd[34] = true
+      if (this.shine.flicker >= 1000) this.smallTrophies2nd[35] = true
+      if (this.shine.flicker >= 10000) this.smallTrophies2nd[36] = true
+      if (this.shine.flicker >= 100000) this.smallTrophies2nd[37] = true
+      if (this.shine.flicker >= 1000000) this.smallTrophies2nd[38] = true
+      if (this.chip.chip[5] > 0) this.smallTrophies2nd[39] = true
+      if (this.chip.chip[5] >= 210) this.smallTrophies2nd[40] = true
+      if (this.chip.chip[5] >= 1275) this.smallTrophies2nd[41] = true
+      if (this.chip.chip[6] > 0) this.smallTrophies2nd[42] = true
+      if (this.chip.chip[6] >= 210) this.smallTrophies2nd[43] = true
+      if (this.chip.chip[6] >= 1275) this.smallTrophies2nd[44] = true
+      if (this.statue.statue[4] >= 10) this.smallTrophies2nd[45] = true
+      if (this.statue.statue[5] >= 10) this.smallTrophies2nd[46] = true
+      if (this.statue.statue[6] >= 10) this.smallTrophies2nd[47] = true
+      if (this.statue.statue[0] >= 64) this.smallTrophies2nd[48] = true
+      if (this.statue.statue[1] >= 64) this.smallTrophies2nd[49] = true
+      if (this.statue.statue[2] >= 64) this.smallTrophies2nd[50] = true
+      if (this.statue.statue[3] >= 64) this.smallTrophies2nd[51] = true
+      if (this.statue.statue[4] >= 64) this.smallTrophies2nd[52] = true
+      if (this.statue.statue[5] >= 64) this.smallTrophies2nd[53] = true
+      if (this.statue.statue[6] >= 64) this.smallTrophies2nd[54] = true
+      if (this.shine.shine >= 100000000) this.smallTrophies2nd[55] = true
+      if (this.shine.shine >= 1000000000) this.smallTrophies2nd[56] = true
+      if (this.shine.brightness >= 100000) this.smallTrophies2nd[57] = true
+      if (this.shine.brightness >= 1000000) this.smallTrophies2nd[58] = true
     }
   }
   countTrophies() {
@@ -889,7 +889,7 @@ class Player {
     }
 
     if (this.light.lightMoney.greaterThanOrEqualTo('1e8')) this.common.worldOpened[10] = true
-    if (this.statues.statue[2] >= 16) this.common.worldOpened[11] = true
+    if (this.statue.statue[2] >= 16) this.common.worldOpened[11] = true
   }
 
 
@@ -921,17 +921,17 @@ class Player {
       alert("キャンペーン期間が終了しました。起動時間回帰力が不足しているため、時間回帰力の選択がリセットされます。")
     }
 
-    this.shines.updateShine(this);
-    this.shines.updateBright(this);
-    this.shines.updateFlicker(this);
+    this.shine.updateShine(this);
+    this.shine.updateBright(this);
+    this.shine.updateFlicker(this);
 
     let autorankshine = Math.max(0, 1000 - this.rememberSum * 10)
 
     if (!this.challenge.onChallenge && this.challenge.rankChallengeBonuses.includes(14) && this.common.autoRank) {
-      if (this.shines.shine >= autorankshine && this.money.greaterThanOrEqualTo(this.resetRankBorder())) {
+      if (this.shine.shine >= autorankshine && this.money.greaterThanOrEqualTo(this.resetRankBorder())) {
         if (this.calcGainRank().greaterThanOrEqualTo(this.common.autoRankNumber)) {
           this.resetRank(true)
-          this.shines.shine -= autorankshine
+          this.shine.shine -= autorankshine
         }
       }
     }

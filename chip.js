@@ -1,4 +1,4 @@
-class Chips {
+class Chip {
   /** @type {[Decimal, number[]][]} */
   static probTable = [
     [new Decimal("0"), [1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01]],
@@ -103,8 +103,8 @@ class Chips {
 
   /** @param {Decimal} money */
   static getChipLevel(money) {
-    for (let i = Chips.probTable.length - 1; i > 0; i--) {
-      if (money.greaterThanOrEqualTo(Chips.probTable[i][0])) {
+    for (let i = Chip.probTable.length - 1; i > 0; i--) {
+      if (money.greaterThanOrEqualTo(Chip.probTable[i][0])) {
         return i;
       }
     }
@@ -117,7 +117,7 @@ class Chips {
    */
   static getChipId(lv, time) {
     let d = Math.random()
-    let table = Chips.probTable[lv][1].map((x) => Math.pow(x, time))
+    let table = Chip.probTable[lv][1].map((x) => Math.pow(x, time))
     console.log(table)
     for (let i = 0; i <= 10; i++) {
       if (table[i] > d) {
@@ -166,8 +166,8 @@ class Chips {
 
   /** @param {Decimal} money */
   calcGainChip(money) {
-    let clevel = Chips.getChipLevel(money)
-    return Chips.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0))
+    let clevel = Chip.getChipLevel(money)
+    return Chip.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0))
   }
 
   /**

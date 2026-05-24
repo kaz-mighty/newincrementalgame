@@ -424,7 +424,7 @@ class Challenge {
     }
 
     for (let i = 0; i < 10; i++) {
-      if (player.statues.statue[i] < this.perfectChallenges.length - i) {
+      if (player.statue.statue[i] < this.perfectChallenges.length - i) {
         alert("像の作成数が不足しているため、完全挑戦を開始できません。")
         return;
       }
@@ -461,7 +461,7 @@ class Challenge {
       this.challengeCleared = Challenge.challengeIds
       this.rankChallengeCleared = Challenge.challengeIds
       for (let i = 0; i < setchipnum; i++) {
-        player.chips.disabledChip[i] = false
+        player.chip.disabledChip[i] = false
       }
       this.countPChallengeCleared()
     }

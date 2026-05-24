@@ -1,4 +1,4 @@
-class Rings {
+class Ring {
   static statusDataType = [
     [17, 10, 10, 5, 1, 1, 12],//51
     [9, 15, 9, 2, 6, 2, 12],//53
@@ -299,9 +299,9 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Rings.getStatus(ringid, 0, level)))
-        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Rings.getStatus(ringid, 1, level)))
-        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Rings.getStatus(ringid, 2, level)))
+        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level)))
+        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level)))
+        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level)))
 
       },
     },
@@ -312,7 +312,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('flowerMultiplier', Rings.getStatus(ringid, 3, level) * 0.01)
+        rings.affect('flowerMultiplier', Ring.getStatus(ringid, 3, level) * 0.01)
       }
     },
     {
@@ -322,7 +322,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('snowMultiplier', Rings.getStatus(ringid, 4, level) * 0.01)
+        rings.affect('snowMultiplier', Ring.getStatus(ringid, 4, level) * 0.01)
       }
     },
     {
@@ -332,7 +332,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('moonMultiplier', Rings.getStatus(ringid, 5, level) * 0.01)
+        rings.affect('moonMultiplier', Ring.getStatus(ringid, 5, level) * 0.01)
       }
     },
     //id:4
@@ -343,7 +343,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Rings.getStatus(ringid, 0, level) * 5))
+        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level) * 5))
       }
     },
     {
@@ -353,7 +353,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Rings.getStatus(ringid, 1, level) * 5))
+        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level) * 5))
       }
     },
     {
@@ -363,7 +363,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Rings.getStatus(ringid, 2, level) * 5))
+        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level) * 5))
       }
     },
     //id:7
@@ -374,7 +374,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Rings.getStatus(ringid, 0, level) * 12))
+        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level) * 12))
         rings.affect('flowerMultiplier', Math.max(-0.20, 0.50 - state.flowerMultiplier))
       }
     },
@@ -385,7 +385,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Rings.getStatus(ringid, 1, level) * 12))
+        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level) * 12))
         rings.affect('snowMultiplier', Math.max(-0.20, 0.50 - state.snowMultiplier))
       }
     },
@@ -396,7 +396,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Rings.getStatus(ringid, 2, level) * 12))
+        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level) * 12))
         rings.affect('moonMultiplier', Math.max(-0.20, 0.50 - state.moonMultiplier))
       }
     },
@@ -445,7 +445,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affectField(4, Math.floor(state.flowerMultiplier * Rings.getStatus(ringid, 0, level)))
+        rings.affectField(4, Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level)))
       }
     },
     {
@@ -455,7 +455,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affectField(5, Math.floor(state.snowMultiplier * Rings.getStatus(ringid, 1, level)))
+        rings.affectField(5, Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level)))
       }
     },
     {
@@ -465,7 +465,7 @@ class Rings {
         let state = rings.missionState
         let ringid = rings.setRings[state.activeRing]
         let level = rings.getLevel(ringid)
-        rings.affectField(6, Math.floor(state.moonMultiplier * Rings.getStatus(ringid, 2, level)))
+        rings.affectField(6, Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level)))
       }
     },
   ];
@@ -489,7 +489,7 @@ class Rings {
    * @param {number} level 
    */
   static getStatus(ringId, statusId, level) {
-    return Rings.statusTable(Rings.statusDataType[ringId][statusId])[level - 1]
+    return Ring.statusTable(Ring.statusDataType[ringId][statusId])[level - 1]
   }
 
   static levelCap() {
@@ -565,28 +565,28 @@ class Rings {
   getLevel(ringId) {
     let exp = this.ringsExp[ringId]
     let lv = 0
-    for (let i = 0; i < Rings.levelTable.length; i++) {
-      if (exp >= Rings.levelTable[i]) {
+    for (let i = 0; i < Ring.levelTable.length; i++) {
+      if (exp >= Ring.levelTable[i]) {
         lv = i
       }
     }
     lv += 1
-    return Math.min(lv, Rings.levelCap())
+    return Math.min(lv, Ring.levelCap())
   }
 
   /** @param {number} statusId */
   shortGetStatus(statusId) {
     const ringId = this.setRings[this.missionState.activeRing]
-    return Rings.getStatus(ringId, statusId, this.getLevel(ringId))
+    return Ring.getStatus(ringId, statusId, this.getLevel(ringId))
   }
 
   /** @param {number} ringId */
   availableSkills(ringId) {
     let ret = []
     let level = this.getLevel(ringId)
-    for (let i in Rings.levelSkills[ringId]) {
+    for (let i in Ring.levelSkills[ringId]) {
       if (Number(i) <= level) {
-        ret.push(Rings.levelSkills[ringId][i])
+        ret.push(Ring.levelSkills[ringId][i])
       }
     }
     return ret
@@ -605,7 +605,7 @@ class Rings {
     for (let e of this.missionState.fieldEffect) {
       // @ts-expect-error
       if (e[0].timing == "skilluse") { // bug
-        const eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
+        const eff = Ring.fieldEffects.find((elem) => elem.id == e[0])
         eff.effect(v)
       }
     }
@@ -648,7 +648,7 @@ class Rings {
   }
 
   autoPlayMission() {
-    if (this.missionState.turn >= Rings.missionInfo[this.missionId].turn) this.endMission()
+    if (this.missionState.turn >= Ring.missionInfo[this.missionId].turn) this.endMission()
     if (this.onMission) {
       this.useSkill(0)
     } else {
@@ -658,12 +658,12 @@ class Rings {
 
   /** @param {number} missionId */
   isAvailableMission(missionId) {
-    return Rings.missionInfo[missionId].preventchallenge.every((v) => this.clearedMission.includes(v))
+    return Ring.missionInfo[missionId].preventchallenge.every((v) => this.clearedMission.includes(v))
   }
 
   /** @param {number} missionId */
   startMission(missionId) {
-    if (this.setRings.length < Rings.missionInfo[missionId].setsizemin || Rings.missionInfo[missionId].setsizemax < this.setRings.length) return
+    if (this.setRings.length < Ring.missionInfo[missionId].setsizemin || Ring.missionInfo[missionId].setsizemax < this.setRings.length) return
     if (this.onMission) return
     this.onMission = true
     this.missionId = missionId
@@ -679,11 +679,11 @@ class Rings {
     this.missionState.tps = []
     for (let r of this.setRings) {
       let lv = this.getLevel(r)
-      this.missionState.tps.push(Rings.getStatus(r, 6, lv))//6:tp status id
+      this.missionState.tps.push(Ring.getStatus(r, 6, lv))//6:tp status id
     }
     this.missionState.fieldEffect = []
     console.log("Starting mission:" + missionId)
-    for (let e of Rings.missionInfo[missionId].passivefunction) {
+    for (let e of Ring.missionInfo[missionId].passivefunction) {
       this.missionState.fieldEffect.push([e, -1])
     }
   }
@@ -691,7 +691,7 @@ class Rings {
   /** @param {number} skillId */
   useSkill(skillId) {
     let ringId = this.setRings[this.missionState.activeRing]
-    let skill = Rings.skills[this.availableSkills(ringId)[skillId]]
+    let skill = Ring.skills[this.availableSkills(ringId)[skillId]]
     if (skill.tp > this.missionState.tps[this.missionState.activeRing]) return
     skill.effect(this)
     this.missionState.tps[this.missionState.activeRing] -= skill.tp
@@ -702,7 +702,7 @@ class Rings {
       this.missionState.activeRing = 0;
       this.missionState.turn++;
       for (let e of this.missionState.fieldEffect) {
-        let eff = Rings.fieldEffects.find((elem) => elem.id == e[0])
+        let eff = Ring.fieldEffects.find((elem) => elem.id == e[0])
         if (eff.timing == "turnend") {
           eff.effect(this.missionState, e[1])
         }
@@ -716,16 +716,16 @@ class Rings {
   }
 
   endMission() {
-    let win = this.ringPointSum() >= Rings.missionInfo[this.missionId].goal
-    if ((!win) && this.missionState.turn < Rings.missionInfo[this.missionId].turn) {
+    let win = this.ringPointSum() >= Ring.missionInfo[this.missionId].goal
+    if ((!win) && this.missionState.turn < Ring.missionInfo[this.missionId].turn) {
       if (!window.confirm("撤退します。よろしいですか？")) return
     }
     this.onMission = false
     if (win) {
       for (let i = 0; i < this.setRings.length; i++) {
         let ringId = this.setRings[i]
-        this.ringsExp[ringId] += Math.floor(Rings.missionInfo[this.missionId].exp * (this.setRings.length - i) / (this.setRings.length * (this.setRings.length + 1) / 2))
-        this.ringsExp[ringId] = Math.min(this.ringsExp[ringId], Rings.levelTable[Rings.levelCap() - 1])
+        this.ringsExp[ringId] += Math.floor(Ring.missionInfo[this.missionId].exp * (this.setRings.length - i) / (this.setRings.length * (this.setRings.length + 1) / 2))
+        this.ringsExp[ringId] = Math.min(this.ringsExp[ringId], Ring.levelTable[Ring.levelCap() - 1])
       }
       if (!this.clearedMission.includes(this.missionId)) {
         this.clearedMission.push(this.missionId)

@@ -38,17 +38,18 @@ class Player {
    */
   constructor(world, playerData, commonData) {
     this.world = world;
+    this.saveVersion = playerData.saveversion;
 
     this.money = new Decimal(playerData.money);
+    this.tickSpeed = playerData.tickspeed;
+    this.currentTab = "basic";
+    this.tweeting = Array.from(playerData.tweeting);
+
     this.level = new Decimal(playerData.level);
     this.levelResetTime = new Decimal(playerData.levelresettime);
     this.maxLevelGained = new Decimal(playerData.maxlevelgained);
-
-    this.shines = new Shine(playerData);
-
     this.rank = new Decimal(playerData.rank);
     this.rankResetTime = new Decimal(playerData.rankresettime);
-
     this.crown = new Decimal(playerData.crown);
     this.crownResetTime = new Decimal(playerData.crownresettime);
 
@@ -57,31 +58,22 @@ class Player {
     this.dark = new Dark(playerData);
     this.light = new Light(playerData);
 
-    this.tickSpeed = playerData.tickspeed;
-    this.saveVersion = playerData.saveversion;
-
     this.campaign = Campaign.new(playerData);
 
-    this.currentTab = "basic";
-    this.tweeting = Array.from(playerData.tweeting);
-
     this.challenge = new Challenge(playerData);
+    this.levelShop = new LevelShop(playerData);
+    this.shines = new Shine(playerData);
+    this.chips = new Chips(playerData);
+    this.statues = Statues.new(playerData);
+    this.rings = new Rings(playerData.rings);
+    this.spiritLevelA = Array.from(playerData.spiritlevela);
 
     this.trophies = Array.from(playerData.trophies);
     this.smallTrophies1st = Array.from(playerData.smalltrophies);
     this.smallTrophies2nd = Array.from(playerData.smalltrophies2nd);
 
-    this.levelShop = new LevelShop(playerData);
-
     this.remember = playerData.remember;
-
-    this.chips = new Chips(playerData);
-    this.statues = Statues.new(playerData);
-
-    this.spiritLevelA = Array.from(playerData.spiritlevela);
-
     this.worldPipe = Array.from(playerData.worldpipe);
-    this.rings = new Rings(playerData.rings);
 
     this.auto = {
         autoSpendShine: playerData.rings.outsideauto.autospendshine,

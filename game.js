@@ -345,9 +345,10 @@ const app = Vue.createApp(Vue.defineComponent({
       console.log("save succeeded" + Date.now())
     },
     dataload() {
-      if (!localStorage.getItem("playerStoredb")) return
-      console.log(atob(localStorage.getItem("playerStoredb")))
-      this.players = JSON.parse(atob(localStorage.getItem("playerStoredb")))
+      const store = localStorage.getItem("playerStoredb");
+      if (!store) return
+      console.log(atob(store))
+      this.players = JSON.parse(atob(store))
 
       while (this.players.length < worldnum) {
         this.players.push(initialData())
@@ -400,6 +401,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
 
     },
+    /** @param {number} world */
     load(world) {
 
       let saveData = this.players[world]
@@ -470,10 +472,11 @@ const app = Vue.createApp(Vue.defineComponent({
 
       setTimeout(this.update, Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
     },
-
+    /** @param {string} tabname */
     changeTab(tabname) {
       this.player.currentTab = tabname;
     },
+    /** @param {number} index */
     configautobuyer(index) {
       if (index == 0) {
         let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
@@ -486,6 +489,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.common.autoRankNumber = input
       }
     },
+    /** @param {number} index */
     toggleautobuyer(index) {
       if (index == 0) this.common.genAutoBuy = !this.common.genAutoBuy
       if (index == 1) this.common.accAutoBuy = !this.common.accAutoBuy
@@ -515,6 +519,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.startChallenge()
       }
     },
+    /** @param {number} index */
     toggleringautobuyer(index) {
       if (index == 0) {
         this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine
@@ -544,6 +549,7 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
     },
+    /** @param {number} index */
     configringautobuyer(index) {
       let input = parseInt(window.prompt("消費量を設定:最大1000", ""))
       if (isNaN(input)) return
@@ -555,6 +561,7 @@ const app = Vue.createApp(Vue.defineComponent({
         this.player.auto.autoSpendBrightNumber = input
       }
     },
+    /** @param {boolean} force */
     resetData(force) {
       if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
         this.player = new Player(this.world, initialData(), this.common)
@@ -582,16 +589,18 @@ const app = Vue.createApp(Vue.defineComponent({
     },
 
 
-
+    /** @param {number} i */
     gettrophyname(i) {
       return this.player.trophies[i] ? Trophy.contents[i] : "???"
     },
+    /** @param {number} i */
     moveworld(i) {
       // @ts-expect-error
       if (world == i || !this.common.worldOpened[i]) return // bug
       this.save()
       this.load(i)
     },
+    /** @param {number} i */
     shrinkworld(i) {
       let newData = Remember.shrinkWorld(i, this.players[i], this.common.trophyNumber[i], this.player.rememberSum);
       if (newData == undefined) return;
@@ -605,6 +614,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.common.trophyCheck = !this.common.trophyCheck
     },
 
+    /** @param {number} i */
     buyspirit(i) {
       return
       this.player.spiritLevelA[i] += 1;
@@ -620,6 +630,7 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
 
+    /** @param {number} index */
     counttrophies(index) {
       let cnt = 0
       for (let i = 0; i < trophynum; i++) {
@@ -668,6 +679,10 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.rememberSum = cnt
     },
 
+    /**
+     * @param {Decimal} dec 
+     * @param {number} exp 
+     */
     toFormated(dec, exp) {
       if (dec.lessThanOrEqualTo(new Decimal(10).pow(exp))) return dec.toNumber()
       else return dec.toExponential(3)

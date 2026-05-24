@@ -401,6 +401,7 @@ class Player {
     this.light.updateLightGenerators(this, new Decimal(vald))
   }
 
+  /** @param {string} content */
   configTweet(content) {
     if (!this.tweeting.includes(content)) {
       this.tweeting.push(content)

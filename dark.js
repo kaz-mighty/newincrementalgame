@@ -34,9 +34,9 @@ class Dark {
     for (let i = 0; i < 8; i++) {
       dgtocalc[i] = dgtocalc[i].mul(player.light.lightGenerators[i].add(1))
     }
-    this.darkMoney = this.darkMoney.add(dgtocalc[0].mul(mu).mul(darkmult).mul(1 + player.setChip[41] * 0.25).mul(1 + player.eachPipedSmallTrophy[5] * 0.2))
+    this.darkMoney = this.darkMoney.add(dgtocalc[0].mul(mu).mul(darkmult).mul(1 + player.chips.setChip[41] * 0.25).mul(1 + player.eachPipedSmallTrophy[5] * 0.2))
     for (let i = 1; i < 8; i++) {
-      this.darkGenerators[i - 1] = this.darkGenerators[i - 1].add(dgtocalc[i].mul(mu).mul(darkmult).mul(1 + player.setChip[41 + i] * 0.25).mul(1 + player.eachPipedSmallTrophy[5] * 0.2))
+      this.darkGenerators[i - 1] = this.darkGenerators[i - 1].add(dgtocalc[i].mul(mu).mul(darkmult).mul(1 + player.chips.setChip[41 + i] * 0.25).mul(1 + player.eachPipedSmallTrophy[5] * 0.2))
     }
   }
   

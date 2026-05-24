@@ -269,10 +269,10 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '裏段位:' + this.player.dark.darkLevel + '%0A';
       }
       if (this.player.tweeting.includes('achieved')) {
-        tweetText += '挑戦達成:' + this.player.challengeCleared.length + '%0A';
+        tweetText += '挑戦達成:' + this.player.challenge.challengeCleared.length + '%0A';
       }
       if (this.player.tweeting.includes('rankachieved')) {
-        tweetText += '上位挑戦達成:' + this.player.rankChallengeCleared.length + '%0A';
+        tweetText += '上位挑戦達成:' + this.player.challenge.rankChallengeCleared.length + '%0A';
       }
       if (this.player.tweeting.includes('pachieved')) {
         tweetText += '完全挑戦段階:' + this.player.challenge.perfectChallengeStage + '%0A';
@@ -507,11 +507,11 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.spendBrightness(this.player.auto.autoSpendBrightNumber)
     },
     autochallenge() {
-      if (this.player.challengeCleared.length == 255) return;
-      if (this.player.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenges.length == 0) {
+      if (this.player.challenge.challengeCleared.length == 255) return;
+      if (this.player.challenge.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.challenges.length == 0) {
         this.player.challenge.showUnclearedChallenges()
       }
-      if (!this.player.onChallenge) {
+      if (!this.player.challenge.onChallenge) {
         this.startChallenge()
       }
     },

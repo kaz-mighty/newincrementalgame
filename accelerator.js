@@ -28,11 +28,11 @@ class Accelerator {
     for (let i = 1; i < 8; i++) {
       let mult = new Decimal(1)
       if (i == 1 && player.challenge.activeBonuses.includes(10)) {
-        mult = player.rankChallengeBonuses.includes(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i])
-      } else if (i != 1 && player.rankChallengeBonuses.includes(6)) {
-        mult = player.rankChallengeBonuses.includes(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i])
+        mult = player.challenge.rankChallengeBonuses.includes(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i])
+      } else if (i != 1 && player.challenge.rankChallengeBonuses.includes(6)) {
+        mult = player.challenge.rankChallengeBonuses.includes(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i])
       }
-      mult = mult.mul(new Decimal(1.5).pow(player.setChip[i + 10]))
+      mult = mult.mul(new Decimal(1.5).pow(player.chips.setChip[i + 10]))
       mult = mult.mul(1 + player.eachPipedSmallTrophy[1] * 0.2)
       this.accelerators[i - 1] = this.accelerators[i - 1].add(this.accelerators[i].mul(mult).mul(mu))
 

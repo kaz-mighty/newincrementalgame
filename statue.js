@@ -50,8 +50,8 @@ class Statues {
    */
   buildStatue(player, i) {
     let cost = this.calcStatueCost(i)
-    if (player.chip[i] < cost) return
-    player.chip[i] -= cost
+    if (player.chips.chip[i] < cost) return
+    player.chips.chip[i] -= cost
     this.statue[i] += 1
   }
 
@@ -66,8 +66,8 @@ class Statues {
    */
   polishStatue(player, i) {
     let cost = this.calcPolishCost(i)
-    if (this.polishedStatue[i] >= this.statue[i] || player.shine < cost) return;
-    player.shine -= cost
+    if (this.polishedStatue[i] >= this.statue[i] || player.shines.shine < cost) return;
+    player.shines.shine -= cost
     this.polishedStatue[i] += 1
   }
 
@@ -82,8 +82,8 @@ class Statues {
    */
   polishStatueBright(player, i) {
     let cost = this.calcPolishCostBright(i)
-    if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.brightness < cost) return;
-    player.brightness -= cost
+    if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.shines.brightness < cost) return;
+    player.shines.brightness -= cost
     this.brightStatue[i] += 1
 
   }

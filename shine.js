@@ -46,8 +46,8 @@ class Shine {
 
   /** @param {Player} player */
   calcShinePercent(player) {
-    let sp = Shine.getBaseShinePercent(player.challengeCleared.length)
-    sp += 0.02 * player.setChip[30]
+    let sp = Shine.getBaseShinePercent(player.challenge.challengeCleared.length)
+    sp += 0.02 * player.chips.setChip[30]
     sp += 0.01 * player.eachPipedSmallTrophy[6]
     sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3))
     sp += 0.01 * player.statues.polishedStatueSum
@@ -57,7 +57,7 @@ class Shine {
   
   /** @param {Player} player */
   calcMaxShine(player) {
-    const clear = player.challengeCleared.length;
+    const clear = player.challenge.challengeCleared.length;
     const rememberLevel = Math.floor((player.rememberSum + 16) / 16);
 
     let value = 0;
@@ -77,8 +77,8 @@ class Shine {
 
   /** @param {Player} player */
   calcBrightPercent(player) {
-    let bp = Shine.getBaseBrightPercent(player.rankChallengeCleared.length)
-    bp += 0.001 * player.setChip[49]
+    let bp = Shine.getBaseBrightPercent(player.challenge.rankChallengeCleared.length)
+    bp += 0.001 * player.chips.setChip[49]
     bp += 0.001 * player.eachPipedSmallTrophy[9] * 0.5
     bp += 0.001 * player.statues.brightStatueSum * 0.5
 
@@ -87,7 +87,7 @@ class Shine {
 
   /** @param {Player} player */
   calcMaxBright(player) {
-    const clear = player.rankChallengeCleared.length;
+    const clear = player.challenge.rankChallengeCleared.length;
     const rememberLevel = Math.floor((player.rememberSum + 16) / 16);
 
     let value = 0;
@@ -129,13 +129,13 @@ class Shine {
     }
 
     //クリスマスキャンペーン
-    if (player.activatedCampaigns.includes("xmas2") && shineGain >= 1) {
+    if (player.campaign.activated.includes("xmas2") && shineGain >= 1) {
       if (Math.random() <= 0.5) {
         shineGain += 1;
       }
     }
 
-    if (player.rankChallengeBonuses.includes(2)) shineGain *= 2;
+    if (player.challenge.rankChallengeBonuses.includes(2)) shineGain *= 2;
     shineGain *= player.campaign.accelLevelUsed + 1;
     this.shine = Math.min(this.shine + shineGain, maxShine);
   }
@@ -151,7 +151,7 @@ class Shine {
     }
 
     //クリスマスキャンペーン
-    if (player.activatedCampaigns.includes("xmas2") && brightGain >= 1) {
+    if (player.campaign.activated.includes("xmas2") && brightGain >= 1) {
       if (Math.random() <= 0.5) {
         brightGain += 1;
       }
@@ -172,7 +172,7 @@ class Shine {
     }
 
     //クリスマスキャンペーン
-    if (player.activatedCampaigns.includes("xmas2") && flickerGain >= 1) {
+    if (player.campaign.activated.includes("xmas2") && flickerGain >= 1) {
       if (Math.random() <= 0.5) {
         flickerGain += 1;
       }

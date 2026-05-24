@@ -25,14 +25,6 @@ class Statue {
     );
   }
 
-  toSaveObject() {
-    return {
-      statue: this.statue,
-      polishedstatue: this.polishedStatue,
-      polishedstatuebr: this.brightStatue,
-    };
-  }
-
   /* 他のクラスとの一貫性のため、外部にはrefを使用していないかのように振る舞う。 */
   get statueSum() {return this._statueSum.value;}
   get polishedStatueSum() {return this._polishedStatueSum.value;}

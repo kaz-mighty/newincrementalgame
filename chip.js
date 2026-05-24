@@ -139,16 +139,6 @@ class Chip {
     this.checkUsedChips();
   }
 
-  toSaveObject() {
-    return {
-      chip: this.chip,
-      setchip: this.setChip,
-      disabledchip: this.disabledChip,
-      spendchip: this.spendChip,
-      setchiptypefst: this.setChipType1,
-    };
-  }
-  
   calcChipRetryTime() {
     let retry = 0
     for (let i = 0; i < 9; i++) {

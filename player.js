@@ -107,8 +107,6 @@ class Player {
 
   /** @returns {PlayerSaveData} */
   toSaveObject() {
-    const statue = this.statue.toSaveObject();
-    const chip = this.chip.toSaveObject();
     return {
       money: this.money,
       level: this.level,
@@ -199,19 +197,19 @@ class Player {
       rememberspent: this.unUsed.rememberSpent,
       rememberforgot: this.unUsed.rememberForgot,
 
-      chip: chip.chip,
-      setchip: chip.setchip,
-      disabledchip: chip.disabledchip,
-      spendchip: chip.spendchip,
+      chip: this.chip.chip,
+      setchip: this.chip.setChip,
+      disabledchip: this.chip.disabledChip,
+      spendchip: this.chip.spendChip,
 
-      statue: statue.statue,
-      polishedstatue: statue.polishedstatue,
-      polishedstatuebr: statue.polishedstatuebr,
+      statue: this.statue.statue,
+      polishedstatue: this.statue.polishedStatue,
+      polishedstatuebr: this.statue.brightStatue,
 
       spiritlevela: this.spiritLevelA,
       spiritboughtcurrentcrown: this.unUsed.spiritBoughtCurrentCrown,
 
-      setchiptypefst: chip.setchiptypefst,
+      setchiptypefst: this.chip.setChipType1,
 
       worldpipe: this.worldPipe,
       rings: this.ring.toSaveObject(this),

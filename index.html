@@ -881,7 +881,7 @@
 							級位:{{ player.ring.getLevel(player.ring.setRings[player.ring.missionState.activeRing]) }}
 						</div>
 						<div v-if="!player.auto.autoRing" v-for="i in player.ring.availableSkills(player.ring.setRings[player.ring.missionState.activeRing]).length" :key="i">
-							<button v-if="player.ring.missionState.turn < Ring.missionInfo[this.player.ring.missionId].turn" type="button" @click="player.ring.useSkill(i-1)">
+							<button v-if="player.ring.missionState.turn < Ring.missionInfo[player.ring.missionId].turn" type="button" @click="player.ring.useSkill(i-1)">
 								{{ Ring.skills[player.ring.availableSkills(player.ring.setRings[player.ring.missionState.activeRing])[i-1]].name }} 消費技量霊気: {{ Ring.skills[player.ring.availableSkills(player.ring.setRings[player.ring.missionState.activeRing])[i-1]].tp }}
 							</button>
 						</div>
@@ -951,7 +951,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/break_infinity.js@1.2.0/dist/break_infinity.js"></script>
 	<script type="text/javascript" src="campaign.js"></script>
 	<script type="text/javascript" src="challenge.js"></script>
-	<script type="text/javascript" src="rank.js"></script>
 	<script type="text/javascript" src="levelshop.js"></script>
 	<script type="text/javascript" src="shine.js"></script>
 	<script type="text/javascript" src="trophy.js"></script>

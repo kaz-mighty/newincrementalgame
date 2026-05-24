@@ -397,7 +397,7 @@ class Nig { // New Incremental Game
       this.player.challenge.showUnclearedChallenges()
     }
     if (!this.player.challenge.onChallenge) {
-      this.startChallenge()
+      this.player.challenge.startChallenge(this.player);
     }
   }
   /** @param {number} index */
@@ -452,21 +452,6 @@ class Nig { // New Incremental Game
       }
     }
   }
-
-
-  startChallenge() {
-    this.player.challenge.startChallenge(this.player);
-  }
-  startPChallenge() {
-    this.player.challenge.startPChallenge(this.player);
-  }
-  exitChallenge() {
-    this.player.challenge.exitChallenge(this.player);
-  }
-  exitPChallenge() {
-    this.player.challenge.exitPChallenge(this.player);
-  }
-
 
   /** @param {number} i */
   moveWorld(i) {
@@ -558,155 +543,3 @@ Vue.watchEffect(() => {
   currentPlayer.value = nigInstance.value.player;
 });
 
-const app = Vue.createApp(Vue.defineComponent({
-  data() {
-    return {
-      nig: nigInstance,
-      player: currentPlayer,
-
-      showMult: true,
-    }
-  },
-  computed: {
-    tweetLink() {
-      let tweetText = "";
-      if (this.player.tweeting.includes('world')) {
-        tweetText += '在住世界:' + (this.nig.world + 1) + '%0A';
-      }
-      if (this.player.tweeting.includes('memory')) {
-        tweetText += '記憶:' + this.player.memorySum + '%0A';
-      }
-      if (this.player.tweeting.includes('remember')) {
-        tweetText += '思い出:' + this.player.rememberSum + '%0A';
-      }
-      if (this.player.tweeting.includes('money')) {
-        tweetText += 'ポイント:' + this.player.money +
-          '(' + this.player.money.toExponential().replace('+', '%2B') + ')%0A';
-      }
-      if (this.player.tweeting.includes('darkmoney')) {
-        tweetText += '裏ポイント:' + this.player.dark.darkMoney +
-          '(' + this.player.dark.darkMoney.toExponential().replace('+', '%2B') + ')%0A';
-      }
-      if (this.player.tweeting.includes('lightmoney')) {
-        tweetText += '天上ポイント:' + this.player.light.lightMoney +
-          '(' + this.player.light.lightMoney.toExponential().replace('+', '%2B') + ')%0A';
-      }
-
-      if (this.player.tweeting.includes('level')) {
-        tweetText += '段位:' + this.player.level + '%0A';
-      }
-      if (this.player.tweeting.includes('darklevel')) {
-        tweetText += '裏段位:' + this.player.dark.darkLevel + '%0A';
-      }
-      if (this.player.tweeting.includes('achieved')) {
-        tweetText += '挑戦達成:' + this.player.challenge.challengeCleared.length + '%0A';
-      }
-      if (this.player.tweeting.includes('rankachieved')) {
-        tweetText += '上位挑戦達成:' + this.player.challenge.rankChallengeCleared.length + '%0A';
-      }
-      if (this.player.tweeting.includes('pachieved')) {
-        tweetText += '完全挑戦段階:' + this.player.challenge.perfectChallengeStage + '%0A';
-      }
-      if (this.player.tweeting.includes('rank')) {
-        tweetText += '階位:' + this.player.rank + '%0A';
-      }
-      if (this.player.tweeting.includes('levelitemboughttime')) {
-        tweetText += '段位効力購入:' + this.player.levelShop.levelItemBought + '%0A';
-      }
-      if (this.player.tweeting.includes('crown')) {
-        tweetText += '冠位:' + this.player.crown + '%0A';
-      }
-      if (this.player.tweeting.includes('crownResetTime')) {
-        tweetText += '冠位リセット:' + this.player.crownResetTime + '%0A';
-      }
-      if (this.player.tweeting.includes('statue')) {
-        tweetText += '像:' + this.player.statue.statueSum + '%0A';
-      }
-      if (this.player.tweeting.includes('polishedstatue')) {
-        tweetText += '輝像:' + this.player.statue.polishedStatueSum + '%0A';
-      }
-      if (this.player.tweeting.includes('polishedstatuebr')) {
-        tweetText += '煌像:' + this.player.statue.brightStatueSum + '%0A';
-      }
-
-      let tweetUrl = 'dem08656775.github.io/newincrementalgame';
-      let tweetHashtag = '新しい放置ゲーム';
-
-      let attribute = 'https://twitter.com/intent/tweet?'
-        + 'text=' + tweetText
-        + '&url=' + tweetUrl
-        + '&hashtags=' + tweetHashtag
-
-      return attribute
-    }
-  },
-  methods: {
-
-    exportSave() {
-      this.nig.common.exported = btoa(JSON.stringify(this.nig.players))
-    },
-    exportSaveFile() {
-      let result = btoa(JSON.stringify(this.nig.players))
-      const file = new Blob([result], { type: 'text/plain' })
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(file)
-      a.download = `newincremantal_savedata${new Date()}.txt`
-      a.click()
-    },
-    importSave() {
-      let input = window.prompt("データを入力", "")
-      if (input.length <= 50) {
-        return
-      }
-      let k = atob(input).charAt(0)
-      if (k == '{') return
-      localStorage.setItem("playerStoredb", input)
-      this.nig.dataLoad()
-      this.nig.load(0)
-    },
-
-    configShowMult() {
-      this.showMult = !this.showMult
-    },
-
-    /** @param {string} tabname */
-    changeTab(tabname) {
-      this.player.currentTab = tabname;
-    },
-
-
-    /** @param {number} i */
-    getTrophyName(i) {
-      return this.player.trophies[i] ? Trophy.contents[i] : "???"
-    },
-
-    /** @param {number} i */
-    buySpirit(i) {
-      return
-      this.player.spiritLevelA[i] += 1;
-    },
-
-    /**
-     * @param {Decimal} dec 
-     * @param {number} exp 
-     */
-    toFormated(dec, exp) {
-      if (dec.lessThanOrEqualTo(new Decimal(10).pow(exp))) return dec.toNumber()
-      else return dec.toExponential(3)
-    }
-
-  },
-
-  mounted() {
-    this.nig.awake();
-  },
-}));
-app.config.globalProperties.Campaign = Campaign;
-app.config.globalProperties.Challenge = Challenge;
-app.config.globalProperties.Chip = Chip;
-app.config.globalProperties.LevelShop = LevelShop;
-app.config.globalProperties.Remember = Remember;
-app.config.globalProperties.Ring = Ring;
-app.config.globalProperties.Shine = Shine;
-app.config.globalProperties.Spirit = Spirit;
-app.mount('#app');

@@ -224,12 +224,12 @@ const app = Vue.createApp(Vue.defineComponent({
       players: new Array(worldnum).fill(null).map(() => initialData()),
       common: initialCommonData(),
 
-      showmult: true,
+      showMult: true,
 
-      automissiontimerid: 0,
-      autoshinetimerid: 0,
-      autobrighttimerid: 0,
-      autochallengetimerid: 0,
+      autoMissionTimerId: 0,
+      autoShineTimerId: 0,
+      autoBrightTimerId: 0,
+      autoChallengeTimerId: 0,
 
       world: 0,
 
@@ -312,10 +312,10 @@ const app = Vue.createApp(Vue.defineComponent({
   },
   methods: {
 
-    exportsave() {
+    exportSave() {
       this.common.exported = btoa(JSON.stringify(this.players))
     },
-    exportsavefile() {
+    exportSaveFile() {
       let result = btoa(JSON.stringify(this.players))
       const file = new Blob([result], { type: 'text/plain' })
       const a = document.createElement('a')
@@ -323,7 +323,7 @@ const app = Vue.createApp(Vue.defineComponent({
       a.download = `newincremantal_savedata${new Date()}.txt`
       a.click()
     },
-    importsave() {
+    importSave() {
       let input = window.prompt("データを入力", "")
       if (input.length <= 50) {
         return
@@ -331,7 +331,7 @@ const app = Vue.createApp(Vue.defineComponent({
       let k = atob(input).charAt(0)
       if (k == '{') return
       localStorage.setItem("playerStoredb", input)
-      this.dataload()
+      this.dataLoad()
       this.load(0)
     },
     save() {
@@ -344,7 +344,7 @@ const app = Vue.createApp(Vue.defineComponent({
 
       console.log("save succeeded" + Date.now())
     },
-    dataload() {
+    dataLoad() {
       const store = localStorage.getItem("playerStoredb");
       if (!store) return
       console.log(atob(store))
@@ -410,12 +410,12 @@ const app = Vue.createApp(Vue.defineComponent({
 
       this.player = new Player(this.world, saveData, this.common)
 
-      this.checkmemories()
-      this.checkremembers()
+      this.checkMemories()
+      this.checkRemembers()
       this.player.checkTrophies()
       this.player.checkWorlds()
       this.player.countSmallTrophies()
-      this.checkpipedsmalltrophies()
+      this.checkPipedSmallTrophies()
 
       this.player.updateTickSpeed()
       this.player.calcCommonMult()
@@ -430,36 +430,36 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.light.calcLgCost()
 
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+        this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
       } else {
-        clearInterval(this.automissiontimerid)
-        this.automissiontimerid = 0
+        clearInterval(this.autoMissionTimerId)
+        this.autoMissionTimerId = 0
       }
       if (this.player.auto.autoSpendShine) {
-        this.autoshinetimerid = setInterval(this.autoshine, 1000)
+        this.autoShineTimerId = setInterval(this.autoShine, 1000)
       } else {
-        clearInterval(this.autoshinetimerid)
-        this.autoshinetimerid = 0
+        clearInterval(this.autoShineTimerId)
+        this.autoShineTimerId = 0
       }
       if (this.player.auto.autoSpendBright) {
-        this.autobrighttimerid = setInterval(this.autobright, 1000)
+        this.autoBrightTimerId = setInterval(this.autoBright, 1000)
       } else {
-        clearInterval(this.autobrighttimerid)
-        this.autobrighttimerid = 0
+        clearInterval(this.autoBrightTimerId)
+        this.autoBrightTimerId = 0
       }
       if (this.player.auto.autoDoChallenge) {
-        this.autochallengetimerid = setInterval(this.autochallenge, 1000)
+        this.autoChallengeTimerId = setInterval(this.autoChallenge, 1000)
       } else {
-        clearInterval(this.autochallengetimerid)
-        this.autochallengetimerid = 0
+        clearInterval(this.autoChallengeTimerId)
+        this.autoChallengeTimerId = 0
       }
 
 
 
     },
 
-    configshowmult() {
-      this.showmult = !this.showmult
+    configShowMult() {
+      this.showMult = !this.showMult
     },
 
     update() {
@@ -477,7 +477,7 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.currentTab = tabname;
     },
     /** @param {number} index */
-    configautobuyer(index) {
+    configAutoBuyer(index) {
       if (index == 0) {
         let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
         this.common.autoLevelNumber = input
@@ -490,27 +490,27 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     /** @param {number} index */
-    toggleautobuyer(index) {
+    toggleAutoBuyer(index) {
       if (index == 0) this.common.genAutoBuy = !this.common.genAutoBuy
       if (index == 1) this.common.accAutoBuy = !this.common.accAutoBuy
       if (index == 2) this.common.autoLevel = !this.common.autoLevel
       if (index == 3) this.common.levelItemAutoBuy = !this.common.levelItemAutoBuy
       if (index == 5) this.common.autoRank = !this.common.autoRank
     },
-    togglechipthresholduse() {
+    toggleChipThresholdUse() {
       this.common.chipThresholdUse = !this.common.chipThresholdUse
     },
-    configchipthresholdnumber() {
+    configChipThresholdNumber() {
       let input = new Decimal(window.prompt("閾値を設定", ""))
       this.common.chipThreshold = input
     },
-    autoshine() {
+    autoShine() {
       this.player.spendShine(this.player.auto.autoSpendShineNumber)
     },
-    autobright() {
+    autoBright() {
       this.player.spendBrightness(this.player.auto.autoSpendBrightNumber)
     },
-    autochallenge() {
+    autoChallenge() {
       if (this.player.challenge.challengeCleared.length == 255) return;
       if (this.player.challenge.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.challenges.length == 0) {
         this.player.challenge.showUnclearedChallenges()
@@ -520,37 +520,37 @@ const app = Vue.createApp(Vue.defineComponent({
       }
     },
     /** @param {number} index */
-    toggleringautobuyer(index) {
+    toggleRingAutoBuyer(index) {
       if (index == 0) {
         this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine
         if (this.player.auto.autoSpendShine) {
-          this.autoshinetimerid = setInterval(this.autoshine, 1000)
+          this.autoShineTimerId = setInterval(this.autoShine, 1000)
         } else {
-          clearInterval(this.autoshinetimerid)
-          this.autoshinetimerid = 0
+          clearInterval(this.autoShineTimerId)
+          this.autoShineTimerId = 0
         }
       }
       if (index == 1) {
         this.player.auto.autoSpendBright = !this.player.auto.autoSpendBright
         if (this.player.auto.autoSpendBright) {
-          this.autobrighttimerid = setInterval(this.autobright, 1000)
+          this.autoBrightTimerId = setInterval(this.autoBright, 1000)
         } else {
-          clearInterval(this.autobrighttimerid)
-          this.autobrighttimerid = 0
+          clearInterval(this.autoBrightTimerId)
+          this.autoBrightTimerId = 0
         }
       }
       if (index == 2) {
         this.player.auto.autoDoChallenge = !this.player.auto.autoDoChallenge
         if (this.player.auto.autoDoChallenge) {
-          this.autochallengetimerid = setInterval(this.autochallenge, 1000)
+          this.autoChallengeTimerId = setInterval(this.autoChallenge, 1000)
         } else {
-          clearInterval(this.autochallengetimerid)
-          this.autochallengetimerid = 0
+          clearInterval(this.autoChallengeTimerId)
+          this.autoChallengeTimerId = 0
         }
       }
     },
     /** @param {number} index */
-    configringautobuyer(index) {
+    configRingAutoBuyer(index) {
       let input = parseInt(window.prompt("消費量を設定:最大1000", ""))
       if (isNaN(input)) return
       if (input < 0 || input > 1000) return
@@ -575,7 +575,7 @@ const app = Vue.createApp(Vue.defineComponent({
     startChallenge() {
       this.player.challenge.startChallenge(this.player);
     },
-    startpChallenge() {
+    startPChallenge() {
       this.player.challenge.startPChallenge(this.player);
     },
 
@@ -584,61 +584,61 @@ const app = Vue.createApp(Vue.defineComponent({
       this.player.challenge.exitChallenge(this.player);
     },
 
-    exitpChallenge() {
+    exitPChallenge() {
       this.player.challenge.exitPChallenge(this.player);
     },
 
 
     /** @param {number} i */
-    gettrophyname(i) {
+    getTrophyName(i) {
       return this.player.trophies[i] ? Trophy.contents[i] : "???"
     },
     /** @param {number} i */
-    moveworld(i) {
+    moveWorld(i) {
       // @ts-expect-error
       if (world == i || !this.common.worldOpened[i]) return // bug
       this.save()
       this.load(i)
     },
     /** @param {number} i */
-    shrinkworld(i) {
+    shrinkWorld(i) {
       let newData = Remember.shrinkWorld(i, this.players[i], this.common.trophyNumber[i], this.player.rememberSum);
       if (newData == undefined) return;
 
       this.players[i] = newData;
       // bug: 収縮直後に合計思い出や記憶が再計算されていない
-      this.checkpipedsmalltrophies()
+      this.checkPipedSmallTrophies()
     },
 
-    confchecktrophies() {
+    confCheckTrophies() {
       this.common.trophyCheck = !this.common.trophyCheck
     },
 
     /** @param {number} i */
-    buyspirit(i) {
+    buySpirit(i) {
       return
       this.player.spiritLevelA[i] += 1;
     },
 
-    configautomission() {
+    configAutoMission() {
       this.player.auto.autoRing = !this.player.auto.autoRing
       if (this.player.auto.autoRing) {
-        this.automissiontimerid = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+        this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
       } else {
-        clearInterval(this.automissiontimerid)
-        this.automissiontimerid = 0
+        clearInterval(this.autoMissionTimerId)
+        this.autoMissionTimerId = 0
       }
     },
 
     /** @param {number} index */
-    counttrophies(index) {
+    countTrophies(index) {
       let cnt = 0
       for (let i = 0; i < trophynum; i++) {
         if (this.players[index].trophies[i]) cnt++;
       }
       this.common.trophyNumber[index] = cnt;
     },
-    checkpipedsmalltrophies() {
+    checkPipedSmallTrophies() {
       this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
       this.player.pipedSmallTrophy = 0;
       for (let i = 0; i < worldnum; i++) {
@@ -660,17 +660,17 @@ const app = Vue.createApp(Vue.defineComponent({
         }
       }
     },
-    checkmemories() {
+    checkMemories() {
       let cnt = 0;
 
       for (let i = 0; i < worldnum; i++) {
-        this.counttrophies(i)
+        this.countTrophies(i)
         if (this.world == i) continue
         cnt += this.common.trophyNumber[i]
       }
       this.player.memorySum = cnt
     },
-    checkremembers() {
+    checkRemembers() {
       let cnt = 0;
       for (let i = this.world + 1; i < worldnum; i++) {
         cnt += this.players[i].remember
@@ -691,7 +691,7 @@ const app = Vue.createApp(Vue.defineComponent({
   },
 
   mounted() {
-    this.dataload();
+    this.dataLoad();
     this.load(0);
 
     this.time = Date.now()

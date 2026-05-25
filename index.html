@@ -129,22 +129,22 @@
 			</div>
 			<div class="levelrcontents" v-if="player.levelResetTime.gt(0)">
 				<span v-if="player.challenge.isChallengeActive(0)">段位リセット条件: 1e+24</span>
-				<span v-if="!(player.challenge.isChallengeActive(0))">段位リセット条件: 1e+18</span>
+				<span v-else>段位リセット条件: 1e+18</span>
 			</div>
 			<div class="rankrcontents" v-if="player.rankResetTime.gt(0)">
-				階位リセット条件: {{ player.resetRankBorder().toExponential(3)}}
+				階位リセット条件: {{ player.resetRankBorder().toExponential(3) }}
 			</div>
 			<div class="crownrcontents" v-if="player.crownResetTime.gt(0)">
-				冠位リセット条件: {{ player.resetCrownBorder().toExponential(3)}}
+				冠位リセット条件: {{ player.resetCrownBorder().toExponential(3) }}
 			</div>
 			<div class="softreset">
-				<div id="levelreset" v-if="player.money.greaterThanOrEqualTo('1e18')">
+				<div id="levelreset" v-show="player.money.greaterThanOrEqualTo('1e18')">
 					<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isChallengeActive(0) }" @click="player.resetLevel(false,false)">昇段リセット</button>
 				</div>
-				<div id="rankreset" v-if="player.money.greaterThanOrEqualTo(player.resetRankBorder())">
+				<div id="rankreset" v-show="player.money.greaterThanOrEqualTo(player.resetRankBorder())">
 					<button type="button" @click="player.resetRank(false)">昇階リセット</button>
 				</div>
-				<div id="crownreset" v-if="player.money.greaterThanOrEqualTo(player.resetCrownBorder())">
+				<div id="crownreset" v-show="player.money.greaterThanOrEqualTo(player.resetCrownBorder())">
 					<button type="button" :class="{ 'unavailable': player.challenge.onChallenge }" @click="player.resetCrown(false)">昇冠リセット</button>
 				</div>
 			</div>
@@ -157,7 +157,7 @@
 					<span>
 						発生器{{ i }}: {{ player.generator.generators[i-1].toExponential(3)+' '}}
 					</span>
-					<button type="button" class="gbutton" :class="{ 'unavailable': player.money.lt(player.generator.generatorsCost[i-1]) }" @click="player.generator.buyGenerator(player, i-1)">
+					<button type="button" class="gbutton" :class="{ 'unavailable': player.money.lt(player.generator.generatorsCost[i-1]) }" @click="buyGenerator(i-1)">
 						購入 コスト: {{ player.generator.generatorsCost[i-1].toExponential(1) }}
 					</button>
 					<span>
@@ -175,53 +175,24 @@
 				</div>
 			</div>
 			<div class="accelerators-container">
-				<div>
-					<div class="accelerator">時間加速器1: {{ toFormated(player.accelerator.accelerators[0],5) }}
-						<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[0]) }" @click="player.accelerator.buyAccelerator(player, 0)">
-							購入 コスト: {{ player.accelerator.acceleratorsCost[0].toExponential(1) }}
+				<template v-for="i in 8" :key="i">
+					<div class="accelerator" v-show="visibleAccelerators[i-1]">
+						時間加速器{{ i }}: {{ toFormated(player.accelerator.accelerators[i-1],5) }}
+						<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[i-1]) }" @click="buyAccelerator(i-1)">
+							購入 コスト: {{ player.accelerator.acceleratorsCost[i-1].toExponential(1) }}
 						</button>
 						<span>
-							購入数: {{ player.accelerator.acceleratorsBought[0].toNumber()+' '}}
+							購入数: {{ player.accelerator.acceleratorsBought[i-1].toNumber()+' '}}
 						</span>
 					</div>
-				</div>
-				<div v-if="player.levelResetTime.gt(0)">
-					<div class="accelerator">時間加速器2: {{ toFormated(player.accelerator.accelerators[1],5) }}
-						<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[1]) }" @click="player.accelerator.buyAccelerator(player, 1)">
-							購入 コスト: {{ player.accelerator.acceleratorsCost[1].toExponential(1) }}
-						</button>
-						<span>
-							購入数: {{ player.accelerator.acceleratorsBought[1].toNumber()+' '}}
-						</span>
-					</div>
-					<div class="accelerator" v-for="i in 6" :key="i">
-						<div v-show="player.levelShop.levelItems[3]>=i">
-							時間加速器{{i+2}}: {{ toFormated(player.accelerator.accelerators[i+1],5) }}
-							<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[i+1]) }" @click="player.accelerator.buyAccelerator(player, i+1)">
-								購入 コスト: {{ player.accelerator.acceleratorsCost[i+1].toExponential(1) }}
-							</button>
-							<span>
-								購入数: {{ player.accelerator.acceleratorsBought[i+1].toNumber()+' '}}
-							</span>
-						</div>
-					</div>
-					<div class="accelerator" v-show="player.levelShop.levelItems[3]==5 && player.campaign.accelLevel>0">
-						時間加速器{{ 8 }}: {{ toFormated(player.accelerator.accelerators[7],5) }}
-						<button type="button" class="abutton" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[7]) }" @click="player.accelerator.buyAccelerator(player, 7)">
-							購入 コスト: {{ player.accelerator.acceleratorsCost[7].toExponential(1) }}
-						</button>
-						<span>
-							購入数: {{ player.accelerator.acceleratorsBought[7].toNumber()+' '}}
-						</span>
-					</div>
-				</div>
+				</template>
 			</div>
 			<div v-if="player.shine.boughtType[0]">
 				<div>型設定</div>
-				<button type="button" @click="player.generator.setModeType()">
+				<button type="button" @click="setModeType()">
 					モード型登録
 				</button>
-				<button type="button" @click="player.generator.changeModeType(player)">
+				<button type="button" @click="changeModeType()">
 					モード型適用
 				</button>
 			</div>

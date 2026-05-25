@@ -43,6 +43,18 @@ class Accelerator {
    * @param {Player} player 
    * @param {number} index 
    */
+  isOpened(player, index) {
+    if (index == 0) return true;
+    if (!player.levelResetTime.gt(0)) return false;
+    if (index == 1) return true;
+    if (index >= 2 && index <= 6) return player.levelShop.levelItems[3] >= index - 1;
+    if (index == 7) return player.levelShop.levelItems[3] == 5 && player.campaign.accelLevel > 0;
+    return false;
+  }
+  /**
+   * @param {Player} player 
+   * @param {number} index 
+   */
   buyAccelerator(player, index) {
     if (player.challenge.isChallengeActive(5)) return;
     if (index >= 1 && player.levelResetTime.lessThanOrEqualTo(0)) return;

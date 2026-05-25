@@ -14,9 +14,26 @@ const BasicTab = Vue.defineComponent({
     player: currentPlayer,
     showMult: true,
   }),
+  computed: {
+    visibleAccelerators() {
+      return new Array(8).fill(null).map((_, i) => this.player.accelerator.isOpened(this.player, i));
+    },
+  },
   methods: {
     configShowMult() {
       this.showMult = !this.showMult
+    },
+    buyGenerator(i) {
+      this.player.generator.buyGenerator(this.player, i);
+    },
+    buyAccelerator(i) {
+      this.player.accelerator.buyAccelerator(this.player, i);
+    },
+    setModeType() {
+      this.player.generator.setModeType();
+    },
+    changeModeType() {
+      this.player.generator.changeModeType(this.player);
     },
   },
 });

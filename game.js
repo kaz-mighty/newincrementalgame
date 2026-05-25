@@ -321,6 +321,7 @@ class Nig { // New Incremental Game
     this.player.dark.calcDgCost(this.player)
     this.player.light.calcLgCost()
 
+    // bug: 多重起動ができてしまう
     if (this.player.auto.autoRing) {
       this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
     } else {
@@ -446,10 +447,9 @@ class Nig { // New Incremental Game
   /** @param {boolean} force */
   resetData(force) {
     if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-      this.player = new Player(this.world, initialData(), this.common)
-      for (let i = 0; i < worldnum; i++) {
-        this.players[i] = initialData()
-      }
+      this.players = new Array(worldnum).fill(null).map(() => initialData());
+      this.common.worldOpened.fill(false);
+      this.load(0);
     }
   }
 
@@ -466,7 +466,9 @@ class Nig { // New Incremental Game
     if (newData == undefined) return;
 
     this.players[i] = newData;
-    // bug: 収縮直後に合計思い出や記憶が再計算されていない
+    this.save();
+    this.checkMemories();
+    this.checkRemembers();
     this.checkPipedSmallTrophies()
   }
 
@@ -492,6 +494,24 @@ class Nig { // New Incremental Game
     }
     this.common.trophyNumber[index] = cnt;
   }
+  checkMemories() {
+    let cnt = 0;
+
+    for (let i = 0; i < worldnum; i++) {
+      this.countTrophies(i)
+      if (this.world == i) continue
+      cnt += this.common.trophyNumber[i]
+    }
+    this.player.memorySum = cnt
+  }
+  checkRemembers() {
+    let cnt = 0;
+    for (let i = this.world + 1; i < worldnum; i++) {
+      cnt += this.players[i].remember
+    }
+
+    this.player.rememberSum = cnt
+  }
   checkPipedSmallTrophies() {
     this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
     this.player.pipedSmallTrophy = 0;
@@ -513,24 +533,6 @@ class Nig { // New Incremental Game
         this.player.pipedSmallTrophy += cnt;
       }
     }
-  }
-  checkMemories() {
-    let cnt = 0;
-
-    for (let i = 0; i < worldnum; i++) {
-      this.countTrophies(i)
-      if (this.world == i) continue
-      cnt += this.common.trophyNumber[i]
-    }
-    this.player.memorySum = cnt
-  }
-  checkRemembers() {
-    let cnt = 0;
-    for (let i = this.world + 1; i < worldnum; i++) {
-      cnt += this.players[i].remember
-    }
-
-    this.player.rememberSum = cnt
   }
 }
 

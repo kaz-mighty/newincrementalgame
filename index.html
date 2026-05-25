@@ -342,9 +342,7 @@
 
 			</div>
 			<div>
-				データ
-				<button type="button" @click="nig.save()">強制セーブ</button>
-				※20秒毎に自動でセーブされます
+				データは20秒毎, またはデータ吐き出し時などに自動でセーブされます。
 			</div>
 			<div class="export">
 				データ
@@ -736,7 +734,7 @@
 					記憶: {{ nig.common.trophyNumber[i-1] }}
 				</span>
 				<span v-if="nig.common.trophyNumber[0]>=6">
-					思い出:{{ nig.players[i-1].remember }}
+					思い出:{{ nig.players[i-1].remember }} <!-- playerとplayersが非同期になったことで即座に更新されない -->
 				</span>
 				<span v-if="player.smallTrophy>=75">
 					世界管開通数:{{ player.worldPipe[i-1] }}

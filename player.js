@@ -899,6 +899,7 @@ class Player {
         this.countSmallTrophies()
     }
     this.checkWorlds()
+
     this.calcCommonMult()
     this.generator.findHighestGenerator()
     for (let i = 0; i < 8; i++) {
@@ -964,6 +965,7 @@ class Player {
     }
 
     if (this.challenge.activeBonuses.includes(9) && this.common.accAutoBuy) {
+      // bug: 時間加速器8が自動購入されない
       let ha = this.levelShop.levelItems[3] + 1
       for (let i = ha; i >= 0; i--) {
         this.accelerator.buyAccelerator(this, i)

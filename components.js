@@ -65,9 +65,11 @@ const OptionTab = Vue.defineComponent({
   },
   methods: {
     exportSave() {
+      this.nig.save()
       this.nig.common.exported = btoa(JSON.stringify(this.nig.players))
     },
     exportSaveFile() {
+      this.nig.save()
       let result = btoa(JSON.stringify(this.nig.players))
       const file = new Blob([result], { type: 'text/plain' })
       const a = document.createElement('a')

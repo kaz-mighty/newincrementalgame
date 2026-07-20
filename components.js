@@ -1,3 +1,9 @@
+/* Vue.jsのコンポーネントを記述する。
+
+  アップデートで利用者のいる拡張スクリプトが派手に壊れるとまずいため、
+  イベントハンドリングは必ずコンポーネントメソッドを経由して呼び出す方針にしている。
+ */
+
 /**
  * @param {Decimal} dec 
  * @param {number} exp 
@@ -20,11 +26,23 @@ const BasicTab = Vue.defineComponent({
     },
   },
   methods: {
+    resetLevel(force, exit) {
+      this.player.resetLevel(force, exit);
+    },
+    resetRank(force) {
+      this.player.resetRank(force);
+    },
+    resetCrown(force) {
+      this.player.resetCrown(force);
+    },
     configShowMult() {
       this.showMult = !this.showMult
     },
     buyGenerator(i) {
       this.player.generator.buyGenerator(this.player, i);
+    },
+    changeMode(i) {
+      this.player.generator.changeMode(this.player, i);
     },
     buyAccelerator(i) {
       this.player.accelerator.buyAccelerator(this.player, i);
@@ -40,34 +58,53 @@ const BasicTab = Vue.defineComponent({
 
 const DarkTab = Vue.defineComponent({
   template: "#dark-tab",
-  data: () => ({player: currentPlayer}),
+  data: () => ({
+    player: currentPlayer,
+    brightnessSpendUnits: [1, 10, 100, 1_000],
+  }),
   computed: {
-
+    visibleSpendBrightness() {
+      return [
+        this.player.challenge.rankChallengeCleared.length >= 32,
+        this.player.challenge.rankChallengeCleared.length >= 64,
+        this.player.challenge.rankChallengeCleared.length >= 128,
+        this.player.challenge.rankChallengeCleared.length >= 255,
+      ];
+    },
   },
   methods: {
-
+    resetDarkLevel() {
+      this.player.dark.resetDarklevel(this.player);
+    },
+    buyDarkGenerator(i) {
+      this.player.dark.buyDarkGenerator(this.player, i);
+    },
+    spendBrightness(num) {
+      this.player.spendBrightness(num);
+    },
   },
 });
 
 const LightTab = Vue.defineComponent({
   template: "#light-tab",
   data: () => ({player: currentPlayer}),
-  computed: {
-
-  },
   methods: {
-
+    buyLightGenerator(i) {
+      this.player.light.buyLightGenerator(this.player, i);
+    },
   },
 });
 
 const TimeTab = Vue.defineComponent({
   template: "#time-tab",
   data: () => ({player: currentPlayer}),
-  computed: {
-
-  },
   methods: {
-
+    addAccelLevelUsed(value) {
+      this.player.campaign.addAccelLevelUsed(value);
+    },
+    chooseCampaigns(campaignId){
+      this.player.campaign.chooseCampaigns(campaignId);
+    },
   },
 });
 
@@ -78,9 +115,35 @@ const OptionTab = Vue.defineComponent({
     player: currentPlayer,
   }),
   computed: {
-
+    tweets() {
+      return [
+        {id: "money", name: "ポイント", isShow: true},
+        {id: "darkmoney", name: "裏ポイント", isShow: this.player.dark.darkMoney.gt(0)},
+        {id: "lightmoney", name: "天上ポイント", isShow: this.player.light.lightMoney.gt(0)},
+        {id: "level", name: "段位", isShow: this.player.levelResetTime.gt(0) || this.player.rankResetTime.gt(0)},
+        {id: "darklevel", name: "裏段位", isShow: this.player.dark.darkLevel.gt(0)},
+        {id: "achieved", name: "挑戦達成", isShow: this.player.levelResetTime.gt(0) || this.player.rankResetTime.gt(0)},
+        {id: "rankachieved", name: "上位挑戦達成", isShow: this.player.challenge.rankChallengeCleared.length >= 1},
+        {id: "pachieved", name: "完全挑戦段階", isShow: this.player.challenge.perfectChallengeStage >= 1},
+        {id: "rank", name: "階位", isShow: this.player.rankResetTime.gt(0)},
+        {id: "levelitemboughttime", name: "段位効力購入", isShow: this.player.rankResetTime.gt(0)},
+        {id: "world", name: "世界", isShow: this.nig.common.worldOpened[1] || this.nig.common.worldOpened[2]},
+        {id: "memory", name: "記憶", isShow: this.nig.common.worldOpened[1] || this.nig.common.worldOpened[2]},
+        {id: "remember", name: "思い出", isShow: this.player.rememberSum > 0},
+        {id: "crown", name: "冠位", isShow: this.player.crownResetTime.gt(0)},
+        {id: "statue", name: "像", isShow: this.player.statue.statue[0] > 0},
+        {id: "polishedstatue", name: "輝像", isShow: this.player.statue.polishedStatue[0] > 0},
+        {id: "polishedstatuebr", name: "煌像", isShow: this.player.statue.brightStatue[0] > 0},
+      ];
+    },
   },
   methods: {
+    resetData(force) {
+      this.nig.resetData(force);
+    },
+    configTweet(content) {
+      this.player.configTweet(content);
+    },
     exportSave() {
       this.nig.save()
       this.nig.common.exported = btoa(JSON.stringify(this.nig.players))
@@ -112,14 +175,49 @@ const LevelTab = Vue.defineComponent({
   template: "#level-tab",
   data: () => ({player: currentPlayer}),
   computed: {
-
+    weightKinds() {
+      return new Array(20).fill(null).map((_, i) => Challenge.calcChallengesArray(this.player.challenge.challengeWeight[i]).map(e => e + 1));
+    },
   },
   methods: {
+    configChallenge(i) {
+      this.player.challenge.configChallenge(i);
+    },
+    showUnclearedChallenges() {
+      this.player.challenge.showUnclearedChallenges();
+    },
+    showUnclearedRankChallenges() {
+      this.player.challenge.showUnclearedRankChallenges();
+    },
     startChallenge() {
       this.player.challenge.startChallenge(this.player);
     },
     exitChallenge() {
       this.player.challenge.exitChallenge(this.player);
+    },
+    buyRewards(i) {
+      this.player.challenge.buyRewards(i);
+    },
+    buyRankRewards(i) {
+      this.player.challenge.buyRankRewards(i);
+    },
+    setBonuseType(i) {
+      this.player.challenge.setBonuseType(i);
+    },
+    changeBonuseType(i) {
+      this.player.challenge.changeBonuseType(i);
+    },
+    setRankBonuseType(i) {
+      this.player.challenge.setRankBonuseType(i);
+    },
+    changeRankBonuseType(i) {
+      this.player.challenge.changeRankBonuseType(i);
+    },
+    configChallengeWeightKind(i) {
+      this.player.challenge.configChallengeWeightKind(i);
+    },
+    configChallengeWeightValue(i) {
+      this.player.challenge.configChallengeWeightValue(i);
     },
   },
 });
@@ -127,11 +225,10 @@ const LevelTab = Vue.defineComponent({
 const RankTab = Vue.defineComponent({
   template: "#rank-tab",
   data: () => ({player: currentPlayer}),
-  computed: {
-
-  },
   methods: {
-
+    buyLevelItems(i) {
+      this.player.levelShop.buyLevelItems(this.player, i);
+    }
   },
 });
 
@@ -139,9 +236,14 @@ const CrownTab = Vue.defineComponent({
   template: "#crown-tab",
   data: () => ({player: currentPlayer}),
   computed: {
-
+    pChallengeId() {
+      return this.player.challenge.getPChallengeId();
+    },
   },
   methods: {
+    configPChallenge(i) {
+      this.player.challenge.configPChallenge(i);
+    },
     startPChallenge() {
       this.player.challenge.startPChallenge(this.player);
     },
@@ -154,9 +256,6 @@ const CrownTab = Vue.defineComponent({
 const SpiritTab = Vue.defineComponent({
   template: "#spirit-tab",
   data: () => ({player: currentPlayer}),
-  computed: {
-
-  },
   methods: {
     /** @param {number} i */
     buySpirit(i) {
@@ -172,22 +271,84 @@ const AutoTab = Vue.defineComponent({
     nig: nigInstance,
     player: currentPlayer,
   }),
-  computed: {
-
-  },
   methods: {
-
+    toggleAutoBuyer(i) {
+      this.nig.toggleAutoBuyer(i);
+    },
+    configAutoBuyer(i) {
+      this.nig.configAutoBuyer(i);
+    },
+    toggleRingAutoBuyer(i) {
+      this.nig.toggleRingAutoBuyer(i);
+    },
+    configRingAutoBuyer(i) {
+      this.nig.configRingAutoBuyer(i);
+    },
   },
 });
 
 const ShineTab = Vue.defineComponent({
   template: "#shine-tab",
-  data: () => ({player: currentPlayer}),
+  data: () => ({
+    player: currentPlayer,
+    shineSpendUnits: [1, 10, 100, 1_000, 10_000, 100_000, 1_000_000],
+    brightnessSpendUnits: [1, 10, 100, 1_000],
+    flickerSpendUnits: [1],
+    typeNames: ["モード型", "効力型1", "効力型2", "上位効力型1", "上位効力型2", "鋳片型"],
+  }),
   computed: {
-
+    visibleSpendShine() {
+      return [
+        true,
+        this.player.challenge.challengeCleared.length >= 96,
+        this.player.challenge.challengeCleared.length >= 128,
+        this.player.challenge.challengeCleared.length >= 160,
+        this.player.challenge.challengeCleared.length >= 192,
+        this.player.challenge.challengeCleared.length >= 224,
+        this.player.challenge.perfectChallengeStage >= 10,
+      ];
+    },
+    visibleSpendBrightness() {
+      return [
+        this.player.challenge.rankChallengeCleared.length >= 32,
+        this.player.challenge.rankChallengeCleared.length >= 64,
+        this.player.challenge.rankChallengeCleared.length >= 128,
+        this.player.challenge.rankChallengeCleared.length >= 255,
+      ];
+    },
+    visibleSpendFlicker() {
+      return [
+        this.player.challenge.perfectChallengeStage >= 1,
+      ];
+    },
+    visibleBuyType() {
+      return [
+        true,
+        true,
+        true,
+        this.player.challenge.rankChallengeCleared.length >= 1,
+        this.player.challenge.rankChallengeCleared.length >= 1,
+        this.player.crownResetTime.gt(0),
+      ];
+    },
+    visibleResidue() {
+      // bug: 残滓獲得後に収縮すると非表示になる
+      return this.player.challenge.perfectChallengeStage >= 10;
+    }
   },
   methods: {
-
+    spendShine(num) {
+      this.player.spendShine(num);
+    },
+    spendBrightness(num) {
+      this.player.spendBrightness(num);
+    },
+    spendFlicker(num) {
+      this.player.spendFlicker(num);
+    },
+    buyType(i) {
+      this.player.shine.buyType(i);
+    },
   },
 });
 
@@ -198,10 +359,27 @@ const WorldTab = Vue.defineComponent({
     player: currentPlayer,
   }),
   computed: {
-
+    visibleRemember() {
+      return this.nig.common.trophyNumber[0] >= 6;
+    },
+    visiblePipe() {
+      return this.player.smallTrophy >= 75;
+    },
+    maxPipe() {
+      // bug: 表示と動作が一致してない(Player.calcMaxPipeと微妙に異なる)
+      return this.player.trophies[9] ? 3 : this.player.crownResetTime.gt(0) ? 2 : 1;
+    },
   },
   methods: {
-
+    moveWorld(i) {
+      this.nig.moveWorld(i);
+    },
+    shrinkWorld(i) {
+      this.nig.shrinkWorld(i);
+    },
+    openPipe(i) {
+      this.player.openPipe(i);
+    },
   },
 });
 
@@ -215,7 +393,32 @@ const ChipTab = Vue.defineComponent({
 
   },
   methods: {
-
+    toggleChipThresholdUse() {
+      this.nig.toggleChipThresholdUse();
+    },
+    configChipThresholdNumber() {
+      this.nig.configChipThresholdNumber();
+    },
+    configSpendChip(i) {
+      this.player.chip.configSpendChip(this.player.statue.statue[i], i);
+    },
+    isVisibleSetChip(i) {
+      if (i <= 31) return true;
+      if (i <= 51) return this.player.rememberSum >= 16;
+      return false;
+    },
+    chipSet(i, j) {
+      this.player.chip.chipSet(i, j);
+    },
+    clearSetChip() {
+      this.player.chip.clearSetChip();
+    },
+    setChipType() {
+      this.player.chip.setChipType();
+    },
+    changeChipType() {
+      this.player.chip.changeChipType();
+    },
   },
 });
 
@@ -226,7 +429,15 @@ const StatueTab = Vue.defineComponent({
 
   },
   methods: {
-
+    buildStatue(i) {
+      this.player.statue.buildStatue(this.player, i);
+    },
+    polishStatue(i) {
+      this.player.statue.polishStatue(this.player, i);
+    },
+    polishStatueBright(i) {
+      this.player.statue.polishStatueBright(this.player, i);
+    },
   },
 });
 
@@ -237,10 +448,26 @@ const RingTab = Vue.defineComponent({
     player: currentPlayer,
   }),
   computed: {
-
+    activeRingId() {
+      return this.player.ring.setRings[this.player.ring.missionState.activeRing];
+    }
   },
   methods: {
-
+    configAutoMission() {
+      this.nig.configAutoMission();
+    },
+    configSetRings(i) {
+      this.player.ring.configSetRings(this.player.world, i);
+    },
+    startMission(i) {
+      this.player.ring.startMission(i);
+    },
+    useSkill(i) {
+      this.player.ring.useSkill(i);
+    },
+    endMission() {
+      this.player.ring.endMission();
+    },
   },
 });
 
@@ -250,10 +477,10 @@ const TrophyTab = Vue.defineComponent({
     nig: nigInstance,
     player: currentPlayer,
   }),
-  computed: {
-
-  },
   methods: {
+    confCheckTrophies() {
+      this.nig.confCheckTrophies();
+    },
     /** @param {number} i */
     getTrophyName(i) {
       return this.player.trophies[i] ? Trophy.contents[i] : "???"
@@ -284,6 +511,7 @@ const app = Vue.createApp(Vue.defineComponent({
     return {
       nig: nigInstance,
       player: currentPlayer,
+      typeNames: ["モード型適用", "効力型適用1", "効力型適用2", "上位効力型適用1", "上位効力型適用2", "鋳片型適用"],
     }
   },
   computed: {
@@ -363,6 +591,16 @@ const app = Vue.createApp(Vue.defineComponent({
     }
   },
   methods: {
+    changeType(typeIndex) {
+      switch (typeIndex) {
+        case 0: this.player.generator.changeModeType(this.player); break;
+        case 1: this.player.challenge.changeBonuseType(1); break;
+        case 2: this.player.challenge.changeBonuseType(2); break;
+        case 3: this.player.challenge.changeRankBonuseType(1); break;
+        case 4: this.player.challenge.changeRankBonuseType(2); break;
+        case 5: this.player.chip.changeChipType(); break;
+      }
+    },
     /** @param {string} tabname */
     changeTab(tabname) {
       this.player.currentTab = tabname;

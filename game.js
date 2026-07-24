@@ -167,14 +167,9 @@ Vue.createApp({
       this.generatordata.findhighestgenerator(this);
     },
     update() {
-      let diffm = this.diff;
-      this.diff = Date.now() - this.time - this.player.tickspeed;
+      let diffm = this.timedata.updateTime(this);
 
-      this.time = Date.now();
-      this.activechallengebonuses =
-        this.player.challengebonuses.includes(4) || !this.player.onchallenge
-          ? this.player.challengebonuses
-          : [];
+      this.challengedata.updateActiveChallengeBonuses(this);
 
       if (this.trophycheck) this.checktrophies();
       this.checkmemories();
@@ -204,120 +199,9 @@ Vue.createApp({
         this.player.activatedcampaigns = [];
       }
 
-      this.shinedata.calcshinepersent(this);
-
-      let rememberlevel = Math.floor((this.checkremembers() + 16) / 16);
-
-      let shineget = this.shinedata.calcshineget(this);
-      let maxshine = this.shinedata.calcmaxshine(this);
-
-      if (this.player.shine < maxshine) {
-        this.player.shine = Math.min(this.player.shine + shineget, maxshine);
-      }
-
-      this.shinedata.calcbrightpersent(this);
-
-      let brightget = this.shinedata.calcbrightget(this);
-      let maxbright = this.shinedata.calcmaxbright(this);
-
-      if (this.player.brightness < maxbright) {
-        this.player.brightness = Math.min(
-          this.player.brightness + brightget,
-          maxbright,
-        );
-      }
-
-      this.flickerpersent = this.shinedata.getfp(this.pchallengestage);
-
-      let flickerget = this.shinedata.calcflickerget(this);
-
-      let maxflicker = this.shinedata.getmaxfl(this.pchallengestage);
-      if (this.player.flicker < maxflicker) {
-        this.player.flicker = Math.min(
-          this.player.flicker + flickerget,
-          maxflicker,
-        );
-      }
-
-      let autorankshine = Math.max(0, 1000 - this.checkremembers() * 10);
-
-      if (
-        !this.player.onchallenge &&
-        this.player.rankchallengebonuses.includes(14) &&
-        this.autorank
-      ) {
-        if (
-          this.player.shine >= autorankshine &&
-          this.player.money.greaterThanOrEqualTo(
-            this.rankdata.resetRankborder(this),
-          )
-        ) {
-          if (
-            this.rankdata
-              .calcgainrank(this)
-              .greaterThanOrEqualTo(this.autoranknumber)
-          ) {
-            this.resetRank(true);
-            this.player.shine -= autorankshine;
-          }
-        }
-      }
-
-      if (this.player.rankchallengebonuses.includes(5) && this.litemautobuy) {
-        for (let i = 0; i < 5; i++) {
-          this.buylevelitems(i);
-        }
-      }
-
-      if (this.remembersum >= 100) {
-        if (!(this.player.onchallenge || this.player.onpchallenge)) {
-          this.player.level = this.player.level.add(1);
-          this.player.levelresettime = this.player.levelresettime.add(1);
-        }
-      }
-
-      if (
-        (this.player.rings.outsideauto.autodochallenge ||
-          !this.player.onchallenge) &&
-        this.activechallengebonuses.includes(14) &&
-        this.autolevel
-      ) {
-        if (
-          this.player.money.greaterThanOrEqualTo(this.resetLevelborder()) &&
-          this.player.level.lt(this.autolevelstopnumber)
-        ) {
-          if (this.calcgainlevel().greaterThanOrEqualTo(this.autolevelnumber)) {
-            this.resetLevel(true, false);
-          }
-        }
-      }
-
-      if (this.activechallengebonuses.includes(5) && this.genautobuy) {
-        for (let i = 7; i >= 0; i--) {
-          this.buyGenerator(i);
-        }
-      }
-
-      if (this.activechallengebonuses.includes(9) && this.accautobuy) {
-        let ha = this.player.levelitems[3] + 1;
-        for (let i = ha; i >= 0; i--) {
-          this.buyAccelerator(i);
-        }
-      }
-
-      this.player.tickspeed = this.timedata.calctickspeed(this);
-
-      if (this.player.rankchallengebonuses.includes(9)) {
-        this.multbyac = new Decimal(50).div(this.player.tickspeed);
-        this.player.tickspeed = 50;
-      } else {
-        this.multbyac = new Decimal(1);
-      }
-      if (
-        this.player.accelevelused == this.player.accelevel &&
-        this.player.tickspeed <= 10
-      )
-        this.player.accelevel = this.player.accelevel + 1;
+      this.shinedata.updateShine(this);
+      this.automationdata.updateAutoBuyers(this);
+      this.timedata.updateTickspeed(this);
 
       setTimeout(
         this.update,

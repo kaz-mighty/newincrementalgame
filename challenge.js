@@ -414,6 +414,10 @@ function Challengedata() {
 
   }
 
+  this.updateActiveChallengeBonuses = function (data) {
+    data.activechallengebonuses = (data.player.challengebonuses.includes(4) || !data.player.onchallenge) ? data.player.challengebonuses : []
+  }
+
   this.setrankbonusetype = function (data, index) {
     if (confirm("現在の上位効力を登録します。よろしいですか？")) {
       let ans = []

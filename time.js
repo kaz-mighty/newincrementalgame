@@ -166,4 +166,22 @@ function Timedata() {
 
 	}
 
+	this.updateTime = function (data) {
+		let diffm = data.diff
+		data.diff = Date.now() - data.time - data.player.tickspeed
+		data.time = Date.now()
+		return diffm
+	}
+
+	this.updateTickspeed = function (data) {
+		data.player.tickspeed = this.calctickspeed(data)
+
+		if (data.player.rankchallengebonuses.includes(9)) {
+			data.multbyac = new Decimal(50).div(data.player.tickspeed)
+			data.player.tickspeed = 50
+		} else {
+			data.multbyac = new Decimal(1)
+		}
+		if (data.player.accelevelused == data.player.accelevel && data.player.tickspeed <= 10) data.player.accelevel = data.player.accelevel + 1
+	}
 }

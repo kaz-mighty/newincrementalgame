@@ -251,4 +251,33 @@ function Shinedata() {
       data.player.boughttype[num] = true
     }
   }
+
+  this.updateShine = function (data) {
+    this.calcshinepersent(data)
+
+    let shineget = this.calcshineget(data)
+    let maxshine = this.calcmaxshine(data)
+
+    if (data.player.shine < maxshine) {
+      data.player.shine = Math.min(data.player.shine + shineget, maxshine)
+    }
+
+    this.calcbrightpersent(data)
+
+    let brightget = this.calcbrightget(data)
+    let maxbright = this.calcmaxbright(data)
+
+    if (data.player.brightness < maxbright) {
+      data.player.brightness = Math.min(data.player.brightness + brightget, maxbright);
+    }
+
+    data.flickerpersent = this.getfp(data.pchallengestage)
+
+    let flickerget = this.calcflickerget(data)
+
+    let maxflicker = this.getmaxfl(data.pchallengestage)
+    if (data.player.flicker < maxflicker) {
+      data.player.flicker = Math.min(data.player.flicker + flickerget, maxflicker);
+    }
+  }
 }

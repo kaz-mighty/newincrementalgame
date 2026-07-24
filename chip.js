@@ -134,7 +134,7 @@ class Chip {
     this.spendChip = Array.from(playerData.spendchip);
     this.setChipType1 = Array.from(playerData.setchiptypefst);
 
-    this.chipUsed = new Array(setchipkind).fill(0);
+    this.chipUsed = new Array(SET_CHIP_KIND).fill(0);
 
     this.checkUsedChips();
   }

@@ -1,7 +1,7 @@
-const version = 2;
-const trophynum = 12;
-const setchipkind = 10;
-const setchipnum = 100;
-const ringmissionnum = 15;
+const VERSION = 2;
+const TROPHY_NUM = 12;
+const SET_CHIP_KIND = 10;
+const SET_CHIP_NUM = 100;
 
-const worldnum = 12
+const WORLD_NUM = 12
+

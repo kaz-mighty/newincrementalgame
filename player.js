@@ -92,7 +92,7 @@ class Player {
     this.memorySum = 0;
     this.rememberSum = 0;
     this.smallTrophy = 0;
-    this.eachPipedSmallTrophy = new Array(worldnum).fill(0);
+    this.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
     this.pipedSmallTrophy = 0;
     this.multByAc = new Decimal(1);
 
@@ -655,7 +655,7 @@ class Player {
     if (this.worldPipe[to] >= maxPipe) return
 
     let havePipe = Math.floor((this.smallTrophy - 72) / 3)
-    for (let i = 0; i < worldnum; i++) {
+    for (let i = 0; i < WORLD_NUM; i++) {
       havePipe -= this.worldPipe[i]
     }
 
@@ -849,7 +849,7 @@ class Player {
   }
   countTrophies() {
     let cnt = 0;
-    for (let i = 0; i < trophynum; i++) {
+    for (let i = 0; i < TROPHY_NUM; i++) {
       if (this.trophies[i]) cnt++;
     }
     return cnt;

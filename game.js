@@ -87,7 +87,7 @@ const initialData = () => {
     accelevelused: 0,
     activatedcampaigns: [],
     timecrystal: new Array(8).fill(0),
-    saveversion: version,
+    saveversion: VERSION,
 
     currenttab: 'basic',
     tweeting: ['money'],
@@ -115,7 +115,7 @@ const initialData = () => {
     rankchallengecleared: [],
     rankchallengebonuses: [],
 
-    trophies: new Array(trophynum).fill(false),
+    trophies: new Array(TROPHY_NUM).fill(false),
     smalltrophies: new Array(100).fill(false),
     smalltrophies2nd: new Array(100).fill(false),
 
@@ -126,23 +126,23 @@ const initialData = () => {
     rememberspent: 0,
     rememberforgot: 0,
 
-    chip: new Array(setchipkind).fill(0),
-    setchip: new Array(setchipnum).fill(0),
-    disabledchip: new Array(setchipnum).fill(false),
-    spendchip: new Array(setchipkind).fill(0),
+    chip: new Array(SET_CHIP_KIND).fill(0),
+    setchip: new Array(SET_CHIP_NUM).fill(0),
+    disabledchip: new Array(SET_CHIP_NUM).fill(false),
+    spendchip: new Array(SET_CHIP_KIND).fill(0),
 
-    statue: new Array(setchipkind).fill(0),
-    polishedstatue: new Array(setchipkind).fill(0),
-    polishedstatuebr: new Array(setchipkind).fill(0),
+    statue: new Array(SET_CHIP_KIND).fill(0),
+    polishedstatue: new Array(SET_CHIP_KIND).fill(0),
+    polishedstatuebr: new Array(SET_CHIP_KIND).fill(0),
 
     spiritlevela: new Array(1).fill(0),
     spiritboughtcurrentcrown: new Array(1).fill(0),
 
 
 
-    setchiptypefst: new Array(setchipnum).fill(0),
+    setchiptypefst: new Array(SET_CHIP_NUM).fill(0),
 
-    worldpipe: new Array(worldnum).fill(0),
+    worldpipe: new Array(WORLD_NUM).fill(0),
     rings: {
       setrings: [],
       ringsexp: new Array(13).fill(0),
@@ -199,9 +199,9 @@ function initialCommonData() {
 
     exported: "", // UIだけでなく里程にも影響するため
 
-    trophyNumber: new Array(trophynum).fill(0),
+    trophyNumber: new Array(TROPHY_NUM).fill(0),
 
-    worldOpened: new Array(worldnum).fill(false),
+    worldOpened: new Array(WORLD_NUM).fill(false),
   };
 }
 
@@ -211,7 +211,7 @@ class Nig { // New Incremental Game
 
     this.world = 0;
     this.player = new Player(this.world, initialData(), common);
-    this.players = new Array(worldnum).fill(null).map(() => initialData());
+    this.players = new Array(WORLD_NUM).fill(null).map(() => initialData());
     this.common = common;
 
     this.autoMissionTimerId = 0;
@@ -245,11 +245,11 @@ class Nig { // New Incremental Game
     console.log(atob(store))
     this.players = JSON.parse(atob(store))
 
-    while (this.players.length < worldnum) {
+    while (this.players.length < WORLD_NUM) {
       this.players.push(initialData())
     }
 
-    for (let i = 0; i < worldnum; i++) {
+    for (let i = 0; i < WORLD_NUM; i++) {
       const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
 
       let saveData = deepmerge(initialData(), this.players[i], {
@@ -257,16 +257,16 @@ class Nig { // New Incremental Game
         isMergeableObject: isPlainObject
       })
 
-      while (saveData.trophies.length < trophynum) {
+      while (saveData.trophies.length < TROPHY_NUM) {
         saveData.trophies.push(false)
       }
       while (saveData.boughttype.length < 6) {
         saveData.boughttype.push(false)
       }
-      while (saveData.chip.length < setchipkind) {
+      while (saveData.chip.length < SET_CHIP_KIND) {
         saveData.chip.push(0)
       }
-      while (saveData.statue.length < setchipkind) {
+      while (saveData.statue.length < SET_CHIP_KIND) {
         saveData.statue.push(0)
       }
       while (saveData.rings.ringsexp.length < 13) {
@@ -278,7 +278,7 @@ class Nig { // New Incremental Game
       while (saveData.spiritboughtcurrentcrown.length < Spirit.spiritNumA) {
         saveData.spiritboughtcurrentcrown.push(0)
       }
-      while (saveData.worldpipe.length < worldnum) {
+      while (saveData.worldpipe.length < WORLD_NUM) {
         saveData.worldpipe.push(0)
       }
 
@@ -441,7 +441,7 @@ class Nig { // New Incremental Game
   /** @param {boolean} force */
   resetData(force) {
     if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-      this.players = new Array(worldnum).fill(null).map(() => initialData());
+      this.players = new Array(WORLD_NUM).fill(null).map(() => initialData());
       this.common.worldOpened.fill(false);
       this.load(0);
     }
@@ -483,7 +483,7 @@ class Nig { // New Incremental Game
   /** @param {number} index */
   countTrophies(index) {
     let cnt = 0
-    for (let i = 0; i < trophynum; i++) {
+    for (let i = 0; i < TROPHY_NUM; i++) {
       if (this.players[index].trophies[i]) cnt++;
     }
     this.common.trophyNumber[index] = cnt;
@@ -491,7 +491,7 @@ class Nig { // New Incremental Game
   checkMemories() {
     let cnt = 0;
 
-    for (let i = 0; i < worldnum; i++) {
+    for (let i = 0; i < WORLD_NUM; i++) {
       this.countTrophies(i)
       if (this.world == i) continue
       cnt += this.common.trophyNumber[i]
@@ -500,16 +500,16 @@ class Nig { // New Incremental Game
   }
   checkRemembers() {
     let cnt = 0;
-    for (let i = this.world + 1; i < worldnum; i++) {
+    for (let i = this.world + 1; i < WORLD_NUM; i++) {
       cnt += this.players[i].remember
     }
 
     this.player.rememberSum = cnt
   }
   checkPipedSmallTrophies() {
-    this.player.eachPipedSmallTrophy = new Array(worldnum).fill(0);
+    this.player.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
     this.player.pipedSmallTrophy = 0;
-    for (let i = 0; i < worldnum; i++) {
+    for (let i = 0; i < WORLD_NUM; i++) {
       let cnt = 0
       if (this.players[i].worldpipe[this.world] >= 1) {
         for (let j = 0; j < 100; j++) {

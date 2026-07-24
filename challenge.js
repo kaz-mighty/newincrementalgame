@@ -460,7 +460,7 @@ class Challenge {
       this.perfectRankChallengeCleared[pChallengeId] = Math.max(this.perfectRankChallengeCleared[pChallengeId], this.rankChallengeCleared.length)
       this.challengeCleared = Challenge.challengeIds
       this.rankChallengeCleared = Challenge.challengeIds
-      for (let i = 0; i < setchipnum; i++) {
+      for (let i = 0; i < SET_CHIP_NUM; i++) {
         player.chip.disabledChip[i] = false
       }
       this.countPChallengeCleared()

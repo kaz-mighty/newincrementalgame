@@ -78,9 +78,23 @@
 				</span>
 			</div>
 
-			<Keep-Alive>
-				<component :is="tabComponentName" ref="currentTab"></component>
-			</Keep-Alive>
+			<!-- refは拡張スクリプト用であり、このリポジトリではなるべく使わない -->
+			<basic-tab ref="basicTab"></basic-tab>
+			<dark-tab ref="darkTab"></dark-tab>
+			<light-tab ref="lightTab"></light-tab>
+			<time-tab ref="timeTab"></time-tab>
+			<option-tab ref="optionTab"></option-tab>
+			<level-tab ref="levelTab"></level-tab>
+			<rank-tab ref="rankTab"></rank-tab>
+			<crown-tab ref="crownTab"></crown-tab>
+			<spirit-tab ref="spiritTab"></spirit-tab>
+			<auto-tab ref="autoTab"></auto-tab>
+			<shine-tab ref="shineTab"></shine-tab>
+			<world-tab ref="worldTab"></world-tab>
+			<chip-tab ref="chipTab"></chip-tab>
+			<statue-tab ref="statueTab"></statue-tab>
+			<ring-tab ref="ringTab"></ring-tab>
+			<trophy-tab ref="trophyTab"></trophy-tab>
 
 			<div id="tweet">
 				<a :href="tweetLink" target="_blank" rel="noopener noreferrer">Tweet #新しい放置ゲーム</a>
@@ -93,7 +107,6 @@
 		<div>gmail:newincremental@gmail.com</div>
 	</div>
 
-	<!-- KeepAliveは仮想DOMレンダリングを停止しないため、ルート要素のv-ifは依然として必要なまま -->
 	<template id="basic-tab">
 		<div class="basictabcontents" v-if="player.currentTab == 'basic'">
 			<div class="levelrcontents" v-if="player.levelResetTime.gt(0)">

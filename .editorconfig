@@ -1,0 +1,17 @@
+root = ture
+
+[*]
+indent_size = 2
+
+[*.js]
+indent_style = space
+
+[*.html]
+indent_style = tab
+
+[{accelerator.js,crown.js,dark.js,generator.js,level.js,light.js,social.js,statue.js,storage.js,utils.js,world.js}]
+indent_size = 4
+
+[{spirit.js,time.js}]
+indent_style = tab
+

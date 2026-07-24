@@ -199,4 +199,65 @@ function Chipdata(){
 
 
 
+  this.togglechipthresholduse = function (data) {
+    data.chipthresholduse = !data.chipthresholduse
+    console.log(data.chipthresholduse)
+  }
+
+  this.configchipthresholdnumber = function (data) {
+    let input = window.prompt("閾値を設定","")
+    input = new Decimal(input)
+    data.chipthreshold = input
+  }
+
+  this.configspendchip = function (data, i) {
+    let maxspend = data.player.statue[i] * data.player.statue[i]
+    let input = window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(),"")
+    input = parseInt(input)
+    if(isNaN(input)) return
+    if(input<0 || input> maxspend) return
+    data.player.spendchip[i] = input
+  }
+
+  this.chipset = function (data, i, j) {
+    if(data.player.disabledchip[i]) return
+    if(data.player.setchip[i] == j) return
+    if(data.player.chip[j-1]<=data.chipused[j-1]) return
+    let oldchip = data.player.setchip[i]-1
+    if(oldchip!=-1)data.player.chip[oldchip] = data.player.chip[oldchip]+data.chipused[oldchip]
+    data.player.setchip[i] = j
+    if(j!=0)data.player.chip[j-1] = data.player.chip[j-1] - (data.chipused[j-1]+1)
+    data.checkusedchips()
+  }
+
+  this.checkusedchips = function (data) {
+    data.chipused.fill(0)
+    for(let v of data.player.setchip){
+      if(v!=0)data.chipused[v-1] = data.chipused[v-1]+1
+    }
+  }
+
+  this.clearsetchip = function (data) {
+    for(let i=0;i<100;i++){
+      data.chipset(i,0)
+    }
+  }
+
+  this.setchiptype = function (data) {
+    if(confirm('現在の鋳片型を登録します。よろしいですか？')){
+      for(let i=0;i<100;i++){
+        data.player.setchiptypefst[i] = data.player.setchip[i]
+      }
+    }
+  }
+
+  this.changechiptype = function (data) {
+    data.clearsetchip()
+    for(let i=0;i<100;i++){
+      data.chipset(i,data.player.setchiptypefst[i])
+    }
+
+  }
+
+
 }

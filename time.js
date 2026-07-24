@@ -105,4 +105,65 @@ function Timedata(){
 
 
 
+  this.worktime = function (data, val) {
+    if(0<=val&&val<=data.player.accelevel && val>=data.calccampaigncosts()){
+      data.player.accelevelused = val
+    }
+  }
+
+  this.calccampaigncosts = function (data) {
+
+    let sum = 0
+    let date = new Date()
+    for(let i=0;i<data.timedata.campaigns.length;i++){
+      if(data.player.activatedcampaigns.includes(data.timedata.campaignnames[i])){
+
+        let incampaign = false
+
+        if(data.timedata.campaignnames[i]=="tanabata" && date.getMonth() == 6 && date.getDate() <= 7)incampaign = true
+        if(data.timedata.campaignnames[i]=="tanabata2" && date.getMonth() == 6 && date.getDate() <= 7)incampaign = true
+        if(data.timedata.campaignnames[i]=="aniv" && (date.getMonth() == 6 && date.getDate() >= 30 || date.getMonth() == 7))incampaign = true
+
+        if(!incampaign)sum += data.timedata.campaigncosts[i]
+      }
+
+    }
+
+    return sum;
+
+  }
+
+  this.choosecampaigns = function (data, name) {
+
+    if(data.player.activatedcampaigns.includes(name)){
+      data.player.activatedcampaigns.splice(data.player.activatedcampaigns.indexOf(name),1)
+    }else{
+      if(data.calccampaigncosts()+data.timedata.campaigncosts[data.timedata.campaignnames.indexOf(name)] > data.player.accelevelused)return;
+      data.player.activatedcampaigns.push(name)
+    }
+
+  }
+
+  this.activateintimecampaign = function (data) {
+
+    let date = new Date()
+
+    for(let i=0;i<data.timedata.campaigns.length;i++){
+
+      if(data.timedata.campaignnames[i]=="tanabata" && date.getMonth() == 6 && date.getDate() <= 7){
+        if(!data.player.activatedcampaigns.includes("tanabata"))data.player.activatedcampaigns.push("tanabata")
+      }
+      if(data.timedata.campaignnames[i]=="tanabata2" && date.getMonth() == 6 && date.getDate() <= 7){
+        if(!data.player.activatedcampaigns.includes("tanabata2"))data.player.activatedcampaigns.push("tanabata2")
+      }
+
+      if(data.timedata.campaignnames[i]=="aniv" && (date.getMonth() == 6 && date.getDate() >= 30) || (date.getMonth() == 7)){
+        if(!data.player.activatedcampaigns.includes("aniv"))data.player.activatedcampaigns.push("aniv")
+      }
+      
+    }
+
+
+  }
+
 }

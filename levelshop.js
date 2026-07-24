@@ -14,4 +14,24 @@ function Levelshopdata(){
     "階位の入手量が少しだけ増加します。",
   ]
 
+  this.calclevelitemcost = function (data, index) {
+    let d = index+1
+    let cost = data.levelshopdata.itemcost[index].pow(data.player.levelitems[index]+1)
+    let dec = 0;
+    for(let i=1;i<=5;i++){
+      if(4*i*i*d*d*d<=data.player.levelitembought)dec = i;
+    }
+    cost = cost.div(new Decimal(10).pow(dec)).max(1)
+    return cost
+  }
+
+  this.buylevelitems = function (data, index) {
+    let cost = data.calclevelitemcost(index)
+    if(data.player.level.lessThan(cost) || data.player.levelitems[index]>=5){
+      return;
+    }
+    data.player.level = data.player.level.sub(cost);
+    data.player.levelitems[index] = data.player.levelitems[index]+1;
+    if(data.player.levelitembought<100000)data.player.levelitembought = data.player.levelitembought+1;
+  }
 }

@@ -85,4 +85,388 @@ function Challengedata(){
 
   ]
 
+
+  this.calcchallengeid = function (data) {
+    let challengeid = 0;
+    for(let i=0;i<8;i++){
+      challengeid *= 2
+      if(data.player.challenges.includes(i)){
+        challengeid += 1
+      }
+    }
+    return challengeid;
+  }
+
+  this.getchallengeid = function (arr) {
+    let challengeid = 0;
+    for(let i=0;i<8;i++){
+      challengeid *= 2
+      if(arr.includes(i)){
+        challengeid += 1
+      }
+    }
+    return challengeid;
+  }
+
+  this.getpchallengeid = function (arr) {
+    let challengeid = 0;
+    for(let i=9;i>=0;i--){
+      challengeid *= 2
+      if(arr.includes(i)){
+        challengeid += 1
+      }
+    }
+    return challengeid;
+  }
+
+  this.configchallengeweightkind = function (data, i) {
+    data.player.challengeweight[i] = data.calcchallengeid()
+  }
+
+  this.configchallengeweightvalue = function (data, i) {
+    let input = window.prompt("重みを設定","")
+    input = parseInt(input)
+    if(isNaN(input)) return
+    data.player.challengeweightvalue[i] = input
+  }
+
+  this.showunclearedchallenges = function (data) {
+    if(data.player.challengecleared.length == 255) return;
+    if(data.player.onchallenge) return;
+    let challengeid = data.calcchallengeid();
+
+    let challengeweightpairs = []
+    for(let i=1;i<=255;i++){
+      let ans = 0;
+      for(let j=0;j<20;j++){
+
+        if((i|data.player.challengeweight[j]) == i){
+
+          ans += data.player.challengeweightvalue[j]
+        }
+      }
+      challengeweightpairs.push({
+        id:i,
+        weight:ans
+      })
+    }
+
+    challengeweightpairs.sort((a, b) => a.weight - b.weight)
+
+    console.log(challengeweightpairs)
+
+    do{
+      if(challengeid == 0) {
+        challengeid = challengeweightpairs[0].id
+      }else {
+        let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1
+        if(idx==255) idx = 0
+        challengeid = challengeweightpairs[idx].id
+      }
+    }while(data.player.challengecleared.includes(challengeid));
+
+    data.player.challenges = data.calcchallengesarray(challengeid)
+  }
+
+  this.showunclearedrankchallenges = function (data) {
+    if(data.player.rankchallengecleared.length == 255) return;
+    if(data.player.onchallenge) return;
+    let challengeid = data.calcchallengeid();
+
+    let challengeweightpairs = []
+    for(let i=1;i<=255;i++){
+      let ans = 0;
+      for(let j=0;j<20;j++){
+
+        if((i|data.player.challengeweight[j]) == i){
+
+          ans += data.player.challengeweightvalue[j]
+        }
+      }
+      challengeweightpairs.push({
+        id:i,
+        weight:ans
+      })
+    }
+
+    challengeweightpairs.sort((a, b) => a.weight - b.weight)
+
+    do{
+      if(challengeid == 0) {
+        challengeid = challengeweightpairs[0].id
+      }else {
+        let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1
+        if(idx==255) idx = 0
+        challengeid = challengeweightpairs[idx].id
+      }
+    }while(data.player.rankchallengecleared.includes(challengeid));
+
+    data.player.challenges = data.calcchallengesarray(challengeid)
+  }
+
+  this.calcchallengesarray = function (challengeid) {
+    let ans = [];
+    for(let i=7;i>=0;i--){
+      if(challengeid%2 == 1)ans.push(i)
+      challengeid = challengeid >>> 1
+    }
+    ans.sort()
+    return ans
+  }
+  this.startChallenge = function (data) {
+    let challengeid = data.calcchallengeid();
+
+    if(challengeid == 0){
+      alert("挑戦が一つも選択されていません。")
+      return;
+    }
+
+    let conf = '挑戦を開始しますか？現在のポイントや発生器、時間加速器は失われます。'
+
+    if(data.player.challengecleared.includes(challengeid)){
+      if(data.player.challengecleared.length<128){
+        alert("すでに達成した挑戦です。")
+        return;
+      }
+      conf = 'すでに達成した挑戦です。勲章は得られませんが、それでもよろしいですか？'
+      if(data.player.rankchallengecleared.includes(challengeid)){
+        conf = 'すでに階位挑戦としても達成した挑戦です。勲章や大勲章は得られませんが、それでもよろしいですか？'
+      }
+    }
+
+    if (data.player.rings.outsideauto.autodochallenge || confirm(conf)) {
+      if(!data.player.challengebonuses.includes(4))data.activechallengebonuses = [];
+      data.resetLevel(true,true);
+      data.player.onchallenge = true;
+      if(data.player.challenges.includes(3)){
+        for(let i=0;i<8;i++){
+          data.player.generatorsMode[i] = 0
+        }
+      }
+    }
+  }
+
+  this.startpChallenge = function (data) {
+
+    if(!(data.player.challengecleared.length>=255 && data.player.rankchallengecleared.length>=255)){
+      alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。")
+      return;
+    }
+
+    if(data.player.onchallenge){
+      alert("現在挑戦中のため、完全挑戦を開始できません。")
+      return;
+    }
+
+    for(let i=0;i<10;i++){
+      if(data.player.statue[i]<data.player.pchallenges.length-i){
+        alert("像の作成数が不足しているため、完全挑戦を開始できません。")
+        return;
+      }
+    }
+
+
+    let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。'
+
+    if (confirm(conf)) {
+
+      data.resetCrown(true);
+      data.player.onpchallenge = true;
+      data.player.challengecleared = []
+      data.player.challengebonuses = []
+      data.player.rankchallengecleared = []
+      data.player.rankchallengebonuses = []
+
+    }
+  }
+
+  this.exitChallenge = function (data) {
+    if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
+      data.player.onchallenge = false;
+      data.activechallengebonuses = data.player.challengebonuses;
+      data.calcgncost()
+    }
+  }
+
+  this.exitpChallenge = function (data) {
+
+    if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
+      if(data.player.onchallenge)data.exitChallenge()
+      data.player.onpchallenge = false;
+      data.player.pchallengecleared[data.getpchallengeid(data.player.pchallenges)] = Math.max(data.player.pchallengecleared[data.getpchallengeid(data.player.pchallenges)],data.player.challengecleared.length)
+      data.player.prchallengecleared[data.getpchallengeid(data.player.pchallenges)] = Math.max(data.player.prchallengecleared[data.getpchallengeid(data.player.pchallenges)],data.player.rankchallengecleared.length)
+      data.player.challengecleared = data.challengedata.challengeids
+      data.player.rankchallengecleared = data.challengedata.challengeids
+      for(let i=0;i<setchipnum;i++){
+        data.player.disabledchip[i] = false
+      }
+      data.countpchallengecleared()
+
+
+
+    }
+  }
+
+  this.configchallenge = function (data, index) {
+    if(data.player.onchallenge) return;
+    if(!data.player.challenges.includes(index)){
+      data.player.challenges.push(index)
+    }else{
+      data.player.challenges.splice(data.player.challenges.indexOf(index),1)
+    }
+  }
+
+  this.configpchallenge = function (data, index) {
+    if(data.player.onpchallenge) return;
+    if(!data.player.pchallenges.includes(index)){
+      data.player.pchallenges.push(index)
+    }else{
+      data.player.pchallenges.splice(data.player.pchallenges.indexOf(index),1)
+    }
+  }
+
+  this.setbonusetype = function (data, index) {
+    if(confirm("現在の効力を登録します。よろしいですか？")){
+      let ans = []
+      for(let i=0;i<15;i++){
+        if(data.player.challengebonuses.includes(i)){
+          ans.push(i)
+        }
+      }
+      if(index==1){
+        data.player.setchallengebonusesfst = ans
+      }
+      if(index==2){
+        data.player.setchallengebonusessnd = ans
+      }
+    }
+
+  }
+
+  this.changebonusetype = function (data, index) {
+    for(let i=0;i<15;i++){
+      if(data.player.challengebonuses.includes(i)){
+        data.buyRewards(i)
+      }
+    }
+    if(index==1){
+      for(let i=0;i<15;i++){
+        if(data.player.setchallengebonusesfst.includes(i)){
+          data.buyRewards(i)
+        }
+      }
+    }
+    if(index==2){
+      for(let i=0;i<15;i++){
+        if(data.player.setchallengebonusessnd.includes(i)){
+          data.buyRewards(i)
+        }
+      }
+    }
+
+  }
+
+  this.buyRewards = function (data, index) {
+    if(data.player.challengebonuses.includes(index)){
+      data.player.challengebonuses.splice(data.player.challengebonuses.indexOf(index),1)
+      data.player.token += data.challengedata.rewardcost[index]
+    }else{
+      if(data.player.token<data.challengedata.rewardcost[index]){
+        return;
+      }
+      data.player.challengebonuses.push(index)
+      data.player.token -= data.challengedata.rewardcost[index]
+    }
+  }
+
+  this.calctoken = function (data) {
+
+    let spent = 0;
+    for(let i of data.player.challengebonuses){
+      spent += data.challengedata.rewardcost[i]
+    }
+    let t = data.player.challengecleared.length
+    if(data.player.onpchallenge){
+      t = Math.max(t,data.player.pchallengecleared[data.getpchallengeid(data.player.pchallenges)])
+    }
+    data.player.token = t - spent
+
+    let rspent = 0;
+    for(let i of data.player.rankchallengebonuses){
+      rspent += data.challengedata.rewardcost[i]
+    }
+    let rt = data.player.rankchallengecleared.length
+    if(data.player.onpchallenge){
+      rt = Math.max(rt,data.player.prchallengecleared[data.getpchallengeid(data.player.pchallenges)])
+    }
+    data.player.ranktoken = rt - rspent
+
+  }
+
+  this.countpchallengecleared = function (data) {
+
+    let cnt = 0;
+    for(let i=0;i<1024;i++){
+      cnt += data.player.pchallengecleared[i]
+      cnt += data.player.prchallengecleared[i]
+    }
+
+    cnt /= 510;
+    data.pchallengestage = Math.floor(cnt);
+
+  }
+
+  this.setrankbonusetype = function (data, index) {
+    if(confirm("現在の上位効力を登録します。よろしいですか？")){
+      let ans = []
+      for(let i=0;i<15;i++){
+        if(data.player.rankchallengebonuses.includes(i)){
+          ans.push(i)
+        }
+      }
+      if(index==1){
+        data.player.setrankchallengebonusesfst = ans
+      }
+      if(index==2){
+        data.player.setrankchallengebonusessnd = ans
+      }
+    }
+
+  }
+
+  this.changerankbonusetype = function (data, index) {
+    for(let i=0;i<15;i++){
+      if(data.player.rankchallengebonuses.includes(i)){
+        data.buyrankRewards(i)
+      }
+    }
+    if(index==1){
+      for(let i=0;i<15;i++){
+        if(data.player.setrankchallengebonusesfst.includes(i)){
+          data.buyrankRewards(i)
+        }
+      }
+    }
+    if(index==2){
+      for(let i=0;i<15;i++){
+        if(data.player.setrankchallengebonusessnd.includes(i)){
+          data.buyrankRewards(i)
+        }
+      }
+    }
+
+  }
+
+  this.buyrankRewards = function (data, index) {
+    if(data.player.rankchallengebonuses.includes(index)){
+      data.player.rankchallengebonuses.splice(data.player.rankchallengebonuses.indexOf(index),1)
+      data.player.ranktoken += data.challengedata.rewardcost[index]
+    }else{
+      if(data.player.ranktoken<data.challengedata.rewardcost[index]){
+        return;
+      }
+      data.player.rankchallengebonuses.push(index)
+      data.player.ranktoken -= data.challengedata.rewardcost[index]
+    }
+  }
 }

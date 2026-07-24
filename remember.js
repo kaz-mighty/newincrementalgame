@@ -128,4 +128,23 @@ function Rememberdata(){
 
 
 
+  this.checkmemories = function (data) {
+    let cnt = 0;
+
+    for(let i=0;i<worldnum;i++){
+      data.counttrophies(i)
+      if(data.world==i) continue
+      cnt += data.trophynumber[i]
+    }
+    data.memorysum = cnt
+  }
+
+  this.checkremembers = function (data) {
+    let cnt = 0;
+    for(let i=data.world+1;i<worldnum;i++){
+      cnt += data.players[i].remember
+    }
+
+    return data.remembersum = cnt
+  }
 }

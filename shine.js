@@ -192,4 +192,63 @@ function Shinedata(){
      "鋳片型効力",
    ]
 
+  this.spendshine = function (data, num) {
+    if(data.player.shine<num)return;
+    if(data.player.onpchallenge && data.player.pchallenges.includes(6))return
+    data.player.shine -= num
+    let val = new Decimal(11+data.player.setchip[31]).pow(new Decimal(num).log10())
+    data.updategenerators(new Decimal(val))
+    data.updateaccelerators(new Decimal(val))
+    if(data.player.trophies[9]){
+      data.player.residue += Math.floor(num * (1 + data.pchallengestage) / 1000000)
+    }
+  }
+
+  this.spendbrightness = function (data, num) {
+    if(data.player.brightness<num)return;
+    if(data.player.onpchallenge && data.player.pchallenges.includes(6))return
+    data.player.brightness -= num
+    let val = new Decimal(11+data.player.setchip[50]).pow(new Decimal(num*100).log10())
+    let vald = new Decimal(10+data.player.setchip[51]*0.25).pow(new Decimal(num).log10())
+    data.updategenerators(new Decimal(val))
+    data.updateaccelerators(new Decimal(val))
+    data.updatedarkgenerators(new Decimal(vald))
+  }
+
+  this.spendflicker = function (data, num) {
+    if(data.player.flicker<num)return;
+    data.player.flicker -= num
+    let val = new Decimal(11+data.player.setchip[50]).pow(new Decimal(num*10000).log10())
+    let vald = new Decimal(10+data.player.setchip[51]*0.25).pow(new Decimal(num).log10())
+    data.updategenerators(new Decimal(val))
+    data.updateaccelerators(new Decimal(val))
+    data.updatedarkgenerators(new Decimal(vald))
+    data.updatelightgenerators(new Decimal(vald))
+  }
+
+  this.autoshine = function (data) {
+    data.spendshine(data.player.rings.outsideauto.autospendshinenumber)
+  }
+
+  this.autobright = function (data) {
+    data.spendbrightness(data.player.rings.outsideauto.autospendbrightnumber)
+  }
+
+  this.autochallenge = function (data) {
+    if(data.player.challengecleared.length==255)return;
+    if(data.player.challengecleared.includes(data.getchallengeid(data.player.challenges)) || data.player.challenges.length==0){
+      data.showunclearedchallenges()
+    }
+    if(!data.player.onchallenge){
+      data.startChallenge()
+    }
+  }
+
+  this.buytype = function (data, num) {
+    if(data.player.shine<data.shinedata.shineshopcost[num] || data.player.boughttype[num]) return;
+    if(confirm("本当に型を購入しますか？")){
+      data.player.shine -= data.shinedata.shineshopcost[num]
+      data.player.boughttype[num] = true
+    }
+  }
 }

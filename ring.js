@@ -537,4 +537,163 @@ function Ringdata(){
     },
   ]
 
+  this.isavailablering = function (data, i) {
+    if(i==0||i==1||i==2) return true
+    if(data.world>=3) return false
+    if(i==data.world+3) {
+      if(data.player.rings.clearedmission.includes(4)) return true
+    }
+    return false
+  }
+
+  this.configsetrings = function (data, i) {
+    if(data.player.rings.onmission)return
+    if(!data.isavailablering(i))return
+    if(data.player.rings.setrings.includes(i)){
+      data.player.rings.setrings.splice(data.player.rings.setrings.indexOf(i),1)
+    }else{
+      data.player.rings.setrings.push(i)
+    }
+  }
+
+  this.configautomission = function (data) {
+    data.player.rings.auto.doauto = !data.player.rings.auto.doauto
+    if(data.player.rings.auto.doauto){
+      data.automissiontimerid = setInterval(data.autoplaymission,1000)
+    }else{
+      clearInterval(data.automissiontimerid)
+      data.automissiontimerid = 0
+    }
+  }
+
+  this.autoplaymission = function (data) {
+    if(data.player.rings.missionstate.turn>=data.ringdata.missioninfo[data.player.rings.missionid].turn)data.endmission()
+    if(data.player.rings.onmission){
+      data.useskill(0)
+    }else {
+      data.startmission(data.player.rings.missionid)
+    }
+  }
+
+  this.isavailablemission = function (data, i) {
+    return data.ringdata.missioninfo[i].preventchallenge.every((v) => data.player.rings.clearedmission.includes(v))
+  }
+
+  this.startmission = function (data, i) {
+    if(data.player.rings.setrings.length<data.ringdata.missioninfo[i].setsizemin || data.ringdata.missioninfo[i].setsizemax<data.player.rings.setrings.length)return
+    if(data.player.rings.onmission)return
+    data.player.rings.onmission = true
+    data.player.rings.missionid = i
+    data.player.rings.missionstate.turn = 0
+    data.player.rings.missionstate.activering = 0
+    data.player.rings.missionstate.flowerpoint = 0
+    data.player.rings.missionstate.snowpoint = 0
+    data.player.rings.missionstate.moonpoint = 0
+    data.player.rings.missionstate.flowermultiplier = 1
+    data.player.rings.missionstate.snowmultiplier = 1
+    data.player.rings.missionstate.moonmultiplier = 1
+    data.player.rings.missionstate.skilllog = []
+    data.player.rings.missionstate.tps = []
+    for(let r of data.player.rings.setrings){
+      let lv = data.ringdata.getlevel(data.player.rings,r)
+      data.player.rings.missionstate.tps.push(data.ringdata.getstatus(r,6,lv))//6:tp status id
+    }
+    data.player.rings.missionstate.fieldeffect = []
+    console.log("Starting mission" + i)
+    for(let e of data.ringdata.missioninfo[i].passivefunction){
+      data.player.rings.missionstate.fieldeffect.push([e,-1])
+    }
+  }
+
+  this.useskill = function (data, i) {
+    let ringid = data.player.rings.setrings[data.player.rings.missionstate.activering]
+    let sk = data.ringdata.skills[data.ringdata.availableskills(data.player.rings,ringid)[i]]
+    if(sk.tp>data.player.rings.missionstate.tps[data.player.rings.missionstate.activering]) return
+    sk.effect(data.player.rings)
+    data.player.rings.missionstate.tps[data.player.rings.missionstate.activering] -= sk.tp
+    data.player.rings.missionstate.skilllog.push([data.player.rings.setrings[data.player.rings.missionstate.activering],i])
+
+    data.player.rings.missionstate.activering++;
+    if(data.player.rings.missionstate.activering==data.player.rings.setrings.length){
+      data.player.rings.missionstate.activering = 0;
+      data.player.rings.missionstate.turn++;
+      for(let e of data.player.rings.missionstate.fieldeffect){
+        let eff = data.ringdata.fieldeffects.find((elem) => elem.id == e[0])
+        if(eff.timing=="turnend"){
+          eff.effect(data.player.rings.missionstate,e[1])
+        }
+      }
+      //data.player.rings.missionstate.fieldeffect.forEach((item, i) => {
+        //if(item[1]>=1)item[1]--;
+      //});
+      //data.player.rings.missionstate.fieldeffect = data.player.rings.missionstate.fieldeffect.filter((e) => e[1]!=0)
+
+    }
+
+  }
+
+  this.endmission = function (data) {
+    let win = data.ringpointsum() >= data.ringdata.missioninfo[data.player.rings.missionid].goal
+    if((!win) && data.player.rings.missionstate.turn < data.ringdata.missioninfo[data.player.rings.missionid].turn){
+      if(!window.confirm("撤退します。よろしいですか？"))return
+    }
+    data.player.rings.onmission = false
+    if(win){
+      for(i in data.player.rings.setrings){
+        r = data.player.rings.setrings[i]
+        data.player.rings.ringsexp[r] += Math.floor(data.ringdata.missioninfo[data.player.rings.missionid].exp * (data.player.rings.setrings.length-i) / (data.player.rings.setrings.length * (data.player.rings.setrings.length+1) / 2))
+        data.player.rings.ringsexp[r] = Math.min(data.player.rings.ringsexp[r],data.ringdata.leveltable[data.ringdata.levelcap()-1])
+      }
+      if(!data.player.rings.clearedmission.includes(data.player.rings.missionid)){
+        data.player.rings.clearedmission.push(data.player.rings.missionid)
+      }
+    }
+  }
+
+  this.ringpointsum = function (data) {
+    return data.player.rings.missionstate.flowerpoint + data.player.rings.missionstate.snowpoint + data.player.rings.missionstate.moonpoint
+  }
+
+  this.toggleringautobuyer = function (data, index) {
+    if(index==0){
+      data.player.rings.outsideauto.autospendshine = !data.player.rings.outsideauto.autospendshine
+      if(data.player.rings.outsideauto.autospendshine){
+        data.autoshinetimerid = setInterval(data.autoshine,1000)
+      }else{
+        clearInterval(data.autoshinetimerid)
+        data.autoshinetimerid = 0
+      }
+    }
+    if(index==1){
+      data.player.rings.outsideauto.autospendbright= !data.player.rings.outsideauto.autospendbright
+      if(data.player.rings.outsideauto.autospendbright){
+        data.autobrighttimerid = setInterval(data.autobright,1000)
+      }else{
+        clearInterval(data.autobrighttimerid)
+        data.autobrighttimerid = 0
+      }
+    }
+    if(index==2){
+      data.player.rings.outsideauto.autodochallenge= !data.player.rings.outsideauto.autodochallenge
+      if(data.player.rings.outsideauto.autodochallenge){
+        data.autochallengetimerid = setInterval(data.autochallenge,1000)
+      }else{
+        clearInterval(data.autochallengetimerid)
+        data.autochallengetimerid = 0
+      }
+    }
+  }
+
+  this.configringautobuyer = function (data, index) {
+    let input = window.prompt("消費量を設定:最大1000","")
+    input = parseInt(input)
+    if(isNaN(input)) return
+    if(input<0||input>1000) return
+    if(index==0){
+      data.player.rings.outsideauto.autospendshinenumber = input
+    }
+    if(index==1){
+      data.player.rings.outsideauto.autospendbrightnumber= input
+    }
+  }
 }

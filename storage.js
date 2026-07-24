@@ -192,8 +192,8 @@ function Storagedata() {
         console.log(k)
         if (k == '{') return
         localStorage.setItem("playerStoredb", input)
-        data.dataload()
-        data.load(0)
+        this.dataload(data)
+        this.load(data, 0)
     }
 
     this.resetData = function (data, force) {

@@ -227,27 +227,27 @@ function Shinedata() {
   }
 
   this.autoshine = function (data) {
-    data.spendshine(data.player.rings.outsideauto.autospendshinenumber)
+    this.spendshine(data, data.player.rings.outsideauto.autospendshinenumber)
   }
 
   this.autobright = function (data) {
-    data.spendbrightness(data.player.rings.outsideauto.autospendbrightnumber)
+    this.spendbrightness(data, data.player.rings.outsideauto.autospendbrightnumber)
   }
 
   this.autochallenge = function (data) {
     if (data.player.challengecleared.length == 255) return;
-    if (data.player.challengecleared.includes(data.getchallengeid(data.player.challenges)) || data.player.challenges.length == 0) {
-      data.showunclearedchallenges()
+    if (data.player.challengecleared.includes(data.challengedata.getchallengeid(data.player.challenges)) || data.player.challenges.length == 0) {
+      data.challengedata.showunclearedchallenges(data)
     }
     if (!data.player.onchallenge) {
-      data.startChallenge()
+      data.challengedata.startChallenge(data)
     }
   }
 
   this.buytype = function (data, num) {
-    if (data.player.shine < data.shinedata.shineshopcost[num] || data.player.boughttype[num]) return;
+    if (data.player.shine < this.shineshopcost[num] || data.player.boughttype[num]) return;
     if (confirm("本当に型を購入しますか？")) {
-      data.player.shine -= data.shinedata.shineshopcost[num]
+      data.player.shine -= this.shineshopcost[num]
       data.player.boughttype[num] = true
     }
   }

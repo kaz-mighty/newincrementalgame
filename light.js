@@ -22,7 +22,7 @@ function Lightdata() {
             data.player.money = data.player.money.sub(data.player.lightgeneratorsCost[index])
             data.player.lightgenerators[index] = data.player.lightgenerators[index].add(1)
             data.player.lightgeneratorsBought[index] = data.player.lightgeneratorsBought[index].add(1)
-            data.calclgcost()
+            this.calclgcost(data)
         }
     }
 }

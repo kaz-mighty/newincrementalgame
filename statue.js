@@ -4,7 +4,7 @@ function Statuedata() {
     }
 
     this.buildstatue = function (data, i) {
-        let cost = data.calcstatuecost(i)
+        let cost = this.calcstatuecost(data, i)
         if (data.player.chip[i] < cost) return
         data.player.chip[i] -= cost
         data.player.statue[i] += 1
@@ -15,7 +15,7 @@ function Statuedata() {
     }
 
     this.polishstatue = function (data, i) {
-        let cost = data.calcpolishcost(i)
+        let cost = this.calcpolishcost(data, i)
         if (data.player.polishedstatue[i] >= data.player.statue[i] || data.player.shine < cost) return;
         data.player.shine -= cost
         data.player.polishedstatue[i] += 1
@@ -26,7 +26,7 @@ function Statuedata() {
     }
 
     this.polishstatuebr = function (data, i) {
-        let cost = data.calcpolishcostbr(i)
+        let cost = this.calcpolishcostbr(data, i)
         if (data.player.polishedstatuebr[i] >= data.player.polishedstatue[i] * 10 || data.player.brightness < cost) return;
         data.player.brightness -= cost
         data.player.polishedstatuebr[i] += 1

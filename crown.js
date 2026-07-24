@@ -15,13 +15,13 @@ function Crowndata() {
             return;
         }
         if (data.player.onchallenge && data.player.challenges.includes(0)) {
-            if (data.player.money.lt(data.resetCrownborder())) {
+            if (data.player.money.lt(this.resetCrownborder(data))) {
                 alert('現在挑戦1が適用されているため、まだ昇冠リセットができません。')
                 return;
             }
         }
 
-        let gaincrown = data.calcgaincrown()
+        let gaincrown = this.calcgaincrown(data)
         if (force || confirm('昇冠リセットして、冠位' + gaincrown + 'を得ますか？')) {
 
             data.player.money = new Decimal(1)

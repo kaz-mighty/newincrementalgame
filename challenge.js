@@ -119,7 +119,7 @@ function Challengedata() {
   }
 
   this.configchallengeweightkind = function (data, i) {
-    data.player.challengeweight[i] = data.calcchallengeid()
+    data.player.challengeweight[i] = this.calcchallengeid(data)
   }
 
   this.configchallengeweightvalue = function (data, i) {
@@ -132,7 +132,7 @@ function Challengedata() {
   this.showunclearedchallenges = function (data) {
     if (data.player.challengecleared.length == 255) return;
     if (data.player.onchallenge) return;
-    let challengeid = data.calcchallengeid();
+    let challengeid = this.calcchallengeid(data);
 
     let challengeweightpairs = []
     for (let i = 1; i <= 255; i++) {
@@ -164,13 +164,13 @@ function Challengedata() {
       }
     } while (data.player.challengecleared.includes(challengeid));
 
-    data.player.challenges = data.calcchallengesarray(challengeid)
+    data.player.challenges = this.calcchallengesarray(challengeid)
   }
 
   this.showunclearedrankchallenges = function (data) {
     if (data.player.rankchallengecleared.length == 255) return;
     if (data.player.onchallenge) return;
-    let challengeid = data.calcchallengeid();
+    let challengeid = this.calcchallengeid(data);
 
     let challengeweightpairs = []
     for (let i = 1; i <= 255; i++) {
@@ -200,7 +200,7 @@ function Challengedata() {
       }
     } while (data.player.rankchallengecleared.includes(challengeid));
 
-    data.player.challenges = data.calcchallengesarray(challengeid)
+    data.player.challenges = this.calcchallengesarray(challengeid)
   }
 
   this.calcchallengesarray = function (challengeid) {
@@ -214,7 +214,7 @@ function Challengedata() {
   }
 
   this.startChallenge = function (data) {
-    let challengeid = data.calcchallengeid();
+    let challengeid = this.calcchallengeid(data);
 
     if (challengeid == 0) {
       alert("挑戦が一つも選択されていません。")
@@ -291,12 +291,12 @@ function Challengedata() {
   this.exitpChallenge = function (data) {
 
     if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
-      if (data.player.onchallenge) data.exitChallenge()
+      if (data.player.onchallenge) this.exitChallenge(data)
       data.player.onpchallenge = false;
-      data.player.pchallengecleared[data.getpchallengeid(data.player.pchallenges)] = Math.max(data.player.pchallengecleared[data.getpchallengeid(data.player.pchallenges)], data.player.challengecleared.length)
-      data.player.prchallengecleared[data.getpchallengeid(data.player.pchallenges)] = Math.max(data.player.prchallengecleared[data.getpchallengeid(data.player.pchallenges)], data.player.rankchallengecleared.length)
-      data.player.challengecleared = data.challengedata.challengeids
-      data.player.rankchallengecleared = data.challengedata.challengeids
+      data.player.pchallengecleared[this.getpchallengeid(data.player.pchallenges)] = Math.max(data.player.pchallengecleared[this.getpchallengeid(data.player.pchallenges)], data.player.challengecleared.length)
+      data.player.prchallengecleared[this.getpchallengeid(data.player.pchallenges)] = Math.max(data.player.prchallengecleared[this.getpchallengeid(data.player.pchallenges)], data.player.rankchallengecleared.length)
+      data.player.challengecleared = this.challengeids
+      data.player.rankchallengecleared = this.challengeids
       for (let i = 0; i < setchipnum; i++) {
         data.player.disabledchip[i] = false
       }
@@ -344,20 +344,20 @@ function Challengedata() {
   this.changebonusetype = function (data, index) {
     for (let i = 0; i < 15; i++) {
       if (data.player.challengebonuses.includes(i)) {
-        data.buyRewards(i)
+        this.buyRewards(data, i)
       }
     }
     if (index == 1) {
       for (let i = 0; i < 15; i++) {
         if (data.player.setchallengebonusesfst.includes(i)) {
-          data.buyRewards(i)
+          this.buyRewards(data, i)
         }
       }
     }
     if (index == 2) {
       for (let i = 0; i < 15; i++) {
         if (data.player.setchallengebonusessnd.includes(i)) {
-          data.buyRewards(i)
+          this.buyRewards(data, i)
         }
       }
     }
@@ -367,13 +367,13 @@ function Challengedata() {
   this.buyRewards = function (data, index) {
     if (data.player.challengebonuses.includes(index)) {
       data.player.challengebonuses.splice(data.player.challengebonuses.indexOf(index), 1)
-      data.player.token += data.challengedata.rewardcost[index]
+      data.player.token += this.rewardcost[index]
     } else {
-      if (data.player.token < data.challengedata.rewardcost[index]) {
+      if (data.player.token < this.rewardcost[index]) {
         return;
       }
       data.player.challengebonuses.push(index)
-      data.player.token -= data.challengedata.rewardcost[index]
+      data.player.token -= this.rewardcost[index]
     }
   }
 
@@ -381,21 +381,21 @@ function Challengedata() {
 
     let spent = 0;
     for (let i of data.player.challengebonuses) {
-      spent += data.challengedata.rewardcost[i]
+      spent += this.rewardcost[i]
     }
     let t = data.player.challengecleared.length
     if (data.player.onpchallenge) {
-      t = Math.max(t, data.player.pchallengecleared[data.getpchallengeid(data.player.pchallenges)])
+      t = Math.max(t, data.player.pchallengecleared[this.getpchallengeid(data.player.pchallenges)])
     }
     data.player.token = t - spent
 
     let rspent = 0;
     for (let i of data.player.rankchallengebonuses) {
-      rspent += data.challengedata.rewardcost[i]
+      rspent += this.rewardcost[i]
     }
     let rt = data.player.rankchallengecleared.length
     if (data.player.onpchallenge) {
-      rt = Math.max(rt, data.player.prchallengecleared[data.getpchallengeid(data.player.pchallenges)])
+      rt = Math.max(rt, data.player.prchallengecleared[this.getpchallengeid(data.player.pchallenges)])
     }
     data.player.ranktoken = rt - rspent
 
@@ -434,20 +434,20 @@ function Challengedata() {
   this.changerankbonusetype = function (data, index) {
     for (let i = 0; i < 15; i++) {
       if (data.player.rankchallengebonuses.includes(i)) {
-        data.buyrankRewards(i)
+        this.buyrankRewards(data, i)
       }
     }
     if (index == 1) {
       for (let i = 0; i < 15; i++) {
         if (data.player.setrankchallengebonusesfst.includes(i)) {
-          data.buyrankRewards(i)
+          this.buyrankRewards(data, i)
         }
       }
     }
     if (index == 2) {
       for (let i = 0; i < 15; i++) {
         if (data.player.setrankchallengebonusessnd.includes(i)) {
-          data.buyrankRewards(i)
+          this.buyrankRewards(data, i)
         }
       }
     }
@@ -456,13 +456,13 @@ function Challengedata() {
   this.buyrankRewards = function (data, index) {
     if (data.player.rankchallengebonuses.includes(index)) {
       data.player.rankchallengebonuses.splice(data.player.rankchallengebonuses.indexOf(index), 1)
-      data.player.ranktoken += data.challengedata.rewardcost[index]
+      data.player.ranktoken += this.rewardcost[index]
     } else {
-      if (data.player.ranktoken < data.challengedata.rewardcost[index]) {
+      if (data.player.ranktoken < this.rewardcost[index]) {
         return;
       }
       data.player.rankchallengebonuses.push(index)
-      data.player.ranktoken -= data.challengedata.rewardcost[index]
+      data.player.ranktoken -= this.rewardcost[index]
     }
   }
 }

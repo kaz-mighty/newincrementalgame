@@ -34,13 +34,13 @@ function Rankdata() {
   };
   this.resetRank = function (data, force) {
     if (data.player.onchallenge && data.player.challenges.includes(0)) {
-      if (data.player.money.lt(data.rankdata.resetRankborder(data))) {
+      if (data.player.money.lt(this.resetRankborder(data))) {
         alert("現在挑戦1が適用されているため、まだ昇階リセットができません。");
         return;
       }
     }
 
-    let gainrank = data.rankdata.calcgainrank(data);
+    let gainrank = this.calcgainrank(data);
     if (
       force ||
       confirm("昇階リセットして、階位" + gainrank + "を得ますか？")
@@ -50,9 +50,13 @@ function Rankdata() {
         data.activechallengebonuses = data.player.challengebonuses;
         if (
           data.player.challengecleared.length >= 128 &&
-          !data.player.rankchallengecleared.includes(data.calcchallengeid())
+          !data.player.rankchallengecleared.includes(
+            data.challengedata.calcchallengeid(data),
+          )
         ) {
-          data.player.rankchallengecleared.push(data.calcchallengeid());
+          data.player.rankchallengecleared.push(
+            data.challengedata.calcchallengeid(data),
+          );
         }
       }
 

@@ -13,7 +13,7 @@ function Trophydata() {
   ];
 
   this.gettrophyname = function (data, i) {
-    return data.player.trophies[i] ? data.trophydata.contents[i] : "???";
+    return data.player.trophies[i] ? this.contents[i] : "???";
   };
 
   this.counttrophies = function (data, index) {
@@ -86,7 +86,8 @@ function Trophydata() {
     if (data.player.brightness > 0) data.player.trophies[5] = true;
     if (data.player.remember > 0) data.player.trophies[6] = true;
     if (data.world == 0) {
-      if (data.checkremembers() > 0) data.player.trophies[6] = true;
+      if (data.rememberdata.checkremembers(data) > 0)
+        data.player.trophies[6] = true;
     }
     if (data.player.crownresettime.greaterThan(0))
       data.player.trophies[7] = true;

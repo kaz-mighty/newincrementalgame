@@ -53,7 +53,7 @@ function Leveldata() {
 
         let dividing = 19 - data.player.rank.add(2).log2()
         if (dividing < 1) dividing = 1
-        let gainlevel = data.calcgainlevel()
+        let gainlevel = this.calcgainlevel(data)
         let rst = data.player.rankresettime.add(1)
         if (data.player.onpchallenge && data.player.pchallenges.includes(4)) {
             rst = rst.pow(0.1).round()

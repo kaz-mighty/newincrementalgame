@@ -16,7 +16,7 @@ function Levelshopdata() {
 
   this.calclevelitemcost = function (data, index) {
     let d = index + 1
-    let cost = data.levelshopdata.itemcost[index].pow(data.player.levelitems[index] + 1)
+    let cost = this.itemcost[index].pow(data.player.levelitems[index] + 1)
     let dec = 0;
     for (let i = 1; i <= 5; i++) {
       if (4 * i * i * d * d * d <= data.player.levelitembought) dec = i;
@@ -26,7 +26,7 @@ function Levelshopdata() {
   }
 
   this.buylevelitems = function (data, index) {
-    let cost = data.calclevelitemcost(index)
+    let cost = this.calclevelitemcost(data, index)
     if (data.player.level.lessThan(cost) || data.player.levelitems[index] >= 5) {
       return;
     }

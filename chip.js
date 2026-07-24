@@ -227,7 +227,7 @@ function Chipdata() {
     if (oldchip != -1) data.player.chip[oldchip] = data.player.chip[oldchip] + data.chipused[oldchip]
     data.player.setchip[i] = j
     if (j != 0) data.player.chip[j - 1] = data.player.chip[j - 1] - (data.chipused[j - 1] + 1)
-    data.checkusedchips()
+    this.checkusedchips(data)
   }
 
   this.checkusedchips = function (data) {
@@ -239,7 +239,7 @@ function Chipdata() {
 
   this.clearsetchip = function (data) {
     for (let i = 0; i < 100; i++) {
-      data.chipset(i, 0)
+      this.chipset(data, i, 0)
     }
   }
 
@@ -252,9 +252,9 @@ function Chipdata() {
   }
 
   this.changechiptype = function (data) {
-    data.clearsetchip()
+    this.clearsetchip(data)
     for (let i = 0; i < 100; i++) {
-      data.chipset(i, data.player.setchiptypefst[i])
+      this.chipset(data, i, data.player.setchiptypefst[i])
     }
   }
 

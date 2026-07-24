@@ -548,7 +548,7 @@ function Ringdata() {
 
   this.configsetrings = function (data, i) {
     if (data.player.rings.onmission) return
-    if (!data.isavailablering(i)) return
+    if (!this.isavailablering(data, i)) return
     if (data.player.rings.setrings.includes(i)) {
       data.player.rings.setrings.splice(data.player.rings.setrings.indexOf(i), 1)
     } else {
@@ -559,7 +559,7 @@ function Ringdata() {
   this.configautomission = function (data) {
     data.player.rings.auto.doauto = !data.player.rings.auto.doauto
     if (data.player.rings.auto.doauto) {
-      data.automissiontimerid = setInterval(data.autoplaymission, 1000)
+      data.automissiontimerid = setInterval(function () { data.ringdata.autoplaymission(data) }, 1000)
     } else {
       clearInterval(data.automissiontimerid)
       data.automissiontimerid = 0
@@ -567,20 +567,20 @@ function Ringdata() {
   }
 
   this.autoplaymission = function (data) {
-    if (data.player.rings.missionstate.turn >= data.ringdata.missioninfo[data.player.rings.missionid].turn) data.endmission()
+    if (data.player.rings.missionstate.turn >= this.missioninfo[data.player.rings.missionid].turn) this.endmission(data)
     if (data.player.rings.onmission) {
-      data.useskill(0)
+      this.useskill(data, 0)
     } else {
-      data.startmission(data.player.rings.missionid)
+      this.startmission(data, data.player.rings.missionid)
     }
   }
 
   this.isavailablemission = function (data, i) {
-    return data.ringdata.missioninfo[i].preventchallenge.every((v) => data.player.rings.clearedmission.includes(v))
+    return this.missioninfo[i].preventchallenge.every((v) => data.player.rings.clearedmission.includes(v))
   }
 
   this.startmission = function (data, i) {
-    if (data.player.rings.setrings.length < data.ringdata.missioninfo[i].setsizemin || data.ringdata.missioninfo[i].setsizemax < data.player.rings.setrings.length) return
+    if (data.player.rings.setrings.length < this.missioninfo[i].setsizemin || this.missioninfo[i].setsizemax < data.player.rings.setrings.length) return
     if (data.player.rings.onmission) return
     data.player.rings.onmission = true
     data.player.rings.missionid = i
@@ -595,19 +595,19 @@ function Ringdata() {
     data.player.rings.missionstate.skilllog = []
     data.player.rings.missionstate.tps = []
     for (let r of data.player.rings.setrings) {
-      let lv = data.ringdata.getlevel(data.player.rings, r)
-      data.player.rings.missionstate.tps.push(data.ringdata.getstatus(r, 6, lv))//6:tp status id
+      let lv = this.getlevel(data.player.rings, r)
+      data.player.rings.missionstate.tps.push(this.getstatus(r, 6, lv))//6:tp status id
     }
     data.player.rings.missionstate.fieldeffect = []
     console.log("Starting mission" + i)
-    for (let e of data.ringdata.missioninfo[i].passivefunction) {
+    for (let e of this.missioninfo[i].passivefunction) {
       data.player.rings.missionstate.fieldeffect.push([e, -1])
     }
   }
 
   this.useskill = function (data, i) {
     let ringid = data.player.rings.setrings[data.player.rings.missionstate.activering]
-    let sk = data.ringdata.skills[data.ringdata.availableskills(data.player.rings, ringid)[i]]
+    let sk = this.skills[this.availableskills(data.player.rings, ringid)[i]]
     if (sk.tp > data.player.rings.missionstate.tps[data.player.rings.missionstate.activering]) return
     sk.effect(data.player.rings)
     data.player.rings.missionstate.tps[data.player.rings.missionstate.activering] -= sk.tp
@@ -618,7 +618,7 @@ function Ringdata() {
       data.player.rings.missionstate.activering = 0;
       data.player.rings.missionstate.turn++;
       for (let e of data.player.rings.missionstate.fieldeffect) {
-        let eff = data.ringdata.fieldeffects.find((elem) => elem.id == e[0])
+        let eff = this.fieldeffects.find((elem) => elem.id == e[0])
         if (eff.timing == "turnend") {
           eff.effect(data.player.rings.missionstate, e[1])
         }
@@ -631,16 +631,16 @@ function Ringdata() {
   }
 
   this.endmission = function (data) {
-    let win = data.ringpointsum() >= data.ringdata.missioninfo[data.player.rings.missionid].goal
-    if ((!win) && data.player.rings.missionstate.turn < data.ringdata.missioninfo[data.player.rings.missionid].turn) {
+    let win = this.ringpointsum(data) >= this.missioninfo[data.player.rings.missionid].goal
+    if ((!win) && data.player.rings.missionstate.turn < this.missioninfo[data.player.rings.missionid].turn) {
       if (!window.confirm("撤退します。よろしいですか？")) return
     }
     data.player.rings.onmission = false
     if (win) {
       for (i in data.player.rings.setrings) {
         r = data.player.rings.setrings[i]
-        data.player.rings.ringsexp[r] += Math.floor(data.ringdata.missioninfo[data.player.rings.missionid].exp * (data.player.rings.setrings.length - i) / (data.player.rings.setrings.length * (data.player.rings.setrings.length + 1) / 2))
-        data.player.rings.ringsexp[r] = Math.min(data.player.rings.ringsexp[r], data.ringdata.leveltable[data.ringdata.levelcap() - 1])
+        data.player.rings.ringsexp[r] += Math.floor(this.missioninfo[data.player.rings.missionid].exp * (data.player.rings.setrings.length - i) / (data.player.rings.setrings.length * (data.player.rings.setrings.length + 1) / 2))
+        data.player.rings.ringsexp[r] = Math.min(data.player.rings.ringsexp[r], this.leveltable[this.levelcap() - 1])
       }
       if (!data.player.rings.clearedmission.includes(data.player.rings.missionid)) {
         data.player.rings.clearedmission.push(data.player.rings.missionid)
@@ -656,7 +656,7 @@ function Ringdata() {
     if (index == 0) {
       data.player.rings.outsideauto.autospendshine = !data.player.rings.outsideauto.autospendshine
       if (data.player.rings.outsideauto.autospendshine) {
-        data.autoshinetimerid = setInterval(data.autoshine, 1000)
+        data.autoshinetimerid = setInterval(function () { data.shinedata.autoshine(data) }, 1000)
       } else {
         clearInterval(data.autoshinetimerid)
         data.autoshinetimerid = 0
@@ -665,7 +665,7 @@ function Ringdata() {
     if (index == 1) {
       data.player.rings.outsideauto.autospendbright = !data.player.rings.outsideauto.autospendbright
       if (data.player.rings.outsideauto.autospendbright) {
-        data.autobrighttimerid = setInterval(data.autobright, 1000)
+        data.autobrighttimerid = setInterval(function () { data.shinedata.autobright(data) }, 1000)
       } else {
         clearInterval(data.autobrighttimerid)
         data.autobrighttimerid = 0
@@ -674,7 +674,7 @@ function Ringdata() {
     if (index == 2) {
       data.player.rings.outsideauto.autodochallenge = !data.player.rings.outsideauto.autodochallenge
       if (data.player.rings.outsideauto.autodochallenge) {
-        data.autochallengetimerid = setInterval(data.autochallenge, 1000)
+        data.autochallengetimerid = setInterval(function () { data.shinedata.autochallenge(data) }, 1000)
       } else {
         clearInterval(data.autochallengetimerid)
         data.autochallengetimerid = 0

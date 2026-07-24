@@ -53,7 +53,7 @@ function Generatordata() {
             data.player.money = data.player.money.sub(data.player.generatorsCost[index])
             data.player.generators[index] = data.player.generators[index].add(1)
             data.player.generatorsBought[index] = data.player.generatorsBought[index].add(1)
-            data.calcgncost()
+            this.calcgncost(data)
         }
     }
 
@@ -229,7 +229,7 @@ function Generatordata() {
         if (data.player.onchallenge && data.player.challenges.includes(3)) return;
         for (let i = 0; i < 8; i++) {
             while (data.player.setmodes[i] != data.player.generatorsMode[i]) {
-                data.changeMode(i)
+                this.changeMode(data, i)
             }
         }
     }

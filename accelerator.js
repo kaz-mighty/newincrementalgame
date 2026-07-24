@@ -32,7 +32,7 @@ function Acceleratordata() {
             data.player.money = data.player.money.sub(data.player.acceleratorsCost[index])
             data.player.accelerators[index] = data.player.accelerators[index].add(1)
             data.player.acceleratorsBought[index] = data.player.acceleratorsBought[index].add(1)
-            data.calcaccost()
+            this.calcaccost(data)
         }
     }
 }

@@ -178,7 +178,7 @@ Vue.createApp({
 
       if (this.trophycheck) this.checktrophies();
       this.checkmemories();
-      this.checkworlds();
+      this.worlddata.checkworlds(this);
       this.countsmalltrophies();
       this.calccommonmult();
       this.findhighestgenerator();

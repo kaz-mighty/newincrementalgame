@@ -30,7 +30,7 @@ function Darkdata() {
             data.player.money = data.player.money.sub(data.player.darkgeneratorsCost[index])
             data.player.darkgenerators[index] = data.player.darkgenerators[index].add(1)
             data.player.darkgeneratorsBought[index] = data.player.darkgeneratorsBought[index].add(1)
-            data.calcdgcost()
+            this.calcdgcost(data)
         }
     }
 

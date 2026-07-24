@@ -132,7 +132,7 @@ function Rememberdata() {
     let cnt = 0;
 
     for (let i = 0; i < worldnum; i++) {
-      data.counttrophies(i)
+      data.trophydata.counttrophies(data, i)
       if (data.world == i) continue
       cnt += data.trophynumber[i]
     }

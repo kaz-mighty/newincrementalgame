@@ -14,7 +14,7 @@ function Worlddata() {
     this.openpipe = function (data, i) {
         console.log("a")
 
-        let maxpipe = data.calcmaxpipe()
+        let maxpipe = this.calcmaxpipe(data)
 
         if (data.player.worldpipe[i] >= maxpipe) return
 

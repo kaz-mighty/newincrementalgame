@@ -1,122 +1,122 @@
-function Chipdata(){
+function Chipdata() {
 
-  this.calcchipretrytime = function(data){
+  this.calcchipretrytime = function (data) {
     let retry = 0
-    for(let i=0;i<9;i++){
-      if(data.player.spendchip[i]>0){
-        retry += 1 + Math.log(data.player.spendchip[i]) / Math.log(10-i)
+    for (let i = 0; i < 9; i++) {
+      if (data.player.spendchip[i] > 0) {
+        retry += 1 + Math.log(data.player.spendchip[i]) / Math.log(10 - i)
       }
     }
     retry = Math.floor(retry)
     return retry
   }
 
-  this.calcgainchip = function(data){
-    let bonus = new Decimal(10).pow(data.eachpipedsmalltrophy[7]*0.4)
-    if(data.player.activatedcampaigns.includes("tanabata2")){
+  this.calcgainchip = function (data) {
+    let bonus = new Decimal(10).pow(data.eachpipedsmalltrophy[7] * 0.4)
+    if (data.player.activatedcampaigns.includes("tanabata2")) {
       bonus = bonus.mul(data.player.lightmoney.add(1))
     }
-    console.log("bonus"+bonus)
+    console.log("bonus" + bonus)
     let mny = data.player.money
-    if(data.chipthresholduse)mny = mny.min(data.chipthreshold)
+    if (data.chipthresholduse) mny = mny.min(data.chipthreshold)
     let clevel = this.getcl(mny.mul(bonus))
-    return this.getchipid(clevel,1 + (this.haveenoughchip(data)?this.calcchipretrytime(data):0))
+    return this.getchipid(clevel, 1 + (this.haveenoughchip(data) ? this.calcchipretrytime(data) : 0))
   }
 
-  this.haveenoughchip = function(data){
-      return data.player.chip.every((x,i) => x>=data.player.spendchip[i])
+  this.haveenoughchip = function (data) {
+    return data.player.chip.every((x, i) => x >= data.player.spendchip[i])
   }
 
-  this.calcchipgetnum = function(data,kind){
+  this.calcchipgetnum = function (data, kind) {
 
     let hit = 0
-    for(let i=0;i<data.chipused[kind];i++){
+    for (let i = 0; i < data.chipused[kind]; i++) {
       let chipdoubleprob = 0.01 * (1 + 0.1 * data.eachpipedsmalltrophy[11])
-      if(Math.random()<chipdoubleprob)hit++;
+      if (Math.random() < chipdoubleprob) hit++;
     }
-    hit = Math.min(hit,10)
-    let chipgetnum = Math.floor(Math.pow(2,hit))
+    hit = Math.min(hit, 10)
+    let chipgetnum = Math.floor(Math.pow(2, hit))
 
     //ゴールデンウィークキャンペーン
-    if(data.player.activatedcampaigns.includes("gw2")){
-      if(kind == 2)chipgetnum = chipgetnum + 4
+    if (data.player.activatedcampaigns.includes("gw2")) {
+      if (kind == 2) chipgetnum = chipgetnum + 4
     }
 
-    chipgetnum = Math.min(chipgetnum,10000000-data.player.chip[kind])
+    chipgetnum = Math.min(chipgetnum, 10000000 - data.player.chip[kind])
 
     return chipgetnum
 
   }
 
-  this.getcl = function(mny){
-    if(mny.greaterThanOrEqualTo("1e350")) return 22
-    if(mny.greaterThanOrEqualTo("1e325")) return 21
-    if(mny.greaterThanOrEqualTo("1e300")) return 20
-    if(mny.greaterThanOrEqualTo("1e275")) return 19
-    if(mny.greaterThanOrEqualTo("1e250")) return 18
-    if(mny.greaterThanOrEqualTo("1e240")) return 17
-    if(mny.greaterThanOrEqualTo("1e230")) return 16
-    if(mny.greaterThanOrEqualTo("1e220")) return 15
-    if(mny.greaterThanOrEqualTo("1e210")) return 14
-    if(mny.greaterThanOrEqualTo("1e200")) return 13
-    if(mny.greaterThanOrEqualTo("1e190")) return 12
-    if(mny.greaterThanOrEqualTo("1e180")) return 11
-    if(mny.greaterThanOrEqualTo("1e170")) return 10
-    if(mny.greaterThanOrEqualTo("1e160")) return 9
-    if(mny.greaterThanOrEqualTo("1e150")) return 8
-    if(mny.greaterThanOrEqualTo("1e140")) return 7
-    if(mny.greaterThanOrEqualTo("1e130")) return 6
-    if(mny.greaterThanOrEqualTo("1e120")) return 5
-    if(mny.greaterThanOrEqualTo("1e110")) return 4
-    if(mny.greaterThanOrEqualTo("1e100")) return 3
-    if(mny.greaterThanOrEqualTo("1e90")) return 2
-    if(mny.greaterThanOrEqualTo("1e80")) return 1
+  this.getcl = function (mny) {
+    if (mny.greaterThanOrEqualTo("1e350")) return 22
+    if (mny.greaterThanOrEqualTo("1e325")) return 21
+    if (mny.greaterThanOrEqualTo("1e300")) return 20
+    if (mny.greaterThanOrEqualTo("1e275")) return 19
+    if (mny.greaterThanOrEqualTo("1e250")) return 18
+    if (mny.greaterThanOrEqualTo("1e240")) return 17
+    if (mny.greaterThanOrEqualTo("1e230")) return 16
+    if (mny.greaterThanOrEqualTo("1e220")) return 15
+    if (mny.greaterThanOrEqualTo("1e210")) return 14
+    if (mny.greaterThanOrEqualTo("1e200")) return 13
+    if (mny.greaterThanOrEqualTo("1e190")) return 12
+    if (mny.greaterThanOrEqualTo("1e180")) return 11
+    if (mny.greaterThanOrEqualTo("1e170")) return 10
+    if (mny.greaterThanOrEqualTo("1e160")) return 9
+    if (mny.greaterThanOrEqualTo("1e150")) return 8
+    if (mny.greaterThanOrEqualTo("1e140")) return 7
+    if (mny.greaterThanOrEqualTo("1e130")) return 6
+    if (mny.greaterThanOrEqualTo("1e120")) return 5
+    if (mny.greaterThanOrEqualTo("1e110")) return 4
+    if (mny.greaterThanOrEqualTo("1e100")) return 3
+    if (mny.greaterThanOrEqualTo("1e90")) return 2
+    if (mny.greaterThanOrEqualTo("1e80")) return 1
     return 0
   }
 
   this.ptable = [
-    [1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
+    [1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.85,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.65,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.40,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.30,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
+    [0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.65, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.40, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.30, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.20,0.95,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.05,0.80,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.65,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.55,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
+    [0.20, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.05, 0.80, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.65, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.55, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.00,0.45,0.95,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.25,0.85,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.15,0.60,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.10,0.40,1.01,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
+    [0.00, 0.45, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.25, 0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.15, 0.60, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.10, 0.40, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.00,0.00,0.20,0.95,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.00,0.15,0.85,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.00,0.10,0.70,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.00,0.05,0.60,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.00,0.00,0.50,1.01,1.01,1.01,1.01,1.01,1.01,1.01],
+    [0.00, 0.00, 0.20, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.00, 0.15, 0.85, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.00, 0.10, 0.70, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.00, 0.05, 0.60, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.00, 0.00, 0.50, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.00,0.00,0.00,0.40,0.95,1.01,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.00,0.00,0.30,0.95,1.01,1.01,1.01,1.01,1.01,1.01],
+    [0.00, 0.00, 0.00, 0.40, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.00, 0.00, 0.30, 0.95, 1.01, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.00,0.00,0.00,0.20,0.95,0.99,1.01,1.01,1.01,1.01,1.01],
-    [0.00,0.00,0.00,0.20,0.93,0.98,1.01,1.01,1.01,1.01,1.01],
+    [0.00, 0.00, 0.00, 0.20, 0.95, 0.99, 1.01, 1.01, 1.01, 1.01, 1.01],
+    [0.00, 0.00, 0.00, 0.20, 0.93, 0.98, 1.01, 1.01, 1.01, 1.01, 1.01],
 
-    [0.00,0.00,0.00,0.20,0.90,0.97,0.995,1.01,1.01,1.01,1.01],
+    [0.00, 0.00, 0.00, 0.20, 0.90, 0.97, 0.995, 1.01, 1.01, 1.01, 1.01],
 
 
 
   ]
 
-  this.getchipid = function(lv,time){
+  this.getchipid = function (lv, time) {
     let d = Math.random()
-    let table = this.ptable[lv].map((x) => Math.pow(x,time))
+    let table = this.ptable[lv].map((x) => Math.pow(x, time))
     console.log(table)
-    for(let i=0;i<=10;i++){
-      if(table[i]>d){
-        return i-1
+    for (let i = 0; i <= 10; i++) {
+      if (table[i] > d) {
+        return i - 1
       }
     }
   }
@@ -134,7 +134,7 @@ function Chipdata(){
     "覇金",
   ]
 
-  this.chipbonusname =[
+  this.chipbonusname = [
     "発生器効率",
     "発生器1効率",
     "発生器2効率",
@@ -205,47 +205,47 @@ function Chipdata(){
   }
 
   this.configchipthresholdnumber = function (data) {
-    let input = window.prompt("閾値を設定","")
+    let input = window.prompt("閾値を設定", "")
     input = new Decimal(input)
     data.chipthreshold = input
   }
 
   this.configspendchip = function (data, i) {
     let maxspend = data.player.statue[i] * data.player.statue[i]
-    let input = window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(),"")
+    let input = window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), "")
     input = parseInt(input)
-    if(isNaN(input)) return
-    if(input<0 || input> maxspend) return
+    if (isNaN(input)) return
+    if (input < 0 || input > maxspend) return
     data.player.spendchip[i] = input
   }
 
   this.chipset = function (data, i, j) {
-    if(data.player.disabledchip[i]) return
-    if(data.player.setchip[i] == j) return
-    if(data.player.chip[j-1]<=data.chipused[j-1]) return
-    let oldchip = data.player.setchip[i]-1
-    if(oldchip!=-1)data.player.chip[oldchip] = data.player.chip[oldchip]+data.chipused[oldchip]
+    if (data.player.disabledchip[i]) return
+    if (data.player.setchip[i] == j) return
+    if (data.player.chip[j - 1] <= data.chipused[j - 1]) return
+    let oldchip = data.player.setchip[i] - 1
+    if (oldchip != -1) data.player.chip[oldchip] = data.player.chip[oldchip] + data.chipused[oldchip]
     data.player.setchip[i] = j
-    if(j!=0)data.player.chip[j-1] = data.player.chip[j-1] - (data.chipused[j-1]+1)
+    if (j != 0) data.player.chip[j - 1] = data.player.chip[j - 1] - (data.chipused[j - 1] + 1)
     data.checkusedchips()
   }
 
   this.checkusedchips = function (data) {
     data.chipused.fill(0)
-    for(let v of data.player.setchip){
-      if(v!=0)data.chipused[v-1] = data.chipused[v-1]+1
+    for (let v of data.player.setchip) {
+      if (v != 0) data.chipused[v - 1] = data.chipused[v - 1] + 1
     }
   }
 
   this.clearsetchip = function (data) {
-    for(let i=0;i<100;i++){
-      data.chipset(i,0)
+    for (let i = 0; i < 100; i++) {
+      data.chipset(i, 0)
     }
   }
 
   this.setchiptype = function (data) {
-    if(confirm('現在の鋳片型を登録します。よろしいですか？')){
-      for(let i=0;i<100;i++){
+    if (confirm('現在の鋳片型を登録します。よろしいですか？')) {
+      for (let i = 0; i < 100; i++) {
         data.player.setchiptypefst[i] = data.player.setchip[i]
       }
     }
@@ -253,10 +253,9 @@ function Chipdata(){
 
   this.changechiptype = function (data) {
     data.clearsetchip()
-    for(let i=0;i<100;i++){
-      data.chipset(i,data.player.setchiptypefst[i])
+    for (let i = 0; i < 100; i++) {
+      data.chipset(i, data.player.setchiptypefst[i])
     }
-
   }
 
 

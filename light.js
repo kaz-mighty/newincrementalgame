@@ -1,16 +1,15 @@
 function Lightdata() {
   this.calclgcost = function (data) {
-    for(let i=0;i<8;i++){
-      let p = 200 + (i==0?0:(i+1)*(i+1)*(i+1)*(i+1))
-      let q = data.player.lightgeneratorsBought[i].mul(i+1).mul(i+1).mul(i+1)
+    for (let i = 0; i < 8; i++) {
+      let p = 200 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1) * (i + 1))
+      let q = data.player.lightgeneratorsBought[i].mul(i + 1).mul(i + 1).mul(i + 1)
       q = q.add(p)
       data.player.lightgeneratorsCost[i] = new Decimal(10).pow(q)
     }
   }
 
   this.updatelightgenerators = function (data, mu) {
-
-    let pipemult = 1+data.eachpipedsmalltrophy[10] * 0.1
+    let pipemult = 1 + data.eachpipedsmalltrophy[10] * 0.1
 
     data.player.lightmoney = data.player.lightmoney.add(data.player.lightgenerators[0].mul(mu).mul(pipemult))
     for (let i = 1; i < 8; i++) {

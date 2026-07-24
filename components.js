@@ -166,7 +166,6 @@ const OptionTab = Vue.defineComponent({
       if (k == '{') return
       localStorage.setItem("playerStoredb", input)
       this.nig.dataLoad()
-      this.nig.load(0)
     },
   },
 });

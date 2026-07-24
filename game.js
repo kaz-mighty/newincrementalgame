@@ -233,7 +233,6 @@ class Nig { // New Incremental Game
 
   awake() {
     this.dataLoad();
-    this.load(0);
 
     this.time = Date.now();
 
@@ -293,6 +292,9 @@ class Nig { // New Incremental Game
 
       this.players[i] = saveData
     }
+
+    this.common.worldOpened.fill(false);
+    this.load(0);
   }
   /** @param {number} world */
   load(world) {

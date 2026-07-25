@@ -1166,9 +1166,26 @@
 							@click="markstonedata.selectType(whole, 1)">貨印石</button>
 						所持数: {{ player.markstone.diamond }} 次回入手条件: {{ markstonedata.calcRequirement(whole, 1).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.diamondGainedSinceCrownReset }}</span>
 					</div>
+					<div class="statue-item">
+						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 2 }"
+							@click="markstonedata.selectType(whole, 2)">杯印石</button>
+						所持数: {{ player.markstone.heart }} 次回入手条件: {{ markstonedata.calcRequirement(whole, 2).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.heartGainedSinceCrownReset }}</span>
+					</div>
+					<div class="statue-item">
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 3 }"
+						@click="markstonedata.selectType(whole, 3)">剣印石</button>
+					所持数: {{ player.markstone.spade }} 次回入手条件: {{ markstonedata.calcRequirement(whole, 3).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.spadeGainedSinceCrownReset }}</span>
 				</div>
-				<div>経過間隙: {{ player.markstone.ticksSinceRankReset }}</div>
 			</div>
+			<div>印石効果: {{ markstonedata.calcMarkstoneEffect(whole).toExponential(3) }} </div>
+			<div v-if="player.markstone.greatClub > 0">大杖印石: {{ player.markstone.greatClub }} 効果: 発生器+{{ player.markstone.greatClub }}%</div>
+			<div v-if="markstonedata.canResetMarkstone(whole)">
+				<button type="button" class="autobuyerbutton"
+					@click="resetMarkstone()">印石リセット</button>
+				印石をリセットして大杖印石を1つ入手
+			</div>
+			<div>経過間隙: {{ player.markstone.ticksSinceRankReset }}</div>
+		</div>
 			<div id="tweet">
 				<a :href="tweetLink" target="_blank" rel="noopener noreferrer">Tweet #新しい放置ゲーム</a>
 			</div>

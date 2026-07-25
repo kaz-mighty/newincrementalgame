@@ -14,15 +14,31 @@ function Markstonedata() {
   this.getMarkstoneData = function (data, type) {
     if (type === 0) {
       return {
+        current: data.player.markstone.club,
         gained: data.player.markstone.clubGainedSinceCrownReset,
         baseExp: 240,
         decayMult: 1,
       };
     } else if (type === 1) {
       return {
+        current: data.player.markstone.diamond,
         gained: data.player.markstone.diamondGainedSinceCrownReset,
         baseExp: 250,
         decayMult: 1.25,
+      };
+    } else if (type === 2) {
+      return {
+        current: data.player.markstone.heart,
+        gained: data.player.markstone.heartGainedSinceCrownReset,
+        baseExp: 260,
+        decayMult: 1.5,
+      };
+    } else if (type === 3) {
+      return {
+        current: data.player.markstone.spade,
+        gained: data.player.markstone.spadeGainedSinceCrownReset,
+        baseExp: 270,
+        decayMult: 1.75,
       };
     }
     // 将来用
@@ -44,6 +60,12 @@ function Markstonedata() {
 
   // 獲得可能判定（共通化）
   this.canGet = function (data, type) {
+    let msData = this.getMarkstoneData(data, type);
+    if (!msData) return false;
+
+    // 所持数上限チェック (1億)
+    if (msData.current >= 100000000) return false;
+
     return data.player.money.greaterThanOrEqualTo(
       this.calcRequirement(data, type),
     );
@@ -58,6 +80,12 @@ function Markstonedata() {
       } else if (type === 1) {
         data.player.markstone.diamond += 1;
         data.player.markstone.diamondGainedSinceCrownReset += 1;
+      } else if (type === 2) {
+        data.player.markstone.heart += 1;
+        data.player.markstone.heartGainedSinceCrownReset += 1;
+      } else if (type === 3) {
+        data.player.markstone.spade += 1;
+        data.player.markstone.spadeGainedSinceCrownReset += 1;
       }
       return true;
     }
@@ -86,5 +114,67 @@ function Markstonedata() {
   // 選択した印石の入手条件を計算
   this.calcSelectedRequirement = function (data) {
     return this.calcRequirement(data, data.player.markstone.selectedType);
+  };
+
+  // 印石効果を計算
+  // ((1+0.01*Club)*(1+0.01*Diamond)*(1+0.01*Heart)*(1+0.01*Spade)-1)*100
+  this.calcMarkstoneEffect = function (data) {
+    let club = new Decimal(data.player.markstone.club).mul(0.01).add(1);
+    let diamond = new Decimal(data.player.markstone.diamond).mul(0.01).add(1);
+    let heart = new Decimal(data.player.markstone.heart).mul(0.01).add(1);
+    let spade = new Decimal(data.player.markstone.spade).mul(0.01).add(1);
+
+    let total = club.mul(diamond).mul(heart).mul(spade);
+    return total.sub(1).mul(100);
+  };
+
+  // ========== 大印石（印石リセット）システム ==========
+
+  // 印石リセット可能判定（印石総効果 > 100）
+  this.canResetMarkstone = function (data) {
+    return this.calcMarkstoneEffect(data).gt(100);
+  };
+
+  // 印石リセット処理
+  this.resetMarkstone = function (data) {
+    if (!this.canResetMarkstone(data)) return;
+
+    if (
+      !confirm(
+        "印石をリセットして大杖印石を1つ入手しますか？\n全ての印石の所持数と入手数が0に戻ります。",
+      )
+    ) {
+      return;
+    }
+
+    // 印石の所持数をリセット
+    data.player.markstone.club = 0;
+    data.player.markstone.diamond = 0;
+    data.player.markstone.heart = 0;
+    data.player.markstone.spade = 0;
+
+    // 入手数をリセット
+    data.player.markstone.clubGainedSinceCrownReset = 0;
+    data.player.markstone.diamondGainedSinceCrownReset = 0;
+    data.player.markstone.heartGainedSinceCrownReset = 0;
+    data.player.markstone.spadeGainedSinceCrownReset = 0;
+
+    // 大杖印石を1つ入手
+    data.player.markstone.greatClub += 1;
+  };
+
+  // 大印石効果を計算
+  // type: 0=大杖印石, 1=大貨印石, 2=大杯印石, 3=大剣印石
+  this.calcGreatMarkstoneEffect = function (data, type) {
+    if (type === 0) {
+      return 1 + 0.01 * data.player.markstone.greatClub;
+    } else if (type === 1) {
+      return 1 + 0.01 * data.player.markstone.greatDiamond;
+    } else if (type === 2) {
+      return 1 + 0.01 * data.player.markstone.greatHeart;
+    } else if (type === 3) {
+      return 1 + 0.01 * data.player.markstone.greatSpade;
+    }
+    return 1;
   };
 }

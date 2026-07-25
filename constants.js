@@ -42,6 +42,10 @@ const initialData = () => {
       spadeGainedSinceCrownReset: 0, // 冠位リセット後に入手した剣印石の数
       ticksSinceRankReset: 0, // 階位リセット後のtick数
       selectedType: 0, // 選択中の印石タイプ: 0=杖, 1=貨, 2=杯, 3=剣
+      greatClub: 0, // 大杖印石
+      greatDiamond: 0, // 大貨印石（将来用）
+      greatHeart: 0, // 大杯印石（将来用）
+      greatSpade: 0, // 大剣印石（将来用）
     },
 
     generators: new Array(8).fill(null).map(() => new Decimal(0)),

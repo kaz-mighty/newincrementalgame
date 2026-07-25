@@ -340,6 +340,9 @@ Vue.createApp({
     resetCrown(force) {
       this.crowndata.resetCrown(this, force);
     },
+    resetMarkstone() {
+      this.markstonedata.resetMarkstone(this);
+    },
     calcchallengeid() {
       return this.challengedata.calcchallengeid(this);
     },

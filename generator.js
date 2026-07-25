@@ -164,6 +164,11 @@ function Generatordata() {
       mult = mult.mul(0.001);
     }
 
+    // 大杖印石ボーナス: 1個あたり発生器効果+1%（加算）
+    if (data.player.markstone && data.player.markstone.greatClub > 0) {
+      mult = mult.mul(1 + 0.01 * data.player.markstone.greatClub);
+    }
+
     data.commonmult = mult;
   };
 

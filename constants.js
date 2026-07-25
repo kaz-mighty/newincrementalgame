@@ -54,8 +54,8 @@ const initialData = () => {
         cooldown: 0, // 再戦までの待機tick
         totalDamage: 0, // 合計与ダメージ
         achievements: 0, // 成果
-        shopUpgrades: [false, false, false, false], // 成果ショップ購入状態
-        resolutions: [0, 0], // 矛盾の解決数（0=解決1, 1=解決2）
+        shopUpgrades: [false, false, false, false, false, false, false], // 成果ショップ購入状態
+        resolutions: [0, 0, 0], // 矛盾の解決数（0=解決1, 1=解決2, 2=解決3）
       },
     },
 

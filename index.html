@@ -1187,10 +1187,14 @@
 			<div v-if="player.markstone.greatClub > 0">
 				<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.active }"
 					@click="toggleCalibration()">較正</button>
-				<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.selectedEnemy === 0 }"
-					@click="selectEnemy(0)">矛盾1</button>
-				<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.selectedEnemy === 1 }"
-					@click="selectEnemy(1)">矛盾2</button>
+				<div>
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.selectedEnemy === 0 }"
+						@click="selectEnemy(0)">矛盾1</button>
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.selectedEnemy === 1 }"
+						@click="selectEnemy(1)">矛盾2</button>
+					<button v-if="player.markstone.calibration.shopUpgrades && player.markstone.calibration.shopUpgrades[6]" type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.selectedEnemy === 2 }"
+						@click="selectEnemy(2)">矛盾3</button>
+				</div>
 				較正力: {{ markstonedata.calcCalibrationAttack(whole).toFixed(1) }} 矛盾度: {{ player.markstone.calibration.enemyHp.toFixed(1) }}/{{ markstonedata.getEnemyMaxHp(whole, player.markstone.calibration.selectedEnemy) }}<span v-if="player.markstone.calibration.cooldown > 0"> 待機中({{ player.markstone.calibration.cooldown }})</span>
 			</div>
 			<div v-if="player.markstone.greatClub > 0 && player.markstone.calibration.shopUpgrades && player.markstone.calibration.shopUpgrades[1]">
@@ -1200,13 +1204,15 @@
 					@click="setEnemyLevel(2)">Lv2</button>
 			</div>
 			<div v-if="player.markstone.greatClub > 0">
-				矛盾の解決1: {{ player.markstone.calibration.resolutions[0] }} 矛盾の解決2: {{ player.markstone.calibration.resolutions[1] }} 合計与ダメージ: {{ player.markstone.calibration.totalDamage }}/1000000 成果: {{ player.markstone.calibration.achievements }}
+				矛盾の解決1: {{ player.markstone.calibration.resolutions[0] }} 矛盾の解決2: {{ player.markstone.calibration.resolutions[1] }}<span v-if="player.markstone.calibration.shopUpgrades && player.markstone.calibration.shopUpgrades[6]"> 矛盾の解決3: {{ player.markstone.calibration.resolutions[2] }}</span> 合計解決価: {{ player.markstone.calibration.totalDamage }}/1000000 成果: {{ player.markstone.calibration.achievements }}
 			</div>
-			<div v-if="player.markstone.greatClub > 0 && player.markstone.calibration.achievements > 0 || (player.markstone.calibration.shopUpgrades && (player.markstone.calibration.shopUpgrades[0] || player.markstone.calibration.shopUpgrades[1] || player.markstone.calibration.shopUpgrades[2]))">
-				<span v-for="(item, i) in markstonedata.shopItems">
+			成果の現れ
+			<div v-if="player.markstone.greatClub > 0 && markstonedata.shouldShowShop(whole)">
+				<div class="autobuyer-item" v-for="(item, i) in markstonedata.shopItems">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.calibration.shopUpgrades && player.markstone.calibration.shopUpgrades[i] }"
-						@click="buyShopUpgrade(i)" :disabled="player.markstone.calibration.shopUpgrades && player.markstone.calibration.shopUpgrades[i]">{{ item.name }}({{ item.cost }})</button>
-				</span>
+						@click="buyShopUpgrade(i)" :disabled="player.markstone.calibration.shopUpgrades && player.markstone.calibration.shopUpgrades[i]">{{ item.name }}:コスト{{ item.cost }}</button>
+					<div class="info">{{ item.desc }}</div>
+				</div>
 			</div>
 			<div>経過間隙: {{ player.markstone.ticksSinceRankReset }}</div>
 		</div>

@@ -77,7 +77,7 @@ function Storagedata() {
             resolutions: [0, 0],
           };
         }
-        while (saveData.markstone.calibration.resolutions.length < 2) {
+        while (saveData.markstone.calibration.resolutions.length < 3) {
           saveData.markstone.calibration.resolutions.push(0);
         }
         if (!saveData.markstone.calibration.shopUpgrades) {
@@ -86,9 +86,12 @@ function Storagedata() {
             false,
             false,
             false,
+            false,
+            false,
+            false,
           ];
         }
-        while (saveData.markstone.calibration.shopUpgrades.length < 4) {
+        while (saveData.markstone.calibration.shopUpgrades.length < 7) {
           saveData.markstone.calibration.shopUpgrades.push(false);
         }
       }

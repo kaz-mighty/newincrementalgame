@@ -184,6 +184,7 @@ function Markstonedata() {
   this.enemyTypes = [
     { name: "矛盾1", hp: 100 },
     { name: "矛盾2", hp: 5000 },
+    { name: "矛盾3", hp: 20000 },
   ];
 
   // レベルに応じた最大HP: 基礎HP × 5^(level-1)
@@ -217,21 +218,21 @@ function Markstonedata() {
     data.player.markstone.calibration.cooldown = 0;
   };
 
-  // 較正力を計算: 基礎1 × (1 + 0.1 × 解決1) × (1 + 0.1 × 解決2) × ショップボーナス
+  // 較正力を計算
   this.calcCalibrationAttack = function (data) {
     let base = data.player.markstone.greatClub > 0 ? 1 : 0;
     let res = data.player.markstone.calibration.resolutions;
-    let mult1 = 1 + 0.1 * res[0];
-    let mult2 = 1 + 0.1 * res[1];
+    let mult1 = 1 + 0.1 * (res[0] || 0);
+    let mult2 = 1 + 0.1 * (res[1] || 0);
+    let mult3 = 1 + 0.1 * (res[2] || 0);
     let shopMult = 1;
-    // ショップ1: 攻撃力1.2倍
-    if (
-      data.player.markstone.calibration.shopUpgrades &&
-      data.player.markstone.calibration.shopUpgrades[0]
-    ) {
-      shopMult *= 1.2;
+    let su = data.player.markstone.calibration.shopUpgrades;
+    if (su) {
+      if (su[0]) shopMult *= 1.2; // 成果の現れ1
+      if (su[4]) shopMult *= 1.5; // 成果の現れ5
+      if (su[5]) shopMult *= 2; // 成果の現れ6
     }
-    return base * mult1 * mult2 * shopMult;
+    return base * mult1 * mult2 * mult3 * shopMult;
   };
 
   // レベル変更（ショップ2購入済みの場合のみ）
@@ -251,11 +252,26 @@ function Markstonedata() {
 
   // ========== 成果ショップ ==========
 
+  // 成果ショップを表示すべきか
+  this.shouldShowShop = function (data) {
+    let cal = data.player.markstone.calibration;
+    if (cal.achievements > 0) return true;
+    if (cal.shopUpgrades) {
+      for (let i = 0; i < cal.shopUpgrades.length; i++) {
+        if (cal.shopUpgrades[i]) return true;
+      }
+    }
+    return false;
+  };
+
   this.shopItems = [
     { name: "成果の現れ1", cost: 1, desc: "較正力1.2倍" },
     { name: "成果の現れ2", cost: 1, desc: "レベルを2に変更可能" },
-    { name: "成果の現れ3", cost: 4, desc: "待機中も1/10のダメージ" },
+    { name: "成果の現れ3", cost: 4, desc: "待機中も1/10の較正力を発揮" },
     { name: "成果の現れ4", cost: 16, desc: "発生器の効率2倍" },
+    { name: "成果の現れ5", cost: 4, desc: "較正力1.5倍" },
+    { name: "成果の現れ6", cost: 8, desc: "較正力2倍" },
+    { name: "成果の現れ7", cost: 12, desc: "矛盾3を解放" },
   ];
 
   this.buyShopUpgrade = function (data, index) {
@@ -311,7 +327,7 @@ function Markstonedata() {
         data.player.markstone.calibration.achievements += 1;
         // 較正リセット
         data.player.markstone.calibration.totalDamage = 0;
-        data.player.markstone.calibration.resolutions = [0, 0];
+        data.player.markstone.calibration.resolutions = [0, 0, 0];
         data.player.markstone.calibration.enemyLevel = 1;
         data.player.markstone.calibration.selectedEnemy = 0;
         data.player.markstone.calibration.cooldown = 0;

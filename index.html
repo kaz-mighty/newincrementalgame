@@ -1159,12 +1159,12 @@
 					<div class="statue-item">
 						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 0 }"
 							@click="markstonedata.selectType(whole, 0)">杖印石</button>
-						所持数: {{ player.markstone.club }} 次回入手条件: {{ markstonedata.calcClubRequirement(whole).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.clubGainedSinceCrownReset }}</span>
+						所持数: {{ player.markstone.club }} 次回入手条件: {{ markstonedata.calcRequirement(whole, 0).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.clubGainedSinceCrownReset }}</span>
 					</div>
 					<div class="statue-item">
 						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 1 }"
 							@click="markstonedata.selectType(whole, 1)">貨印石</button>
-						所持数: {{ player.markstone.diamond }} 次回入手条件: {{ markstonedata.calcDiamondRequirement(whole).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.diamondGainedSinceCrownReset }}</span>
+						所持数: {{ player.markstone.diamond }} 次回入手条件: {{ markstonedata.calcRequirement(whole, 1).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.diamondGainedSinceCrownReset }}</span>
 					</div>
 				</div>
 				<div>経過間隙: {{ player.markstone.ticksSinceRankReset }}</div>

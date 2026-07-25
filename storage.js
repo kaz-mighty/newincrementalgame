@@ -1,4 +1,8 @@
 function Storagedata() {
+    this.initialData = function () {
+        return initialData()
+    }
+
     this.save = function (data) {
 
         data.players[data.world] = data.player
@@ -14,14 +18,14 @@ function Storagedata() {
         data.players = JSON.parse(atob(localStorage.getItem("playerStoredb")))
 
         while (data.players.length < worldnum) {
-            data.players.push(initialData())
+            data.players.push(this.initialData())
         }
 
         for (let i = 0; i < worldnum; i++) {
 
             const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
 
-            saveData = deepmerge(initialData(), data.players[i], {
+            saveData = deepmerge(this.initialData(), data.players[i], {
                 arraymerge: overwriteMerge,
                 isMergeableObject: isPlainObject
             })
@@ -198,9 +202,9 @@ function Storagedata() {
 
     this.resetData = function (data, force) {
         if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-            data.player = initialData()
+            data.player = this.initialData()
             for (let i = 0; i < worldnum; i++) {
-                data.players[i] = initialData()
+                data.players[i] = this.initialData()
             }
         }
     }

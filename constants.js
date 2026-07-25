@@ -36,9 +36,9 @@ const initialData = () => {
       clubGainedSinceCrownReset: 0, // 冠位リセット後に入手した杖印石の数
       diamond: 0, // 貨印石
       diamondGainedSinceCrownReset: 0, // 冠位リセット後に入手した貨印石の数
-      heart: 0, // 杯印石（将来用）
+      heart: 0, // 杯印石
       heartGainedSinceCrownReset: 0, // 冠位リセット後に入手した杯印石の数
-      spade: 0, // 剣印石（将来用）
+      spade: 0, // 剣印石
       spadeGainedSinceCrownReset: 0, // 冠位リセット後に入手した剣印石の数
       ticksSinceRankReset: 0, // 階位リセット後のtick数
       selectedType: 0, // 選択中の印石タイプ: 0=杖, 1=貨, 2=杯, 3=剣
@@ -46,6 +46,17 @@ const initialData = () => {
       greatDiamond: 0, // 大貨印石（将来用）
       greatHeart: 0, // 大杯印石（将来用）
       greatSpade: 0, // 大剣印石（将来用）
+      calibration: {
+        active: false, // 較正モードON/OFF
+        selectedEnemy: 0, // 選択中の矛盾: 0=矛盾1, 1=矛盾2
+        enemyHp: 100, // 矛盾の現在矛盾度
+        enemyLevel: 1, // 矛盾のレベル（コンソールから変更）
+        cooldown: 0, // 再戦までの待機tick
+        totalDamage: 0, // 合計与ダメージ
+        achievements: 0, // 成果
+        shopUpgrades: [false, false, false, false], // 成果ショップ購入状態
+        resolutions: [0, 0], // 矛盾の解決数（0=解決1, 1=解決2）
+      },
     },
 
     generators: new Array(8).fill(null).map(() => new Decimal(0)),

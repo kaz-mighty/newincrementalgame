@@ -177,4 +177,151 @@ function Markstonedata() {
     }
     return 1;
   };
+
+  // ========== 較正（戦闘）システム ==========
+
+  // 矛盾の種類定義
+  this.enemyTypes = [
+    { name: "矛盾1", hp: 100 },
+    { name: "矛盾2", hp: 5000 },
+  ];
+
+  // レベルに応じた最大HP: 基礎HP × 5^(level-1)
+  this.getEnemyMaxHp = function (data, idx) {
+    let lv = data.player.markstone.calibration.enemyLevel || 1;
+    return this.enemyTypes[idx].hp * Math.pow(5, lv - 1);
+  };
+
+  // レベルに応じた報酬倍率: 2^(level-1)
+  this.getRewardMult = function (data) {
+    let lv = data.player.markstone.calibration.enemyLevel || 1;
+    return Math.pow(2, lv - 1);
+  };
+
+  // 較正モードのON/OFF切替
+  this.toggleCalibration = function (data) {
+    data.player.markstone.calibration.active =
+      !data.player.markstone.calibration.active;
+    if (data.player.markstone.calibration.active) {
+      let idx = data.player.markstone.calibration.selectedEnemy;
+      data.player.markstone.calibration.enemyHp = this.getEnemyMaxHp(data, idx);
+      data.player.markstone.calibration.cooldown = 0;
+    }
+  };
+
+  // 矛盾の種類を選択（切替時は報酬なしでHPリセット）
+  this.selectEnemy = function (data, index) {
+    if (data.player.markstone.calibration.selectedEnemy === index) return;
+    data.player.markstone.calibration.selectedEnemy = index;
+    data.player.markstone.calibration.enemyHp = this.getEnemyMaxHp(data, index);
+    data.player.markstone.calibration.cooldown = 0;
+  };
+
+  // 較正力を計算: 基礎1 × (1 + 0.1 × 解決1) × (1 + 0.1 × 解決2) × ショップボーナス
+  this.calcCalibrationAttack = function (data) {
+    let base = data.player.markstone.greatClub > 0 ? 1 : 0;
+    let res = data.player.markstone.calibration.resolutions;
+    let mult1 = 1 + 0.1 * res[0];
+    let mult2 = 1 + 0.1 * res[1];
+    let shopMult = 1;
+    // ショップ1: 攻撃力1.2倍
+    if (
+      data.player.markstone.calibration.shopUpgrades &&
+      data.player.markstone.calibration.shopUpgrades[0]
+    ) {
+      shopMult *= 1.2;
+    }
+    return base * mult1 * mult2 * shopMult;
+  };
+
+  // レベル変更（ショップ2購入済みの場合のみ）
+  this.setEnemyLevel = function (data, level) {
+    if (
+      !data.player.markstone.calibration.shopUpgrades ||
+      !data.player.markstone.calibration.shopUpgrades[1]
+    )
+      return;
+    if (level < 1 || level > 2) return;
+    data.player.markstone.calibration.enemyLevel = level;
+    // 戦闘リセット
+    let idx = data.player.markstone.calibration.selectedEnemy;
+    data.player.markstone.calibration.enemyHp = this.getEnemyMaxHp(data, idx);
+    data.player.markstone.calibration.cooldown = 0;
+  };
+
+  // ========== 成果ショップ ==========
+
+  this.shopItems = [
+    { name: "成果の現れ1", cost: 1, desc: "較正力1.2倍" },
+    { name: "成果の現れ2", cost: 1, desc: "レベルを2に変更可能" },
+    { name: "成果の現れ3", cost: 4, desc: "待機中も1/10のダメージ" },
+    { name: "成果の現れ4", cost: 16, desc: "発生器の効率2倍" },
+  ];
+
+  this.buyShopUpgrade = function (data, index) {
+    let cal = data.player.markstone.calibration;
+    if (!cal.shopUpgrades) cal.shopUpgrades = [false, false, false];
+    if (cal.shopUpgrades[index]) return; // 購入済み
+    if (cal.achievements < this.shopItems[index].cost) return; // 成果不足
+    cal.achievements -= this.shopItems[index].cost;
+    cal.shopUpgrades[index] = true;
+  };
+
+  // tick毎の較正処理
+  this.updateCalibration = function (data) {
+    if (!data.player.markstone.calibration.active) return;
+    if (data.player.markstone.greatClub <= 0) return;
+
+    // クールダウン中
+    if (data.player.markstone.calibration.cooldown > 0) {
+      data.player.markstone.calibration.cooldown -= 1;
+      // ショップ3: 待機中も1/10ダメージ
+      if (
+        data.player.markstone.calibration.shopUpgrades &&
+        data.player.markstone.calibration.shopUpgrades[2]
+      ) {
+        let attack = this.calcCalibrationAttack(data) * 0.1;
+        data.player.markstone.calibration.enemyHp -= attack;
+        // 待機中に倒した場合はkill処理へ進む
+        if (data.player.markstone.calibration.enemyHp <= 0) {
+          data.player.markstone.calibration.cooldown = 0;
+        } else {
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+
+    let idx = data.player.markstone.calibration.selectedEnemy;
+    let attack = this.calcCalibrationAttack(data);
+    data.player.markstone.calibration.enemyHp -= attack;
+
+    // 矛盾を倒した
+    if (data.player.markstone.calibration.enemyHp <= 0) {
+      let reward = this.getRewardMult(data);
+      data.player.markstone.calibration.resolutions[idx] += reward;
+
+      // 合計与ダメージ = 敵のHP（オーバーキルしない）
+      let maxHp = this.getEnemyMaxHp(data, idx);
+      data.player.markstone.calibration.totalDamage += maxHp;
+
+      // 成果チェック: 合計与ダメージが100万に達した
+      if (data.player.markstone.calibration.totalDamage >= 1000000) {
+        data.player.markstone.calibration.achievements += 1;
+        // 較正リセット
+        data.player.markstone.calibration.totalDamage = 0;
+        data.player.markstone.calibration.resolutions = [0, 0];
+        data.player.markstone.calibration.enemyLevel = 1;
+        data.player.markstone.calibration.selectedEnemy = 0;
+        data.player.markstone.calibration.cooldown = 0;
+        data.player.markstone.calibration.enemyHp = this.enemyTypes[0].hp;
+        return;
+      }
+
+      // 5tick待機後に自動再戦
+      data.player.markstone.calibration.cooldown = 5;
+      data.player.markstone.calibration.enemyHp = this.getEnemyMaxHp(data, idx);
+    }
+  };
 }

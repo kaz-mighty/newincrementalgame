@@ -199,5 +199,10 @@ function Timedata() {
       data.player.tickspeed <= 10
     )
       data.player.accelevel = data.player.accelevel + 1;
+
+    // 較正モードON時はtickspeedを1000に固定
+    if (data.player.markstone.calibration.active) {
+      data.player.tickspeed = 1000;
+    }
   };
 }

@@ -63,6 +63,36 @@ function Storagedata() {
         saveData.worldpipe.push(0);
       }
 
+      if (saveData.markstone) {
+        if (!saveData.markstone.calibration) {
+          saveData.markstone.calibration = {
+            active: false,
+            selectedEnemy: 0,
+            enemyHp: 100,
+            enemyLevel: 1,
+            cooldown: 0,
+            totalDamage: 0,
+            achievements: 0,
+            shopUpgrades: [false, false, false],
+            resolutions: [0, 0],
+          };
+        }
+        while (saveData.markstone.calibration.resolutions.length < 2) {
+          saveData.markstone.calibration.resolutions.push(0);
+        }
+        if (!saveData.markstone.calibration.shopUpgrades) {
+          saveData.markstone.calibration.shopUpgrades = [
+            false,
+            false,
+            false,
+            false,
+          ];
+        }
+        while (saveData.markstone.calibration.shopUpgrades.length < 4) {
+          saveData.markstone.calibration.shopUpgrades.push(false);
+        }
+      }
+
       data.players[i] = saveData;
     }
   };

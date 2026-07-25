@@ -212,6 +212,9 @@ Vue.createApp({
         this.player.markstone.ticksSinceRankReset++;
       }
 
+      // 較正（戦闘）処理
+      this.markstonedata.updateCalibration(this);
+
       setTimeout(
         this.update,
         Math.max(this.player.tickspeed - (this.diff + diffm) / 2, 1),
@@ -342,6 +345,18 @@ Vue.createApp({
     },
     resetMarkstone() {
       this.markstonedata.resetMarkstone(this);
+    },
+    toggleCalibration() {
+      this.markstonedata.toggleCalibration(this);
+    },
+    selectEnemy(index) {
+      this.markstonedata.selectEnemy(this, index);
+    },
+    buyShopUpgrade(index) {
+      this.markstonedata.buyShopUpgrade(this, index);
+    },
+    setEnemyLevel(level) {
+      this.markstonedata.setEnemyLevel(this, level);
     },
     calcchallengeid() {
       return this.challengedata.calcchallengeid(this);

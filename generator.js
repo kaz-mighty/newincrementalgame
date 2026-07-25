@@ -169,6 +169,16 @@ function Generatordata() {
       mult = mult.mul(1 + 0.01 * data.player.markstone.greatClub);
     }
 
+    // 成果の現れ4: 発生器の効率2倍
+    if (
+      data.player.markstone &&
+      data.player.markstone.calibration &&
+      data.player.markstone.calibration.shopUpgrades &&
+      data.player.markstone.calibration.shopUpgrades[3]
+    ) {
+      mult = mult.mul(2);
+    }
+
     data.commonmult = mult;
   };
 

@@ -176,6 +176,8 @@ function Storagedata() {
     data.checkmemories();
     data.checkremembers();
     data.checkworlds();
+    data.darkdata.updateDarklevelproof(data);
+    data.worlddata.calcTotalDarklevelproof(data);
     data.countsmalltrophies();
     data.calccommonmult();
     data.findhighestgenerator();

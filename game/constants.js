@@ -102,6 +102,7 @@ const initialData = () => {
     ],
 
     darklevel: new Decimal(0),
+    darklevelproof: 0,
 
     lightmoney: new Decimal(0),
 

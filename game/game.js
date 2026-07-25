@@ -66,6 +66,7 @@ Vue.createApp({
 
       memorysum: 0,
       remembersum: 0,
+      totaldarklevelproof: 0,
 
       trophynumber: new Array(10).fill(null).map(() => false),
       smalltrophy: 0,
@@ -178,6 +179,8 @@ Vue.createApp({
       if (this.trophycheck) this.checktrophies();
       this.checkmemories();
       this.worlddata.checkworlds(this);
+      this.darkdata.updateDarklevelproof(this);
+      this.worlddata.calcTotalDarklevelproof(this);
       this.countsmalltrophies();
       this.calccommonmult();
       this.findhighestgenerator();

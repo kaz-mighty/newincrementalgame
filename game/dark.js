@@ -34,10 +34,25 @@ function Darkdata() {
         }
     }
 
+    this.calcDarklevelproof = function (darklevel) {
+        let dl = new Decimal(darklevel ?? 0)
+        if (dl.lessThan('1e11')) return 0
+        return Math.max(0, Math.floor(dl.log10()) - 10)
+    }
+
+    this.updateDarklevelproof = function (data) {
+        if (data.player.darklevelproof == null) data.player.darklevelproof = 0
+        data.player.darklevelproof = Math.max(
+            data.player.darklevelproof,
+            this.calcDarklevelproof(data.player.darklevel)
+        )
+    }
+
     this.resetDarklevel = function (data) {
         let dv = 18 - data.player.crown.add(2).log2()
         dv = Math.max(dv, 1)
-        let gaindarklevel = new Decimal(data.player.darkmoney.log10()).div(dv).pow_base(2).round()
+        let gaindarklevel = new Decimal(data.player.darkmoney.log10()).div(dv).pow_base(2)
+        gaindarklevel = gaindarklevel.mul(1 + (data.totaldarklevelproof ?? 0) * 0.1).round()
         if (confirm('裏昇段リセットして、裏段位' + gaindarklevel + 'を得ますか？')) {
             data.player.darkmoney = new Decimal(0)
             data.player.darkgenerators = new Array(8).fill(null).map(() => new Decimal(0)),

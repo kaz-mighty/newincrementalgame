@@ -27,6 +27,16 @@ function Worlddata() {
 
     }
 
+    this.calcTotalDarklevelproof = function (data) {
+        data.players[data.world] = data.player
+        let total = 0
+        for (let i = 0; i < worldnum; i++) {
+            if (data.players[i].darklevelproof == null) data.players[i].darklevelproof = 0
+            total += data.players[i].darklevelproof
+        }
+        data.totaldarklevelproof = total
+    }
+
     this.shrinkworld = function (data, i) {
         if (4 > data.trophynumber[i]) {
             alert("実績が4つ未満なので、世界を収縮できません。")
@@ -42,6 +52,7 @@ function Worlddata() {
             let r = data.checkremembers()
             let rd = data.players[i].residue
             let dl = data.players[i].darklevel
+            let dlp = data.players[i].darklevelproof ?? 0
             let st = data.players[i].statue
             let cw = data.players[i].challengeweight
             let cwv = data.players[i].challengeweightvalue
@@ -49,6 +60,7 @@ function Worlddata() {
             data.players[i].remember = u
             data.players[i].rings = rg
             data.players[i].residue = rd
+            data.players[i].darklevelproof = dlp
             data.players[i].challengeweight = cw
             data.players[i].challengeweightvalue = cwv
 
@@ -231,6 +243,7 @@ function Worlddata() {
             data.players[i].token = data.players[i].challengecleared.length
 
             data.checkpipedsmalltrophies()
+            this.calcTotalDarklevelproof(data)
 
         }
     }

@@ -1150,7 +1150,7 @@
 			</div>
 			<div v-show="player.currenttab == 'markstone'">
 				杖印石: {{ player.markstone.club }}個
-				<div>経過tick: {{ player.markstone.ticksSinceRankReset }}</div>
+				<div>経過間隙: {{ player.markstone.ticksSinceRankReset }}</div>
 				<div>次回入手条件: {{ markstonedata.calcClubRequirement(whole).toExponential(3) }}</div>
 			</div>
 			<div id="tweet">

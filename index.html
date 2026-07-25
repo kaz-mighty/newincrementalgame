@@ -107,7 +107,7 @@
 
 
 			</div>
-			<div class="basictabcontents" v-show="player.currenttab == 'basic'">
+			<div class="basictabcontents" v-if="player.currenttab == 'basic'">
 				<div class="levelrcontents" v-if="player.levelresettime.gt(0)">
 					段位: {{ toFormated(player.level,5) }} 段位リセット: {{ toFormated(player.levelresettime,5) }}回
 				</div>
@@ -138,7 +138,7 @@
 					</div>
 					<div id="crownreset" v-if="player.money.greaterThanOrEqualTo(resetCrownborder())">
 						<button type="button" :class="{ 'unavailable': player.onchallenge }"
-							@click="resetCrown(false)">昇冠リセット</buttton>
+							@click="resetCrown(false)">昇冠リセット</button>
 					</div>
 				</div>
 				<br>
@@ -168,7 +168,7 @@
 							<span>モード: 0</span>
 							<button class="mode-button">変更</button>
 						</div>
-						<span v-show="showmult  && !activechallengebonuses.includes(13)">
+						<span v-if="showmult  && !activechallengebonuses.includes(13)">
 							倍率: {{ calcincrementmult(i-1,player.generatorsMode[i-1]).toExponential(2) }}
 						</span>
 					</div>
@@ -220,7 +220,7 @@
 							</div>
 						</div>
 
-						<div class="accelerator-item" v-show="player.levelitems[3]==5 && player.accelevel>0">
+						<div class="accelerator-item" v-if="player.levelitems[3]==5 && player.accelevel>0">
 							<div class="info">
 								時間加速器{{ 8 }}: {{ toFormated(player.accelerators[7],5) }}
 							</div>
@@ -245,11 +245,11 @@
 					</button>
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'dark'">
-				<div id="darkcoinamount" v-show="player.rankchallengecleared.length>=32">裏ポイント: {{
+			<div v-if="player.currenttab == 'dark'">
+				<div id="darkcoinamount" v-if="player.rankchallengecleared.length>=32">裏ポイント: {{
 					player.darkmoney.toExponential(3) }}</div>
 				裏発生器iは発生器iを強化します。
-				<div v-show="player.rankchallengecleared.length>=32">
+				<div v-if="player.rankchallengecleared.length>=32">
 					裏発生器は、煌きを消費すると発生器のように動作し、裏ポイントや下位の裏発生器を生み出します。裏ポイントは全ての発生器を強化します。</div>
 				<div id="darklevelreset" v-if="player.darkmoney.greaterThanOrEqualTo('1e18')">
 					<button type="button" @click="resetDarklevel()">裏昇段リセット</button>
@@ -293,8 +293,8 @@
 
 			</div>
 
-			<div v-show="player.currenttab == 'light'">
-				<div id="lightcoinamount" v-show="pchallengestage>=1">天上ポイント: {{ player.lightmoney.toExponential(3)
+			<div v-if="player.currenttab == 'light'">
+				<div id="lightcoinamount" v-if="pchallengestage>=1">天上ポイント: {{ player.lightmoney.toExponential(3)
 					}}
 				</div>
 				天上発生器iは裏発生器iを強化します。
@@ -318,7 +318,7 @@
 
 			</div>
 
-			<div v-show="player.currenttab == 'time'">
+			<div v-if="player.currenttab == 'time'">
 				<div>時間回帰力: {{ player.accelevel }}</div>
 				<div>起動時間回帰力: {{ player.accelevelused }}</div>
 				<div>使用中時間回帰力: {{ calccampaigncosts() }}</div>
@@ -353,7 +353,7 @@
 			</div>
 
 
-			<div v-show="player.currenttab == 'option'">
+			<div v-if="player.currenttab == 'option'">
 				<button type="button" id="resetbutton" @click="resetData(false)">リセット</button>
 				<div class="tweetconfig">
 					ツイート機能設定
@@ -422,7 +422,7 @@
 					<button type="button" id="importsave" @click="importsave()">データ取り込み</button>
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'level'">
+			<div v-if="player.currenttab == 'level'">
 				最大取得段位:{{ toFormated(player.maxlevelgained,5) }}
 				<div class="challenges-container">
 					挑戦:挑戦とは厳しい条件で昇段リセットを目指すことです。
@@ -541,7 +541,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'rank'">
+			<div v-if="player.currenttab == 'rank'">
 				<div class="levelshop">
 					段位捧所:段位捧所では、段位を消費することによって強化を購入することができます。
 					段位を捧げた回数に応じて、捧げるべき段位の量が少なくなります。
@@ -559,7 +559,7 @@
 					累計購入回数: {{player.levelitembought}}
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'crown'">
+			<div v-if="player.currenttab == 'crown'">
 
 				<div class="challenges-container">
 					完全挑戦:完全階位挑戦とは厳しい条件で昇階リセットを目指すことです。
@@ -599,7 +599,7 @@
 				</div>
 			</div>
 
-			<div v-show="player.currenttab == 'spirit'">
+			<div v-if="player.currenttab == 'spirit'">
 				精霊
 				<div v-for="i in spiritdata.spiritnuma" :key="i">
 					<button type="button" class="spendshinebutton" @click="buyspirit(i-1)">
@@ -610,7 +610,7 @@
 				</div>
 			</div>
 
-			<div v-show="player.currenttab == 'auto'">
+			<div v-if="player.currenttab == 'auto'">
 				自動購入器設定
 				<div class="autobuyer-item" v-if="player.challengebonuses.includes(5)">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': genautobuy }"
@@ -714,7 +714,7 @@
 					<div class="info">※オンにすると発生器の出力が低下します</div>
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'shine'">
+			<div v-if="player.currenttab == 'shine'">
 				<div>
 					輝き所持数:{{ player.shine }}
 					<button type="button" class="spendshinebutton" @click="spendshine(1)">
@@ -811,7 +811,7 @@
 					残滓: {{ player.residue }}
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'world'">
+			<div v-if="player.currenttab == 'world'">
 				記憶: {{ memorysum }}
 				<div>
 					記憶は、他世界での実績の個数の合計です。記憶が多くなるほど、発生器の生産量が増加します。
@@ -871,7 +871,7 @@
 			</div>
 
 
-			<div v-show="player.currenttab == 'chip'">
+			<div v-if="player.currenttab == 'chip'">
 				鋳片は、ポイントを多く貯めて段位リセットすると入手できることがあります。
 				ポイントをより多く貯めるほど、鋳片が入手できる確率が上昇し、また上位の鋳片が入手しやすくなります。
 				<br>
@@ -906,7 +906,7 @@
 
 
 
-				<div v-show="player.statue.some((x) => x>0)">
+				<div v-if="player.statue.some((x) => x>0)">
 					洗練:洗練とは、段位リセット時に鋳片を消費して、質の高い鋳片の入手率を向上させることです。
 					洗練度: {{ chipdata.calcchipretrytime(whole) }}
 					<div v-for="i in 9" :key="i">
@@ -981,7 +981,7 @@
 
 
 			</div>
-			<div v-show="player.currenttab == 'statue'">
+			<div v-if="player.currenttab == 'statue'">
 				像は、対応する鋳片を使用して作成することができます。像を作成するたびに、必要な鋳片の量は増加します。
 				像は、完全挑戦に入るのに規定数が必要となります。
 				<div class="statue-container">
@@ -1003,12 +1003,12 @@
 									@click="buildstatue(i-1)">
 									設像 ({{ calcstatuecost(i-1) }} 片)
 								</button>
-								<button v-if="player.shine>0" type="button" class="abutton"
+								<button v-show="player.shine>0" type="button" class="abutton"
 									:class="{'unavailable': player.shine < calcpolishcost(i-1) || player.polishedstatue[i-1] >= player.statue[i-1]}"
 									@click="polishstatue(i-1)">
 									磨像 ({{ calcpolishcost(i-1) }} 輝)
 								</button>
-								<button v-if="player.brightness>0" type="button" class="abutton"
+								<button v-show="player.brightness>0" type="button" class="abutton"
 									:class="{'unavailable': player.brightness < calcpolishcostbr(i-1) || player.polishedstatuebr[i-1] >= player.polishedstatue[i-1] * 10}"
 									@click="polishstatuebr(i-1)">
 									磨像 ({{ calcpolishcostbr(i-1) }} 煌)
@@ -1018,7 +1018,7 @@
 					</div>
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'ring'">
+			<div v-if="player.currenttab == 'ring'">
 				使用輪:{{ player.rings.setrings.map((e) => e+1) }}
 				<div>
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': player.rings.auto.doauto }"
@@ -1031,7 +1031,7 @@
 				<div v-if="!player.rings.onmission">
 					<div>
 						<div v-for="i in 13" :key="i">
-							<div v-if="isavailablering(i-1)">
+							<div v-show="isavailablering(i-1)">
 								<button type="button" @click="configsetrings(i-1)">
 									使用輪設定 {{ i }}
 								</button>
@@ -1042,8 +1042,8 @@
 					</div>
 					<div>試練</div>
 					<div v-for="i in ringdata.missioninfo.length" :key="i">
-						<div v-if="isavailablemission(i-1)">
-							<button type="button" v-if="isavailablemission(i-1)" @click="startmission(i-1)">
+						<div v-show="isavailablemission(i-1)">
+							<button type="button" v-show="isavailablemission(i-1)" @click="startmission(i-1)">
 								{{ ringdata.missioninfo[i-1].name }}開始
 							</button>
 							周期:{{ ringdata.missioninfo[i-1].turn }} 目標:{{ ringdata.missioninfo[i-1].goal }} 最小輪数:{{
@@ -1095,7 +1095,7 @@
 							v-for="i in ringdata.availableskills(player.rings,player.rings.setrings[player.rings.missionstate.activering]).length"
 							:key="i">
 							<button
-								v-if="player.rings.missionstate.turn < ringdata.missioninfo[this.player.rings.missionid].turn"
+								v-show="player.rings.missionstate.turn < ringdata.missioninfo[this.player.rings.missionid].turn"
 								type="button" @click="useskill(i-1)">
 								{{
 								ringdata.skills[ringdata.availableskills(player.rings,player.rings.setrings[player.rings.missionstate.activering])[i-1]].name
@@ -1110,7 +1110,7 @@
 					</button>
 				</div>
 			</div>
-			<div v-show="player.currenttab == 'trophy'">
+			<div v-if="player.currenttab == 'trophy'">
 				<button type="button" @click="confchecktrophies()">
 					実績更新:
 				</button>
@@ -1154,7 +1154,7 @@
 				</div>
 
 			</div>
-			<div v-show="player.currenttab == 'markstone'">
+			<div v-if="player.currenttab == 'markstone'">
 				<div class="statue-container">
 					<div class="statue-item">
 						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 0 }"

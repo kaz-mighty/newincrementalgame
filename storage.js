@@ -45,6 +45,13 @@ function Storagedata() {
         saveData.statue.push(0);
       }
 
+      if (!saveData.polishedstatuefl) {
+        saveData.polishedstatuefl = new Array(setchipkind).fill(0).map(() => 0);
+      }
+      while (saveData.polishedstatuefl.length < setchipkind) {
+        saveData.polishedstatuefl.push(0);
+      }
+
       while (saveData.rings.ringsexp.length < 13) {
         saveData.rings.ringsexp.push(0);
       }

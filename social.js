@@ -71,6 +71,13 @@ function Socialdata() {
             }
             tweetText += '煌像:' + sum + '%0A';
         }
+        if (data.player.tweeting.includes('polishedstatuefl')) {
+            let sum = 0
+            for (let i = 0; i < setchipkind; i++) {
+                sum += Math.floor(data.player.polishedstatuefl[i] / 100)
+            }
+            tweetText += '瞬像:' + sum + '%0A';
+        }
 
         let tweetUrl = 'dem08656775.github.io/newincrementalgame';
         let tweetHashtag = '新しい放置ゲーム';

@@ -32,4 +32,15 @@ function Statuedata() {
         data.player.polishedstatuebr[i] += 1
 
     }
+
+    this.calcpolishcostfl = function (data, i) {
+        return data.player.polishedstatuefl[i] + 100
+    }
+
+    this.polishstatuefl = function (data, i) {
+        let cost = this.calcpolishcostfl(data, i)
+        if (data.player.polishedstatuefl[i] >= data.player.polishedstatuebr[i] * 10 || data.player.flicker < cost) return;
+        data.player.flicker -= cost
+        data.player.polishedstatuefl[i] += 1
+    }
 }

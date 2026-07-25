@@ -127,6 +127,15 @@ function Shinedata() {
     return 1 / 1000000 * stage
   }
 
+  this.calcflickerpersent = function (data) {
+    let fp = this.getfp(data.pchallengestage)
+    if (!data.player.polishedstatuefl) return data.flickerpersent = fp
+    for (let i = 0; i < setchipkind; i++) {
+      fp += (1 / 1000000) * Math.floor(data.player.polishedstatuefl[i] / 100) *0.1
+    }
+    return data.flickerpersent = fp
+  }
+
   this.getmaxbr = function (clear, memlv, pst) {
     let value = 0;
     if (clear >= 32 * 8 - 1) value = 10000
@@ -149,9 +158,13 @@ function Shinedata() {
     return Math.floor(value)
   }
 
-  this.getmaxfl = function (stage) {
-    return stage * stage * 2
-    //max:2097152
+  this.getmaxfl = function (stage, pstfl = []) {
+    let statuemul = 0
+    for (let i = 0; i < pstfl.length; i++) {
+      statuemul += Math.floor(pstfl[i] / 100)
+    }
+    return Math.floor(stage * stage * 2 * (1 + (1 / 100) * statuemul))
+    //base max before flicker statue bonuses:2097152
   }
 
   this.calcflickerget = function (data) {
@@ -271,11 +284,11 @@ function Shinedata() {
       data.player.brightness = Math.min(data.player.brightness + brightget, maxbright);
     }
 
-    data.flickerpersent = this.getfp(data.pchallengestage)
+    this.calcflickerpersent(data)
 
     let flickerget = this.calcflickerget(data)
 
-    let maxflicker = this.getmaxfl(data.pchallengestage)
+    let maxflicker = this.getmaxfl(data.pchallengestage, data.player.polishedstatuefl)
     if (data.player.flicker < maxflicker) {
       data.player.flicker = Math.min(data.player.flicker + flickerget, maxflicker);
     }

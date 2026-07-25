@@ -170,6 +170,7 @@ const initialData = () => {
     statue: new Array(setchipkind).fill(0).map(() => 0),
     polishedstatue: new Array(setchipkind).fill(0).map(() => 0),
     polishedstatuebr: new Array(setchipkind).fill(0).map(() => 0),
+    polishedstatuefl: new Array(setchipkind).fill(0).map(() => 0),
 
     spiritlevela: new Array(1).fill(0).map(() => 0),
     spiritboughtcurrentcrown: new Array(1).fill(0).map(() => 0),

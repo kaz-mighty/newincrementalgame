@@ -439,6 +439,12 @@ Vue.createApp({
     polishstatuebr(i) {
       this.statuedata.polishstatuebr(this, i);
     },
+    calcpolishcostfl(i) {
+      return this.statuedata.calcpolishcostfl(this, i);
+    },
+    polishstatuefl(i) {
+      this.statuedata.polishstatuefl(this, i);
+    },
     buyspirit(i) {
       return;
       this.player.spiritlevela[i] += 1;

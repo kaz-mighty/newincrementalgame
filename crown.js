@@ -75,6 +75,12 @@ function Crowndata() {
 
       data.player.levelitems = [0, 0, 0, 0, 0];
 
+      // 冠位リセット後の印石入手数をリセット
+      data.player.markstone.clubGainedSinceCrownReset = 0;
+      data.player.markstone.diamondGainedSinceCrownReset = 0;
+      data.player.markstone.heartGainedSinceCrownReset = 0;
+      data.player.markstone.spadeGainedSinceCrownReset = 0;
+
       data.activechallengebonuses = data.player.challengebonuses;
 
       if (data.activechallengebonuses.includes(0))

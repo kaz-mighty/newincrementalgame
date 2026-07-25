@@ -358,6 +358,14 @@ function Trophydata() {
         data.player.smalltrophies2nd[59] = true;
       if (data.player.markstone.club >= 100)
         data.player.smalltrophies2nd[60] = true;
+      if (data.player.markstone.club >= 10000)
+        data.player.smalltrophies2nd[61] = true;
+      if (data.player.markstone.diamond >= 1)
+        data.player.smalltrophies2nd[62] = true;
+      if (data.player.markstone.diamond >= 100)
+        data.player.smalltrophies2nd[63] = true;
+      if (data.player.markstone.diamond >= 10000)
+        data.player.smalltrophies2nd[64] = true;
     }
   };
 }

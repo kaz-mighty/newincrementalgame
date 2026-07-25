@@ -35,6 +35,8 @@ function Automationdata() {
     if (index == 2) data.autolevel = !data.autolevel;
     if (index == 3) data.litemautobuy = !data.litemautobuy;
     if (index == 5) data.autorank = !data.autorank;
+    if (index == 6)
+      data.autorankrequiremarkstone = !data.autorankrequiremarkstone;
   };
 
   this.updateAutoBuyers = function (data) {
@@ -57,7 +59,14 @@ function Automationdata() {
         let rankPointConditionMet = data.autorankpoint.gt(0)
           ? data.player.money.greaterThanOrEqualTo(data.autorankpoint)
           : true;
-        if (rankConditionMet && rankPointConditionMet) {
+        let markstoneConditionMet = data.autorankrequiremarkstone
+          ? data.markstonedata.canGetSelected(data)
+          : true;
+        if (
+          rankConditionMet &&
+          rankPointConditionMet &&
+          markstoneConditionMet
+        ) {
           data.resetRank(true);
           data.player.shine -= autorankshine;
         }

@@ -48,6 +48,7 @@ Vue.createApp({
       autorankpoint: new Decimal(0),
       litemautobuy: false,
       autorank: false,
+      autorankrequiremarkstone: false,
 
       chipthresholduse: false,
       chipthreshold: new Decimal("1e999"),

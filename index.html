@@ -653,7 +653,7 @@
 					</button>
 					<div class="info">自動で段位効力を購入します</div>
 				</div>
-				<div class="autobuyer-item" v-if="player.rankchallengebonuses.includes(14)">
+				<div class="autobuyer-item" v-if="player.rankchallengebonuses.includes(14)" style="flex-wrap: wrap; align-items: flex-start; row-gap: 4px;">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': autorank }"
 						@click="toggleautobuyer(5)">
 						自動昇階器
@@ -669,13 +669,19 @@
 						<span>消費輝き: {{ 1000 - checkremembers()*10 }}</span>
 						<span>ポイント閾値: {{ autorankpoint.gt(0) ? autorankpoint.toExponential(3) : '無効' }}</span>
 					</div>
+					<div v-if="player.markstone && player.markstone.club >= 1" style="flex-basis: 100%;"></div>
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': autorankrequiremarkstone }"
+						v-if="player.markstone && player.markstone.club >= 1"
+						@click="toggleautobuyer(6)">
+						印石入手時のみ
+					</button>
 				</div>
 				<div v-if="player.rings.clearedmission.includes(4)">輪自動化器設定</div>
 				<div class="autobuyer-item" v-if="player.rings.clearedmission.includes(4)">
 					<button type="button" class="autobuyerbutton"
 						:class="{ 'selected': player.rings.outsideauto.autospendshine }"
 						@click="toggleringautobuyer(0)">
-						輝き自動消費器　
+						輝き自動消費器
 					</button>
 					<div class="info">
 						<button type="button" class="autobuyerbutton" @click="configringautobuyer(0)">
@@ -1149,9 +1155,19 @@
 
 			</div>
 			<div v-show="player.currenttab == 'markstone'">
-				杖印石: {{ player.markstone.club }}個
+				<div class="statue-container">
+					<div class="statue-item">
+						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 0 }"
+							@click="markstonedata.selectType(whole, 0)">杖印石</button>
+						所持数: {{ player.markstone.club }} 次回入手条件: {{ markstonedata.calcClubRequirement(whole).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.clubGainedSinceCrownReset }}</span>
+					</div>
+					<div class="statue-item">
+						<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markstone.selectedType === 1 }"
+							@click="markstonedata.selectType(whole, 1)">貨印石</button>
+						所持数: {{ player.markstone.diamond }} 次回入手条件: {{ markstonedata.calcDiamondRequirement(whole).toExponential(3) }}<span v-if="player.crownresettime.gt(0)"> 今冠位入手: {{ player.markstone.diamondGainedSinceCrownReset }}</span>
+					</div>
+				</div>
 				<div>経過間隙: {{ player.markstone.ticksSinceRankReset }}</div>
-				<div>次回入手条件: {{ markstonedata.calcClubRequirement(whole).toExponential(3) }}</div>
 			</div>
 			<div id="tweet">
 				<a :href="tweetLink" target="_blank" rel="noopener noreferrer">Tweet #新しい放置ゲーム</a>

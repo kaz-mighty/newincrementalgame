@@ -60,8 +60,8 @@ function Rankdata() {
         }
       }
 
-      // 印石獲得判定（markstonedata使用）
-      data.markstonedata.tryGetClub(data);
+      // 印石獲得判定（選択した印石を入手）
+      data.markstonedata.tryGetSelected(data);
 
       // tickカウンターリセット
       data.player.markstone.ticksSinceRankReset = 0;

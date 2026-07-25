@@ -33,10 +33,15 @@ const initialData = () => {
     // 印石（スート）システム
     markstone: {
       club: 0, // 杖印石
-      diamond: 0, // 貨印石（将来用）
+      clubGainedSinceCrownReset: 0, // 冠位リセット後に入手した杖印石の数
+      diamond: 0, // 貨印石
+      diamondGainedSinceCrownReset: 0, // 冠位リセット後に入手した貨印石の数
       heart: 0, // 杯印石（将来用）
+      heartGainedSinceCrownReset: 0, // 冠位リセット後に入手した杯印石の数
       spade: 0, // 剣印石（将来用）
+      spadeGainedSinceCrownReset: 0, // 冠位リセット後に入手した剣印石の数
       ticksSinceRankReset: 0, // 階位リセット後のtick数
+      selectedType: 0, // 選択中の印石タイプ: 0=杖, 1=貨, 2=杯, 3=剣
     },
 
     generators: new Array(8).fill(null).map(() => new Decimal(0)),

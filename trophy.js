@@ -32,7 +32,7 @@ function Trophydata() {
 
   this.checkpipedsmalltrophies = function (data) {
     let sum = 0;
-    for (i = 0; i < worldnum; i++) {
+    for (let i = 0; i < worldnum; i++) {
       let cnt = 0;
       if (data.players[i].worldpipe[data.world] >= 1) {
         for (let j = 0; j < 100; j++) {

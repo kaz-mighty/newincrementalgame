@@ -637,8 +637,8 @@ function Ringdata() {
     }
     data.player.rings.onmission = false
     if (win) {
-      for (i in data.player.rings.setrings) {
-        r = data.player.rings.setrings[i]
+      for (let i in data.player.rings.setrings) {
+        let r = data.player.rings.setrings[i]
         data.player.rings.ringsexp[r] += Math.floor(this.missioninfo[data.player.rings.missionid].exp * (data.player.rings.setrings.length - i) / (data.player.rings.setrings.length * (data.player.rings.setrings.length + 1) / 2))
         data.player.rings.ringsexp[r] = Math.min(data.player.rings.ringsexp[r], this.leveltable[this.levelcap() - 1])
       }

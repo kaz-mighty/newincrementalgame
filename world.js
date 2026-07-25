@@ -1,6 +1,6 @@
 function Worlddata() {
     this.moveworld = function (data, i) {
-        if (world == i || !data.worldopened[i]) return
+        if (data.world == i || !data.worldopened[i]) return
         data.load(i)
         data.world = i
     }

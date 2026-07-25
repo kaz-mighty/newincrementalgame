@@ -110,7 +110,7 @@ function Generatordata() {
             mult = mult.mul(1 + data.player.statue[i] * 0.01)
         }
 
-        camp = 0
+        let camp = 0
         if (data.player.activatedcampaigns.includes("newyear")) camp = camp + 1
         if (data.player.activatedcampaigns.includes("vt")) camp = camp + 1
         if (data.player.activatedcampaigns.includes("hina")) camp = camp + 1

@@ -9,9 +9,9 @@ indent_style = space
 [*.html]
 indent_style = tab
 
-[{accelerator.js,crown.js,dark.js,generator.js,level.js,light.js,social.js,statue.js,storage.js,utils.js,world.js}]
+[{accelerator.js,dark.js,level.js,light.js,social.js,statue.js,utils.js,world.js}]
 indent_size = 4
 
-[{spirit.js,time.js}]
+[spirit.js]
 indent_style = tab
 

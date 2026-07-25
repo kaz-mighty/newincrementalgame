@@ -29,6 +29,7 @@ Vue.createApp({
       leveldata: new Leveldata(),
       crowndata: new Crowndata(),
       worlddata: new Worlddata(),
+      markstonedata: new Markstonedata(),
 
       statuedata: new Statuedata(),
       storagedata: new Storagedata(),
@@ -43,6 +44,8 @@ Vue.createApp({
       autolevelnumber: new Decimal(2),
       autoranknumber: new Decimal(4),
       autolevelstopnumber: new Decimal("1e100"),
+      autolevelpoint: new Decimal(0),
+      autorankpoint: new Decimal(0),
       litemautobuy: false,
       autorank: false,
 
@@ -202,6 +205,11 @@ Vue.createApp({
       this.shinedata.updateShine(this);
       this.automationdata.updateAutoBuyers(this);
       this.timedata.updateTickspeed(this);
+
+      // 印石用tickカウンター更新（上限100万）
+      if (this.player.markstone.ticksSinceRankReset < 1000000) {
+        this.player.markstone.ticksSinceRankReset++;
+      }
 
       setTimeout(
         this.update,

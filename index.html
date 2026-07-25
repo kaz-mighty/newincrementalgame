@@ -101,7 +101,9 @@
 				<span id="ring" v-if="player.residue >= 100">
 					<button type="button" @click="changeTab('ring')">輪</button>
 				</span>
-
+				<span id="markstone" v-if="player.markstone && player.markstone.club > 0">
+					<button type="button" @click="changeTab('markstone')">印石</button>
+				</span>
 
 
 			</div>
@@ -636,8 +638,12 @@
 						<button type="button" class="autobuyerbutton" @click="configautobuyer(1)">
 							設定:停止段位
 						</button>
+						<button type="button" class="autobuyerbutton" @click="configautobuyer(3)">
+							設定:リセットポイント
+						</button>
 						<span>現在: {{ autolevelnumber.toNumber() }}, {{ autolevelstopnumber.toExponential(3)
 							}}</span>
+						<span>ポイント閾値: {{ autolevelpoint.gt(0) ? autolevelpoint.toExponential(3) : '無効' }}</span>
 					</div>
 				</div>
 				<div class="autobuyer-item" v-if="player.rankchallengebonuses.includes(5)">
@@ -656,8 +662,12 @@
 						<button type="button" class="autobuyerbutton" @click="configautobuyer(2)">
 							設定:入手階位
 						</button>
+						<button type="button" class="autobuyerbutton" @click="configautobuyer(4)">
+							設定:リセットポイント
+						</button>
 						<span>現在: {{ autoranknumber.toNumber() }}</span>
 						<span>消費輝き: {{ 1000 - checkremembers()*10 }}</span>
+						<span>ポイント閾値: {{ autorankpoint.gt(0) ? autorankpoint.toExponential(3) : '無効' }}</span>
 					</div>
 				</div>
 				<div v-if="player.rings.clearedmission.includes(4)">輪自動化器設定</div>
@@ -1138,6 +1148,11 @@
 				</div>
 
 			</div>
+			<div v-show="player.currenttab == 'markstone'">
+				杖印石: {{ player.markstone.club }}個
+				<div>経過tick: {{ player.markstone.ticksSinceRankReset }}</div>
+				<div>次回入手条件: {{ markstonedata.calcClubRequirement(whole).toExponential(3) }}</div>
+			</div>
 			<div id="tweet">
 				<a :href="tweetLink" target="_blank" rel="noopener noreferrer">Tweet #新しい放置ゲーム</a>
 			</div>
@@ -1170,6 +1185,7 @@
 	<script type="text/javascript" src="level.js"></script>
 	<script type="text/javascript" src="crown.js"></script>
 	<script type="text/javascript" src="world.js"></script>
+	<script type="text/javascript" src="markstone.js"></script>
 	<script type="text/javascript" src="statue.js"></script>
 	<script src="constants.js"></script>
 	<script src="utils.js"></script>

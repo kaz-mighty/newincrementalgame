@@ -623,10 +623,6 @@ function Ringdata() {
           eff.effect(data.player.rings.missionstate, e[1])
         }
       }
-      //data.player.rings.missionstate.fieldeffect.forEach((item, i) => {
-      //if(item[1]>=1)item[1]--;
-      //});
-      //data.player.rings.missionstate.fieldeffect = data.player.rings.missionstate.fieldeffect.filter((e) => e[1]!=0)
     }
   }
 

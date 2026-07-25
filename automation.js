@@ -12,6 +12,20 @@ function Automationdata() {
       let input = window.prompt("リセット時入手階位を設定", "");
       input = new Decimal(input);
       data.autoranknumber = input;
+    } else if (index == 3) {
+      let input = window.prompt(
+        "段位リセットポイント閾値を設定（0で無効）",
+        "",
+      );
+      input = new Decimal(input);
+      data.autolevelpoint = input;
+    } else if (index == 4) {
+      let input = window.prompt(
+        "階位リセットポイント閾値を設定（0で無効）",
+        "",
+      );
+      input = new Decimal(input);
+      data.autorankpoint = input;
     }
   };
 
@@ -37,11 +51,13 @@ function Automationdata() {
           data.rankdata.resetRankborder(data),
         )
       ) {
-        if (
-          data.rankdata
-            .calcgainrank(data)
-            .greaterThanOrEqualTo(data.autoranknumber)
-        ) {
+        let rankConditionMet = data.rankdata
+          .calcgainrank(data)
+          .greaterThanOrEqualTo(data.autoranknumber);
+        let rankPointConditionMet = data.autorankpoint.gt(0)
+          ? data.player.money.greaterThanOrEqualTo(data.autorankpoint)
+          : true;
+        if (rankConditionMet && rankPointConditionMet) {
           data.resetRank(true);
           data.player.shine -= autorankshine;
         }
@@ -51,13 +67,6 @@ function Automationdata() {
     if (data.player.rankchallengebonuses.includes(5) && data.litemautobuy) {
       for (let i = 0; i < 5; i++) {
         data.buylevelitems(i);
-      }
-    }
-
-    if (data.remembersum >= 100) {
-      if (!(data.player.onchallenge || data.player.onpchallenge)) {
-        data.player.level = data.player.level.add(1);
-        data.player.levelresettime = data.player.levelresettime.add(1);
       }
     }
 
@@ -71,7 +80,13 @@ function Automationdata() {
         data.player.money.greaterThanOrEqualTo(data.resetLevelborder()) &&
         data.player.level.lt(data.autolevelstopnumber)
       ) {
-        if (data.calcgainlevel().greaterThanOrEqualTo(data.autolevelnumber)) {
+        let levelConditionMet = data
+          .calcgainlevel()
+          .greaterThanOrEqualTo(data.autolevelnumber);
+        let levelPointConditionMet = data.autolevelpoint.gt(0)
+          ? data.player.money.greaterThanOrEqualTo(data.autolevelpoint)
+          : true;
+        if (levelConditionMet && levelPointConditionMet) {
           data.resetLevel(true, false);
         }
       }

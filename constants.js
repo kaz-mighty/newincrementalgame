@@ -30,6 +30,15 @@ const initialData = () => {
 
     ranktoken: 0,
 
+    // 印石（スート）システム
+    markstone: {
+      club: 0, // 杖印石
+      diamond: 0, // 貨印石（将来用）
+      heart: 0, // 杯印石（将来用）
+      spade: 0, // 剣印石（将来用）
+      ticksSinceRankReset: 0, // 階位リセット後のtick数
+    },
+
     generators: new Array(8).fill(null).map(() => new Decimal(0)),
     generatorsBought: new Array(8).fill(null).map(() => new Decimal(0)),
     generatorsCost: [

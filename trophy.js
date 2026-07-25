@@ -354,6 +354,10 @@ function Trophydata() {
         data.player.smalltrophies2nd[57] = true;
       if (data.player.brightness >= 1000000)
         data.player.smalltrophies2nd[58] = true;
+      if (data.player.markstone.club >= 1)
+        data.player.smalltrophies2nd[59] = true;
+      if (data.player.markstone.club >= 100)
+        data.player.smalltrophies2nd[60] = true;
     }
   };
 }

@@ -60,6 +60,12 @@ function Rankdata() {
         }
       }
 
+      // 印石獲得判定（markstonedata使用）
+      data.markstonedata.tryGetClub(data);
+
+      // tickカウンターリセット
+      data.player.markstone.ticksSinceRankReset = 0;
+
       data.player.money = new Decimal(1);
       data.player.level = new Decimal(0);
       data.player.levelresettime = new Decimal(0);

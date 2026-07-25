@@ -162,6 +162,10 @@
 								変更
 							</button>
 						</div>
+						<div class="mode-container" v-else style="visibility: hidden;">
+							<span>モード: 0</span>
+							<button class="mode-button">変更</button>
+						</div>
 						<span v-show="showmult  && !activechallengebonuses.includes(13)">
 							倍率: {{ calcincrementmult(i-1,player.generatorsMode[i-1]).toExponential(2) }}
 						</span>
@@ -169,54 +173,65 @@
 				</div>
 
 				<div class="accelerators-container">
-					<div>
-						<div class="accelerator">時間加速器1: {{ toFormated(player.accelerators[0],5) }}
-							<button type="button" class="abutton"
-								:class="{ 'unavailable': player.money.lt(player.acceleratorsCost[0]) }"
-								@click="buyAccelerator(0)">
-								購入 コスト: {{ player.acceleratorsCost[0].toExponential(1) }}
-							</button>
-							<span>
-								購入数: {{ player.acceleratorsBought[0].toNumber()+' '}}
-							</span>
+					<div class="accelerator-item">
+						<div class="info">
+							時間加速器1: {{ toFormated(player.accelerators[0],5) }}
+						</div>
+						<button type="button" class="abutton"
+							:class="{ 'unavailable': player.money.lt(player.acceleratorsCost[0]) }"
+							@click="buyAccelerator(0)">
+							購入 ({{ player.acceleratorsCost[0].toExponential(1) }})
+						</button>
+						<div class="bought">
+							購入数: {{ player.acceleratorsBought[0].toNumber()+' '}}
 						</div>
 					</div>
-					<div v-if="player.levelresettime.gt(0)">
-						<div class="accelerator">時間加速器2: {{ toFormated(player.accelerators[1],5) }}
+
+					<template v-if="player.levelresettime.gt(0)">
+						<div class="accelerator-item">
+							<div class="info">
+								時間加速器2: {{ toFormated(player.accelerators[1],5) }}
+							</div>
 							<button type="button" class="abutton"
 								:class="{ 'unavailable': player.money.lt(player.acceleratorsCost[1]) }"
 								@click="buyAccelerator(1)">
-								購入 コスト: {{ player.acceleratorsCost[1].toExponential(1) }}
+								購入 ({{ player.acceleratorsCost[1].toExponential(1) }})
 							</button>
-							<span>
+							<div class="bought">
 								購入数: {{ player.acceleratorsBought[1].toNumber()+' '}}
-							</span>
+							</div>
 						</div>
-						<div class="accelerator" v-for="i in 6" :key="i">
-							<div v-show="player.levelitems[3]>=i">
-								時間加速器{{i+2}}: {{ toFormated(player.accelerators[i+1],5) }}
+
+						<div v-for="i in 6" :key="i">
+							<div class="accelerator-item" v-show="player.levelitems[3]>=i">
+								<div class="info">
+									時間加速器{{i+2}}: {{ toFormated(player.accelerators[i+1],5) }}
+								</div>
 								<button type="button" class="abutton"
 									:class="{ 'unavailable': player.money.lt(player.acceleratorsCost[i+1]) }"
 									@click="buyAccelerator(i+1)">
-									購入 コスト: {{ player.acceleratorsCost[i+1].toExponential(1) }}
+									購入 ({{ player.acceleratorsCost[i+1].toExponential(1) }})
 								</button>
-								<span>
+								<div class="bought">
 									購入数: {{ player.acceleratorsBought[i+1].toNumber()+' '}}
-								</span>
+								</div>
 							</div>
 						</div>
-						<div class="accelerator" v-show="player.levelitems[3]==5 && player.accelevel>0">
-							時間加速器{{ 8 }}: {{ toFormated(player.accelerators[7],5) }}
+
+						<div class="accelerator-item" v-show="player.levelitems[3]==5 && player.accelevel>0">
+							<div class="info">
+								時間加速器{{ 8 }}: {{ toFormated(player.accelerators[7],5) }}
+							</div>
 							<button type="button" class="abutton"
 								:class="{ 'unavailable': player.money.lt(player.acceleratorsCost[7]) }"
 								@click="buyAccelerator(7)">
-								購入 コスト: {{ player.acceleratorsCost[7].toExponential(1) }}
+								購入 ({{ player.acceleratorsCost[7].toExponential(1) }})
 							</button>
-							<span>
+							<div class="bought">
 								購入数: {{ player.acceleratorsBought[7].toNumber()+' '}}
-							</span>
+							</div>
 						</div>
-					</div>
+					</template>
 				</div>
 				<div v-if="player.boughttype[0]">
 					<div>型設定</div>
@@ -240,18 +255,20 @@
 				<div v-if="player.darklevel.gt(0)">
 					裏段位: {{ toFormated(player.darklevel,5) }}
 				</div>
-				<div class="darkgenerator" v-for="i in 8" :key="i">
-					<span>
-						裏発生器{{ i }}: {{ player.darkgenerators[i-1].toExponential(3)+' '}}
-					</span>
-					<button type="button" class="gbutton"
-						:class="{ 'unavailable': player.money.lt(player.darkgeneratorsCost[i-1]) }"
-						@click="buydarkgenerator(i-1)">
-						購入 コスト: {{ player.darkgeneratorsCost[i-1].toExponential(1) }}
-					</button>
-					<span>
-						購入数: {{ player.darkgeneratorsBought[i-1].toNumber()+' '}}
-					</span>
+				<div class="darkgenerator-container">
+					<div class="darkgenerator" v-for="i in 8" :key="i">
+						<span>
+							裏発生器{{ i }}: {{ player.darkgenerators[i-1].toExponential(3)+' '}}
+						</span>
+						<button type="button" class="gbutton"
+							:class="{ 'unavailable': player.money.lt(player.darkgeneratorsCost[i-1]) }"
+							@click="buydarkgenerator(i-1)">
+							購入 コスト: {{ player.darkgeneratorsCost[i-1].toExponential(1) }}
+						</button>
+						<span>
+							購入数: {{ player.darkgeneratorsBought[i-1].toNumber()+' '}}
+						</span>
+					</div>
 				</div>
 				<div v-if="player.rankchallengecleared.length>=32">
 					煌き所持数:{{ player.brightness }}
@@ -280,18 +297,20 @@
 				</div>
 				天上発生器iは裏発生器iを強化します。
 
-				<div class="lightgenerator" v-for="i in 8" :key="i">
-					<span>
-						天上発生器{{ i }}: {{ player.lightgenerators[i-1].toExponential(3)+' '}}
-					</span>
-					<button type="button" class="gbutton"
-						:class="{ 'unavailable': player.money.lt(player.lightgeneratorsCost[i-1]) }"
-						@click="buylightgenerator(i-1)">
-						購入 コスト: {{ player.lightgeneratorsCost[i-1].toExponential(1) }}
-					</button>
-					<span>
-						購入数: {{ player.lightgeneratorsBought[i-1].toNumber()+' '}}
-					</span>
+				<div class="lightgenerator-container">
+					<div class="lightgenerator" v-for="i in 8" :key="i">
+						<span>
+							天上発生器{{ i }}: {{ player.lightgenerators[i-1].toExponential(3)+' '}}
+						</span>
+						<button type="button" class="gbutton"
+							:class="{ 'unavailable': player.money.lt(player.lightgeneratorsCost[i-1]) }"
+							@click="buylightgenerator(i-1)">
+							購入 コスト: {{ player.lightgeneratorsCost[i-1].toExponential(1) }}
+						</button>
+						<span>
+							購入数: {{ player.lightgeneratorsBought[i-1].toNumber()+' '}}
+						</span>
+					</div>
 				</div>
 
 
@@ -308,22 +327,25 @@
 
 				時間回帰力選択
 
-				<div v-for="i in timedata.campaigns.length" :key="i">
-
-					<button type="button" class="llbutton"
-						:class="{ 'selected': player.activatedcampaigns.includes(timedata.campaignnames[i-1])}"
-						@click="choosecampaigns(timedata.campaignnames[i-1])">
-						{{timedata.campaigns[i-1]}}
-					</button>
-					効果: {{timedata.campaigneffects[i-1]}}
-					使用回帰力量: {{timedata.campaigncosts[i-1]}}
+				<div class="campaign-container">
+					<div v-for="i in timedata.campaigns.length" :key="i" class="campaign-item">
+						<button type="button" class="llbutton"
+							:class="{ 'selected': player.activatedcampaigns.includes(timedata.campaignnames[i-1])}"
+							@click="choosecampaigns(timedata.campaignnames[i-1])">
+							{{timedata.campaigns[i-1]}}
+						</button>
+						<span class="effect">効果: {{timedata.campaigneffects[i-1]}}</span>
+						<span class="cost">使用回帰力量: {{timedata.campaigncosts[i-1]}}</span>
+					</div>
 				</div>
 
 				時の結晶
-				<div class="lightgenerator" v-for="i in 8" :key="i">
-					<span>
-						時の結晶{{ i }}: {{ player.timecrystal[i-1]}}
-					</span>
+				<div class="timecrystal-container">
+					<div class="timecrystal-item" v-for="i in 8" :key="i">
+						<span>
+							時の結晶{{ i }}: {{ player.timecrystal[i-1]}}
+						</span>
+					</div>
 				</div>
 
 			</div>
@@ -588,78 +610,92 @@
 
 			<div v-show="player.currenttab == 'auto'">
 				自動購入器設定
-				<div v-if="player.challengebonuses.includes(5)">
+				<div class="autobuyer-item" v-if="player.challengebonuses.includes(5)">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': genautobuy }"
 						@click="toggleautobuyer(0)">
 						発生器自動購入器
 					</button>
+					<div class="info">自動で発生器を購入します</div>
 				</div>
-				<div v-if="player.challengebonuses.includes(9)">
+				<div class="autobuyer-item" v-if="player.challengebonuses.includes(9)">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': accautobuy }"
 						@click="toggleautobuyer(1)">
 						時間加速器自動購入器
 					</button>
+					<div class="info">自動で時間加速器を購入します</div>
 				</div>
-				<div v-if="player.challengebonuses.includes(14)">
+				<div class="autobuyer-item" v-if="player.challengebonuses.includes(14)">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': autolevel }"
 						@click="toggleautobuyer(2)">
 						自動昇段器
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configautobuyer(0)">
-						自動昇段器設定:入手段位
-					</button>
-					<button type="button" class="autobuyerbutton" @click="configautobuyer(1)">
-						自動昇段器設定:停止段位
-					</button>
-					現在: {{ autolevelnumber.toNumber() }}, {{ autolevelstopnumber.toExponential(3) }}
+					<div class="info">
+						<button type="button" class="autobuyerbutton" @click="configautobuyer(0)">
+							設定:入手段位
+						</button>
+						<button type="button" class="autobuyerbutton" @click="configautobuyer(1)">
+							設定:停止段位
+						</button>
+						<span>現在: {{ autolevelnumber.toNumber() }}, {{ autolevelstopnumber.toExponential(3)
+							}}</span>
+					</div>
 				</div>
-				<div v-if="player.rankchallengebonuses.includes(5)">
+				<div class="autobuyer-item" v-if="player.rankchallengebonuses.includes(5)">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': litemautobuy }"
 						@click="toggleautobuyer(3)">
 						段位効力自動購入器
 					</button>
+					<div class="info">自動で段位効力を購入します</div>
 				</div>
-				<div v-if="player.rankchallengebonuses.includes(14)">
+				<div class="autobuyer-item" v-if="player.rankchallengebonuses.includes(14)">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': autorank }"
 						@click="toggleautobuyer(5)">
 						自動昇階器
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configautobuyer(2)">
-						自動昇階器設定:入手階位
-					</button>
-					現在: {{ autoranknumber.toNumber() }}
-					消費輝き: {{ 1000 - checkremembers()*10 }}
+					<div class="info">
+						<button type="button" class="autobuyerbutton" @click="configautobuyer(2)">
+							設定:入手階位
+						</button>
+						<span>現在: {{ autoranknumber.toNumber() }}</span>
+						<span>消費輝き: {{ 1000 - checkremembers()*10 }}</span>
+					</div>
 				</div>
 				<div v-if="player.rings.clearedmission.includes(4)">輪自動化器設定</div>
-				<div v-if="player.rings.clearedmission.includes(4)">
+				<div class="autobuyer-item" v-if="player.rings.clearedmission.includes(4)">
 					<button type="button" class="autobuyerbutton"
 						:class="{ 'selected': player.rings.outsideauto.autospendshine }"
 						@click="toggleringautobuyer(0)">
 						輝き自動消費器　
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configringautobuyer(0)">
-						輝き自動消費器設定
-					</button>
-					消費輝き: {{ player.rings.outsideauto.autospendshinenumber }}　ご了承:オンにすると2秒ほどゲームが停止します
+					<div class="info">
+						<button type="button" class="autobuyerbutton" @click="configringautobuyer(0)">
+							設定
+						</button>
+						<span>消費輝き: {{ player.rings.outsideauto.autospendshinenumber }}</span>
+						<span>※オンにすると2秒ほどゲームが停止します</span>
+					</div>
 				</div>
-				<div v-if="player.rings.clearedmission.includes(11)">
+				<div class="autobuyer-item" v-if="player.rings.clearedmission.includes(11)">
 					<button type="button" class="autobuyerbutton"
 						:class="{ 'selected': player.rings.outsideauto.autospendbright }"
 						@click="toggleringautobuyer(1)">
 						煌き自動消費器
 					</button>
-					<button type="button" class="autobuyerbutton" @click="configringautobuyer(1)">
-						煌き自動消費器設定
-					</button>
-					消費煌き: {{ player.rings.outsideauto.autospendbrightnumber }}　ご了承:オンにすると2秒ほどゲームが停止します
+					<div class="info">
+						<button type="button" class="autobuyerbutton" @click="configringautobuyer(1)">
+							設定
+						</button>
+						<span>消費煌き: {{ player.rings.outsideauto.autospendbrightnumber }}</span>
+						<span>※オンにすると2秒ほどゲームが停止します</span>
+					</div>
 				</div>
-				<div v-if="player.rings.clearedmission.includes(12)">
+				<div class="autobuyer-item" v-if="player.rings.clearedmission.includes(12)">
 					<button type="button" class="autobuyerbutton"
 						:class="{ 'selected': player.rings.outsideauto.autodochallenge }"
 						@click="toggleringautobuyer(2)">
 						自動挑戦器
 					</button>
-					ご了承:オンにすると発生器の出力が低下します
+					<div class="info">※オンにすると発生器の出力が低下します</div>
 				</div>
 			</div>
 			<div v-show="player.currenttab == 'shine'">
@@ -825,25 +861,29 @@
 				<br>
 				<br>
 
-				<div>
+				<div class="chip-item">
 					<button type="button" class="autobuyerbutton" :class="{ 'selected': chipthresholduse }"
 						@click="togglechipthresholduse()">
 						閾値使用
 					</button>
-					<button type="button" @click="configchipthresholdnumber()">
-						閾値設定
-					</button>
-
-					閾値:{{chipthreshold}}
+					<div class="info">
+						<button type="button" class="autobuyerbutton" @click="configchipthresholdnumber()">
+							設定
+						</button>
+						<span>閾値:{{chipthreshold}}</span>
+					</div>
 				</div>
 
 				入手可能鋳片
 				{{"調整中です"}}
 				<br>
 				所持鋳片
-				<div v-for="i in 10" :key="i">
-					<div v-show="player.chip[i-1]>0">
-						{{ chipdata.chipname[i-1] + "片"　}}: {{ player.chip[i-1] }}
+				<div class="chip-list-container">
+					<div v-for="i in 10" :key="i">
+						<div class="chip-list-item" v-show="player.chip[i-1]>0">
+							<span>{{ chipdata.chipname[i-1] + "片"　}}</span>
+							<span>{{ player.chip[i-1] }}</span>
+						</div>
 					</div>
 				</div>
 				<br>
@@ -854,52 +894,71 @@
 					洗練:洗練とは、段位リセット時に鋳片を消費して、質の高い鋳片の入手率を向上させることです。
 					洗練度: {{ chipdata.calcchipretrytime(whole) }}
 					<div v-for="i in 9" :key="i">
-						<div v-show="player.statue[i-1]>0">
+						<div class="chip-item" v-show="player.statue[i-1]>0">
 							<button type="button" @click="configspendchip(i-1)">
 								{{ chipdata.chipname[i-1] + "片" }}:消費数登録
 							</button>
-							現在消費数:{{ player.spendchip[i-1] }}
+							<div class="info">現在消費数:{{ player.spendchip[i-1] }}</div>
 						</div>
 					</div>
 				</div>
 
 				鋳片使用
-				<div v-for="i in 32" :key="i">
-					鋳片効力 {{ i }} : {{ chipdata.chipbonusname[i-1] }}
-					<span v-show="player.disabledchip[i-1]">（無効）</span>
-					<span v-for="j in 10" :key="j">
-						<button v-show="player.chip[j-1]>0" @click="chipset(i-1,j)">
-							{{ chipdata.chipname[j-1] + "片" }} コスト:{{ chipused[j-1]+1 }}
-						</button>
-					</span>
-					<button @click="chipset(i-1,0)">
-						外す
-					</button>
-					現在: {{ player.setchip[i-1]==0?"なし":chipdata.chipname[player.setchip[i-1]-1] +"片"}}
+				<div class="chip-items-container">
+					<div class="chip-item" v-for="i in 32" :key="i">
+						<div class="info">
+							鋳片効力 {{ i }} : {{ chipdata.chipbonusname[i-1] }}
+							<span v-show="player.disabledchip[i-1]">（無効）</span>
+							<div>現在: {{ player.setchip[i-1]==0?"なし":chipdata.chipname[player.setchip[i-1]-1] +"片"}}
+							</div>
+						</div>
+						<div class="actions">
+							<span v-for="j in 10" :key="j" class="chip-action-unit" v-show="player.chip[j-1]>0">
+								<button @click="chipset(i-1,j)" class="abutton" style="width:auto; min-width:60px;">
+									{{ chipdata.chipname[j-1] }}
+								</button>
+								<span class="chip-cost-info">
+									所持: {{ player.chip[j-1] }}<br>
+									消費: {{ chipused[j-1] + 1 }}
+								</span>
+							</span>
+							<button @click="chipset(i-1,0)" class="abutton" style="width:auto;">外す</button>
+						</div>
+					</div>
 				</div>
-				<div v-if="checkremembers()>=16" v-for="i in 20" :key="i">
-					鋳片効力 {{ i+32 }} : {{ chipdata.chipbonusname[i+32-1] }}
-					<span v-show="player.disabledchip[i+32-1]">（無効）</span>
-					<span v-for="j in 10" :key="j">
-						<button v-show="player.chip[j-1]>0" @click="chipset(i+32-1,j)">
-							{{ chipdata.chipname[j-1] + "片"}} コスト:{{ chipused[j-1]+1 }}
-						</button>
-					</span>
-					<button @click="chipset(i+32-1,0)">
-						外す
-					</button>
-					現在: {{ player.setchip[i+32-1]==0?"なし":chipdata.chipname[player.setchip[i+32-1]-1] +"片"}}
+				<div class="chip-items-container" v-if="checkremembers()>=16">
+					<div class="chip-item" v-for="i in 20" :key="i">
+						<div class="info">
+							鋳片効力 {{ i+32 }} : {{ chipdata.chipbonusname[i+32-1] }}
+							<span v-show="player.disabledchip[i+32-1]">（無効）</span>
+							<div>現在: {{ player.setchip[i+32-1]==0?"なし":chipdata.chipname[player.setchip[i+32-1]-1]
+								+"片"}}
+							</div>
+						</div>
+						<div class="actions">
+							<span v-for="j in 10" :key="j" class="chip-action-unit" v-show="player.chip[j-1]>0">
+								<button @click="chipset(i+32-1,j)" class="abutton" style="width:auto; min-width:60px;">
+									{{ chipdata.chipname[j-1] }}
+								</button>
+								<span class="chip-cost-info">
+									所持: {{ player.chip[j-1] }}<br>
+									消費: {{ chipused[j-1] + 1 }}
+								</span>
+							</span>
+							<button @click="chipset(i+32-1,0)" class="abutton" style="width:auto;">外す</button>
+						</div>
+					</div>
 				</div>
 
 				<button @click="clearsetchip()">
 					すべて外す
 				</button>
-				<div v-if="player.boughttype[5]">
-					<div>型設定</div>
-					<button type="button" @click="setchiptype()">
+				<div v-if="player.boughttype[5]" class="type-container">
+					<div style="width:100%; text-align:center; margin-bottom:0.5rem;">型設定</div>
+					<button type="button" class="buytypebutton" @click="setchiptype()">
 						鋳片型登録
 					</button>
-					<button type="button" @click="changechiptype()">
+					<button type="button" class="buytypebutton" @click="changechiptype()">
 						鋳片型適用
 					</button>
 				</div>
@@ -909,25 +968,38 @@
 			<div v-show="player.currenttab == 'statue'">
 				像は、対応する鋳片を使用して作成することができます。像を作成するたびに、必要な鋳片の量は増加します。
 				像は、完全挑戦に入るのに規定数が必要となります。
-				<div v-for="i in 10" :key="i">
-					<div v-show="player.chip[i-1]>0 || chipused[i-1]>0 || player.statue[i-1]>0 ">
-						{{chipdata.chipname[i-1] + "像"}}: {{ player.statue[i-1] }}
-						{{"輝" + chipdata.chipname[i-1] + "像"}}: {{ player.polishedstatue[i-1] + "/" +
-						player.statue[i-1]}}
-						{{"煌" + chipdata.chipname[i-1] + "像"}}: {{ (player.polishedstatuebr[i-1]/10).toFixed(1) + "/" +
-						player.polishedstatue[i-1]}}
-						<button type="button" @click="buildstatue(i-1)">
-							設像 コスト:{{ calcstatuecost(i-1) }} 片
-						</button>
-						<button v-if="player.shine>0" type="button" @click="polishstatue(i-1)">
-							磨像 コスト:{{ calcpolishcost(i-1) }} 輝
-						</button>
-						<button v-if="player.brightness>0" type="button" @click="polishstatuebr(i-1)">
-							磨像 コスト:{{ calcpolishcostbr(i-1) }} 煌
-						</button>
-
+				<div class="statue-container">
+					<div v-for="i in 10" :key="i">
+						<div class="statue-item"
+							v-show="player.chip[i-1]>0 || chipused[i-1]>0 || player.statue[i-1]>0 ">
+							<div class="info">
+								<div>{{chipdata.chipname[i-1] + "像"}}: {{ player.statue[i-1] }}</div>
+								<div>{{"輝" + chipdata.chipname[i-1] + "像"}}: {{ player.polishedstatue[i-1] + "/" +
+									player.statue[i-1]}}</div>
+								<div>{{"煌" + chipdata.chipname[i-1] + "像"}}: {{
+									(player.polishedstatuebr[i-1]/10).toFixed(1) + "/" +
+									player.polishedstatue[i-1]}}
+								</div>
+							</div>
+							<div class="actions" style="display:flex; flex-direction:row; flex-wrap:wrap; gap:4px;">
+								<button type="button" class="abutton"
+									:class="{'unavailable': player.chip[i-1] < calcstatuecost(i-1)}"
+									@click="buildstatue(i-1)">
+									設像 ({{ calcstatuecost(i-1) }} 片)
+								</button>
+								<button v-if="player.shine>0" type="button" class="abutton"
+									:class="{'unavailable': player.shine < calcpolishcost(i-1) || player.polishedstatue[i-1] >= player.statue[i-1]}"
+									@click="polishstatue(i-1)">
+									磨像 ({{ calcpolishcost(i-1) }} 輝)
+								</button>
+								<button v-if="player.brightness>0" type="button" class="abutton"
+									:class="{'unavailable': player.brightness < calcpolishcostbr(i-1) || player.polishedstatuebr[i-1] >= player.polishedstatue[i-1] * 10}"
+									@click="polishstatuebr(i-1)">
+									磨像 ({{ calcpolishcostbr(i-1) }} 煌)
+								</button>
+							</div>
+						</div>
 					</div>
-
 				</div>
 			</div>
 			<div v-show="player.currenttab == 'ring'">

@@ -1,178 +1,523 @@
-#coinamount {
-  text-align: center;
-  font-size: 48px
-}
-
-#darkcoinamount {
-  text-align: center;
-  font-size: 36px
-}
-
-#lightcoinamount {
-  text-align: center;
-  font-size: 36px
-}
-
-#tickspeed {
-  text-align: center;
-  font-size: 16px;
-  color: gray;
-}
-
-td {
-  width: 24px;
-  height: 24px;
-}
-
-.generator {
-  font-size: 24px;
-  vertical-align: middle;
-}
-
-.darkgenerator {
-  font-size: 24px;
-  vertical-align: middle;
-}
-
-.challenge {
-  font-size: 24px;
-  vertical-align: middle;
-}
-
-.mode-container {
-  display: inline-block;
-}
-
-.accelerator {
-  font-size: 24px;
-  vertical-align: middle;
-  color: red;
-
-}
-
-.levelitem {
-  font-size: 24px;
-  vertical-align: middle;
-}
-
-button {
-  border: .18em solid;
-  font-size: 12px;
-  width: 150px;
-  height: 32px;
-  background: white;
-  color: black;
-  border-radius: 10px;
-  vertical-align: middle;
-}
-
-button:not(.unavailable) {
-  cursor: pointer;
-}
-
-button.unavailable {
-  background: #B0B0B0;
-}
-
-.gbutton {
-  background: #FFFFFF;
-  color: #000000;
-}
-
-.gbutton.unavailable {
-  background: #B0B0B0;
-}
-
-.abutton {
-  background: #000000;
-  border-color: #000000;
-  color: #FFFFFF;
-}
-
-.abutton.unavailable {
-  background: #808080;
-}
-
-.lbutton {
-  width: 180px;
-}
-
-.llbutton {
-  width: 240px;
-}
-
-.lbutton.unavailable {
-  background: #B0B0B0;
-}
-
-.llbutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.tweetconfigbutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.challengeconfigbutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-
-.rewardbutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.autobuyerbutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.wdbutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.buytypebutton.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.wdbutton.unavailable {
-  background: #B0B0B0;
-}
-
-#resetbutton {
-  background: white;
-  color: #D32F2F;
-  border-color: #D81B6032;
-  border-width: 1px;
-  width: 90px;
-}
-
-#resetbutton:hover {
-  background: #D32F2F;
-  color: white;
-  width: 90px;
-  transition: all .2s;
-}
-
-#tweet {
-  margin: 20px 0px;
-}
-
-#tweet a {
-  color: white;
-  font-size: .8rem;
-  padding: .6rem .8rem;
-  background: #1DA1F2;
-  border-radius: 3px;
-  text-decoration: none;
+:root {
+  /* Color Palette - Light Theme */
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --accent: #0984e3;
+  --accent-hover: #74b9ff;
+  --danger: #d63031;
+  --danger-hover: #ff7675;
+  --border: #dfe6e9;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  /* Reduced shadow */
+  --radius: 4px;
+  /* Reduced radius for compact feel */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
 }
 
 [v-cloak] {
   display: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.4;
+  /* Tighter line height */
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1000px;
+  /* Slightly tighter width */
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+/* Header & Coin Amount */
+#coinamount,
+#darkcoinamount,
+#lightcoinamount {
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+#coinamount {
+  font-size: 2.5rem;
+}
+
+#darkcoinamount,
+#lightcoinamount {
+  font-size: 2rem;
+}
+
+#tickspeed {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.85rem;
+}
+
+/* Tab Navigation */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--spacing-sm);
+}
+
+.tabs button {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.tabs button:hover {
+  background-color: rgba(9, 132, 227, 0.1);
+  color: var(--accent);
+}
+
+/* 
+   COMPACT RAW LAYOUT 
+   Switching from Grid to Flex Column for Density 
+*/
+.generators-container,
+.accelerators-container,
+.darkgenerator-container,
+.lightgenerator-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Tight gap */
+  margin-bottom: var(--spacing-lg);
+}
+
+.generator,
+.accelerator,
+.darkgenerator,
+.lightgenerator,
+.challenge,
+.levelitem {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  /* Subtle separator */
+  /* Remove box-shadow for cleaner list look, or keep very subtle */
+  /* box-shadow: var(--shadow-sm); */
+  padding: var(--spacing-sm) var(--spacing-md);
+  display: flex;
+  flex-direction: row;
+  /* Horizontal alignment */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.generator:first-child,
+.accelerator:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.generator:hover,
+.accelerator:hover {
+  background-color: #fafafa;
+  /* Very subtle hover state */
+}
+
+/* Content inside rows */
+.generator span,
+.accelerator span {
+  white-space: nowrap;
+  /* Prevent wrapping */
+  flex: 1;
+  /* Distribute space */
+}
+
+/* Adjust buttons inside rows */
+.generator button,
+.accelerator button,
+.darkgenerator button,
+.lightgenerator button {
+  margin: 0 var(--spacing-sm);
+  flex-shrink: 0;
+  /* Don't shrink buttons */
+}
+
+/* Mode Container in row */
+/* Mode Container in row */
+.mode-container {
+  flex: 0 0 160px;
+  /* Fixed width to ensure alignment */
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+/* General Buttons */
+button {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.3rem 0.8rem;
+  /* Compact padding */
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  /* Reduced min-width */
+  line-height: normal;
+}
+
+button:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--accent);
+}
+
+/* Action Buttons */
+/* 
+   Action Buttons (Blue Default)
+   These are "Press to Act", not toggles.
+*/
+.gbutton,
+.abutton,
+.lbutton,
+.spendshinebutton,
+.spendbrightnessbutton {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  font-weight: 500;
+}
+
+/* 
+   Toggle Buttons (White Default)
+   These are "State Switches". Default is OFF (White).
+   ON state uses .selected (Black).
+*/
+.llbutton,
+.tweetconfigbutton,
+.challengeconfigbutton,
+.rewardbutton,
+.autobuyerbutton,
+.wdbutton,
+.buytypebutton {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  font-weight: normal;
+}
+
+.llbutton:hover,
+.tweetconfigbutton:hover,
+.challengeconfigbutton:hover,
+.rewardbutton:hover,
+.autobuyerbutton:hover,
+.wdbutton:hover,
+.buytypebutton:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--accent);
+}
+
+.gbutton:hover,
+.abutton:hover,
+.lbutton:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Unavailable / Disabled Buttons */
+/* 
+   Unavailable / Disabled State
+   Cannot Press -> White (Bg Secondary)
+*/
+button.unavailable,
+.gbutton.unavailable,
+.abutton.unavailable,
+.lbutton.unavailable,
+.wdbutton.unavailable,
+.autobuyerbutton.unavailable,
+.tweetconfigbutton.unavailable,
+.challengeconfigbutton.unavailable,
+.rewardbutton.unavailable,
+.buytypebutton.unavailable {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Selected States */
+/* Selected States - Black Background with White Text (黒背景白文字) */
+.selected,
+button.selected,
+.autobuyerbutton.selected,
+.tweetconfigbutton.selected,
+.challengeconfigbutton.selected,
+.rewardbutton.selected,
+.wdbutton.selected,
+.buytypebutton.selected,
+.llbutton.selected {
+  background-color: var(--text-primary) !important;
+  color: var(--bg-secondary) !important;
+  border: 2px solid var(--text-primary) !important;
+  font-weight: 600;
+}
+
+/* Soft Reset Section */
+.softreset {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* 
+   Shared List Row Styles for Other Tabs 
+   (Time, Level, Auto, etc.)
+*/
+.accelerator-item,
+.campaign-item,
+.autobuyer-item,
+.timecrystal-item,
+.level-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid var(--border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg-secondary);
+}
+
+.accelerator-item:first-child,
+.campaign-item:first-child,
+.autobuyer-item:first-child,
+.timecrystal-item:first-child,
+.level-list-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+/* Accelerator Alignment */
+.accelerator-item button {
+  flex: 0 0 180px;
+  text-align: center;
+}
+
+.accelerator-item .info {
+  flex: 1;
+  text-align: left;
+}
+
+.accelerator-item .bought {
+  flex: 0 0 120px;
+  text-align: right;
+}
+
+/* Campaign Tab Alignment */
+/* Button (Name) | Text (Effect) | Text (Cost) */
+.campaign-item button {
+  flex: 0 0 180px;
+  text-align: center;
+}
+
+.campaign-item .effect {
+  flex: 1;
+  text-align: left;
+}
+
+.campaign-item .cost {
+  flex: 0 0 180px;
+  text-align: right;
+}
+
+/* Time Crystal Alignment */
+/* Name | Amount */
+.timecrystal-item span {
+  flex: 1;
+}
+
+/* AutoBuyer Alignment */
+/* Button (Toggle) | Text (Description/Interval) */
+.autobuyer-item button {
+  flex: 0 0 180px;
+  text-align: center;
+}
+
+.autobuyer-item .info {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+/* Level/Challenge Alignment (Reuse existing if possible, or force new) */
+/* The existing .challenge class was flex-row but maybe loose on children widths */
+.challenge,
+.levelitem {
+  /* Ensure these match the strict row layout */
+  display: flex;
+  /* Already set but reinforcing */
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.challenge button,
+.levelitem button {
+  flex: 0 0 180px;
+  text-align: center;
+  justify-content: center;
+}
+
+.challenge span,
+.levelitem span {
+  flex: 1;
+  text-align: left;
+}
+
+/* Chip & Statue Alignment */
+.chip-item,
+.statue-item,
+.chip-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid var(--border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg-secondary);
+}
+
+.chip-item:first-child,
+.statue-item:first-child,
+.chip-list-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+/* Chip Item Layout */
+/* Button | Info */
+.chip-item button,
+.statue-item button {
+  flex: 0 0 180px;
+  text-align: center;
+  justify-content: center;
+}
+
+.chip-item .info,
+.statue-item .info {
+  flex: 1;
+  text-align: left;
+}
+
+.chip-list-item {
+  justify-content: space-between;
+}
+
+/* Chip Action Unit: Button + Info */
+/* Chip Action Unit: Button + Info */
+.chip-action-unit {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2px;
+  vertical-align: top;
+  height: auto !important;
+  /* Force auto height */
+}
+
+/* Specific fix for buttons inside chip action unit to prevent stretching or huge fixed width */
+.chip-action-unit button {
+  flex: 0 0 auto !important;
+  /* Override generic list button width */
+  width: auto !important;
+  min-width: 60px;
+  height: auto !important;
+  padding: 2px 6px;
+  line-height: normal;
+}
+
+.chip-cost-info {
+  font-size: 0.7em;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* 
+   Button Resizing Fix: Static Content
+   Let content define width for World buttons, Type buy buttons, etc.
+*/
+.wdbutton,
+.buytypebutton,
+.tweetconfigbutton,
+.challengeconfigbutton,
+#resetbutton,
+#exportsave,
+#importsave,
+#tweet a {
+  width: auto;
+  min-width: 80px;
+  max-width: none;
+  /* flexible */
+  display: inline-block;
+  text-align: center;
+  padding: 4px 12px;
+  margin: 2px;
+}
+
+/* Container for type buttons to layout nicely */
+.type-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.tweetconfigbutton {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  min-width: auto;
+  /* Allow even smaller for tiny text */
+}
+
+/* Utility */
+.unavailable {
+  opacity: 0.6;
+  pointer-events: none;
 }

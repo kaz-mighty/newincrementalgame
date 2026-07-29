@@ -42,7 +42,7 @@ class Player {
 
     this.money = new Decimal(playerData.money);
     this.tickSpeed = playerData.tickspeed;
-    this.currentTab = "basic";
+    this.currentTab = playerData.currenttab;
     this.tweeting = Array.from(playerData.tweeting);
 
     this.level = new Decimal(playerData.level);

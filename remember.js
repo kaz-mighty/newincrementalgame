@@ -126,6 +126,8 @@ class Remember {
     }
   }
 
+  // 引数をPlayerにするとringsのコピーが困難になるので、当面はPlayerSaveDataのままとする
+  // (Player.ring が扱う範囲 != PlayerSaveData.rings が扱う範囲)
   /**
    * @param {number} world 対象世界 (0-index)
    * @param {PlayerSaveData} playerData 

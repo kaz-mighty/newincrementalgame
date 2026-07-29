@@ -145,12 +145,13 @@ const OptionTab = Vue.defineComponent({
       this.player.configTweet(content);
     },
     exportSave() {
-      this.nig.save()
-      this.nig.common.exported = btoa(JSON.stringify(this.nig.players))
+      // セーブボタンが無いため吐き出し時にセーブもする
+      this.nig.dataSave()
+      this.nig.common.exported = localStorage.getItem("playerStoredb");
     },
     exportSaveFile() {
       this.nig.save()
-      let result = btoa(JSON.stringify(this.nig.players))
+      let result = btoa(JSON.stringify(Vue.toRaw(this.nig.playersSave)))
       const file = new Blob([result], { type: 'text/plain' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(file)

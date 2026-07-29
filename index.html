@@ -281,7 +281,7 @@
 				</template>
 			</div>
 			<div>
-				データは20秒毎, またはデータ吐き出し時などに自動でセーブされます。
+				データは20秒毎, またはデータ吐き出し時に自動でセーブされます。
 			</div>
 			<div class="export">
 				データ
@@ -638,7 +638,7 @@
 					記憶: {{ nig.common.trophyNumber[i] }}
 				</span>
 				<span v-if="visibleRemember">
-					思い出:{{ nig.players[i].remember }} <!-- todo: playerとplayersが非同期になったことで即座に更新されないのを直す -->
+					思い出:{{ nig.players[i].remember }}
 				</span>
 				<span v-if="visiblePipe">
 					世界管開通数:{{ player.worldPipe[i] }}

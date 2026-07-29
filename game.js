@@ -205,13 +205,21 @@ function initialCommonData() {
   };
 }
 
+/** UIを除くゲームの全てを扱うクラス。
+ * 
+ * player 一つに関する処理でも、タイマーが関与する物はここで扱う。
+ */
 class Nig { // New Incremental Game
   constructor() {
     const common = initialCommonData();
 
     this.world = 0;
-    this.player = new Player(this.world, initialData(), common);
-    this.players = new Array(WORLD_NUM).fill(null).map(() => initialData());
+    // セーブデータ内の不明なプロパティを保存するため(あと高速化のため)に生のセーブデータの playersSave と、
+    // 現在の世界と他の世界を同じ型で扱えるようにするための players の両方を保持しておく。
+    // player と players[this.world] は常に同じ参照になる。
+    this.playersSave = new Array(WORLD_NUM).fill(null).map(() => initialData());
+    this.players = new Array(WORLD_NUM).fill(null).map((_, i) => new Player(i, this.playersSave[i], common));
+    this.player = this.players[this.world];
     this.common = common;
 
     this.autoMissionTimerId = 0;
@@ -229,30 +237,33 @@ class Nig { // New Incremental Game
     this.time = Date.now();
 
     setTimeout(() => this.update(), this.player.tickSpeed);
-    setInterval(() => this.save(), 20000);
+    setInterval(() => this.dataSave(), 20000);
+  }
+
+  dataSave() {
+    this.save();
+    localStorage.setItem("playerStoredb", btoa(JSON.stringify(Vue.toRaw(this.playersSave))));
   }
   save() {
-    this.players[this.world] = deepmerge(this.players[this.world], this.player.toSaveObject(), {
+    // セーブデータ内の不明なプロパティも維持するため、マージする
+    this.playersSave[this.world] = deepmerge(this.playersSave[this.world], this.player.toSaveObject(), {
       isMergeableObject: isPlainObject
     });
-
-    localStorage.setItem("playerStoredb", btoa(JSON.stringify(this.players)));
-    console.log("save succeeded" + Date.now())
   }
   dataLoad() {
     const store = localStorage.getItem("playerStoredb");
     if (!store) return
     console.log(atob(store))
-    this.players = JSON.parse(atob(store))
+    let playersSave = JSON.parse(atob(store))
 
-    while (this.players.length < WORLD_NUM) {
-      this.players.push(initialData())
+    while (playersSave.length < WORLD_NUM) {
+      playersSave.push(initialData())
     }
 
     for (let i = 0; i < WORLD_NUM; i++) {
       const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
 
-      let saveData = deepmerge(initialData(), this.players[i], {
+      let saveData = deepmerge(initialData(), playersSave[i], {
         arrayMerge: overwriteMerge,
         isMergeableObject: isPlainObject
       })
@@ -282,7 +293,8 @@ class Nig { // New Incremental Game
         saveData.worldpipe.push(0)
       }
 
-      this.players[i] = saveData
+      this.playersSave[i] = saveData
+      this.players[i] = new Player(i, saveData, this.common)
     }
 
     this.common.worldOpened.fill(false);
@@ -290,11 +302,9 @@ class Nig { // New Incremental Game
   }
   /** @param {number} world */
   load(world) {
-    let saveData = this.players[world]
     this.world = world
-    console.log(saveData)
-
-    this.player = new Player(this.world, saveData, this.common)
+    this.player = this.players[world]
+    this.player.currentTab = "basic"
 
     this.checkMemories()
     this.checkRemembers()
@@ -441,7 +451,8 @@ class Nig { // New Incremental Game
   /** @param {boolean} force */
   resetData(force) {
     if (force || confirm('これはソフトリセットではありません。\nすべてが無になり何も得られませんが、本当によろしいですか？')) {
-      this.players = new Array(WORLD_NUM).fill(null).map(() => initialData());
+      this.playersSave = new Array(WORLD_NUM).fill(null).map(() => initialData());
+      this.players = new Array(WORLD_NUM).fill(null).map((_, i) => new Player(i, this.playersSave[i], this.common));
       this.common.worldOpened.fill(false);
       this.load(0);
     }
@@ -456,11 +467,13 @@ class Nig { // New Incremental Game
   }
   /** @param {number} i */
   shrinkWorld(i) {
-    let newData = Remember.shrinkWorld(i, this.players[i], this.common.trophyNumber[i], this.player.rememberSum);
+    if (i == this.world) return;
+
+    let newData = Remember.shrinkWorld(i, this.playersSave[i], this.common.trophyNumber[i], this.player.rememberSum);
     if (newData == undefined) return;
 
-    this.players[i] = newData;
-    this.save();
+    this.playersSave[i] = newData;
+    this.players[i] = new Player(i, newData, this.common);
     this.checkMemories();
     this.checkRemembers();
     this.checkPipedSmallTrophies()
@@ -511,15 +524,15 @@ class Nig { // New Incremental Game
     this.player.pipedSmallTrophy = 0;
     for (let i = 0; i < WORLD_NUM; i++) {
       let cnt = 0
-      if (this.players[i].worldpipe[this.world] >= 1) {
+      if (this.players[i].worldPipe[this.world] >= 1) {
         for (let j = 0; j < 100; j++) {
-          if (this.players[i].smalltrophies[j]) cnt++;
+          if (this.players[i].smallTrophies1st[j]) cnt++;
         }
         for (let j = 0; j < 100; j++) {
-          if (this.players[i].smalltrophies2nd[j]) cnt++;
+          if (this.players[i].smallTrophies2nd[j]) cnt++;
         }
         cnt -= 75
-        cnt *= this.players[i].worldpipe[this.world]
+        cnt *= this.players[i].worldPipe[this.world]
         if (this.players[i].remember >= 10) {
           cnt = Math.floor(cnt * (0.1 + this.players[i].remember / 10))
         }

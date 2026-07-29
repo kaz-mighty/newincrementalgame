@@ -86,16 +86,6 @@ class Player {
         autoRing: playerData.rings.auto.doauto,
     };
 
-    this.common = commonData;
-    this.commonMult = new Decimal(0);
-    this.incrementalMults = new Array(8).fill(null).map(() => new Decimal(1));
-    this.memorySum = 0;
-    this.rememberSum = 0;
-    this.smallTrophy = 0;
-    this.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
-    this.pipedSmallTrophy = 0;
-    this.multByAc = new Decimal(1);
-
     this.unUsed = {
       shineLoader: Array.from(playerData.shineloader),
       brightLoader: Array.from(playerData.brightloader),
@@ -103,6 +93,24 @@ class Player {
       rememberForgot: playerData.rememberforgot,
       spiritBoughtCurrentCrown: Array.from(playerData.spiritboughtcurrentcrown),
     };
+
+    // 以下、セーブされない状態 ほとんどの変数は世界が現在アクティブでない場合無効(正しい値にならない)
+    // 世界共有データ
+    this.common = commonData;
+    // キャッシュ等
+    this.commonMult = new Decimal(0);
+    this.incrementalMults = new Array(8).fill(null).map(() => new Decimal(1));
+    this.multByAc = new Decimal(1);
+    this.memory = 0;  // 常に有効
+    this.smallTrophy = 0;  // 常に有効
+    // 他世界統計
+    this.memorySum = 0;
+    this.rememberSum = 0;
+    this.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
+    this.pipedSmallTrophy = 0;
+
+    this.countMemory();
+    this.countSmallTrophies();
   }
 
   /** @returns {PlayerSaveData} */
@@ -678,9 +686,9 @@ class Player {
     if (this.light.lightGenerators[0].greaterThan(0)) this.trophies[8] = true;
     if (this.shine.flicker > 0) this.trophies[9] = true;
 
-    this.common.trophyNumber[this.world] = this.countTrophies();
-    if (this.world === 0 && this.common.trophyNumber[0] >= 6) {
-      this.remember = Math.max(this.remember, this.common.trophyNumber[0]);
+    this.countMemory();
+    if (this.world === 0 && this.memory >= 6) {
+      this.remember = Math.max(this.remember, this.memory);
     }
 
     if (this.money.greaterThan(0)) this.smallTrophies1st[0] = true
@@ -846,13 +854,15 @@ class Player {
       if (this.shine.brightness >= 100000) this.smallTrophies2nd[57] = true
       if (this.shine.brightness >= 1000000) this.smallTrophies2nd[58] = true
     }
+    this.countSmallTrophies();
   }
-  countTrophies() {
+
+  countMemory() {
     let cnt = 0;
     for (let i = 0; i < TROPHY_NUM; i++) {
       if (this.trophies[i]) cnt++;
     }
-    return cnt;
+    this.memory = cnt;
   }
   countSmallTrophies() {
     let cnt = 0;
@@ -896,7 +906,6 @@ class Player {
 
     if (this.common.trophyCheck) {
         this.checkTrophies()
-        this.countSmallTrophies()
     }
     this.checkWorlds()
 

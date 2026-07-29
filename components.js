@@ -360,7 +360,7 @@ const WorldTab = Vue.defineComponent({
   }),
   computed: {
     visibleRemember() {
-      return this.nig.common.trophyNumber[0] >= 6;
+      return this.nig.players[0].memory >= 6;
     },
     visiblePipe() {
       return this.player.smallTrophy >= 75;

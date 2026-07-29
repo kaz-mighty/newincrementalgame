@@ -131,16 +131,16 @@ class Remember {
   /**
    * @param {number} world 対象世界 (0-index)
    * @param {PlayerSaveData} playerData 
-   * @param {number} trophyNum 対象世界の実績数
+   * @param {number} memory 対象世界の実績数
    * @param {number} remember0 世界0の合計思い出
    * @return {PlayerSaveData | undefined}
    */
-  static shrinkWorld(world, playerData, trophyNum, remember0) {
-    if (4 > trophyNum) {
+  static shrinkWorld(world, playerData, memory, remember0) {
+    if (4 > memory) {
       alert("実績が4つ未満なので、世界を収縮できません。")
       return
     }
-    if (playerData.remember >= trophyNum) {
+    if (playerData.remember >= memory) {
       alert("実績が思い出より多くありません。")
       return
     }
@@ -149,7 +149,7 @@ class Remember {
     }
     let st = playerData.statue
     let newData = initialData()
-    newData.remember = trophyNum
+    newData.remember = memory
     newData.rings = playerData.rings
     newData.residue = playerData.residue
     newData.challengeweight = playerData.challengeweight

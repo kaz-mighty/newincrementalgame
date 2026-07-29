@@ -628,14 +628,14 @@
 				<button type="button" class="wdbutton" :class="{ 'selected': nig.world == i , 'unavailable': !nig.common.worldOpened[i] }" @click="moveWorld(i)">
 					世界 {{ i+1 }}
 				</button>
-				<button type="button" v-if="visibleRemember && nig.world == 0 && i != 0" class="wdbutton" :class="{'unavailable': nig.players[i].remember >= nig.common.trophyNumber[i] || nig.common.trophyNumber[i] < 4}" @click="shrinkWorld(i)">
+				<button type="button" v-if="visibleRemember && nig.world == 0 && i != 0" class="wdbutton" :class="{'unavailable': nig.players[i].remember >= nig.players[i].memory || nig.players[i].memory < 4}" @click="shrinkWorld(i)">
 					収縮
 				</button>
 				<button type="button" v-if="visiblePipe && nig.world != i && nig.common.worldOpened[i]" class="wdbutton" :class="{'unavailable': player.worldPipe[i] >= player.calcMaxPipe() }" @click="openPipe(i)">
 					開通
 				</button>
 				<span>
-					記憶: {{ nig.common.trophyNumber[i] }}
+					記憶: {{ nig.players[i].memory }}
 				</span>
 				<span v-if="visibleRemember">
 					思い出:{{ nig.players[i].remember }}

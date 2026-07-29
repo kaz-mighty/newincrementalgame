@@ -199,8 +199,6 @@ function initialCommonData() {
 
     exported: "", // UIだけでなく里程にも影響するため
 
-    trophyNumber: new Array(TROPHY_NUM).fill(0),
-
     worldOpened: new Array(WORLD_NUM).fill(false),
   };
 }
@@ -310,7 +308,6 @@ class Nig { // New Incremental Game
     this.checkRemembers()
     this.player.checkTrophies()
     this.player.checkWorlds()
-    this.player.countSmallTrophies()
     this.checkPipedSmallTrophies()
 
     this.player.updateTickSpeed()
@@ -469,7 +466,7 @@ class Nig { // New Incremental Game
   shrinkWorld(i) {
     if (i == this.world) return;
 
-    let newData = Remember.shrinkWorld(i, this.playersSave[i], this.common.trophyNumber[i], this.player.rememberSum);
+    let newData = Remember.shrinkWorld(i, this.playersSave[i], this.players[i].memory, this.player.rememberSum);
     if (newData == undefined) return;
 
     this.playersSave[i] = newData;
@@ -493,21 +490,12 @@ class Nig { // New Incremental Game
     }
   }
 
-  /** @param {number} index */
-  countTrophies(index) {
-    let cnt = 0
-    for (let i = 0; i < TROPHY_NUM; i++) {
-      if (this.players[index].trophies[i]) cnt++;
-    }
-    this.common.trophyNumber[index] = cnt;
-  }
   checkMemories() {
     let cnt = 0;
 
     for (let i = 0; i < WORLD_NUM; i++) {
-      this.countTrophies(i)
       if (this.world == i) continue
-      cnt += this.common.trophyNumber[i]
+      cnt += this.players[i].memory
     }
     this.player.memorySum = cnt
   }
@@ -523,15 +511,8 @@ class Nig { // New Incremental Game
     this.player.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
     this.player.pipedSmallTrophy = 0;
     for (let i = 0; i < WORLD_NUM; i++) {
-      let cnt = 0
       if (this.players[i].worldPipe[this.world] >= 1) {
-        for (let j = 0; j < 100; j++) {
-          if (this.players[i].smallTrophies1st[j]) cnt++;
-        }
-        for (let j = 0; j < 100; j++) {
-          if (this.players[i].smallTrophies2nd[j]) cnt++;
-        }
-        cnt -= 75
+        let cnt = this.players[i].smallTrophy - 75;
         cnt *= this.players[i].worldPipe[this.world]
         if (this.players[i].remember >= 10) {
           cnt = Math.floor(cnt * (0.1 + this.players[i].remember / 10))

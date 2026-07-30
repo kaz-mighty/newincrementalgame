@@ -64,7 +64,7 @@
 				<span id="world" v-if="nig.common.worldOpened[1] || nig.common.worldOpened[2]">
 					<button type="button" @click="changeTab('world')">世界</button>
 				</span>
-				<span id="chip" v-if="player.smallTrophies1st[5]">
+				<span id="chip" v-if="player.trophy.smallTrophies1st[5]">
 					<button type="button" @click="changeTab('chip')">鋳片</button>
 				</span>
 				<span id="statue" v-if="player.chip.chip[0] >= 10000 || player.statue.statue[0] >= 1">
@@ -617,7 +617,7 @@
 			</div>
 
 			<div v-if="visiblePipe">
-				世界管所持数: {{ Math.floor((player.smallTrophy-72)/3) }}
+				世界管所持数: {{ Math.floor((player.trophy.smallTrophy-72)/3) }}
 				<div>
 					世界管を開通すると、開通先の世界での生産力が、開通元の世界の里程の個数に応じて強化されます。
 				</div>
@@ -628,17 +628,17 @@
 				<button type="button" class="wdbutton" :class="{ 'selected': nig.world == i , 'unavailable': !nig.common.worldOpened[i] }" @click="moveWorld(i)">
 					世界 {{ i+1 }}
 				</button>
-				<button type="button" v-if="visibleRemember && nig.world == 0 && i != 0" class="wdbutton" :class="{'unavailable': nig.players[i].remember >= nig.players[i].memory || nig.players[i].memory < 4}" @click="shrinkWorld(i)">
+				<button type="button" v-if="visibleRemember && nig.world == 0 && i != 0" class="wdbutton" :class="{'unavailable': nig.players[i].trophy.remember >= nig.players[i].trophy.memory || nig.players[i].trophy.memory < 4}" @click="shrinkWorld(i)">
 					収縮
 				</button>
 				<button type="button" v-if="visiblePipe && nig.world != i && nig.common.worldOpened[i]" class="wdbutton" :class="{'unavailable': player.worldPipe[i] >= player.calcMaxPipe() }" @click="openPipe(i)">
 					開通
 				</button>
 				<span>
-					記憶: {{ nig.players[i].memory }}
+					記憶: {{ nig.players[i].trophy.memory }}
 				</span>
 				<span v-if="visibleRemember">
-					思い出:{{ nig.players[i].remember }}
+					思い出:{{ nig.players[i].trophy.remember }}
 				</span>
 				<span v-if="visiblePipe">
 					世界管開通数:{{ player.worldPipe[i] }}
@@ -835,17 +835,17 @@
 			<br>
 			実績
 			<div class="levelitem" v-for="(_, i) in 10" :key="i">
-				<button type="button" class="trbutton" :class="{ 'unavailable': !player.trophies[i] }">
+				<button type="button" class="trbutton" :class="{ 'unavailable': !player.trophy.trophies[i] }">
 					実績 {{ i+1 }}: {{ getTrophyName(i) }}
 				</button>
 			</div>
 			里程
-			取得数: {{ player.smallTrophy }}
+			取得数: {{ player.trophy.smallTrophy }}
 			<div class="player.smallTrophy">
 				<table border="1">
 					<tr v-for="(_, i) in 10" :key="i">
 						<td v-for="(_, j) in 10" :key="j">
-							<span v-show="player.smallTrophies1st[i*10+j]">{{ i*10+j+1 }}</span>
+							<span v-show="player.trophy.smallTrophies1st[i*10+j]">{{ i*10+j+1 }}</span>
 						</td>
 					</tr>
 				</table>
@@ -855,7 +855,7 @@
 				<table border="1">
 					<tr v-for="(_, i) in 10" :key="i">
 						<td v-for="(_, j) in 10" :key="j">
-							<span v-show="player.smallTrophies2nd[i*10+j]">{{ 100+i*10+j+1 }}</span>
+							<span v-show="player.trophy.smallTrophies2nd[i*10+j]">{{ 100+i*10+j+1 }}</span>
 						</td>
 					</tr>
 				</table>

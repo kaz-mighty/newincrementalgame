@@ -360,14 +360,14 @@ const WorldTab = Vue.defineComponent({
   }),
   computed: {
     visibleRemember() {
-      return this.nig.players[0].memory >= 6;
+      return this.nig.players[0].trophy.memory >= 6;
     },
     visiblePipe() {
-      return this.player.smallTrophy >= 75;
+      return this.player.trophy.smallTrophy >= 75;
     },
     maxPipe() {
       // bug: 表示と動作が一致してない(Player.calcMaxPipeと微妙に異なる)
-      return this.player.trophies[9] ? 3 : this.player.crownResetTime.gt(0) ? 2 : 1;
+      return this.player.trophy.trophies[9] ? 3 : this.player.crownResetTime.gt(0) ? 2 : 1;
     },
   },
   methods: {
@@ -483,7 +483,7 @@ const TrophyTab = Vue.defineComponent({
     },
     /** @param {number} i */
     getTrophyName(i) {
-      return this.player.trophies[i] ? Trophy.contents[i] : "???"
+      return this.player.trophy.trophies[i] ? Trophy.contents[i] : "???"
     },
   },
 });

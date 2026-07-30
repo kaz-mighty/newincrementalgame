@@ -306,7 +306,7 @@ class Nig { // New Incremental Game
 
     this.checkMemories()
     this.checkRemembers()
-    this.player.checkTrophies()
+    this.player.trophy.checkTrophies(this.player)
     this.player.checkWorlds()
     this.checkPipedSmallTrophies()
 
@@ -466,7 +466,7 @@ class Nig { // New Incremental Game
   shrinkWorld(i) {
     if (i == this.world) return;
 
-    let newData = Remember.shrinkWorld(i, this.playersSave[i], this.players[i].memory, this.player.rememberSum);
+    let newData = Remember.shrinkWorld(i, this.playersSave[i], this.players[i].trophy.memory, this.player.rememberSum);
     if (newData == undefined) return;
 
     this.playersSave[i] = newData;
@@ -495,14 +495,14 @@ class Nig { // New Incremental Game
 
     for (let i = 0; i < WORLD_NUM; i++) {
       if (this.world == i) continue
-      cnt += this.players[i].memory
+      cnt += this.players[i].trophy.memory
     }
     this.player.memorySum = cnt
   }
   checkRemembers() {
     let cnt = 0;
     for (let i = this.world + 1; i < WORLD_NUM; i++) {
-      cnt += this.players[i].remember
+      cnt += this.players[i].trophy.remember
     }
 
     this.player.rememberSum = cnt
@@ -512,10 +512,10 @@ class Nig { // New Incremental Game
     this.player.pipedSmallTrophy = 0;
     for (let i = 0; i < WORLD_NUM; i++) {
       if (this.players[i].worldPipe[this.world] >= 1) {
-        let cnt = this.players[i].smallTrophy - 75;
+        let cnt = this.players[i].trophy.smallTrophy - 75;
         cnt *= this.players[i].worldPipe[this.world]
-        if (this.players[i].remember >= 10) {
-          cnt = Math.floor(cnt * (0.1 + this.players[i].remember / 10))
+        if (this.players[i].trophy.remember >= 10) {
+          cnt = Math.floor(cnt * (0.1 + this.players[i].trophy.remember / 10))
         }
         this.player.eachPipedSmallTrophy[i] = cnt;
         this.player.pipedSmallTrophy += cnt;

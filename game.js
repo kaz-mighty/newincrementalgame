@@ -387,6 +387,10 @@ class Nig { // New Incremental Game
     let input = new Decimal(window.prompt("閾値を設定", ""))
     this.common.chipThreshold = input
   }
+  confCheckTrophies() {
+    this.common.trophyCheck = !this.common.trophyCheck
+  }
+
   autoShine() {
     this.player.spendShine(this.player.auto.autoSpendShineNumber)
   }
@@ -402,6 +406,7 @@ class Nig { // New Incremental Game
       this.player.challenge.startChallenge(this.player);
     }
   }
+
   /** @param {number} index */
   toggleRingAutoBuyer(index) {
     if (index == 0) {
@@ -444,6 +449,15 @@ class Nig { // New Incremental Game
       this.player.auto.autoSpendBrightNumber = input
     }
   }
+  configAutoMission() {
+    this.player.auto.autoRing = !this.player.auto.autoRing
+    if (this.player.auto.autoRing) {
+      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+    } else {
+      clearInterval(this.autoMissionTimerId)
+      this.autoMissionTimerId = 0
+    }
+  }
 
   /** @param {boolean} force */
   resetData(force) {
@@ -474,20 +488,6 @@ class Nig { // New Incremental Game
     this.checkMemories();
     this.checkRemembers();
     this.checkPipedSmallTrophies()
-  }
-
-  confCheckTrophies() {
-    this.common.trophyCheck = !this.common.trophyCheck
-  }
-
-  configAutoMission() {
-    this.player.auto.autoRing = !this.player.auto.autoRing
-    if (this.player.auto.autoRing) {
-      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
-    } else {
-      clearInterval(this.autoMissionTimerId)
-      this.autoMissionTimerId = 0
-    }
   }
 
   checkMemories() {

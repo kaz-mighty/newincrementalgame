@@ -148,6 +148,7 @@ class Player {
       darkgeneratorsCost: this.dark.darkGeneratorsCost,
 
       darklevel: this.dark.darkLevel,
+      darklevelproof: this.dark.darkLevelProof,
 
       lightmoney: this.light.lightMoney,
 

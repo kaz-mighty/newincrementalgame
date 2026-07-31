@@ -94,6 +94,7 @@ const initialData = () => {
     ],
 
     darklevel: new Decimal(0),
+    darklevelproof: 0,
 
     lightmoney: new Decimal(0),
 
@@ -229,6 +230,7 @@ function initialCommonData() {
 
     exported: "", // UIだけでなく里程にも影響するため
 
+    totalDarkLevelProof: 0,
     worldOpened: new Array(WORLD_NUM).fill(false),
   };
 }
@@ -344,10 +346,13 @@ class Nig { // New Incremental Game
     this.player = this.players[world]
     this.player.currentTab = "basic"
 
+    this.checkTotalDarkLevelProof();
     this.checkMemories()
     this.checkRemembers()
     this.player.trophy.checkTrophies(this.player)
     this.player.checkWorlds()
+    this.player.dark.updateProofCallback = () => this.checkTotalDarkLevelProof();
+    this.player.dark.updateDarkLevelProof()
     this.checkPipedSmallTrophies()
 
     this.player.updateTickSpeed()
@@ -545,6 +550,13 @@ class Nig { // New Incremental Game
     this.checkPipedSmallTrophies()
   }
 
+  checkTotalDarkLevelProof() {
+    let total = 0;
+    for (let i = 0; i < WORLD_NUM; i++) {
+      total += this.players[i].dark.darkLevelProof;
+    }
+    this.common.totalDarkLevelProof = total;
+  }
   checkMemories() {
     let cnt = 0;
 

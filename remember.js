@@ -152,6 +152,7 @@ class Remember {
     newData.remember = memory
     newData.rings = playerData.rings
     newData.residue = playerData.residue
+    newData.darklevelproof = playerData.darklevelproof
     newData.challengeweight = playerData.challengeweight
     newData.challengeweightvalue = playerData.challengeweightvalue
 

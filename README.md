@@ -19,6 +19,7 @@ this is an incremental game project I(twitter:@dem08656775) created. I threw old
   - 発生器の倍率
   - 上位効力10の倍率
 - 収縮時、1tickを待たず即座に記憶と思い出を再計算するように
+- 裏段位リセット時、1tickを待たず即座に裏段位の証を計算するように
 - 浮動小数点演算の計算順序を変更したことによる誤差
 - コンソール出力
 

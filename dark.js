@@ -3,10 +3,15 @@ class Dark {
   constructor(playerData) {
     this.darkMoney = new Decimal(playerData.darkmoney);
     this.darkLevel = new Decimal(playerData.darklevel);
+    this.darkLevelProof = playerData.darklevelproof;
 
     this.darkGenerators = playerData.darkgenerators.map(v => new Decimal(v));
     this.darkGeneratorsBought = playerData.darkgeneratorsBought.map(v => new Decimal(v));
     this.darkGeneratorsCost = playerData.darkgeneratorsCost.map(v => new Decimal(v));
+
+    // 相互参照を回避するためのコールバック
+    /** @type {() => void | null} */
+    this.updateProofCallback = null;
   }
 
   /** @param {Player} player */
@@ -53,12 +58,26 @@ class Dark {
     }
   }
 
+  calcDarkLevelProof() {
+    if (this.darkLevel.lessThan('1e11')) return 0;
+    return Math.max(0, Math.floor(this.darkLevel.log10()) - 10);
+  }
+
+  updateDarkLevelProof() {
+    const newProof = this.calcDarkLevelProof();
+    if (newProof > this.darkLevelProof) {
+      this.darkLevelProof = newProof;
+      this.updateProofCallback?.();
+    }
+  }
+
   /** @param {Player} player */
   resetDarklevel(player) {
     let dv = 18 - player.crown.add(2).log2()
     dv = Math.max(dv, 1)
-    let gaindarklevel = new Decimal(this.darkMoney.log10()).div(dv).pow_base(2).round()
-    if (confirm('裏昇段リセットして、裏段位' + gaindarklevel + 'を得ますか？')) {
+    let gainDarkLevel = new Decimal(this.darkMoney.log10()).div(dv).pow_base(2)
+    gainDarkLevel = gainDarkLevel.mul(1 + player.common.totalDarkLevelProof * 0.1).round()
+    if (confirm('裏昇段リセットして、裏段位' + gainDarkLevel + 'を得ますか？')) {
       this.darkMoney = new Decimal(0)
       this.darkGenerators = new Array(8).fill(null).map(() => new Decimal(0))
       this.darkGeneratorsBought = new Array(8).fill(null).map(() => new Decimal(0))
@@ -72,7 +91,8 @@ class Dark {
         new Decimal('1e443'),
         new Decimal('1e612')
       ]
-      this.darkLevel = this.darkLevel.add(gaindarklevel)
+      this.darkLevel = this.darkLevel.add(gainDarkLevel)
+      this.updateDarkLevelProof();
     }
   }
 

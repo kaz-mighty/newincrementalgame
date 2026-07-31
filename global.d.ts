@@ -123,6 +123,7 @@ type PlayerSaveData = {
   darkgeneratorsCost: (Decimal | string)[];
 
   darklevel: Decimal | string;
+  darklevelproof: number;
 
   lightmoney: Decimal | string;
 

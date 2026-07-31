@@ -76,7 +76,7 @@
 				<span id="ring" v-if="player.shine.residue >= 100">
 					<button type="button" @click="changeTab('ring')">輪</button>
 				</span>
-				<span id="mark-stone" v-if="player.markStone.stones[0] > 0">
+				<span id="mark-stone" v-if="player.markStone.stones[0] > 0 || player.markStone.greatStones[0] > 0">
 					<button type="button" @click="changeTab('markstone')">印石</button>
 				</span>
 			</div>
@@ -223,6 +223,10 @@
 						煌き消費:{{ unit }}
 					</button>
 				</template>
+			</div>
+			<div v-if="player.common.totalDarkLevelProof >= 1">
+				<div>裏段位の証: {{ player.dark.darkLevelProof }}</div>
+				<div>合計裏段位の証: {{ player.common.totalDarkLevelProof }}</div>
 			</div>
 		</div>
 	</template>

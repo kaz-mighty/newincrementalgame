@@ -65,11 +65,11 @@ type MarkStoneSaveData = {
   spadeGainedSinceCrownReset: number;
   ticksSinceRankReset: number;
   selectedType: number;
-  greatClub: number;
-  greatDiamond: number;
-  greatHeart: number;
-  greatSpade: number;
-  calibration: {
+  greatClub?: number;
+  greatDiamond?: number;
+  greatHeart?: number;
+  greatSpade?: number;
+  calibration?: {
     active: boolean;
     selectedEnemy: number;
     enemyHp: number;
@@ -104,6 +104,8 @@ type PlayerSaveData = {
   crownresettime: Decimal | string;
 
   ranktoken: number;
+
+  markstone: MarkStoneSaveData;
 
   generators: (Decimal | string)[];
   generatorsBought: (Decimal | string)[];
@@ -188,5 +190,4 @@ type PlayerSaveData = {
 
   worldpipe: number[];
   rings: RingSaveData;
-  markstone?: MarkStoneSaveData; // beta版のみ
 };

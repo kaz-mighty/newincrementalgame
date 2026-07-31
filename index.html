@@ -76,6 +76,9 @@
 				<span id="ring" v-if="player.shine.residue >= 100">
 					<button type="button" @click="changeTab('ring')">輪</button>
 				</span>
+				<span id="mark-stone" v-if="player.markStone.stones[0] > 0">
+					<button type="button" @click="changeTab('markstone')">印石</button>
+				</span>
 			</div>
 
 			<!-- refは拡張スクリプト用であり、このリポジトリではなるべく使わない -->
@@ -95,6 +98,7 @@
 			<statue-tab ref="statueTab"></statue-tab>
 			<ring-tab ref="ringTab"></ring-tab>
 			<trophy-tab ref="trophyTab"></trophy-tab>
+			<mark-stone-tab ref="markStoneTab"></mark-stone-tab>
 
 			<div id="tweet">
 				<a :href="tweetLink" target="_blank" rel="noopener noreferrer">Tweet #新しい放置ゲーム</a>
@@ -499,13 +503,17 @@
 				<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.autoLevel }" @click="toggleAutoBuyer(2)">
 					自動昇段器
 				</button>
+				<button type="button" class="autobuyerbutton" @click="configAutoBuyer(3)">
+					設定:リセットポイント
+				</button>
 				<button type="button" class="autobuyerbutton" @click="configAutoBuyer(0)">
 					自動昇段器設定:入手段位
 				</button>
 				<button type="button" class="autobuyerbutton" @click="configAutoBuyer(1)">
 					自動昇段器設定:停止段位
 				</button>
-				現在: {{ nig.common.autoLevelNumber.toNumber() }}, {{ nig.common.autoLevelStopNumber.toExponential(3) }}
+				現在: {{ nig.common.autoLevelPoint.toExponential(3) }} かつ {{ nig.common.autoLevelNumber.toNumber() }},
+				{{ nig.common.autoLevelStopNumber.toExponential(3) }}
 			</div>
 			<div v-if="player.challenge.rankChallengeBonuses.includes(5)">
 				<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.levelItemAutoBuy }" @click="toggleAutoBuyer(3)">
@@ -516,16 +524,24 @@
 				<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.autoRank }" @click="toggleAutoBuyer(5)">
 					自動昇階器
 				</button>
+				<button type="button" class="autobuyerbutton" @click="configAutoBuyer(4)">
+					設定:リセットポイント
+				</button>
 				<button type="button" class="autobuyerbutton" @click="configAutoBuyer(2)">
 					自動昇階器設定:入手階位
 				</button>
-				現在: {{ nig.common.autoRankNumber.toNumber() }}
+				<button type="button" class="autobuyerbutton" :class="{ 'selected': nig.common.autoRankRequireMarkStone }"
+					@click="toggleAutoBuyer(6)" v-if="player.markStone.stones[0] > 0">
+					設定:印石入手時のみ
+				</button>
+				現在: {{ nig.common.autoRankPoint.toExponential(3) }} かつ {{ nig.common.autoRankNumber.toNumber() }}
 				消費輝き: {{ 1000 - player.rememberSum*10 }}
 			</div>
+
 			<div v-if="player.ring.clearedMission.includes(4)">輪自動化器設定</div>
 			<div v-if="player.ring.clearedMission.includes(4)">
 				<button type="button" class="autobuyerbutton" :class="{ 'selected': player.auto.autoSpendShine }" @click="toggleRingAutoBuyer(0)">
-					輝き自動消費器　
+					輝き自動消費器
 				</button>
 				<button type="button" class="autobuyerbutton" @click="configRingAutoBuyer(0)">
 					輝き自動消費器設定
@@ -863,6 +879,22 @@
 		</div>
 	</template>
 
+	<template id="mark-stone-tab">
+		<div v-if="player.currentTab == 'markstone'">
+			<br>
+			<div v-for="(_, i) in 2">
+				<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markStone.selectedType === i }"
+					@click="selectType(i)">
+					{{ MarkStone.markStoneData[i].name }}
+				</button>
+				所持数: {{ player.markStone.stones[i] }}
+				次回入手条件: {{ player.markStone.calcRequirement(i).toExponential(3) }}
+				<span v-if="player.crownResetTime.gt(0)"> 今冠位入手: {{ player.markStone.gainedSinceCrownReset[i] }}</span>
+			</div>
+			<div>経過間隙: {{ player.markStone.ticksSinceRankReset }}</div>
+		</div>
+	</template>
+
 	<script>window.exports = {}</script><!-- is-plain-objectのバグ対応 -->
 	<script src="https://cdn.jsdelivr.net/npm/is-plain-object/dist/is-plain-object.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/deepmerge/dist/umd.js"></script>
@@ -883,6 +915,7 @@
 	<script type="text/javascript" src="accelerator.js"></script>
 	<script type="text/javascript" src="dark.js"></script>
 	<script type="text/javascript" src="light.js"></script>
+	<script type="text/javascript" src="markstone.js"></script>
 	<script type="text/javascript" src="player.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 	<script type="text/javascript" src="components.js"></script>

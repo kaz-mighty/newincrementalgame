@@ -23,6 +23,19 @@ const initialData = () => {
 
     ranktoken: 0,
 
+    markstone: {
+      club: 0,
+      clubGainedSinceCrownReset: 0,
+      diamond: 0,
+      diamondGainedSinceCrownReset: 0,
+      heart: 0,
+      heartGainedSinceCrownReset: 0,
+      spade: 0,
+      spadeGainedSinceCrownReset: 0,
+      ticksSinceRankReset: 0,
+      selectedType: 0,
+    },
+
     generators: new Array(8).fill(null).map(() => new Decimal(0)),
     generatorsBought: new Array(8).fill(null).map(() => new Decimal(0)),
     generatorsCost: [
@@ -189,10 +202,13 @@ function initialCommonData() {
     accAutoBuy: false,
     autoLevel: false,
     autoLevelNumber: new Decimal(2),
-    autoRankNumber: new Decimal(4),
+    autoLevelPoint: new Decimal(0),
     autoLevelStopNumber: new Decimal("1e100"),
     levelItemAutoBuy: false,
     autoRank: false,
+    autoRankNumber: new Decimal(4),
+    autoRankPoint: new Decimal(0),
+    autoRankRequireMarkStone: false,
 
     chipThresholdUse: false,
     chipThreshold: new Decimal("1e999"),
@@ -361,24 +377,40 @@ class Nig { // New Incremental Game
 
   /** @param {number} index */
   configAutoBuyer(index) {
-    if (index == 0) {
-      let input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
-      this.common.autoLevelNumber = input
-    } else if (index == 1) {
-      let input = new Decimal(window.prompt("昇段停止段位を設定", ""))
-      this.common.autoLevelStopNumber = input
-    } else if (index == 2) {
-      let input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
-      this.common.autoRankNumber = input
+    let input;
+    switch (index) {
+      case 0:
+        input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
+        this.common.autoLevelNumber = input
+        break
+      case 1:
+        input = new Decimal(window.prompt("昇段停止段位を設定", ""))
+        this.common.autoLevelStopNumber = input
+        break
+      case 2:
+        input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
+        this.common.autoRankNumber = input
+        break
+      case 3:
+        input = new Decimal(window.prompt("段位リセットポイント閾値を設定（0で無効）"))
+        this.common.autoLevelPoint = input
+        break
+      case 4:
+        input = new Decimal(window.prompt("階位リセットポイント閾値を設定（0で無効）"))
+        this.common.autoRankPoint = input
+        break
     }
   }
   /** @param {number} index */
   toggleAutoBuyer(index) {
-    if (index == 0) this.common.genAutoBuy = !this.common.genAutoBuy
-    if (index == 1) this.common.accAutoBuy = !this.common.accAutoBuy
-    if (index == 2) this.common.autoLevel = !this.common.autoLevel
-    if (index == 3) this.common.levelItemAutoBuy = !this.common.levelItemAutoBuy
-    if (index == 5) this.common.autoRank = !this.common.autoRank
+    switch(index) {
+      case 0: this.common.genAutoBuy = !this.common.genAutoBuy; break;
+      case 1: this.common.accAutoBuy = !this.common.accAutoBuy; break;
+      case 2: this.common.autoLevel = !this.common.autoLevel; break;
+      case 3: this.common.levelItemAutoBuy = !this.common.levelItemAutoBuy; break;
+      case 5: this.common.autoRank = !this.common.autoRank; break;
+      case 6: this.common.autoRankRequireMarkStone = !this.common.autoRankRequireMarkStone; break;
+    }
   }
   toggleChipThresholdUse() {
     this.common.chipThresholdUse = !this.common.chipThresholdUse
@@ -471,8 +503,7 @@ class Nig { // New Incremental Game
 
   /** @param {number} i */
   moveWorld(i) {
-    // @ts-expect-error
-    if (world == i || !this.common.worldOpened[i]) return // bug
+    if (this.world == i || !this.common.worldOpened[i]) return // bug
     this.save()
     this.load(i)
   }

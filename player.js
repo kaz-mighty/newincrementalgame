@@ -68,6 +68,7 @@ class Player {
     this.ring = new Ring(playerData.rings);
     this.trophy = new Trophy(playerData);
     this.spiritLevelA = Array.from(playerData.spiritlevela);
+    this.markStone = new MarkStone(playerData.markstone);
 
     this.worldPipe = Array.from(playerData.worldpipe);
 
@@ -128,6 +129,8 @@ class Player {
       crownresettime: this.crownResetTime,
 
       ranktoken: this.challenge.rankToken,
+
+      markstone: this.markStone.toSaveObject(),
 
       generators: this.generator.generators,
       generatorsBought: this.generator.generatorsBought,
@@ -569,6 +572,8 @@ class Player {
         }
       }
 
+      this.markStone.resetRank(this.money);
+
       this.money = new Decimal(1)
       this.level = new Decimal(0)
       this.levelResetTime = new Decimal(0)
@@ -614,6 +619,8 @@ class Player {
 
     let gainCrown = this.calcGainCrown()
     if (force || confirm('昇冠リセットして、冠位' + gainCrown + 'を得ますか？')) {
+
+      this.markStone.resetCrown()
 
       this.money = new Decimal(1)
       this.level = new Decimal(0)
@@ -723,7 +730,11 @@ class Player {
 
     if (!this.challenge.onChallenge && this.challenge.rankChallengeBonuses.includes(14) && this.common.autoRank) {
       if (this.shine.shine >= autorankshine && this.money.greaterThanOrEqualTo(this.resetRankBorder())) {
-        if (this.calcGainRank().greaterThanOrEqualTo(this.common.autoRankNumber)) {
+        if (
+          this.calcGainRank().greaterThanOrEqualTo(this.common.autoRankNumber)
+          && this.money.greaterThanOrEqualTo(this.common.autoRankPoint)
+          && (!this.common.autoRankRequireMarkStone || this.markStone.canGetStone(this.money))
+        ) {
           this.resetRank(true)
           this.shine.shine -= autorankshine
         }
@@ -736,17 +747,12 @@ class Player {
       }
     }
 
-    if (this.rememberSum >= 100) {
-      if (!(this.challenge.onChallenge || this.challenge.onPerfectChallenge)) {
-        this.level = this.level.add(1)
-        this.levelResetTime = this.levelResetTime.add(1)
-      }
-    }
-
-
     if ((this.auto.autoDoChallenge || !this.challenge.onChallenge) && this.challenge.activeBonuses.includes(14) && this.common.autoLevel) {
       if (this.money.greaterThanOrEqualTo(this.resetLevelBorder()) && this.level.lt(this.common.autoLevelStopNumber)) {
-        if (this.calcGainLevel().greaterThanOrEqualTo(this.common.autoLevelNumber)) {
+        if (
+          this.calcGainLevel().greaterThanOrEqualTo(this.common.autoLevelNumber)
+          && this.money.greaterThanOrEqualTo(this.common.autoLevelPoint)
+        ) {
           this.resetLevel(true, false)
         }
       }
@@ -768,6 +774,7 @@ class Player {
     }
 
     this.updateTickSpeed();
+    this.markStone.update();
   }
   updateTickSpeed() {
     this.tickSpeed = this.calcTickSpeed()

@@ -488,6 +488,18 @@ const TrophyTab = Vue.defineComponent({
   },
 });
 
+const MarkStoneTab = Vue.defineComponent({
+  template: "#mark-stone-tab",
+  data: () => ({
+    player: currentPlayer,
+  }),
+  methods: {
+    selectType(i) {
+      this.player.markStone.selectType(i);
+    },
+  },
+});
+
 const app = Vue.createApp(Vue.defineComponent({
   components: {
     BasicTab,
@@ -506,6 +518,7 @@ const app = Vue.createApp(Vue.defineComponent({
     StatueTab,
     RingTab,
     TrophyTab,
+    MarkStoneTab,
   },
   data() {
     return {
@@ -615,6 +628,7 @@ app.config.globalProperties.Campaign = Campaign;
 app.config.globalProperties.Challenge = Challenge;
 app.config.globalProperties.Chip = Chip;
 app.config.globalProperties.LevelShop = LevelShop;
+app.config.globalProperties.MarkStone = MarkStone;
 app.config.globalProperties.Remember = Remember;
 app.config.globalProperties.Ring = Ring;
 app.config.globalProperties.Shine = Shine;

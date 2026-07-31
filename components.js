@@ -134,6 +134,7 @@ const OptionTab = Vue.defineComponent({
         {id: "statue", name: "像", isShow: this.player.statue.statue[0] > 0},
         {id: "polishedstatue", name: "輝像", isShow: this.player.statue.polishedStatue[0] > 0},
         {id: "polishedstatuebr", name: "煌像", isShow: this.player.statue.brightStatue[0] > 0},
+        {id: "polishedstatuefl", name: "瞬像", isShow: this.player.statue.flickerStatue[0] > 0},
       ];
     },
   },
@@ -438,6 +439,9 @@ const StatueTab = Vue.defineComponent({
     polishStatueBright(i) {
       this.player.statue.polishStatueBright(this.player, i);
     },
+    polishStatueFlicker(i) {
+      this.player.statue.polishStatueFlicker(this.player, i);
+    },
   },
 });
 
@@ -610,6 +614,9 @@ const app = Vue.createApp(Vue.defineComponent({
       }
       if (this.player.tweeting.includes('polishedstatuebr')) {
         tweetText += '煌像:' + this.player.statue.brightStatueSum + '%0A';
+      }
+      if (this.player.tweeting.includes('polishedstatuefl')) {
+        tweetText += '瞬像:' + this.player.statue.flickerStatueSum + '%0A';
       }
 
       let tweetUrl = 'dem08656775.github.io/newincrementalgame';

@@ -106,15 +106,23 @@ class Shine {
     return Math.floor(value);
   }
 
-  /** @param {number} stage */
-  getFlickerPercent(stage) {
-    return 1 / 1000000 * stage;
+  /** 
+   * @param {number} stage 
+   * @param {Statue} statue
+   */
+  getFlickerPercent(stage, statue) {
+    let fp = 1 / 1000000 * stage;
+    fp += (1 / 1000000) * statue.flickerStatueSum * 0.1;
+    return fp;
   }
 
-  /** @param {number} stage */
-  getMaxFlicker(stage) {
-    return stage * stage * 2;
-    //max:2097152
+  /** 
+   * @param {number} stage
+   * @param {Statue} statue
+   */
+  getMaxFlicker(stage, statue) {
+    return Math.floor(stage * stage * 2 * (1 + 0.01 * statue.flickerStatueSumNotSlice));
+    //base max before statue bonuses:2097152
   }
 
   /** @param {Player} player */
@@ -163,11 +171,11 @@ class Shine {
 
   /** @param {Player} player */
   updateFlicker(player) {
-    const maxFlicker = this.getMaxFlicker(player.challenge.perfectChallengeStage);
+    const maxFlicker = this.getMaxFlicker(player.challenge.perfectChallengeStage, player.statue);
     if (this.flicker >= maxFlicker) return;
 
     let flickerGain = 0;
-    if (Math.random() < this.getFlickerPercent(player.challenge.perfectChallengeStage)) {
+    if (Math.random() < this.getFlickerPercent(player.challenge.perfectChallengeStage, player.statue)) {
       flickerGain += 1;
     }
 

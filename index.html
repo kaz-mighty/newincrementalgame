@@ -608,8 +608,8 @@
 						瞬き消費:{{ unit }}
 					</button>
 				</template>
-				<div>瞬き入手率: {{ (player.shine.getFlickerPercent(player.challenge.perfectChallengeStage) * 100).toFixed(5) }}%</div>
-				<div>最大瞬き保有数: {{ player.shine.getMaxFlicker(player.challenge.perfectChallengeStage) }}</div>
+				<div>瞬き入手率: {{ (player.shine.getFlickerPercent(player.challenge.perfectChallengeStage, player.statue) * 100).toFixed(5) }}%</div>
+				<div>最大瞬き保有数: {{ player.shine.getMaxFlicker(player.challenge.perfectChallengeStage, player.statue) }}</div>
 			</div>
 
 			<div v-if="visibleResidue">
@@ -750,9 +750,13 @@
 			像は、完全挑戦に入るのに規定数が必要となります。
 			<div v-for="(_, i) in 10" :key="i">
 				<div v-show="player.chip.chip[i]>0 || player.chip.chipUsed[i]>0 || player.statue.statue[i]>0 ">
-					{{Chip.chipName[i] + "像"}}: {{ player.statue.statue[i] }}
-					{{"輝" + Chip.chipName[i] + "像"}}: {{ player.statue.polishedStatue[i] + "/" + player.statue.statue[i]}}
-					{{"煌" + Chip.chipName[i] + "像"}}: {{ (player.statue.brightStatue[i]/10).toFixed(1) + "/" + player.statue.polishedStatue[i]}}
+					{{Chip.chipName[i] }}像: {{ player.statue.statue[i] }}
+					輝{{ Chip.chipName[i] }}像: {{ player.statue.polishedStatue[i] }}/{{ player.statue.statue[i] }}
+					煌{{ Chip.chipName[i] }}像: {{ (player.statue.brightStatue[i]/10).toFixed(1) }}/{{ player.statue.polishedStatue[i] }}
+					<span v-show="player.shine.flicker>0 || player.statue.flickerStatue[i]>0">
+						瞬{{ Chip.chipName[i]}}像:
+						{{ (player.statue.flickerStatue[i]/100).toFixed(2) }}/{{ (player.statue.brightStatue[i]/10).toFixed(2) + " " }}
+					</span>
 					<button type="button" @click="buildStatue(i)">
 						設像 コスト:{{ player.statue.calcStatueCost(i) }} 片
 					</button>
@@ -762,7 +766,9 @@
 					<button v-if="player.shine.brightness>0" type="button" @click="polishStatueBright(i)">
 						磨像 コスト:{{ player.statue.calcPolishCostBright(i) }} 煌
 					</button>
-
+					<button v-if="player.shine.flicker>0 || player.statue.flickerStatue[i]>0" type="button" @click="polishStatueFlicker(i)">
+						磨像 コスト:{{ player.statue.calcPolishCostFlicker(i) }} 瞬
+					</button>
 				</div>
 
 			</div>

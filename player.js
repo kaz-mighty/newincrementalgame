@@ -207,6 +207,7 @@ class Player {
       statue: this.statue.statue,
       polishedstatue: this.statue.polishedStatue,
       polishedstatuebr: this.statue.brightStatue,
+      polishedstatuefl: this.statue.flickerStatue,
 
       spiritlevela: this.spiritLevelA,
       spiritboughtcurrentcrown: this.unUsed.spiritBoughtCurrentCrown,

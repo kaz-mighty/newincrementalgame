@@ -182,7 +182,8 @@ type PlayerSaveData = {
   statue: number[];
   polishedstatue: number[];
   polishedstatuebr: number[];
-
+  polishedstatuefl: number[];
+  
   spiritlevela: number[];
   spiritboughtcurrentcrown: number[];
 

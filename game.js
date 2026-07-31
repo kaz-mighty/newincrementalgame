@@ -162,11 +162,10 @@ const initialData = () => {
     statue: new Array(SET_CHIP_KIND).fill(0),
     polishedstatue: new Array(SET_CHIP_KIND).fill(0),
     polishedstatuebr: new Array(SET_CHIP_KIND).fill(0),
+    polishedstatuefl: new Array(SET_CHIP_KIND).fill(0),
 
     spiritlevela: new Array(1).fill(0),
     spiritboughtcurrentcrown: new Array(1).fill(0),
-
-
 
     setchiptypefst: new Array(SET_CHIP_NUM).fill(0),
 
@@ -308,6 +307,9 @@ class Nig { // New Incremental Game
       }
       while (saveData.statue.length < SET_CHIP_KIND) {
         saveData.statue.push(0)
+      }
+      while (saveData.polishedstatuefl.length < SET_CHIP_KIND) {
+        saveData.polishedstatuefl.push(0)
       }
       while (saveData.rings.ringsexp.length < 13) {
         saveData.rings.ringsexp.push(0)

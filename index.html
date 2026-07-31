@@ -882,7 +882,7 @@
 	<template id="mark-stone-tab">
 		<div v-if="player.currentTab == 'markstone'">
 			<br>
-			<div v-for="(_, i) in 2">
+			<div v-for="(_, i) in 4">
 				<button type="button" class="autobuyerbutton" :class="{ 'selected': player.markStone.selectedType === i }"
 					@click="selectType(i)">
 					{{ MarkStone.markStoneData[i].name }}
@@ -890,6 +890,17 @@
 				所持数: {{ player.markStone.stones[i] }}
 				次回入手条件: {{ player.markStone.calcRequirement(i).toExponential(3) }}
 				<span v-if="player.crownResetTime.gt(0)"> 今冠位入手: {{ player.markStone.gainedSinceCrownReset[i] }}</span>
+			</div>
+			<div>印石効果: {{ player.markStone.calcStoneEffect().toExponential(3) }}</div>
+			<div v-if="player.markStone.greatStones[0] > 0">
+				大杖印石: {{ player.markStone.greatStones[0] }}
+				効果: 発生器+{{ player.markStone.greatStones[0] }}%
+			</div>
+			<div v-if="player.markStone.canResetStone()">
+				<button type="button" class="autobuyerbutton" @click="resetStone()">
+					印石リセット
+				</button>
+				印石をリセットして大杖印石を1つ入手
 			</div>
 			<div>経過間隙: {{ player.markStone.ticksSinceRankReset }}</div>
 		</div>

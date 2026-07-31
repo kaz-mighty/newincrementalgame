@@ -34,6 +34,10 @@ const initialData = () => {
       spadeGainedSinceCrownReset: 0,
       ticksSinceRankReset: 0,
       selectedType: 0,
+      greatClub: 0,
+      greatDiamond: 0,
+      greatHeart: 0,
+      greatSpade: 0,
     },
 
     generators: new Array(8).fill(null).map(() => new Decimal(0)),

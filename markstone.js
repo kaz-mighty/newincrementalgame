@@ -42,6 +42,12 @@ class MarkStone {
       stoneData.heartGainedSinceCrownReset,
       stoneData.spadeGainedSinceCrownReset,
     ];
+    this.greatStones = [
+      stoneData.greatClub,
+      stoneData.greatDiamond,
+      stoneData.greatHeart,
+      stoneData.greatSpade,
+    ];
     this.ticksSinceRankReset = stoneData.ticksSinceRankReset;
     this.selectedType = stoneData.selectedType;
   }
@@ -59,12 +65,20 @@ class MarkStone {
       spadeGainedSinceCrownReset: this.gainedSinceCrownReset[3],
       ticksSinceRankReset: this.ticksSinceRankReset,
       selectedType: this.selectedType,
+      greatClub: this.greatStones[0],
+      greatDiamond: this.greatStones[1],
+      greatHeart: this.greatStones[2],
+      greatSpade: this.greatStones[3],
     };
   }
+
+  // ========== 印石システム ==========
 
   /** @param {number} type */
   calcRequirement(type) {
     const msData = MarkStone.markStoneData[type];
+    if (msData == undefined) return new Decimal(Infinity);
+
     let exponent = msData.baseExp + this.gainedSinceCrownReset[type];
     exponent += MarkStone.calcTickDecay(this.ticksSinceRankReset) * msData.decayMult;
     return new Decimal(10).pow(exponent);
@@ -75,6 +89,8 @@ class MarkStone {
    * @param {number} [type]
    */
   canGetStone(money, type = this.selectedType) {
+    if (this.stones[type] >= 100_000_000) return false;
+
     return money.greaterThanOrEqualTo(this.calcRequirement(type));
   }
 
@@ -88,10 +104,38 @@ class MarkStone {
     return false;
   }
 
+  calcStoneEffect() {
+    let total = new Decimal(1);
+    for (let i = 0; i < 4; i++) {
+      total = total.mul((this.stones[i] * 0.01) + 1);
+    }
+    return total.sub(1).mul(100);
+  }
+
   /** @param {number} type */
   selectType(type) {
     this.selectedType = type;
   }
+
+  // ========== 大印石システム ==========
+
+  canResetStone() {
+    return this.calcStoneEffect().gt(100);
+  }
+
+  resetStone() {
+    if (!this.canResetStone()) return;
+    if (!confirm("印石をリセットして大杖印石を1つ入手しますか？\n全ての印石の所持数と入手数が0に戻ります。")) {
+      return;
+    }
+
+    this.stones.fill(0, 0, 4);
+    this.gainedSinceCrownReset.fill(0, 0, 4);
+    this.greatStones[0] += 1;
+  }
+
+
+  // ========== 更新処理 ==========
 
   /** @param {Decimal} money */
   resetRank(money) {

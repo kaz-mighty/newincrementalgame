@@ -221,6 +221,14 @@ class Trophy {
       if (player.markStone.stones[1] >= 1) this.smallTrophies2nd[62] = true
       if (player.markStone.stones[1] >= 100) this.smallTrophies2nd[63] = true
       if (player.markStone.stones[1] >= 10000) this.smallTrophies2nd[64] = true
+      if (player.markStone.stones[2] >= 1) this.smallTrophies2nd[65] = true
+      if (player.markStone.stones[2] >= 100) this.smallTrophies2nd[66] = true
+      if (player.markStone.stones[2] >= 10000) this.smallTrophies2nd[67] = true
+      if (player.markStone.stones[3] >= 1) this.smallTrophies2nd[68] = true
+      if (player.markStone.stones[3] >= 100) this.smallTrophies2nd[69] = true
+      if (player.markStone.stones[3] >= 10000) this.smallTrophies2nd[70] = true
+      if (player.markStone.greatStones[0] >= 1) this.smallTrophies2nd[71] = true
+      if (player.markStone.greatStones[0] >= 10) this.smallTrophies2nd[72] = true
     }
     this.countSmallTrophies();
   }

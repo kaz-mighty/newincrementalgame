@@ -282,6 +282,9 @@ class Player {
       mult = mult.mul(0.001)
     }
 
+    if (this.markStone.greatStones[0] > 0) {
+      mult = mult.mul(1 + 0.01 * this.markStone.greatStones[0])
+    }
 
     this.commonMult = mult
   }

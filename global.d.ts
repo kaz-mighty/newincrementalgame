@@ -65,10 +65,10 @@ type MarkStoneSaveData = {
   spadeGainedSinceCrownReset: number;
   ticksSinceRankReset: number;
   selectedType: number;
-  greatClub?: number;
-  greatDiamond?: number;
-  greatHeart?: number;
-  greatSpade?: number;
+  greatClub: number;
+  greatDiamond: number;
+  greatHeart: number;
+  greatSpade: number;
   calibration?: {
     active: boolean;
     selectedEnemy: number;

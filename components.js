@@ -497,6 +497,9 @@ const MarkStoneTab = Vue.defineComponent({
     selectType(i) {
       this.player.markStone.selectType(i);
     },
+    resetStone() {
+      this.player.markStone.resetStone();
+    },
   },
 });
 

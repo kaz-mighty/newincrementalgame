@@ -493,12 +493,29 @@ const MarkStoneTab = Vue.defineComponent({
   data: () => ({
     player: currentPlayer,
   }),
+  computed: {
+    calibration() {
+      return this.player.markStone.calibration;
+    },
+  },
   methods: {
     selectType(i) {
       this.player.markStone.selectType(i);
     },
     resetStone() {
       this.player.markStone.resetStone();
+    },
+    toggleCalibration() {
+      this.calibration.toggleCalibration();
+    },
+    selectEnemy(i) {
+      this.calibration.selectEnemy(i);
+    },
+    selectEnemyLevel(lv) {
+      this.calibration.selectEnemyLevel(lv);
+    },
+    buyShopUpgrade(i) {
+      this.calibration.buyShopUpgrade(i);
     },
   },
 });

@@ -891,6 +891,7 @@
 				次回入手条件: {{ player.markStone.calcRequirement(i).toExponential(3) }}
 				<span v-if="player.crownResetTime.gt(0)"> 今冠位入手: {{ player.markStone.gainedSinceCrownReset[i] }}</span>
 			</div>
+
 			<div>印石効果: {{ player.markStone.calcStoneEffect().toExponential(3) }}</div>
 			<div v-if="player.markStone.greatStones[0] > 0">
 				大杖印石: {{ player.markStone.greatStones[0] }}
@@ -903,6 +904,51 @@
 				印石をリセットして大杖印石を1つ入手
 			</div>
 			<div>経過間隙: {{ player.markStone.ticksSinceRankReset }}</div>
+			<br>
+
+			<div v-if="player.markStone.greatStones[0] > 0">
+				<div>
+					<button type="button" class="autobuyerbutton" :class="{ 'selected': calibration.active }"
+						@click="toggleCalibration()">較正</button>
+				</div>
+				<div>
+					<template v-for="(item, index) in MarkStone.Calibration.enemyTypes" :key="index">
+						<button type="button" class="autobuyerbutton" :class="{ 'selected': calibration.selectedEnemy === index }"
+							v-if="calibration.isEnemyVisible(index)"
+							@click="selectEnemy(index)">{{ item.name }}</button>
+					</template>
+				</div>
+				<div v-if="calibration.shopUpgrades[1]">
+					<template v-for="lv in 2" :key="lv">
+						<button type="button" class="autobuyerbutton" :class="{ 'selected': calibration.enemyLevel === lv }"
+							@click="selectEnemyLevel(lv)">Lv{{ lv }}</button>
+					</template>
+				</div>
+				<div>
+					較正力: {{ calibration.calcAttack().toFixed(1) }}
+					矛盾度: {{ calibration.enemyHp.toFixed(1) }}/{{ calibration.getEnemyMaxHp() }}
+					<span v-show="calibration.cooldown > 0"> 待機中({{ calibration.cooldown }})</span>
+				</div>
+				<div>
+					<template v-for="(item, index) in MarkStone.Calibration.enemyTypes" :key="index">
+						<span v-if="calibration.isEnemyVisible(index)">{{ item.resolveName }}: {{ calibration.resolutions[index] + " " }}</span>
+					</template>
+					合計解決価: {{ calibration.totalDamage }}/1000000
+					成果: {{ calibration.achievements }}
+				</div>
+				<br>
+
+				<div v-if="calibration.isShopVisible()">
+					<div>成果の現れ</div>
+					<div v-for="(item, i) in MarkStone.Calibration.shopItems">
+						<button type="button" class="lbutton autobuyerbutton" :class="{ 'selected': calibration.shopUpgrades[i] }"
+							@click="buyShopUpgrade(i)" :disable="calibration.shopUpgrades[i]">
+							{{ item.name }}: コスト{{ item.cost }}
+						</button>
+						{{ item.desc }}
+					</div>
+				</div>
+			</div>
 		</div>
 	</template>
 

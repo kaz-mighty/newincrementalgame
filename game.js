@@ -38,6 +38,17 @@ const initialData = () => {
       greatDiamond: 0,
       greatHeart: 0,
       greatSpade: 0,
+      calibration: {
+        active: false, // 較正モードON/OFF
+        selectedEnemy: 0,
+        enemyHp: 100,
+        enemyLevel: 1,
+        cooldown: 0,
+        totalDamage: 0,
+        achievements: 0,
+        shopUpgrades: new Array(7).fill(false),
+        resolutions: new Array(3).fill(false),
+      },
     },
 
     generators: new Array(8).fill(null).map(() => new Decimal(0)),
@@ -309,6 +320,13 @@ class Nig { // New Incremental Game
       }
       while (saveData.worldpipe.length < WORLD_NUM) {
         saveData.worldpipe.push(0)
+      }
+      const calibration = saveData.markstone.calibration
+      while (calibration.shopUpgrades.length < 7) {
+        calibration.shopUpgrades.push(false)
+      }
+      while (calibration.resolutions.length < 3) {
+        calibration.resolutions.push(0)
       }
 
       this.playersSave[i] = saveData

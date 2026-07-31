@@ -69,7 +69,7 @@ type MarkStoneSaveData = {
   greatDiamond: number;
   greatHeart: number;
   greatSpade: number;
-  calibration?: {
+  calibration: {
     active: boolean;
     selectedEnemy: number;
     enemyHp: number;

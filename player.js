@@ -285,6 +285,9 @@ class Player {
     if (this.markStone.greatStones[0] > 0) {
       mult = mult.mul(1 + 0.01 * this.markStone.greatStones[0])
     }
+    if (this.markStone.calibration.shopUpgrades[3]) {
+      mult = mult.mul(2)
+    }
 
     this.commonMult = mult
   }
@@ -789,5 +792,10 @@ class Player {
       this.multByAc = new Decimal(1)
     }
     this.campaign.updateAccelLevel(this.tickSpeed);
+
+    if (this.markStone.calibration.active) {
+      // bug: 1000超でも1000になる
+      this.tickSpeed = 1000;
+    }
   }
 }

@@ -50,10 +50,13 @@ class MarkStone {
     ];
     this.ticksSinceRankReset = stoneData.ticksSinceRankReset;
     this.selectedType = stoneData.selectedType;
+
+    this.calibration = new MarkStone.Calibration(stoneData.calibration);
   }
 
   /** @returns {MarkStoneSaveData} */
   toSaveObject() {
+    const calibration = this.calibration;
     return {
       club: this.stones[0],
       clubGainedSinceCrownReset: this.gainedSinceCrownReset[0],
@@ -69,6 +72,7 @@ class MarkStone {
       greatDiamond: this.greatStones[1],
       greatHeart: this.greatStones[2],
       greatSpade: this.greatStones[3],
+      calibration: this.calibration.toSaveObject(),
     };
   }
 
@@ -151,5 +155,162 @@ class MarkStone {
     if (this.ticksSinceRankReset < 1_000_000) {
       this.ticksSinceRankReset++;
     }
+    this.calibration.updateCalibration(this.greatStones);
+  }
+
+
+  static Calibration = class Calibration {
+    static enemyTypes = [
+      { name: "矛盾1", resolveName: "矛盾の解決1", hp: 100 },
+      { name: "矛盾2", resolveName: "矛盾の解決2", hp: 5000 },
+      { name: "矛盾3", resolveName: "矛盾の解決3", hp: 20000 },
+    ];
+
+    static shopItems = [
+      { name: "成果の現れ1", cost: 1, desc: "較正力1.2倍" },
+      { name: "成果の現れ2", cost: 1, desc: "レベルを2に変更可能" },
+      { name: "成果の現れ3", cost: 4, desc: "待機中も1/10の較正力を発揮" },
+      { name: "成果の現れ4", cost: 16, desc: "発生器の効率2倍" },
+      { name: "成果の現れ5", cost: 4, desc: "較正力1.5倍" },
+      { name: "成果の現れ6", cost: 8, desc: "較正力2倍" },
+      { name: "成果の現れ7", cost: 12, desc: "矛盾3を解放" },
+    ];
+
+    /** @param {MarkStoneSaveData["calibration"]} calData */
+    constructor(calData) {
+      this.active = calData.active;
+      this.selectedEnemy = calData.selectedEnemy;
+      this.enemyHp = calData.enemyHp;
+      this.enemyLevel = calData.enemyLevel;
+      this.cooldown = calData.cooldown;
+      this.totalDamage = calData.totalDamage;
+      this.achievements = calData.achievements;
+      this.shopUpgrades = Array.from(calData.shopUpgrades);
+      this.resolutions = Array.from(calData.resolutions);
+    }
+
+    /** @returns {MarkStoneSaveData["calibration"]} */
+    toSaveObject() {
+      return {
+        active: this.active,
+        selectedEnemy: this.selectedEnemy,
+        enemyHp: this.enemyHp,
+        enemyLevel: this.enemyLevel,
+        cooldown: this.cooldown,
+        totalDamage: this.totalDamage,
+        achievements: this.achievements,
+        shopUpgrades: this.shopUpgrades,
+        resolutions: this.resolutions,
+      };
+    }
+
+    getEnemyMaxHp() {
+      return Calibration.enemyTypes[this.selectedEnemy].hp * Math.pow(5, this.enemyLevel - 1);
+    }
+
+    getRewardMult() {
+      return Math.pow(2, this.enemyLevel - 1);
+    }
+
+    calcAttack() {
+      let base = 1;
+      let mult1 = 1 + 0.1 * this.resolutions[0];
+      let mult2 = 1 + 0.1 * this.resolutions[1];
+      let mult3 = 1 + 0.1 * this.resolutions[2];
+
+      let shopMult = 1;
+      if (this.shopUpgrades[0]) shopMult *= 1.2;
+      if (this.shopUpgrades[4]) shopMult *= 1.5;
+      if (this.shopUpgrades[5]) shopMult *= 2;
+
+      return base * mult1 * mult2 * mult3 * shopMult;
+    }
+
+    /** @param {number} enemyId */
+    isEnemyVisible(enemyId) {
+      switch(enemyId) {
+        case 2: return this.shopUpgrades[6];
+        default: return true;
+      }
+    }
+
+    isShopVisible() {
+      if (this.achievements > 0) return true;
+      if (this.shopUpgrades.some((item) => item)) return true;
+      return false;
+    }
+
+    toggleCalibration() {
+      this.active = !this.active;
+      if (this.active) {
+        this.enemyHp = this.getEnemyMaxHp();
+        this.cooldown = 0; // bug?: 切替でクールダウンリセットできる(3か所)
+      }
+    }
+
+    /** @param {number} enemyId */
+    selectEnemy(enemyId) {
+      if (this.selectedEnemy === enemyId) return;
+      this.selectedEnemy = enemyId;
+      this.enemyHp = this.getEnemyMaxHp();
+      this.cooldown = 0;
+    }
+
+    /** @param {number} level */
+    selectEnemyLevel(level) {
+      if (!this.shopUpgrades[1]) return;
+      if (level < 1 || level > 2) return;
+      // bug?: 現在のレベルに切り替えられる
+
+      this.enemyLevel = level;
+      this.enemyHp = this.getEnemyMaxHp();
+      this.cooldown = 0;
+    }
+
+    /** @param {number} upgradeId */
+    buyShopUpgrade(upgradeId) {
+      if (this.shopUpgrades[upgradeId]) return;
+      if (this.achievements < Calibration.shopItems[upgradeId].cost) return;
+      
+      this.achievements -= Calibration.shopItems[upgradeId].cost;
+      this.shopUpgrades[upgradeId] = true;
+    }
+    
+    /** @param {number[]} greatStones */
+    updateCalibration(greatStones) {
+      if (!this.active) return;
+      if (greatStones[0] <= 0) return;
+
+      let attack = 0;
+      if (this.cooldown > 0) {
+        this.cooldown -= 1;
+        if (!this.shopUpgrades[2]) return;
+        attack = this.calcAttack() * 0.1;
+      } else {
+        attack = this.calcAttack();
+      }
+
+      this.enemyHp -= attack;
+      if (this.enemyHp <= 0) {
+        this.resolutions[this.selectedEnemy] += this.getRewardMult();
+        // 合計ダメージはオーバーキルをカウントしない
+        this.totalDamage += this.getEnemyMaxHp();
+
+        if (this.totalDamage >= 1000000) {
+          this.achievements += 1;
+          this.totalDamage = 0;
+          this.resolutions = new Array(3).fill(0);
+          this.selectedEnemy = 0;
+          this.enemyLevel = 1;
+          this.enemyHp = this.getEnemyMaxHp();
+          this.cooldown = 0;
+          return;
+        }
+
+        this.enemyHp = this.getEnemyMaxHp();
+        this.cooldown = 5;
+      }
+    }
   }
 }
+

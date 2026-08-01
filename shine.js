@@ -10,27 +10,27 @@ class Shine {
 
   /** @param {number} clear */
   static getBaseShinePercent(clear) {
-    if (clear >= 32 * 8 - 1) return 0.20
-    if (clear >= 32 * 7) return 0.16
-    if (clear >= 32 * 6) return 0.13
-    if (clear >= 32 * 5) return 0.10
-    if (clear >= 32 * 4) return 0.07
-    if (clear >= 32 * 3) return 0.04
-    if (clear >= 32 * 2) return 0.02
-    return 0
+    if (clear >= 32 * 8 - 1) return 0.20;
+    if (clear >= 32 * 7) return 0.16;
+    if (clear >= 32 * 6) return 0.13;
+    if (clear >= 32 * 5) return 0.10;
+    if (clear >= 32 * 4) return 0.07;
+    if (clear >= 32 * 3) return 0.04;
+    if (clear >= 32 * 2) return 0.02;
+    return 0;
   }
 
   /** @param {number} clear */
   static getBaseBrightPercent(clear) {
-    if (clear >= 32 * 8 - 1) return 0.010
-    if (clear >= 32 * 7) return 0.008
-    if (clear >= 32 * 6) return 0.006
-    if (clear >= 32 * 5) return 0.005
-    if (clear >= 32 * 4) return 0.004
-    if (clear >= 32 * 3) return 0.003
-    if (clear >= 32 * 2) return 0.002
-    if (clear >= 32 * 1) return 0.001
-    return 0
+    if (clear >= 32 * 8 - 1) return 0.010;
+    if (clear >= 32 * 7) return 0.008;
+    if (clear >= 32 * 6) return 0.006;
+    if (clear >= 32 * 5) return 0.005;
+    if (clear >= 32 * 4) return 0.004;
+    if (clear >= 32 * 3) return 0.003;
+    if (clear >= 32 * 2) return 0.002;
+    if (clear >= 32 * 1) return 0.001;
+    return 0;
   }
 
   /** @param {PlayerSaveData} playerData */
@@ -46,15 +46,15 @@ class Shine {
 
   /** @param {Player} player */
   calcShinePercent(player) {
-    let sp = Shine.getBaseShinePercent(player.challenge.challengeCleared.length)
-    sp += 0.02 * player.chip.setChip[30]
-    sp += 0.01 * player.eachPipedSmallTrophy[6]
-    sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3))
-    sp += 0.01 * player.statue.polishedStatueSum
+    let sp = Shine.getBaseShinePercent(player.challenge.challengeCleared.length);
+    sp += 0.02 * player.chip.setChip[30];
+    sp += 0.01 * player.eachPipedSmallTrophy[6];
+    sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3));
+    sp += 0.01 * player.statue.polishedStatueSum;
 
-    return sp
+    return sp;
   }
-  
+
   /** @param {Player} player */
   calcMaxShine(player) {
     const clear = player.challenge.challengeCleared.length;
@@ -77,12 +77,12 @@ class Shine {
 
   /** @param {Player} player */
   calcBrightPercent(player) {
-    let bp = Shine.getBaseBrightPercent(player.challenge.rankChallengeCleared.length)
-    bp += 0.001 * player.chip.setChip[49]
-    bp += 0.001 * player.eachPipedSmallTrophy[9] * 0.5
-    bp += 0.001 * player.statue.brightStatueSum * 0.5
+    let bp = Shine.getBaseBrightPercent(player.challenge.rankChallengeCleared.length);
+    bp += 0.001 * player.chip.setChip[49];
+    bp += 0.001 * player.eachPipedSmallTrophy[9] * 0.5;
+    bp += 0.001 * player.statue.brightStatueSum * 0.5;
 
-    return bp
+    return bp;
   }
 
   /** @param {Player} player */
@@ -194,8 +194,8 @@ class Shine {
   buyType(num) {
     if (this.shine < Shine.shineShopCost[num] || this.boughtType[num]) return;
     if (confirm("本当に型を購入しますか？")) {
-      this.shine -= Shine.shineShopCost[num]
-      this.boughtType[num] = true
+      this.shine -= Shine.shineShopCost[num];
+      this.boughtType[num] = true;
     }
   }
 }

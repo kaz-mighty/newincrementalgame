@@ -60,7 +60,7 @@ class Challenge {
     32,
     32
   ];
-  static challengeIds = [128,64,32,16,8,4,2,1,192,160,96,144,80,48,136,72,40,24,132,68,36,20,12,130,66,34,18,10,6,129,65,33,17,9,5,3,224,208,176,112,200,168,104,152,88,56,196,164,100,148,84,52,140,76,44,28,194,162,98,146,82,50,138,74,42,26,134,70,38,22,14,193,161,97,145,81,49,137,73,41,25,133,69,37,21,13,131,67,35,19,11,7,240,232,216,184,120,228,212,180,116,204,172,108,156,92,60,226,210,178,114,202,170,106,154,90,58,198,166,102,150,86,54,142,78,46,30,225,209,177,113,201,169,105,153,89,57,197,165,101,149,85,53,141,77,45,29,195,163,99,147,83,51,139,75,43,27,135,71,39,23,15,248,244,236,220,188,124,242,234,218,186,122,230,214,182,118,206,174,110,158,94,62,241,233,217,185,121,229,213,181,117,205,173,109,157,93,61,227,211,179,115,203,171,107,155,91,59,199,167,103,151,87,55,143,79,47,31,252,250,246,238,222,190,126,249,245,237,221,189,125,243,235,219,187,123,231,215,183,119,207,175,111,159,95,63,254,253,251,247,239,223,191,127,255];
+  static challengeIds = [128, 64, 32, 16, 8, 4, 2, 1, 192, 160, 96, 144, 80, 48, 136, 72, 40, 24, 132, 68, 36, 20, 12, 130, 66, 34, 18, 10, 6, 129, 65, 33, 17, 9, 5, 3, 224, 208, 176, 112, 200, 168, 104, 152, 88, 56, 196, 164, 100, 148, 84, 52, 140, 76, 44, 28, 194, 162, 98, 146, 82, 50, 138, 74, 42, 26, 134, 70, 38, 22, 14, 193, 161, 97, 145, 81, 49, 137, 73, 41, 25, 133, 69, 37, 21, 13, 131, 67, 35, 19, 11, 7, 240, 232, 216, 184, 120, 228, 212, 180, 116, 204, 172, 108, 156, 92, 60, 226, 210, 178, 114, 202, 170, 106, 154, 90, 58, 198, 166, 102, 150, 86, 54, 142, 78, 46, 30, 225, 209, 177, 113, 201, 169, 105, 153, 89, 57, 197, 165, 101, 149, 85, 53, 141, 77, 45, 29, 195, 163, 99, 147, 83, 51, 139, 75, 43, 27, 135, 71, 39, 23, 15, 248, 244, 236, 220, 188, 124, 242, 234, 218, 186, 122, 230, 214, 182, 118, 206, 174, 110, 158, 94, 62, 241, 233, 217, 185, 121, 229, 213, 181, 117, 205, 173, 109, 157, 93, 61, 227, 211, 179, 115, 203, 171, 107, 155, 91, 59, 199, 167, 103, 151, 87, 55, 143, 79, 47, 31, 252, 250, 246, 238, 222, 190, 126, 249, 245, 237, 221, 189, 125, 243, 235, 219, 187, 123, 231, 215, 183, 119, 207, 175, 111, 159, 95, 63, 254, 253, 251, 247, 239, 223, 191, 127, 255];
 
   static pChallengeText = [
     "発生器の倍率が1/100になります。",
@@ -80,9 +80,9 @@ class Challenge {
   static getChallengeId(array) {
     let challengeid = 0;
     for (let i = 0; i < 8; i++) {
-      challengeid *= 2
+      challengeid *= 2;
       if (array.includes(i)) {
-        challengeid += 1
+        challengeid += 1;
       }
     }
     return challengeid;
@@ -91,9 +91,9 @@ class Challenge {
   static getPChallengeId(array) {
     let challengeid = 0;
     for (let i = 9; i >= 0; i--) {
-      challengeid *= 2
+      challengeid *= 2;
       if (array.includes(i)) {
-        challengeid += 1
+        challengeid += 1;
       }
     }
     return challengeid;
@@ -102,11 +102,11 @@ class Challenge {
   static calcChallengesArray(challengeId) {
     let ans = [];
     for (let i = 7; i >= 0; i--) {
-      if (challengeId % 2 == 1) ans.push(i)
-      challengeId = challengeId >>> 1
+      if (challengeId % 2 == 1) ans.push(i);
+      challengeId = challengeId >>> 1;
     }
-    ans.sort()
-    return ans
+    ans.sort();
+    return ans;
   }
 
 
@@ -159,29 +159,29 @@ class Challenge {
   calcToken() {
     let spent = 0;
     for (let i of this.challengeBonuses) {
-      spent += Challenge.rewardCost[i]
+      spent += Challenge.rewardCost[i];
     }
-    let t = this.challengeCleared.length
+    let t = this.challengeCleared.length;
     if (this.onPerfectChallenge) {
-      t = Math.max(t, this.perfectChallengeCleared[this.getPChallengeId()])
+      t = Math.max(t, this.perfectChallengeCleared[this.getPChallengeId()]);
     }
-    this.token = t - spent
+    this.token = t - spent;
 
     let rspent = 0;
     for (let i of this.rankChallengeBonuses) {
-      rspent += Challenge.rewardCost[i]
+      rspent += Challenge.rewardCost[i];
     }
-    let rt = this.rankChallengeCleared.length
+    let rt = this.rankChallengeCleared.length;
     if (this.onPerfectChallenge) {
-      rt = Math.max(rt, this.perfectRankChallengeCleared[this.getPChallengeId()])
+      rt = Math.max(rt, this.perfectRankChallengeCleared[this.getPChallengeId()]);
     }
-    this.rankToken = rt - rspent
+    this.rankToken = rt - rspent;
   }
   countPChallengeCleared() {
     let cnt = 0;
     for (let i = 0; i < 1024; i++) {
-      cnt += this.perfectChallengeCleared[i]
-      cnt += this.perfectRankChallengeCleared[i]
+      cnt += this.perfectChallengeCleared[i];
+      cnt += this.perfectRankChallengeCleared[i];
     }
 
     cnt /= 510;
@@ -192,61 +192,61 @@ class Challenge {
   /** @param {number} index */
   buyRewards(index) {
     if (this.challengeBonuses.includes(index)) {
-      this.challengeBonuses.splice(this.challengeBonuses.indexOf(index), 1)
-      this.token += Challenge.rewardCost[index]
+      this.challengeBonuses.splice(this.challengeBonuses.indexOf(index), 1);
+      this.token += Challenge.rewardCost[index];
     } else {
       if (this.token < Challenge.rewardCost[index]) {
         return;
       }
-      this.challengeBonuses.push(index)
-      this.token -= Challenge.rewardCost[index]
+      this.challengeBonuses.push(index);
+      this.token -= Challenge.rewardCost[index];
     }
   }
   /** @param {number} index */
   buyRankRewards(index) {
     if (this.rankChallengeBonuses.includes(index)) {
-      this.rankChallengeBonuses.splice(this.rankChallengeBonuses.indexOf(index), 1)
-      this.rankToken += Challenge.rewardCost[index]
+      this.rankChallengeBonuses.splice(this.rankChallengeBonuses.indexOf(index), 1);
+      this.rankToken += Challenge.rewardCost[index];
     } else {
       if (this.rankToken < Challenge.rewardCost[index]) {
         return;
       }
-      this.rankChallengeBonuses.push(index)
-      this.rankToken -= Challenge.rewardCost[index]
+      this.rankChallengeBonuses.push(index);
+      this.rankToken -= Challenge.rewardCost[index];
     }
   }
 
   /** @param {1|2} index */
   setBonuseType(index) {
     if (confirm("現在の効力を登録します。よろしいですか？")) {
-      let ans = []
+      let ans = [];
       for (let i = 0; i < 15; i++) {
         if (this.challengeBonuses.includes(i)) {
-          ans.push(i)
+          ans.push(i);
         }
       }
-      if (index == 1) this.setChallengeBonuses1 = ans
-      else if (index == 2) this.setChallengeBonuses2 = ans
+      if (index == 1) this.setChallengeBonuses1 = ans;
+      else if (index == 2) this.setChallengeBonuses2 = ans;
     }
   }
   /** @param {1|2} index */
   setRankBonuseType(index) {
     if (confirm("現在の上位効力を登録します。よろしいですか？")) {
-      let ans = []
+      let ans = [];
       for (let i = 0; i < 15; i++) {
         if (this.rankChallengeBonuses.includes(i)) {
-          ans.push(i)
+          ans.push(i);
         }
       }
-      if (index == 1) this.setRankChallengeBonuses1 = ans
-      else if (index == 2) this.setRankChallengeBonuses2 = ans
+      if (index == 1) this.setRankChallengeBonuses1 = ans;
+      else if (index == 2) this.setRankChallengeBonuses2 = ans;
     }
   }
   /** @param {1|2} index */
   changeBonuseType(index) {
     for (let i = 0; i < 15; i++) {
       if (this.challengeBonuses.includes(i)) {
-        this.buyRewards(i)
+        this.buyRewards(i);
       }
     }
 
@@ -256,7 +256,7 @@ class Challenge {
 
     for (let i = 0; i < 15; i++) {
       if (setBonuses.includes(i)) {
-        this.buyRewards(i)
+        this.buyRewards(i);
       }
     }
   }
@@ -264,7 +264,7 @@ class Challenge {
   changeRankBonuseType(index) {
     for (let i = 0; i < 15; i++) {
       if (this.rankChallengeBonuses.includes(i)) {
-        this.buyRankRewards(i)
+        this.buyRankRewards(i);
       }
     }
 
@@ -274,7 +274,7 @@ class Challenge {
 
     for (let i = 0; i < 15; i++) {
       if (setBonuses.includes(i)) {
-        this.buyRankRewards(i)
+        this.buyRankRewards(i);
       }
     }
   }
@@ -284,97 +284,97 @@ class Challenge {
   configChallenge(index) {
     if (this.onChallenge) return;
     if (!this.challenges.includes(index)) {
-      this.challenges.push(index)
+      this.challenges.push(index);
     } else {
-      this.challenges.splice(this.challenges.indexOf(index), 1)
+      this.challenges.splice(this.challenges.indexOf(index), 1);
     }
   }
   /** @param {number} index */
   configPChallenge(index) {
     if (this.onPerfectChallenge) return;
     if (!this.perfectChallenges.includes(index)) {
-      this.perfectChallenges.push(index)
+      this.perfectChallenges.push(index);
     } else {
-      this.perfectChallenges.splice(this.perfectChallenges.indexOf(index), 1)
+      this.perfectChallenges.splice(this.perfectChallenges.indexOf(index), 1);
     }
   }
 
   /** @param {number} i */
- configChallengeWeightKind(i) {
-    this.challengeWeight[i] = this.getChallengeId()
+  configChallengeWeightKind(i) {
+    this.challengeWeight[i] = this.getChallengeId();
   }
   /** @param {number} i */
   configChallengeWeightValue(i) {
-    let input = parseInt(window.prompt("重みを設定", ""))
-    if (isNaN(input)) return
-    this.challengeWeightValue[i] = input
+    let input = parseInt(window.prompt("重みを設定", ""));
+    if (isNaN(input)) return;
+    this.challengeWeightValue[i] = input;
   }
   showUnclearedChallenges() {
     if (this.challengeCleared.length == 255) return;
     if (this.onChallenge) return;
 
-    let challengeWeightPairs = []
+    let challengeWeightPairs = [];
     for (let i = 1; i <= 255; i++) {
       let ans = 0;
       for (let j = 0; j < 20; j++) {
         if ((i | this.challengeWeight[j]) == i) {
-          ans += this.challengeWeightValue[j]
+          ans += this.challengeWeightValue[j];
         }
       }
       challengeWeightPairs.push({
         id: i,
         weight: ans
-      })
+      });
     }
 
-    challengeWeightPairs.sort((a, b) => a.weight - b.weight)
-    console.log("challenge weights:", challengeWeightPairs)
+    challengeWeightPairs.sort((a, b) => a.weight - b.weight);
+    console.log("challenge weights:", challengeWeightPairs);
 
     let challengeId = this.getChallengeId();
     do {
       if (challengeId == 0) {
-        challengeId = challengeWeightPairs[0].id
+        challengeId = challengeWeightPairs[0].id;
       } else {
-        let idx = challengeWeightPairs.findIndex((e) => e.id == challengeId) + 1
-        if (idx == 255) idx = 0
-        challengeId = challengeWeightPairs[idx].id
+        let idx = challengeWeightPairs.findIndex((e) => e.id == challengeId) + 1;
+        if (idx == 255) idx = 0;
+        challengeId = challengeWeightPairs[idx].id;
       }
     } while (this.challengeCleared.includes(challengeId));
 
-    this.challenges = Challenge.calcChallengesArray(challengeId)
+    this.challenges = Challenge.calcChallengesArray(challengeId);
   }
   showUnclearedRankChallenges() {
     if (this.rankChallengeCleared.length == 255) return;
     if (this.onChallenge) return;
 
-    let challengeweightpairs = []
+    let challengeweightpairs = [];
     for (let i = 1; i <= 255; i++) {
       let ans = 0;
       for (let j = 0; j < 20; j++) {
         if ((i | this.challengeWeight[j]) == i) {
-          ans += this.challengeWeightValue[j]
+          ans += this.challengeWeightValue[j];
         }
       }
       challengeweightpairs.push({
         id: i,
         weight: ans
-      })
+      });
     }
 
-    challengeweightpairs.sort((a, b) => a.weight - b.weight)
+    challengeweightpairs.sort((a, b) => a.weight - b.weight);
 
     let challengeid = this.getChallengeId();
     do {
       if (challengeid == 0) {
-        challengeid = challengeweightpairs[0].id
+        challengeid = challengeweightpairs[0].id;
       } else {
-        let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1
-        if (idx == 255) idx = 0
-        challengeid = challengeweightpairs[idx].id
+        let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1;
+        if (idx == 255) idx = 0;
+        challengeid = challengeweightpairs[idx].id;
       }
     } while (this.rankChallengeCleared.includes(challengeid));
 
-    this.challenges = Challenge.calcChallengesArray(challengeid)
+    this.challenges = Challenge.calcChallengesArray(challengeid);
   }
 
   /** @param {Player} player */
@@ -382,20 +382,20 @@ class Challenge {
     let challengeid = this.getChallengeId();
 
     if (challengeid == 0) {
-      alert("挑戦が一つも選択されていません。")
+      alert("挑戦が一つも選択されていません。");
       return;
     }
 
-    let conf = '挑戦を開始しますか？現在のポイントや発生器、時間加速器は失われます。'
+    let conf = '挑戦を開始しますか？現在のポイントや発生器、時間加速器は失われます。';
 
     if (this.challengeCleared.includes(challengeid)) {
       if (this.challengeCleared.length < 128) {
-        alert("すでに達成した挑戦です。")
+        alert("すでに達成した挑戦です。");
         return;
       }
-      conf = 'すでに達成した挑戦です。勲章は得られませんが、それでもよろしいですか？'
+      conf = 'すでに達成した挑戦です。勲章は得られませんが、それでもよろしいですか？';
       if (this.rankChallengeCleared.includes(challengeid)) {
-        conf = 'すでに階位挑戦としても達成した挑戦です。勲章や大勲章は得られませんが、それでもよろしいですか？'
+        conf = 'すでに階位挑戦としても達成した挑戦です。勲章や大勲章は得られませんが、それでもよろしいですか？';
       }
     }
 
@@ -405,7 +405,7 @@ class Challenge {
       this.onChallenge = true;
       if (this.challenges.includes(3)) {
         for (let i = 0; i < 8; i++) {
-          player.generator.generatorsMode[i] = 0
+          player.generator.generatorsMode[i] = 0;
         }
       }
     }
@@ -414,30 +414,30 @@ class Challenge {
   /** @param {Player} player */
   startPChallenge(player) {
     if (!(this.challengeCleared.length >= 255 && this.rankChallengeCleared.length >= 255)) {
-      alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。")
+      alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。");
       return;
     }
 
     if (this.onChallenge) {
-      alert("現在挑戦中のため、完全挑戦を開始できません。")
+      alert("現在挑戦中のため、完全挑戦を開始できません。");
       return;
     }
 
     for (let i = 0; i < 10; i++) {
       if (player.statue.statue[i] < this.perfectChallenges.length - i) {
-        alert("像の作成数が不足しているため、完全挑戦を開始できません。")
+        alert("像の作成数が不足しているため、完全挑戦を開始できません。");
         return;
       }
     }
 
-    let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。'
+    let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。';
     if (confirm(conf)) {
       player.resetCrown(true);
       this.onPerfectChallenge = true;
-      this.challengeCleared = []
-      this.challengeBonuses = []
-      this.rankChallengeCleared = []
-      this.rankChallengeBonuses = []
+      this.challengeCleared = [];
+      this.challengeBonuses = [];
+      this.rankChallengeCleared = [];
+      this.rankChallengeBonuses = [];
     }
   }
 
@@ -446,24 +446,24 @@ class Challenge {
     if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       this.onChallenge = false;
       this.activeBonuses = this.challengeBonuses;
-      player.generator.calcGnCost(player)
+      player.generator.calcGnCost(player);
     }
   }
 
   /** @param {Player} player */
   exitPChallenge(player) {
     if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
-      if (this.onChallenge) this.exitChallenge(player)
+      if (this.onChallenge) this.exitChallenge(player);
       const pChallengeId = this.getPChallengeId();
       this.onPerfectChallenge = false;
-      this.perfectChallengeCleared[pChallengeId] = Math.max(this.perfectChallengeCleared[pChallengeId], this.challengeCleared.length)
-      this.perfectRankChallengeCleared[pChallengeId] = Math.max(this.perfectRankChallengeCleared[pChallengeId], this.rankChallengeCleared.length)
-      this.challengeCleared = Challenge.challengeIds
-      this.rankChallengeCleared = Challenge.challengeIds
+      this.perfectChallengeCleared[pChallengeId] = Math.max(this.perfectChallengeCleared[pChallengeId], this.challengeCleared.length);
+      this.perfectRankChallengeCleared[pChallengeId] = Math.max(this.perfectRankChallengeCleared[pChallengeId], this.rankChallengeCleared.length);
+      this.challengeCleared = Challenge.challengeIds;
+      this.rankChallengeCleared = Challenge.challengeIds;
       for (let i = 0; i < SET_CHIP_NUM; i++) {
-        player.chip.disabledChip[i] = false
+        player.chip.disabledChip[i] = false;
       }
-      this.countPChallengeCleared()
+      this.countPChallengeCleared();
     }
   }
 

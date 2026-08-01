@@ -1,40 +1,40 @@
-#coinamount{
+#coinamount {
   text-align: center;
   font-size: 48px
 }
 
-#darkcoinamount{
+#darkcoinamount {
   text-align: center;
   font-size: 36px
 }
 
-#lightcoinamount{
+#lightcoinamount {
   text-align: center;
   font-size: 36px
 }
 
-#tickspeed{
+#tickspeed {
   text-align: center;
   font-size: 16px;
   color: gray;
 }
 
-td{
-  width:24px;
-  height:24px;
+td {
+  width: 24px;
+  height: 24px;
 }
 
-.generator{
+.generator {
   font-size: 24px;
   vertical-align: middle;
 }
 
-.darkgenerator{
+.darkgenerator {
   font-size: 24px;
   vertical-align: middle;
 }
 
-.challenge{
+.challenge {
   font-size: 24px;
   vertical-align: middle;
 }
@@ -43,19 +43,19 @@ td{
   display: inline-block;
 }
 
-.accelerator{
+.accelerator {
   font-size: 24px;
   vertical-align: middle;
   color: red;
 
 }
 
-.levelitem{
+.levelitem {
   font-size: 24px;
   vertical-align: middle;
 }
 
-button{
+button {
   border: .18em solid;
   font-size: 12px;
   width: 150px;
@@ -70,11 +70,11 @@ button:not(.unavailable) {
   cursor: pointer;
 }
 
-button.unavailable{
+button.unavailable {
   background: #B0B0B0;
 }
 
-.gbutton{
+.gbutton {
   background: #FFFFFF;
   color: #000000;
 }
@@ -83,7 +83,7 @@ button.unavailable{
   background: #B0B0B0;
 }
 
-.abutton{
+.abutton {
   background: #000000;
   border-color: #000000;
   color: #FFFFFF;
@@ -93,12 +93,12 @@ button.unavailable{
   background: #808080;
 }
 
-.lbutton{
-  width:180px;
+.lbutton {
+  width: 180px;
 }
 
-.llbutton{
-  width:240px;
+.llbutton {
+  width: 240px;
 }
 
 .lbutton.unavailable {
@@ -110,42 +110,42 @@ button.unavailable{
   color: #FFFFFF;
 }
 
-.tweetconfigbutton.selected{
+.tweetconfigbutton.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.challengeconfigbutton.selected{
+.challengeconfigbutton.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
 
-.rewardbutton.selected{
+.rewardbutton.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.autobuyerbutton.selected{
+.autobuyerbutton.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.wdbutton.selected{
+.wdbutton.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.buytypebutton.selected{
+.buytypebutton.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.wdbutton.unavailable{
+.wdbutton.unavailable {
   background: #B0B0B0;
 }
 
-#resetbutton{
+#resetbutton {
   background: white;
   color: #D32F2F;
   border-color: #D81B6032;
@@ -153,18 +153,18 @@ button.unavailable{
   width: 90px;
 }
 
-#resetbutton:hover{
+#resetbutton:hover {
   background: #D32F2F;
   color: white;
   width: 90px;
   transition: all .2s;
 }
 
-#tweet{
+#tweet {
   margin: 20px 0px;
 }
 
-#tweet a{
+#tweet a {
   color: white;
   font-size: .8rem;
   padding: .6rem .8rem;

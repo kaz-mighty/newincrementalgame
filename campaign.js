@@ -106,7 +106,7 @@ class Campaign {
       return sum;
     });
     this._campaignCosts = Vue.computed(() => {
-      let sum = 0
+      let sum = 0;
       for (const campaignsId of this.activated) {
         const campaign = Campaign.campaigns[campaignsId];
         if (campaign == undefined) continue;
@@ -128,7 +128,7 @@ class Campaign {
   updateCampaign() {
     // Note: 1tickの間、期間中キャンペーンが空になることがあるが、元の仕様の再現を優先
     // 同じ値を再代入した場合でもリアクティビティがトリガーされるので、それを回避する
-    const date = new Date()
+    const date = new Date();
     if (this._nowMonth.value != date.getMonth()) {this._nowMonth.value = date.getMonth();}
     if (this._nowDate.value != date.getDate()) {this._nowDate.value = date.getDate();}
 
@@ -172,10 +172,10 @@ class Campaign {
   /** @param {string} campaignId */
   chooseCampaigns(campaignId) {
     if (this.activated.includes(campaignId)) {
-      this.activated.splice(this.activated.indexOf(campaignId), 1)
+      this.activated.splice(this.activated.indexOf(campaignId), 1);
     } else {
       if (this.campaignCosts + (Campaign.campaigns[campaignId]?.cost ?? 0) > this.accelLevelUsed) return;
-      this.activated.push(campaignId)
+      this.activated.push(campaignId);
     }
   }
 }

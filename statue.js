@@ -45,7 +45,7 @@ class Statue {
 
   /** @param {number} i */
   calcStatueCost(i) {
-    return (this.statue[i] + 1) * 10000
+    return (this.statue[i] + 1) * 10000;
   }
 
   /**
@@ -53,15 +53,15 @@ class Statue {
    * @param {number} i
    */
   buildStatue(player, i) {
-    let cost = this.calcStatueCost(i)
-    if (player.chip.chip[i] < cost) return
-    player.chip.chip[i] -= cost
-    this.statue[i] += 1
+    let cost = this.calcStatueCost(i);
+    if (player.chip.chip[i] < cost) return;
+    player.chip.chip[i] -= cost;
+    this.statue[i] += 1;
   }
 
   /** @param {number} i */
   calcPolishCost(i) {
-    return (this.polishedStatue[i] + 1) * 1000000
+    return (this.polishedStatue[i] + 1) * 1000000;
   }
 
   /**
@@ -69,15 +69,15 @@ class Statue {
    * @param {number} i
    */
   polishStatue(player, i) {
-    let cost = this.calcPolishCost(i)
+    let cost = this.calcPolishCost(i);
     if (this.polishedStatue[i] >= this.statue[i] || player.shine.shine < cost) return;
-    player.shine.shine -= cost
-    this.polishedStatue[i] += 1
+    player.shine.shine -= cost;
+    this.polishedStatue[i] += 1;
   }
 
   /** @param {number} i */
   calcPolishCostBright(i) {
-    return (this.brightStatue[i] + 10) * 100
+    return (this.brightStatue[i] + 10) * 100;
   }
 
   /**
@@ -85,10 +85,10 @@ class Statue {
    * @param {number} i 
    */
   polishStatueBright(player, i) {
-    let cost = this.calcPolishCostBright(i)
+    let cost = this.calcPolishCostBright(i);
     if (this.brightStatue[i] >= this.polishedStatue[i] * 10 || player.shine.brightness < cost) return;
-    player.shine.brightness -= cost
-    this.brightStatue[i] += 1
+    player.shine.brightness -= cost;
+    this.brightStatue[i] += 1;
   }
 
   /** @param {number} i */
@@ -103,8 +103,8 @@ class Statue {
   polishStatueFlicker(player, i) {
     let cost = this.calcPolishCostFlicker(i);
     if (this.flickerStatue[i] >= this.brightStatue[i] * 10 || player.shine.flicker < cost) return;
-    player.shine.flicker -= cost
-    this.flickerStatue[i] += 1
+    player.shine.flicker -= cost;
+    this.flickerStatue[i] += 1;
   }
 
 }

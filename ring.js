@@ -27,7 +27,7 @@ class Ring {
   .map((sum = 0, n => sum += n))
   .map((v) => Math.floor(v))
   */
-  
+
   /** @type {{[x: number]: number}[]} */
   static levelSkills = [
     {
@@ -245,7 +245,7 @@ class Ring {
       id: 1,
       timing: "skilluse",
       effect: (v) => {
-        if (v.prop == 'flowerPoint') v.value = Math.floor(v.value * 1.5)
+        if (v.prop == 'flowerPoint') v.value = Math.floor(v.value * 1.5);
       },
       description: "花の評価上昇量1.5倍"
     },
@@ -253,7 +253,7 @@ class Ring {
       id: 2,
       timing: "skilluse",
       effect: (v) => {
-        if (v.prop == 'snowPoint') v.value = Math.floor(v.value * 1.5)
+        if (v.prop == 'snowPoint') v.value = Math.floor(v.value * 1.5);
       },
       description: "雪の評価上昇量1.5倍"
     },
@@ -261,7 +261,7 @@ class Ring {
       id: 3,
       timing: "skilluse",
       effect: (v) => {
-        if (v.prop == 'moonPoint') v.value = Math.floor(v.value * 1.5)
+        if (v.prop == 'moonPoint') v.value = Math.floor(v.value * 1.5);
       },
       description: "月の評価上昇量1.5倍"
     },
@@ -269,7 +269,7 @@ class Ring {
       id: 4,
       timing: "turnend",
       effect: (v, val) => {
-        v.flowerPoint += val
+        v.flowerPoint += val;
       },
       description: "花の評価上昇"
     },
@@ -277,7 +277,7 @@ class Ring {
       id: 5,
       timing: "turnend",
       effect: (v, val) => {
-        v.snowPoint += val
+        v.snowPoint += val;
       },
       description: "雪の評価上昇"
     },
@@ -285,7 +285,7 @@ class Ring {
       id: 6,
       timing: "turnend",
       effect: (v, val) => {
-        v.moonPoint += val
+        v.moonPoint += val;
       },
       description: "月の評価上昇"
     },
@@ -296,12 +296,12 @@ class Ring {
       name: "通常",
       tp: 0,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level)))
-        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level)))
-        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level)))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level)));
+        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level)));
+        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level)));
 
       },
     },
@@ -309,30 +309,30 @@ class Ring {
       name: "花増幅",
       tp: 8,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('flowerMultiplier', Ring.getStatus(ringid, 3, level) * 0.01)
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('flowerMultiplier', Ring.getStatus(ringid, 3, level) * 0.01);
       }
     },
     {
       name: "雪増幅",
       tp: 8,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('snowMultiplier', Ring.getStatus(ringid, 4, level) * 0.01)
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('snowMultiplier', Ring.getStatus(ringid, 4, level) * 0.01);
       }
     },
     {
       name: "月増幅",
       tp: 8,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('moonMultiplier', Ring.getStatus(ringid, 5, level) * 0.01)
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('moonMultiplier', Ring.getStatus(ringid, 5, level) * 0.01);
       }
     },
     //id:4
@@ -340,30 +340,30 @@ class Ring {
       name: "花昇華",
       tp: 15,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level) * 5))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level) * 5));
       }
     },
     {
       name: "雪昇華",
       tp: 15,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level) * 5))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level) * 5));
       }
     },
     {
       name: "月昇華",
       tp: 15,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level) * 5))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level) * 5));
       }
     },
     //id:7
@@ -371,33 +371,33 @@ class Ring {
       name: "花爆発",
       tp: 20,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level) * 12))
-        rings.affect('flowerMultiplier', Math.max(-0.20, 0.50 - state.flowerMultiplier))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('flowerPoint', Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level) * 12));
+        rings.affect('flowerMultiplier', Math.max(-0.20, 0.50 - state.flowerMultiplier));
       }
     },
     {
       name: "雪爆発",
       tp: 20,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level) * 12))
-        rings.affect('snowMultiplier', Math.max(-0.20, 0.50 - state.snowMultiplier))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('snowPoint', Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level) * 12));
+        rings.affect('snowMultiplier', Math.max(-0.20, 0.50 - state.snowMultiplier));
       }
     },
     {
       name: "月爆発",
       tp: 20,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level) * 12))
-        rings.affect('moonMultiplier', Math.max(-0.20, 0.50 - state.moonMultiplier))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('moonPoint', Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level) * 12));
+        rings.affect('moonMultiplier', Math.max(-0.20, 0.50 - state.moonMultiplier));
       }
     },
     //id:10
@@ -405,36 +405,36 @@ class Ring {
       name: "花拡散",
       tp: 20,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('flowerMultiplier', -0.20)
-        rings.affect('snowMultiplier', 0.10)
-        rings.affect('moonMultiplier', 0.10)
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('flowerMultiplier', -0.20);
+        rings.affect('snowMultiplier', 0.10);
+        rings.affect('moonMultiplier', 0.10);
       }
     },
     {
       name: "雪拡散",
       tp: 20,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('snowMultiplier', -0.20)
-        rings.affect('flowerMultiplier', 0.10)
-        rings.affect('moonMultiplier', 0.10)
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('snowMultiplier', -0.20);
+        rings.affect('flowerMultiplier', 0.10);
+        rings.affect('moonMultiplier', 0.10);
       }
     },
     {
       name: "月拡散",
       tp: 20,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affect('moonMultiplier', -0.20)
-        rings.affect('flowerMultiplier', 0.10)
-        rings.affect('snowMultiplier', 0.10)
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affect('moonMultiplier', -0.20);
+        rings.affect('flowerMultiplier', 0.10);
+        rings.affect('snowMultiplier', 0.10);
       }
     },
     //id:13
@@ -442,45 +442,45 @@ class Ring {
       name: "花充満",
       tp: 45,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affectField(4, Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level)))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affectField(4, Math.floor(state.flowerMultiplier * Ring.getStatus(ringid, 0, level)));
       }
     },
     {
       name: "雪充満",
       tp: 45,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affectField(5, Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level)))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affectField(5, Math.floor(state.snowMultiplier * Ring.getStatus(ringid, 1, level)));
       }
     },
     {
       name: "月充満",
       tp: 45,
       effect: (rings) => {
-        let state = rings.missionState
-        let ringid = rings.setRings[state.activeRing]
-        let level = rings.getLevel(ringid)
-        rings.affectField(6, Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level)))
+        let state = rings.missionState;
+        let ringid = rings.setRings[state.activeRing];
+        let level = rings.getLevel(ringid);
+        rings.affectField(6, Math.floor(state.moonMultiplier * Ring.getStatus(ringid, 2, level)));
       }
     },
   ];
 
   /** @param {number} fst */
   static statusTable(fst) {
-    let ret = [fst]
+    let ret = [fst];
 
     for (let i = 1; i < 98; i++) {
-      ret[i] = ret[i - 1] * 1.05 + fst * 0.1
+      ret[i] = ret[i - 1] * 1.05 + fst * 0.1;
     }
     for (let i = 0; i < 99; i++) {
-      ret[i] = Math.floor(ret[i] * fst * 0.1)
+      ret[i] = Math.floor(ret[i] * fst * 0.1);
     }
-    return ret
+    return ret;
   }
 
   /**
@@ -489,36 +489,36 @@ class Ring {
    * @param {number} level 
    */
   static getStatus(ringId, statusId, level) {
-    return Ring.statusTable(Ring.statusDataType[ringId][statusId])[level - 1]
+    return Ring.statusTable(Ring.statusDataType[ringId][statusId])[level - 1];
   }
 
   static levelCap() {
-    return 30
+    return 30;
   }
 
   /** @param {RingSaveData} ringData */
   constructor(ringData) {
-      this.setRings = Array.from(ringData.setrings);
-      this.ringsExp = Array.from(ringData.ringsexp);
-      this.onMission = ringData.onmission;
-      this.missionId = ringData.missionid;
-      this.missionState = {
-        turn: ringData.missionstate.turn,
-        activeRing: ringData.missionstate.activering,
-        skillLog: Array.from(ringData.missionstate.skilllog),
-        flowerPoint: ringData.missionstate.flowerpoint,
-        snowPoint: ringData.missionstate.snowpoint,
-        moonPoint: ringData.missionstate.moonpoint,
-        flowerMultiplier: ringData.missionstate.flowermultiplier,
-        snowMultiplier: ringData.missionstate.snowmultiplier,
-        moonMultiplier: ringData.missionstate.moonmultiplier,
-        tps: Array.from(ringData.missionstate.tps),
-        fieldEffect: Array.from(ringData.missionstate.fieldeffect),
-      };
-      this.clearedMission = ringData.clearedmission;
-      this.unUsed = {
-        automissionid: ringData.auto.automissionid,
-      };
+    this.setRings = Array.from(ringData.setrings);
+    this.ringsExp = Array.from(ringData.ringsexp);
+    this.onMission = ringData.onmission;
+    this.missionId = ringData.missionid;
+    this.missionState = {
+      turn: ringData.missionstate.turn,
+      activeRing: ringData.missionstate.activering,
+      skillLog: Array.from(ringData.missionstate.skilllog),
+      flowerPoint: ringData.missionstate.flowerpoint,
+      snowPoint: ringData.missionstate.snowpoint,
+      moonPoint: ringData.missionstate.moonpoint,
+      flowerMultiplier: ringData.missionstate.flowermultiplier,
+      snowMultiplier: ringData.missionstate.snowmultiplier,
+      moonMultiplier: ringData.missionstate.moonmultiplier,
+      tps: Array.from(ringData.missionstate.tps),
+      fieldEffect: Array.from(ringData.missionstate.fieldeffect),
+    };
+    this.clearedMission = ringData.clearedmission;
+    this.unUsed = {
+      automissionid: ringData.auto.automissionid,
+    };
   }
 
   /**
@@ -563,33 +563,33 @@ class Ring {
 
   /** @param {number} ringId */
   getLevel(ringId) {
-    let exp = this.ringsExp[ringId]
-    let lv = 0
+    let exp = this.ringsExp[ringId];
+    let lv = 0;
     for (let i = 0; i < Ring.levelTable.length; i++) {
       if (exp >= Ring.levelTable[i]) {
-        lv = i
+        lv = i;
       }
     }
-    lv += 1
-    return Math.min(lv, Ring.levelCap())
+    lv += 1;
+    return Math.min(lv, Ring.levelCap());
   }
 
   /** @param {number} statusId */
   shortGetStatus(statusId) {
-    const ringId = this.setRings[this.missionState.activeRing]
-    return Ring.getStatus(ringId, statusId, this.getLevel(ringId))
+    const ringId = this.setRings[this.missionState.activeRing];
+    return Ring.getStatus(ringId, statusId, this.getLevel(ringId));
   }
 
   /** @param {number} ringId */
   availableSkills(ringId) {
-    let ret = []
-    let level = this.getLevel(ringId)
+    let ret = [];
+    let level = this.getLevel(ringId);
     for (let i in Ring.levelSkills[ringId]) {
       if (Number(i) <= level) {
-        ret.push(Ring.levelSkills[ringId][i])
+        ret.push(Ring.levelSkills[ringId][i]);
       }
     }
-    return ret
+    return ret;
   }
 
   /**
@@ -601,15 +601,15 @@ class Ring {
       state: this.missionState,
       prop: property,
       value: value,
-    }
+    };
     for (let e of this.missionState.fieldEffect) {
       // @ts-expect-error
       if (e[0].timing == "skilluse") { // bug
-        const eff = Ring.fieldEffects.find((elem) => elem.id == e[0])
-        eff.effect(v)
+        const eff = Ring.fieldEffects.find((elem) => elem.id == e[0]);
+        eff.effect(v);
       }
     }
-    this.missionState[v.prop] += v.value
+    this.missionState[v.prop] += v.value;
   }
 
   /**
@@ -625,12 +625,12 @@ class Ring {
    * @param {number} ringId
    */
   isAvailableRing(worldId, ringId) {
-    if (ringId == 0 || ringId == 1 || ringId == 2) return true
-    if (worldId >= 3) return false
+    if (ringId == 0 || ringId == 1 || ringId == 2) return true;
+    if (worldId >= 3) return false;
     if (ringId == worldId + 3) {
-      if (this.clearedMission.includes(4)) return true
+      if (this.clearedMission.includes(4)) return true;
     }
-    return false
+    return false;
   }
 
   /**
@@ -638,73 +638,73 @@ class Ring {
    * @param {number} ringId 
    */
   configSetRings(worldId, ringId) {
-    if (this.onMission) return
-    if (!this.isAvailableRing(worldId, ringId)) return
+    if (this.onMission) return;
+    if (!this.isAvailableRing(worldId, ringId)) return;
     if (this.setRings.includes(ringId)) {
-      this.setRings.splice(this.setRings.indexOf(ringId), 1)
+      this.setRings.splice(this.setRings.indexOf(ringId), 1);
     } else {
-      this.setRings.push(ringId)
+      this.setRings.push(ringId);
     }
   }
 
   autoPlayMission() {
-    if (this.missionState.turn >= Ring.missionInfo[this.missionId].turn) this.endMission()
+    if (this.missionState.turn >= Ring.missionInfo[this.missionId].turn) this.endMission();
     if (this.onMission) {
-      this.useSkill(0)
+      this.useSkill(0);
     } else {
-      this.startMission(this.missionId)
+      this.startMission(this.missionId);
     }
   }
 
   /** @param {number} missionId */
   isAvailableMission(missionId) {
-    return Ring.missionInfo[missionId].preventchallenge.every((v) => this.clearedMission.includes(v))
+    return Ring.missionInfo[missionId].preventchallenge.every((v) => this.clearedMission.includes(v));
   }
 
   /** @param {number} missionId */
   startMission(missionId) {
-    if (this.setRings.length < Ring.missionInfo[missionId].setsizemin || Ring.missionInfo[missionId].setsizemax < this.setRings.length) return
-    if (this.onMission) return
-    this.onMission = true
-    this.missionId = missionId
-    this.missionState.turn = 0
-    this.missionState.activeRing = 0
-    this.missionState.flowerPoint = 0
-    this.missionState.snowPoint = 0
-    this.missionState.moonPoint = 0
-    this.missionState.flowerMultiplier = 1
-    this.missionState.snowMultiplier = 1
-    this.missionState.moonMultiplier = 1
-    this.missionState.skillLog = []
-    this.missionState.tps = []
+    if (this.setRings.length < Ring.missionInfo[missionId].setsizemin || Ring.missionInfo[missionId].setsizemax < this.setRings.length) return;
+    if (this.onMission) return;
+    this.onMission = true;
+    this.missionId = missionId;
+    this.missionState.turn = 0;
+    this.missionState.activeRing = 0;
+    this.missionState.flowerPoint = 0;
+    this.missionState.snowPoint = 0;
+    this.missionState.moonPoint = 0;
+    this.missionState.flowerMultiplier = 1;
+    this.missionState.snowMultiplier = 1;
+    this.missionState.moonMultiplier = 1;
+    this.missionState.skillLog = [];
+    this.missionState.tps = [];
     for (let r of this.setRings) {
-      let lv = this.getLevel(r)
-      this.missionState.tps.push(Ring.getStatus(r, 6, lv))//6:tp status id
+      let lv = this.getLevel(r);
+      this.missionState.tps.push(Ring.getStatus(r, 6, lv));//6:tp status id
     }
-    this.missionState.fieldEffect = []
-    console.log("Starting mission:" + missionId)
+    this.missionState.fieldEffect = [];
+    console.log("Starting mission:" + missionId);
     for (let e of Ring.missionInfo[missionId].passivefunction) {
-      this.missionState.fieldEffect.push([e, -1])
+      this.missionState.fieldEffect.push([e, -1]);
     }
   }
 
   /** @param {number} skillId */
   useSkill(skillId) {
-    let ringId = this.setRings[this.missionState.activeRing]
-    let skill = Ring.skills[this.availableSkills(ringId)[skillId]]
-    if (skill.tp > this.missionState.tps[this.missionState.activeRing]) return
-    skill.effect(this)
-    this.missionState.tps[this.missionState.activeRing] -= skill.tp
-    this.missionState.skillLog.push([this.setRings[this.missionState.activeRing], skillId])
+    let ringId = this.setRings[this.missionState.activeRing];
+    let skill = Ring.skills[this.availableSkills(ringId)[skillId]];
+    if (skill.tp > this.missionState.tps[this.missionState.activeRing]) return;
+    skill.effect(this);
+    this.missionState.tps[this.missionState.activeRing] -= skill.tp;
+    this.missionState.skillLog.push([this.setRings[this.missionState.activeRing], skillId]);
 
     this.missionState.activeRing++;
     if (this.missionState.activeRing == this.setRings.length) {
       this.missionState.activeRing = 0;
       this.missionState.turn++;
       for (let e of this.missionState.fieldEffect) {
-        let eff = Ring.fieldEffects.find((elem) => elem.id == e[0])
+        let eff = Ring.fieldEffects.find((elem) => elem.id == e[0]);
         if (eff.timing == "turnend") {
-          eff.effect(this.missionState, e[1])
+          eff.effect(this.missionState, e[1]);
         }
       }
 
@@ -716,25 +716,25 @@ class Ring {
   }
 
   endMission() {
-    let win = this.ringPointSum() >= Ring.missionInfo[this.missionId].goal
+    let win = this.ringPointSum() >= Ring.missionInfo[this.missionId].goal;
     if ((!win) && this.missionState.turn < Ring.missionInfo[this.missionId].turn) {
-      if (!window.confirm("撤退します。よろしいですか？")) return
+      if (!window.confirm("撤退します。よろしいですか？")) return;
     }
-    this.onMission = false
+    this.onMission = false;
     if (win) {
       for (let i = 0; i < this.setRings.length; i++) {
-        let ringId = this.setRings[i]
-        this.ringsExp[ringId] += Math.floor(Ring.missionInfo[this.missionId].exp * (this.setRings.length - i) / (this.setRings.length * (this.setRings.length + 1) / 2))
-        this.ringsExp[ringId] = Math.min(this.ringsExp[ringId], Ring.levelTable[Ring.levelCap() - 1])
+        let ringId = this.setRings[i];
+        this.ringsExp[ringId] += Math.floor(Ring.missionInfo[this.missionId].exp * (this.setRings.length - i) / (this.setRings.length * (this.setRings.length + 1) / 2));
+        this.ringsExp[ringId] = Math.min(this.ringsExp[ringId], Ring.levelTable[Ring.levelCap() - 1]);
       }
       if (!this.clearedMission.includes(this.missionId)) {
-        this.clearedMission.push(this.missionId)
+        this.clearedMission.push(this.missionId);
       }
     }
   }
 
   ringPointSum() {
-    return this.missionState.flowerPoint + this.missionState.snowPoint + this.missionState.moonPoint
+    return this.missionState.flowerPoint + this.missionState.snowPoint + this.missionState.moonPoint;
   }
 
 }

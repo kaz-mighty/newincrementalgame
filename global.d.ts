@@ -15,7 +15,7 @@ type CampaignItem = {
   cost: number;
   commonBonus: number;
   predicate?: (month: number, date: number) => boolean;
-}
+};
 
 /* SaveData types */
 
@@ -184,7 +184,7 @@ type PlayerSaveData = {
   polishedstatue: number[];
   polishedstatuebr: number[];
   polishedstatuefl: number[];
-  
+
   spiritlevela: number[];
   spiritboughtcurrentcrown: number[];
 

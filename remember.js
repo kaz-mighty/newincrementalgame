@@ -91,28 +91,28 @@ class Remember {
     "銀像1つにつき銀片1000",
     "金像1つにつき金片1000",
     "白金像1つにつき白金片1000",
-  ]
+  ];
 
   static givenChallenges = [
-    [[1],[2],[4],[5]],
-    [[1,2],[1,4],[1,5],[2,4],[2,5],[4,5]],
-    [[0],[6],[1,2,4],[1,2,5],[1,4,5],[2,4,5]],
-    [[0,1],[0,2],[0,4],[0,5],[6,1],[6,2],[6,4],[6,5],[1,2,4,5]],
-    [[0,1,2],[0,1,4],[0,1,5],[0,2,4],[0,2,5],[0,4,5],[6,1,2],[6,1,4],[6,1,5],[6,2,4],[6,2,5],[6,4,5]],
-    [[0,1,2,4],[0,1,2,5],[0,1,4,5],[0,2,4,5],[6,1,2,4],[6,1,2,5],[6,1,4,5],[6,2,4,5]],
-    [[0,1,2,4,5],[6,1,2,4,5]],
-    [[0,6],[3],[7]],
-    [[0,6,1],[0,6,2],[0,6,4],[0,6,5],[3,1],[3,2],[7,4],[7,5]],
-    [[0,6,1,2],[0,6,1,4],[0,6,1,5],[0,6,2,4],[0,6,2,5],[0,6,4,5],[3,1,2],[7,4,5]],
-    [[0,6,1,2,4],[0,6,1,2,5],[0,6,1,4,5],[0,6,2,4,5],[3,0],[7,6]],
-    [[0,6,1,2,4,5],[3,0,1],[3,0,2],[3,0,1,2],[7,6,4],[7,6,5],[7,6,4,5]],
-    [[3,5],[3,5,0],[3,5,1],[3,5,2],[3,5,0,1],[3,5,0,2],[3,5,1,2],[3,5,0,1,2]],
-    [[7,1],[7,2],[7,1,4],[7,1,5],[7,1,6],[7,2,4],[7,2,5],[7,2,6]],
-    [[7,1,2],[7,1,2,4],[7,1,2,5],[7,1,2,6],[7,0],[7,0,4],[7,0,5]],
-    [[7,0,1],[7,0,1,4],[7,0,1,5],[7,0,2],[7,0,2,4],[7,0,2,5],[7,0,1,2],[7,0,1,2,4],[7,0,1,2,5]],
-    [[7,1,4,5],[7,1,4,6],[7,1,5,6],[7,1,4,5,6],[7,2,4,5],[7,2,4,6],[7,2,5,6],[7,2,4,5,6]],
-    [[3,6],[3,6,1],[3,6,2],[3,6,5],[3,6,1,2],[3,6,1,5],[3,6,2,5],[3,6,1,2,5],[3,4]]
-  ]
+    [[1], [2], [4], [5]],
+    [[1, 2], [1, 4], [1, 5], [2, 4], [2, 5], [4, 5]],
+    [[0], [6], [1, 2, 4], [1, 2, 5], [1, 4, 5], [2, 4, 5]],
+    [[0, 1], [0, 2], [0, 4], [0, 5], [6, 1], [6, 2], [6, 4], [6, 5], [1, 2, 4, 5]],
+    [[0, 1, 2], [0, 1, 4], [0, 1, 5], [0, 2, 4], [0, 2, 5], [0, 4, 5], [6, 1, 2], [6, 1, 4], [6, 1, 5], [6, 2, 4], [6, 2, 5], [6, 4, 5]],
+    [[0, 1, 2, 4], [0, 1, 2, 5], [0, 1, 4, 5], [0, 2, 4, 5], [6, 1, 2, 4], [6, 1, 2, 5], [6, 1, 4, 5], [6, 2, 4, 5]],
+    [[0, 1, 2, 4, 5], [6, 1, 2, 4, 5]],
+    [[0, 6], [3], [7]],
+    [[0, 6, 1], [0, 6, 2], [0, 6, 4], [0, 6, 5], [3, 1], [3, 2], [7, 4], [7, 5]],
+    [[0, 6, 1, 2], [0, 6, 1, 4], [0, 6, 1, 5], [0, 6, 2, 4], [0, 6, 2, 5], [0, 6, 4, 5], [3, 1, 2], [7, 4, 5]],
+    [[0, 6, 1, 2, 4], [0, 6, 1, 2, 5], [0, 6, 1, 4, 5], [0, 6, 2, 4, 5], [3, 0], [7, 6]],
+    [[0, 6, 1, 2, 4, 5], [3, 0, 1], [3, 0, 2], [3, 0, 1, 2], [7, 6, 4], [7, 6, 5], [7, 6, 4, 5]],
+    [[3, 5], [3, 5, 0], [3, 5, 1], [3, 5, 2], [3, 5, 0, 1], [3, 5, 0, 2], [3, 5, 1, 2], [3, 5, 0, 1, 2]],
+    [[7, 1], [7, 2], [7, 1, 4], [7, 1, 5], [7, 1, 6], [7, 2, 4], [7, 2, 5], [7, 2, 6]],
+    [[7, 1, 2], [7, 1, 2, 4], [7, 1, 2, 5], [7, 1, 2, 6], [7, 0], [7, 0, 4], [7, 0, 5]],
+    [[7, 0, 1], [7, 0, 1, 4], [7, 0, 1, 5], [7, 0, 2], [7, 0, 2, 4], [7, 0, 2, 5], [7, 0, 1, 2], [7, 0, 1, 2, 4], [7, 0, 1, 2, 5]],
+    [[7, 1, 4, 5], [7, 1, 4, 6], [7, 1, 5, 6], [7, 1, 4, 5, 6], [7, 2, 4, 5], [7, 2, 4, 6], [7, 2, 5, 6], [7, 2, 4, 5, 6]],
+    [[3, 6], [3, 6, 1], [3, 6, 2], [3, 6, 5], [3, 6, 1, 2], [3, 6, 1, 5], [3, 6, 2, 5], [3, 6, 1, 2, 5], [3, 4]]
+  ];
 
   /**
    * @param {PlayerSaveData} newData 
@@ -122,7 +122,7 @@ class Remember {
   static giveChallenge(newData, giveId, isRank) {
     let target = isRank ? newData.rankchallengecleared : newData.challengecleared;
     for (let i = 0; i < Remember.givenChallenges[giveId].length; i++) {
-      target.push(Challenge.getChallengeId(Remember.givenChallenges[giveId][i]))
+      target.push(Challenge.getChallengeId(Remember.givenChallenges[giveId][i]));
     }
   }
 
@@ -137,81 +137,81 @@ class Remember {
    */
   static shrinkWorld(world, playerData, memory, remember0) {
     if (4 > memory) {
-      alert("実績が4つ未満なので、世界を収縮できません。")
-      return
+      alert("実績が4つ未満なので、世界を収縮できません。");
+      return;
     }
     if (playerData.remember >= memory) {
-      alert("実績が思い出より多くありません。")
-      return
+      alert("実績が思い出より多くありません。");
+      return;
     }
     if (!confirm("世界" + (world + 1) + "を収縮させ、記憶を思い出に変化させますか？収縮した世界は最初からになります。")) {
-      return
+      return;
     }
-    let st = playerData.statue
-    let newData = initialData()
-    newData.remember = memory
-    newData.rings = playerData.rings
-    newData.residue = playerData.residue
-    newData.darklevelproof = playerData.darklevelproof
-    newData.challengeweight = playerData.challengeweight
-    newData.challengeweightvalue = playerData.challengeweightvalue
+    let st = playerData.statue;
+    let newData = initialData();
+    newData.remember = memory;
+    newData.rings = playerData.rings;
+    newData.residue = playerData.residue;
+    newData.darklevelproof = playerData.darklevelproof;
+    newData.challengeweight = playerData.challengeweight;
+    newData.challengeweightvalue = playerData.challengeweightvalue;
 
-    if (remember0 >= 1) newData.levelresettime = new Decimal(1)
-    if (remember0 >= 2) newData.levelresettime = new Decimal(2)
-    if (remember0 >= 3) newData.levelresettime = new Decimal(3)
-    if (remember0 >= 4) newData.levelresettime = new Decimal(5)
-    if (remember0 >= 5) newData.levelresettime = new Decimal(8)
-    if (remember0 >= 6) newData.levelresettime = new Decimal(13)
-    if (remember0 >= 7) newData.levelresettime = new Decimal(21)
-    if (remember0 >= 8) newData.levelresettime = new Decimal(34)
-    if (remember0 >= 9) newData.rankresettime = new Decimal(1)
-    if (remember0 >= 10) newData.rankresettime = new Decimal(2)
-    if (remember0 >= 11) newData.rankresettime = new Decimal(3)
-    if (remember0 >= 12) newData.rankresettime = new Decimal(5)
-    if (remember0 >= 13) newData.rankresettime = new Decimal(8)
-    if (remember0 >= 14) newData.rankresettime = new Decimal(13)
-    if (remember0 >= 15) newData.rankresettime = new Decimal(21)
-    if (remember0 >= 16) newData.rankresettime = new Decimal(34)
-    if (remember0 >= 17) Remember.giveChallenge(newData, 0, false)
-    if (remember0 >= 18) Remember.giveChallenge(newData, 1, false)
-    if (remember0 >= 19) Remember.giveChallenge(newData, 2, false)
-    if (remember0 >= 20) Remember.giveChallenge(newData, 3, false)
-    if (remember0 >= 21) Remember.giveChallenge(newData, 4, false)
-    if (remember0 >= 22) Remember.giveChallenge(newData, 5, false)
-    if (remember0 >= 23) Remember.giveChallenge(newData, 6, false)
-    if (remember0 >= 24) Remember.giveChallenge(newData, 7, false)
-    if (remember0 >= 25) newData.rank = new Decimal(64)
-    if (remember0 >= 26) newData.levelitembought = 108
-    if (remember0 >= 27) newData.rank = new Decimal(128)
-    if (remember0 >= 28) newData.levelitembought = 256
-    if (remember0 >= 29) newData.rank = new Decimal(256)
-    if (remember0 >= 30) newData.levelitembought = 800
-    if (remember0 >= 31) newData.rank = new Decimal(512)
-    if (remember0 >= 32) newData.levelitembought = 1728
-    if (remember0 >= 33) newData.maxlevelgained = new Decimal(1000)
-    if (remember0 >= 34) Remember.giveChallenge(newData, 8, false)
-    if (remember0 >= 35) newData.maxlevelgained = new Decimal(3000)
-    if (remember0 >= 36) Remember.giveChallenge(newData, 9, false)
-    if (remember0 >= 37) newData.maxlevelgained = new Decimal(10000)
-    if (remember0 >= 38) Remember.giveChallenge(newData, 10, false)
-    if (remember0 >= 39) newData.maxlevelgained = new Decimal(30000)
-    if (remember0 >= 40) Remember.giveChallenge(newData, 11, false)
-    if (remember0 >= 41) newData.levelresettime = new Decimal(1000)
-    if (remember0 >= 42) newData.rankresettime = new Decimal(300)
-    if (remember0 >= 43) newData.rank = new Decimal(4096)
-    if (remember0 >= 44) newData.shine = 100000
-    if (remember0 >= 45) newData.maxlevelgained = new Decimal(100000)
-    if (remember0 >= 46) newData.levelitembought = 6400
-    if (remember0 >= 47) Remember.giveChallenge(newData, 12, false)
-    if (remember0 >= 48) Remember.giveChallenge(newData, 13, false)
-    if (remember0 >= 49) Remember.giveChallenge(newData, 14, false)
-    if (remember0 >= 50) Remember.giveChallenge(newData, 15, false)
-    if (remember0 >= 51) Remember.giveChallenge(newData, 16, false)
-    if (remember0 >= 52) Remember.giveChallenge(newData, 17, false)
-    if (remember0 >= 53) Remember.giveChallenge(newData, 0, true)
-    if (remember0 >= 54) Remember.giveChallenge(newData, 1, true)
-    if (remember0 >= 55) Remember.giveChallenge(newData, 2, true)
-    if (remember0 >= 56) Remember.giveChallenge(newData, 3, true)
+    if (remember0 >= 1) newData.levelresettime = new Decimal(1);
+    if (remember0 >= 2) newData.levelresettime = new Decimal(2);
+    if (remember0 >= 3) newData.levelresettime = new Decimal(3);
+    if (remember0 >= 4) newData.levelresettime = new Decimal(5);
+    if (remember0 >= 5) newData.levelresettime = new Decimal(8);
+    if (remember0 >= 6) newData.levelresettime = new Decimal(13);
+    if (remember0 >= 7) newData.levelresettime = new Decimal(21);
+    if (remember0 >= 8) newData.levelresettime = new Decimal(34);
+    if (remember0 >= 9) newData.rankresettime = new Decimal(1);
+    if (remember0 >= 10) newData.rankresettime = new Decimal(2);
+    if (remember0 >= 11) newData.rankresettime = new Decimal(3);
+    if (remember0 >= 12) newData.rankresettime = new Decimal(5);
+    if (remember0 >= 13) newData.rankresettime = new Decimal(8);
+    if (remember0 >= 14) newData.rankresettime = new Decimal(13);
+    if (remember0 >= 15) newData.rankresettime = new Decimal(21);
+    if (remember0 >= 16) newData.rankresettime = new Decimal(34);
+    if (remember0 >= 17) Remember.giveChallenge(newData, 0, false);
+    if (remember0 >= 18) Remember.giveChallenge(newData, 1, false);
+    if (remember0 >= 19) Remember.giveChallenge(newData, 2, false);
+    if (remember0 >= 20) Remember.giveChallenge(newData, 3, false);
+    if (remember0 >= 21) Remember.giveChallenge(newData, 4, false);
+    if (remember0 >= 22) Remember.giveChallenge(newData, 5, false);
+    if (remember0 >= 23) Remember.giveChallenge(newData, 6, false);
+    if (remember0 >= 24) Remember.giveChallenge(newData, 7, false);
+    if (remember0 >= 25) newData.rank = new Decimal(64);
+    if (remember0 >= 26) newData.levelitembought = 108;
+    if (remember0 >= 27) newData.rank = new Decimal(128);
+    if (remember0 >= 28) newData.levelitembought = 256;
+    if (remember0 >= 29) newData.rank = new Decimal(256);
+    if (remember0 >= 30) newData.levelitembought = 800;
+    if (remember0 >= 31) newData.rank = new Decimal(512);
+    if (remember0 >= 32) newData.levelitembought = 1728;
+    if (remember0 >= 33) newData.maxlevelgained = new Decimal(1000);
+    if (remember0 >= 34) Remember.giveChallenge(newData, 8, false);
+    if (remember0 >= 35) newData.maxlevelgained = new Decimal(3000);
+    if (remember0 >= 36) Remember.giveChallenge(newData, 9, false);
+    if (remember0 >= 37) newData.maxlevelgained = new Decimal(10000);
+    if (remember0 >= 38) Remember.giveChallenge(newData, 10, false);
+    if (remember0 >= 39) newData.maxlevelgained = new Decimal(30000);
+    if (remember0 >= 40) Remember.giveChallenge(newData, 11, false);
+    if (remember0 >= 41) newData.levelresettime = new Decimal(1000);
+    if (remember0 >= 42) newData.rankresettime = new Decimal(300);
+    if (remember0 >= 43) newData.rank = new Decimal(4096);
+    if (remember0 >= 44) newData.shine = 100000;
+    if (remember0 >= 45) newData.maxlevelgained = new Decimal(100000);
+    if (remember0 >= 46) newData.levelitembought = 6400;
+    if (remember0 >= 47) Remember.giveChallenge(newData, 12, false);
+    if (remember0 >= 48) Remember.giveChallenge(newData, 13, false);
+    if (remember0 >= 49) Remember.giveChallenge(newData, 14, false);
+    if (remember0 >= 50) Remember.giveChallenge(newData, 15, false);
+    if (remember0 >= 51) Remember.giveChallenge(newData, 16, false);
+    if (remember0 >= 52) Remember.giveChallenge(newData, 17, false);
+    if (remember0 >= 53) Remember.giveChallenge(newData, 0, true);
+    if (remember0 >= 54) Remember.giveChallenge(newData, 1, true);
+    if (remember0 >= 55) Remember.giveChallenge(newData, 2, true);
+    if (remember0 >= 56) Remember.giveChallenge(newData, 3, true);
     if (remember0 >= 57) newData.chip[0] = 1;
     if (remember0 >= 58) newData.chip[0] = 15;
     if (remember0 >= 59) newData.chip[0] = 55;
@@ -233,13 +233,13 @@ class Remember {
     if (remember0 >= 75) newData.darklevel = new Decimal(500);
     if (remember0 >= 76) newData.shine = 10000000;
     if (remember0 >= 77) newData.darklevel = new Decimal(2000);
-    if (remember0 >= 78) newData.chip[0] += st[0] * 1000
-    if (remember0 >= 79) newData.chip[1] += st[1] * 1000
-    if (remember0 >= 80) newData.chip[2] += st[2] * 1000
-    if (remember0 >= 81) newData.chip[3] += st[3] * 1000
+    if (remember0 >= 78) newData.chip[0] += st[0] * 1000;
+    if (remember0 >= 79) newData.chip[1] += st[1] * 1000;
+    if (remember0 >= 80) newData.chip[2] += st[2] * 1000;
+    if (remember0 >= 81) newData.chip[3] += st[3] * 1000;
 
-    newData.token = newData.challengecleared.length
+    newData.token = newData.challengecleared.length;
 
-    return newData
+    return newData;
   }
 }

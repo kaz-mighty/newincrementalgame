@@ -4,10 +4,10 @@ class Spirit {
 
   static spiritNameA = [
     "鼠"
-  ]
+  ];
 
   static spiritCostA = [
     new Decimal("1e180")
-  ]
+  ];
 
 }

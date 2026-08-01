@@ -205,7 +205,7 @@ const initialData = () => {
       },
     },
   };
-}
+};
 
 /** @typedef {ReturnType<typeof initialCommonData>} CommonData */
 /** 全世界で共有され、(UIを除く)ゲームの動作にも影響する変数 */
@@ -282,59 +282,59 @@ class Nig { // New Incremental Game
   }
   dataLoad() {
     const store = localStorage.getItem("playerStoredb");
-    if (!store) return
-    console.log(atob(store))
-    let playersSave = JSON.parse(atob(store))
+    if (!store) return;
+    console.log(atob(store));
+    let playersSave = JSON.parse(atob(store));
 
     while (playersSave.length < WORLD_NUM) {
-      playersSave.push(initialData())
+      playersSave.push(initialData());
     }
 
     for (let i = 0; i < WORLD_NUM; i++) {
-      const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray
+      const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
 
       let saveData = deepmerge(initialData(), playersSave[i], {
         arrayMerge: overwriteMerge,
         isMergeableObject: isPlainObject
-      })
+      });
 
       while (saveData.trophies.length < TROPHY_NUM) {
-        saveData.trophies.push(false)
+        saveData.trophies.push(false);
       }
       while (saveData.boughttype.length < 6) {
-        saveData.boughttype.push(false)
+        saveData.boughttype.push(false);
       }
       while (saveData.chip.length < SET_CHIP_KIND) {
-        saveData.chip.push(0)
+        saveData.chip.push(0);
       }
       while (saveData.statue.length < SET_CHIP_KIND) {
-        saveData.statue.push(0)
+        saveData.statue.push(0);
       }
       while (saveData.polishedstatuefl.length < SET_CHIP_KIND) {
-        saveData.polishedstatuefl.push(0)
+        saveData.polishedstatuefl.push(0);
       }
       while (saveData.rings.ringsexp.length < 13) {
-        saveData.rings.ringsexp.push(0)
+        saveData.rings.ringsexp.push(0);
       }
       while (saveData.spiritlevela.length < Spirit.spiritNumA) {
-        saveData.spiritlevela.push(0)
+        saveData.spiritlevela.push(0);
       }
       while (saveData.spiritboughtcurrentcrown.length < Spirit.spiritNumA) {
-        saveData.spiritboughtcurrentcrown.push(0)
+        saveData.spiritboughtcurrentcrown.push(0);
       }
       while (saveData.worldpipe.length < WORLD_NUM) {
-        saveData.worldpipe.push(0)
+        saveData.worldpipe.push(0);
       }
-      const calibration = saveData.markstone.calibration
+      const calibration = saveData.markstone.calibration;
       while (calibration.shopUpgrades.length < 7) {
-        calibration.shopUpgrades.push(false)
+        calibration.shopUpgrades.push(false);
       }
       while (calibration.resolutions.length < 3) {
-        calibration.resolutions.push(0)
+        calibration.resolutions.push(0);
       }
 
-      this.playersSave[i] = saveData
-      this.players[i] = new Player(i, saveData, this.common)
+      this.playersSave[i] = saveData;
+      this.players[i] = new Player(i, saveData, this.common);
     }
 
     this.common.worldOpened.fill(false);
@@ -342,64 +342,64 @@ class Nig { // New Incremental Game
   }
   /** @param {number} world */
   load(world) {
-    this.world = world
-    this.player = this.players[world]
-    this.player.currentTab = "basic"
+    this.world = world;
+    this.player = this.players[world];
+    this.player.currentTab = "basic";
 
     this.checkTotalDarkLevelProof();
-    this.checkMemories()
-    this.checkRemembers()
-    this.player.trophy.checkTrophies(this.player)
-    this.player.checkWorlds()
+    this.checkMemories();
+    this.checkRemembers();
+    this.player.trophy.checkTrophies(this.player);
+    this.player.checkWorlds();
     this.player.dark.updateProofCallback = () => this.checkTotalDarkLevelProof();
-    this.player.dark.updateDarkLevelProof()
-    this.checkPipedSmallTrophies()
+    this.player.dark.updateDarkLevelProof();
+    this.checkPipedSmallTrophies();
 
-    this.player.updateTickSpeed()
-    this.player.calcCommonMult()
-    this.player.generator.findHighestGenerator()
+    this.player.updateTickSpeed();
+    this.player.calcCommonMult();
+    this.player.generator.findHighestGenerator();
     for (let i = 0; i < 8; i++) {
-      this.player.calcBasicIncrementMult(i)
+      this.player.calcBasicIncrementMult(i);
     }
 
-    this.player.generator.calcGnCost(this.player)
-    this.player.accelerator.calcAcCost(this.player)
-    this.player.dark.calcDgCost(this.player)
-    this.player.light.calcLgCost()
+    this.player.generator.calcGnCost(this.player);
+    this.player.accelerator.calcAcCost(this.player);
+    this.player.dark.calcDgCost(this.player);
+    this.player.light.calcLgCost();
 
     // bug: 多重起動ができてしまう
     if (this.player.auto.autoRing) {
-      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000);
     } else {
-      clearInterval(this.autoMissionTimerId)
-      this.autoMissionTimerId = 0
+      clearInterval(this.autoMissionTimerId);
+      this.autoMissionTimerId = 0;
     }
     if (this.player.auto.autoSpendShine) {
-      this.autoShineTimerId = setInterval(() => this.autoShine(), 1000)
+      this.autoShineTimerId = setInterval(() => this.autoShine(), 1000);
     } else {
-      clearInterval(this.autoShineTimerId)
-      this.autoShineTimerId = 0
+      clearInterval(this.autoShineTimerId);
+      this.autoShineTimerId = 0;
     }
     if (this.player.auto.autoSpendBright) {
-      this.autoBrightTimerId = setInterval(() => this.autoBright(), 1000)
+      this.autoBrightTimerId = setInterval(() => this.autoBright(), 1000);
     } else {
-      clearInterval(this.autoBrightTimerId)
-      this.autoBrightTimerId = 0
+      clearInterval(this.autoBrightTimerId);
+      this.autoBrightTimerId = 0;
     }
     if (this.player.auto.autoDoChallenge) {
-      this.autoChallengeTimerId = setInterval(() => this.autoChallenge(), 1000)
+      this.autoChallengeTimerId = setInterval(() => this.autoChallenge(), 1000);
     } else {
-      clearInterval(this.autoChallengeTimerId)
-      this.autoChallengeTimerId = 0
+      clearInterval(this.autoChallengeTimerId);
+      this.autoChallengeTimerId = 0;
     }
   }
 
   update() {
-    let diffm = this.diff
-    this.diff = Date.now() - this.time - this.player.tickSpeed
-    this.time = Date.now()
+    let diffm = this.diff;
+    this.diff = Date.now() - this.time - this.player.tickSpeed;
+    this.time = Date.now();
 
-    this.player.update()
+    this.player.update();
 
     setTimeout(() => this.update(), Math.max(this.player.tickSpeed - (this.diff + diffm) / 2, 1));
   }
@@ -409,30 +409,30 @@ class Nig { // New Incremental Game
     let input;
     switch (index) {
       case 0:
-        input = new Decimal(window.prompt("リセット時入手段位を設定", ""))
-        this.common.autoLevelNumber = input
-        break
+        input = new Decimal(window.prompt("リセット時入手段位を設定", ""));
+        this.common.autoLevelNumber = input;
+        break;
       case 1:
-        input = new Decimal(window.prompt("昇段停止段位を設定", ""))
-        this.common.autoLevelStopNumber = input
-        break
+        input = new Decimal(window.prompt("昇段停止段位を設定", ""));
+        this.common.autoLevelStopNumber = input;
+        break;
       case 2:
-        input = new Decimal(window.prompt("リセット時入手階位を設定", ""))
-        this.common.autoRankNumber = input
-        break
+        input = new Decimal(window.prompt("リセット時入手階位を設定", ""));
+        this.common.autoRankNumber = input;
+        break;
       case 3:
-        input = new Decimal(window.prompt("段位リセットポイント閾値を設定（0で無効）"))
-        this.common.autoLevelPoint = input
-        break
+        input = new Decimal(window.prompt("段位リセットポイント閾値を設定（0で無効）"));
+        this.common.autoLevelPoint = input;
+        break;
       case 4:
-        input = new Decimal(window.prompt("階位リセットポイント閾値を設定（0で無効）"))
-        this.common.autoRankPoint = input
-        break
+        input = new Decimal(window.prompt("階位リセットポイント閾値を設定（0で無効）"));
+        this.common.autoRankPoint = input;
+        break;
     }
   }
   /** @param {number} index */
   toggleAutoBuyer(index) {
-    switch(index) {
+    switch (index) {
       case 0: this.common.genAutoBuy = !this.common.genAutoBuy; break;
       case 1: this.common.accAutoBuy = !this.common.accAutoBuy; break;
       case 2: this.common.autoLevel = !this.common.autoLevel; break;
@@ -442,26 +442,26 @@ class Nig { // New Incremental Game
     }
   }
   toggleChipThresholdUse() {
-    this.common.chipThresholdUse = !this.common.chipThresholdUse
+    this.common.chipThresholdUse = !this.common.chipThresholdUse;
   }
   configChipThresholdNumber() {
-    let input = new Decimal(window.prompt("閾値を設定", ""))
-    this.common.chipThreshold = input
+    let input = new Decimal(window.prompt("閾値を設定", ""));
+    this.common.chipThreshold = input;
   }
   confCheckTrophies() {
-    this.common.trophyCheck = !this.common.trophyCheck
+    this.common.trophyCheck = !this.common.trophyCheck;
   }
 
   autoShine() {
-    this.player.spendShine(this.player.auto.autoSpendShineNumber)
+    this.player.spendShine(this.player.auto.autoSpendShineNumber);
   }
   autoBright() {
-    this.player.spendBrightness(this.player.auto.autoSpendBrightNumber)
+    this.player.spendBrightness(this.player.auto.autoSpendBrightNumber);
   }
   autoChallenge() {
     if (this.player.challenge.challengeCleared.length == 255) return;
     if (this.player.challenge.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.challenges.length == 0) {
-      this.player.challenge.showUnclearedChallenges()
+      this.player.challenge.showUnclearedChallenges();
     }
     if (!this.player.challenge.onChallenge) {
       this.player.challenge.startChallenge(this.player);
@@ -471,52 +471,52 @@ class Nig { // New Incremental Game
   /** @param {number} index */
   toggleRingAutoBuyer(index) {
     if (index == 0) {
-      this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine
+      this.player.auto.autoSpendShine = !this.player.auto.autoSpendShine;
       if (this.player.auto.autoSpendShine) {
-        this.autoShineTimerId = setInterval(() => this.autoShine(), 1000)
+        this.autoShineTimerId = setInterval(() => this.autoShine(), 1000);
       } else {
-        clearInterval(this.autoShineTimerId)
-        this.autoShineTimerId = 0
+        clearInterval(this.autoShineTimerId);
+        this.autoShineTimerId = 0;
       }
     }
     if (index == 1) {
-      this.player.auto.autoSpendBright = !this.player.auto.autoSpendBright
+      this.player.auto.autoSpendBright = !this.player.auto.autoSpendBright;
       if (this.player.auto.autoSpendBright) {
-        this.autoBrightTimerId = setInterval(() => this.autoBright(), 1000)
+        this.autoBrightTimerId = setInterval(() => this.autoBright(), 1000);
       } else {
-        clearInterval(this.autoBrightTimerId)
-        this.autoBrightTimerId = 0
+        clearInterval(this.autoBrightTimerId);
+        this.autoBrightTimerId = 0;
       }
     }
     if (index == 2) {
-      this.player.auto.autoDoChallenge = !this.player.auto.autoDoChallenge
+      this.player.auto.autoDoChallenge = !this.player.auto.autoDoChallenge;
       if (this.player.auto.autoDoChallenge) {
-        this.autoChallengeTimerId = setInterval(() => this.autoChallenge(), 1000)
+        this.autoChallengeTimerId = setInterval(() => this.autoChallenge(), 1000);
       } else {
-        clearInterval(this.autoChallengeTimerId)
-        this.autoChallengeTimerId = 0
+        clearInterval(this.autoChallengeTimerId);
+        this.autoChallengeTimerId = 0;
       }
     }
   }
   /** @param {number} index */
   configRingAutoBuyer(index) {
-    let input = parseInt(window.prompt("消費量を設定:最大1000", ""))
-    if (isNaN(input)) return
-    if (input < 0 || input > 1000) return
+    let input = parseInt(window.prompt("消費量を設定:最大1000", ""));
+    if (isNaN(input)) return;
+    if (input < 0 || input > 1000) return;
     if (index == 0) {
-      this.player.auto.autoSpendShineNumber = input
+      this.player.auto.autoSpendShineNumber = input;
     }
     if (index == 1) {
-      this.player.auto.autoSpendBrightNumber = input
+      this.player.auto.autoSpendBrightNumber = input;
     }
   }
   configAutoMission() {
-    this.player.auto.autoRing = !this.player.auto.autoRing
+    this.player.auto.autoRing = !this.player.auto.autoRing;
     if (this.player.auto.autoRing) {
-      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000)
+      this.autoMissionTimerId = setInterval(() => this.player.ring.autoPlayMission(), 1000);
     } else {
-      clearInterval(this.autoMissionTimerId)
-      this.autoMissionTimerId = 0
+      clearInterval(this.autoMissionTimerId);
+      this.autoMissionTimerId = 0;
     }
   }
 
@@ -532,9 +532,9 @@ class Nig { // New Incremental Game
 
   /** @param {number} i */
   moveWorld(i) {
-    if (this.world == i || !this.common.worldOpened[i]) return // bug
-    this.save()
-    this.load(i)
+    if (this.world == i || !this.common.worldOpened[i]) return; // bug
+    this.save();
+    this.load(i);
   }
   /** @param {number} i */
   shrinkWorld(i) {
@@ -547,7 +547,7 @@ class Nig { // New Incremental Game
     this.players[i] = new Player(i, newData, this.common);
     this.checkMemories();
     this.checkRemembers();
-    this.checkPipedSmallTrophies()
+    this.checkPipedSmallTrophies();
   }
 
   checkTotalDarkLevelProof() {
@@ -561,18 +561,18 @@ class Nig { // New Incremental Game
     let cnt = 0;
 
     for (let i = 0; i < WORLD_NUM; i++) {
-      if (this.world == i) continue
-      cnt += this.players[i].trophy.memory
+      if (this.world == i) continue;
+      cnt += this.players[i].trophy.memory;
     }
-    this.player.memorySum = cnt
+    this.player.memorySum = cnt;
   }
   checkRemembers() {
     let cnt = 0;
     for (let i = this.world + 1; i < WORLD_NUM; i++) {
-      cnt += this.players[i].trophy.remember
+      cnt += this.players[i].trophy.remember;
     }
 
-    this.player.rememberSum = cnt
+    this.player.rememberSum = cnt;
   }
   checkPipedSmallTrophies() {
     this.player.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
@@ -580,9 +580,9 @@ class Nig { // New Incremental Game
     for (let i = 0; i < WORLD_NUM; i++) {
       if (this.players[i].worldPipe[this.world] >= 1) {
         let cnt = this.players[i].trophy.smallTrophy - 75;
-        cnt *= this.players[i].worldPipe[this.world]
+        cnt *= this.players[i].worldPipe[this.world];
         if (this.players[i].trophy.remember >= 10) {
-          cnt = Math.floor(cnt * (0.1 + this.players[i].trophy.remember / 10))
+          cnt = Math.floor(cnt * (0.1 + this.players[i].trophy.remember / 10));
         }
         this.player.eachPipedSmallTrophy[i] = cnt;
         this.player.pipedSmallTrophy += cnt;

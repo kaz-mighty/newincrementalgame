@@ -116,12 +116,12 @@ class Chip {
    * @param {number} time
    */
   static getChipId(lv, time) {
-    let d = Math.random()
-    let table = Chip.probTable[lv][1].map((x) => Math.pow(x, time))
-    console.log(table)
+    let d = Math.random();
+    let table = Chip.probTable[lv][1].map((x) => Math.pow(x, time));
+    console.log(table);
     for (let i = 0; i <= 10; i++) {
       if (table[i] > d) {
-        return i - 1
+        return i - 1;
       }
     }
   }
@@ -140,24 +140,24 @@ class Chip {
   }
 
   calcChipRetryTime() {
-    let retry = 0
+    let retry = 0;
     for (let i = 0; i < 9; i++) {
       if (this.spendChip[i] > 0) {
-        retry += 1 + Math.log(this.spendChip[i]) / Math.log(10 - i)
+        retry += 1 + Math.log(this.spendChip[i]) / Math.log(10 - i);
       }
     }
-    retry = Math.floor(retry)
-    return retry
+    retry = Math.floor(retry);
+    return retry;
   }
 
   haveEnoughChip() {
-    return this.chip.every((x, i) => x >= this.spendChip[i])
+    return this.chip.every((x, i) => x >= this.spendChip[i]);
   }
 
   /** @param {Decimal} money */
   calcGainChip(money) {
-    let clevel = Chip.getChipLevel(money)
-    return Chip.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0))
+    let clevel = Chip.getChipLevel(money);
+    return Chip.getChipId(clevel, 1 + (this.haveEnoughChip() ? this.calcChipRetryTime() : 0));
   }
 
   /**
@@ -166,18 +166,18 @@ class Chip {
    * @param {boolean} isGw2
    */
   calcChipGetNum(kind, chipDoubleProb, isGw2) {
-    let hit = 0
+    let hit = 0;
     for (let i = 0; i < this.chipUsed[kind]; i++) {
       if (Math.random() < chipDoubleProb) hit++;
     }
-    hit = Math.min(hit, 10)
-    let chipGetNum = Math.floor(Math.pow(2, hit))
+    hit = Math.min(hit, 10);
+    let chipGetNum = Math.floor(Math.pow(2, hit));
 
     //ゴールデンウィークキャンペーン
-    if (isGw2 && kind == 2) chipGetNum += 4
+    if (isGw2 && kind == 2) chipGetNum += 4;
 
-    chipGetNum = Math.min(chipGetNum, 10000000 - this.chip[kind])
-    return chipGetNum
+    chipGetNum = Math.min(chipGetNum, 10000000 - this.chip[kind]);
+    return chipGetNum;
   }
 
   /**
@@ -189,14 +189,14 @@ class Chip {
     // There is a bug: chipの支払い後、さらにhaveEnoughChipの判定をしている
     if (this.haveEnoughChip()) {
       for (let i = 0; i < 10; i++) {
-        this.chip[i] -= this.spendChip[i]
+        this.chip[i] -= this.spendChip[i];
       }
     }
-    let gainChip = this.calcGainChip(money)
-    console.log("gainchip:" + gainChip)
+    let gainChip = this.calcGainChip(money);
+    console.log("gainchip:" + gainChip);
 
     if (gainChip != -1 && this.chip[gainChip] < 10000000) {
-      this.chip[gainChip] += this.calcChipGetNum(gainChip, chipDoubleProb, isGw2)
+      this.chip[gainChip] += this.calcChipGetNum(gainChip, chipDoubleProb, isGw2);
     }
   }
 
@@ -205,11 +205,11 @@ class Chip {
    * @param {number} i 
    */
   configSpendChip(statue, i) {
-    let maxspend = statue * statue
-    let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), ""))
-    if (isNaN(input)) return
-    if (input < 0 || input > maxspend) return
-    this.spendChip[i] = input
+    let maxspend = statue * statue;
+    let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), ""));
+    if (isNaN(input)) return;
+    if (input < 0 || input > maxspend) return;
+    this.spendChip[i] = input;
   }
 
   /**
@@ -217,47 +217,47 @@ class Chip {
    * @param {number} j 鋳片の種類 1-indexed (0=None)
    */
   chipSet(i, j) {
-    if (this.disabledChip[i]) return
-    if (this.setChip[i] == j) return
-    if (this.chip[j - 1] <= this.chipUsed[j - 1]) return
-    let oldchip = this.setChip[i] - 1
-    if (oldchip != -1) this.chip[oldchip] += this.chipUsed[oldchip]
-    this.setChip[i] = j
-    if (j != 0) this.chip[j - 1] -= this.chipUsed[j - 1] + 1
-    this.checkUsedChips()
+    if (this.disabledChip[i]) return;
+    if (this.setChip[i] == j) return;
+    if (this.chip[j - 1] <= this.chipUsed[j - 1]) return;
+    let oldchip = this.setChip[i] - 1;
+    if (oldchip != -1) this.chip[oldchip] += this.chipUsed[oldchip];
+    this.setChip[i] = j;
+    if (j != 0) this.chip[j - 1] -= this.chipUsed[j - 1] + 1;
+    this.checkUsedChips();
   }
 
   checkUsedChips() {
-    this.chipUsed.fill(0)
+    this.chipUsed.fill(0);
     for (let v of this.setChip) {
-      if (v != 0) this.chipUsed[v - 1]++
+      if (v != 0) this.chipUsed[v - 1]++;
     }
   }
 
   clearSetChip() {
     for (let i = 0; i < 100; i++) {
-      this.chipSet(i, 0)
+      this.chipSet(i, 0);
     }
   }
 
   /** @param {number} i */
   disableChip(i) {
-    this.chipSet(i, 0)
-    this.disabledChip[i] = true
+    this.chipSet(i, 0);
+    this.disabledChip[i] = true;
   }
 
   setChipType() {
     if (confirm('現在の鋳片型を登録します。よろしいですか？')) {
       for (let i = 0; i < 100; i++) {
-        this.setChipType1[i] = this.setChip[i]
+        this.setChipType1[i] = this.setChip[i];
       }
     }
   }
 
   changeChipType() {
-    this.clearSetChip()
+    this.clearSetChip();
     for (let i = 0; i < 100; i++) {
-      this.chipSet(i, this.setChipType1[i])
+      this.chipSet(i, this.setChipType1[i]);
     }
   }
 

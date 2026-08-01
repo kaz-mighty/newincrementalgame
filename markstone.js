@@ -146,7 +146,7 @@ class MarkStone {
     this.tryGetStone(money);
     this.ticksSinceRankReset = 0;
   }
-  
+
   resetCrown() {
     this.gainedSinceCrownReset.fill(0, 0, 4);
   }
@@ -228,7 +228,7 @@ class MarkStone {
 
     /** @param {number} enemyId */
     isEnemyVisible(enemyId) {
-      switch(enemyId) {
+      switch (enemyId) {
         case 2: return this.shopUpgrades[6];
         default: return true;
       }
@@ -271,11 +271,11 @@ class MarkStone {
     buyShopUpgrade(upgradeId) {
       if (this.shopUpgrades[upgradeId]) return;
       if (this.achievements < Calibration.shopItems[upgradeId].cost) return;
-      
+
       this.achievements -= Calibration.shopItems[upgradeId].cost;
       this.shopUpgrades[upgradeId] = true;
     }
-    
+
     /** @param {number[]} greatStones */
     updateCalibration(greatStones) {
       if (!this.active) return;
@@ -311,6 +311,6 @@ class MarkStone {
         this.cooldown = 5;
       }
     }
-  }
+  };
 }
 

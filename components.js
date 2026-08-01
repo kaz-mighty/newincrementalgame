@@ -9,8 +9,8 @@
  * @param {number} exp 
  */
 function toFormated(dec, exp) {
-  if (dec.lessThanOrEqualTo(new Decimal(10).pow(exp))) return dec.toNumber()
-  else return dec.toExponential(3)
+  if (dec.lessThanOrEqualTo(new Decimal(10).pow(exp))) return dec.toNumber();
+  else return dec.toExponential(3);
 }
 
 
@@ -36,7 +36,7 @@ const BasicTab = Vue.defineComponent({
       this.player.resetCrown(force);
     },
     configShowMult() {
-      this.showMult = !this.showMult
+      this.showMult = !this.showMult;
     },
     buyGenerator(i) {
       this.player.generator.buyGenerator(this.player, i);
@@ -102,7 +102,7 @@ const TimeTab = Vue.defineComponent({
     addAccelLevelUsed(value) {
       this.player.campaign.addAccelLevelUsed(value);
     },
-    chooseCampaigns(campaignId){
+    chooseCampaigns(campaignId) {
       this.player.campaign.chooseCampaigns(campaignId);
     },
   },
@@ -147,27 +147,27 @@ const OptionTab = Vue.defineComponent({
     },
     exportSave() {
       // セーブボタンが無いため吐き出し時にセーブもする
-      this.nig.dataSave()
+      this.nig.dataSave();
       this.nig.common.exported = localStorage.getItem("playerStoredb");
     },
     exportSaveFile() {
-      this.nig.save()
-      let result = btoa(JSON.stringify(Vue.toRaw(this.nig.playersSave)))
-      const file = new Blob([result], { type: 'text/plain' })
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(file)
-      a.download = `newincremantal_savedata${new Date()}.txt`
-      a.click()
+      this.nig.save();
+      let result = btoa(JSON.stringify(Vue.toRaw(this.nig.playersSave)));
+      const file = new Blob([result], {type: 'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(file);
+      a.download = `newincremantal_savedata${new Date()}.txt`;
+      a.click();
     },
     importSave() {
-      let input = window.prompt("データを入力", "")
+      let input = window.prompt("データを入力", "");
       if (input.length <= 50) {
-        return
+        return;
       }
-      let k = atob(input).charAt(0)
-      if (k == '{') return
-      localStorage.setItem("playerStoredb", input)
-      this.nig.dataLoad()
+      let k = atob(input).charAt(0);
+      if (k == '{') return;
+      localStorage.setItem("playerStoredb", input);
+      this.nig.dataLoad();
     },
   },
 });
@@ -260,7 +260,7 @@ const SpiritTab = Vue.defineComponent({
   methods: {
     /** @param {number} i */
     buySpirit(i) {
-      return
+      return;
       this.player.spiritLevelA[i] += 1;
     },
   },
@@ -487,7 +487,7 @@ const TrophyTab = Vue.defineComponent({
     },
     /** @param {number} i */
     getTrophyName(i) {
-      return this.player.trophy.trophies[i] ? Trophy.contents[i] : "???"
+      return this.player.trophy.trophies[i] ? Trophy.contents[i] : "???";
     },
   },
 });
@@ -549,7 +549,7 @@ const app = Vue.createApp(Vue.defineComponent({
       nig: nigInstance,
       player: currentPlayer,
       typeNames: ["モード型適用", "効力型適用1", "効力型適用2", "上位効力型適用1", "上位効力型適用2", "鋳片型適用"],
-    }
+    };
   },
   computed: {
     tabComponentName() {
@@ -625,9 +625,9 @@ const app = Vue.createApp(Vue.defineComponent({
       let attribute = 'https://twitter.com/intent/tweet?'
         + 'text=' + tweetText
         + '&url=' + tweetUrl
-        + '&hashtags=' + tweetHashtag
+        + '&hashtags=' + tweetHashtag;
 
-      return attribute
+      return attribute;
     }
   },
   methods: {

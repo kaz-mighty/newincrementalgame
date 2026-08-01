@@ -22,14 +22,14 @@ class LevelShop {
 
   /** @param {number} index */
   calcLevelItemCost(index) {
-    let d = index + 1
-    let cost = LevelShop.itemCost[index].pow(this.levelItems[index] + 1)
+    let d = index + 1;
+    let cost = LevelShop.itemCost[index].pow(this.levelItems[index] + 1);
     let dec = 0;
     for (let i = 1; i <= 5; i++) {
       if (4 * i * i * d * d * d <= this.levelItemBought) dec = i;
     }
-    cost = cost.div(new Decimal(10).pow(dec)).max(1)
-    return cost
+    cost = cost.div(new Decimal(10).pow(dec)).max(1);
+    return cost;
   }
 
   /**
@@ -37,7 +37,7 @@ class LevelShop {
    * @param {number} index 
    */
   buyLevelItems(player, index) {
-    let cost = this.calcLevelItemCost(index)
+    let cost = this.calcLevelItemCost(index);
     if (player.level.lessThan(cost) || this.levelItems[index] >= 5) {
       return;
     }

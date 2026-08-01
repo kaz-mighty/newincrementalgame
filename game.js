@@ -593,10 +593,5 @@ class Nig { // New Incremental Game
 
 /** @type {Vue.Ref<Nig>} */
 const nigInstance = Vue.ref(new Nig());
-/** @type {Vue.Ref<Player>} */
-const currentPlayer = Vue.ref(nigInstance.value.player);
-Vue.watchEffect(() => {
-  console.log("player change");
-  currentPlayer.value = nigInstance.value.player;
-});
-
+/** @type {Vue.ComputedRef<Player>} */
+const currentPlayer = Vue.computed(() => nigInstance.value.player);

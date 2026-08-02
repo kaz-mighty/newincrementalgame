@@ -3,11 +3,7 @@
   font-size: 48px
 }
 
-#dark-coin-amount {
-  text-align: center;
-  font-size: 36px
-}
-
+#dark-coin-amount,
 #light-coin-amount {
   text-align: center;
   font-size: 36px
@@ -19,40 +15,23 @@
   color: gray;
 }
 
-td {
+.small-trophy td {
   width: 24px;
   height: 24px;
 }
 
-.generator {
+.large-text,
+.generator,
+.dark-generator,
+.challenge,
+.level-item,
+.trophy {
   font-size: 24px;
-  vertical-align: middle;
-}
-
-.dark-generator {
-  font-size: 24px;
-  vertical-align: middle;
-}
-
-.challenge {
-  font-size: 24px;
-  vertical-align: middle;
-}
-
-.mode-container {
-  display: inline-block;
 }
 
 .accelerator {
   font-size: 24px;
-  vertical-align: middle;
   color: red;
-
-}
-
-.level-item {
-  font-size: 24px;
-  vertical-align: middle;
 }
 
 button {
@@ -74,14 +53,9 @@ button.unavailable {
   background: #B0B0B0;
 }
 
-/* generator button */
-.g-button {
-  background: #FFFFFF;
-  color: #000000;
-}
-
-.g-button.unavailable {
-  background: #B0B0B0;
+button.selected {
+  background: #000000;
+  color: #FFFFFF;
 }
 
 /* accelerator button */
@@ -95,56 +69,13 @@ button.unavailable {
   background: #808080;
 }
 
+/* level item button */
 .l-button {
   width: 180px;
 }
 
-.ll-button {
+.campaign-button {
   width: 240px;
-}
-
-.l-button.unavailable {
-  background: #B0B0B0;
-}
-
-.ll-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.tweet-config-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.challenge-config-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-
-.reward-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.auto-buyer-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.world-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.buy-type-button.selected {
-  background: #000000;
-  color: #FFFFFF;
-}
-
-.world-button.unavailable {
-  background: #B0B0B0;
 }
 
 #reset-button {
@@ -158,7 +89,6 @@ button.unavailable {
 #reset-button:hover {
   background: #D32F2F;
   color: white;
-  width: 90px;
   transition: all .2s;
 }
 

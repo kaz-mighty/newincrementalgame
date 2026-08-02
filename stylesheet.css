@@ -1,19 +1,19 @@
-#coinamount {
+#coin-amount {
   text-align: center;
   font-size: 48px
 }
 
-#darkcoinamount {
+#dark-coin-amount {
   text-align: center;
   font-size: 36px
 }
 
-#lightcoinamount {
+#light-coin-amount {
   text-align: center;
   font-size: 36px
 }
 
-#tickspeed {
+#tick-speed {
   text-align: center;
   font-size: 16px;
   color: gray;
@@ -29,7 +29,7 @@ td {
   vertical-align: middle;
 }
 
-.darkgenerator {
+.dark-generator {
   font-size: 24px;
   vertical-align: middle;
 }
@@ -50,7 +50,7 @@ td {
 
 }
 
-.levelitem {
+.level-item {
   font-size: 24px;
   vertical-align: middle;
 }
@@ -74,78 +74,80 @@ button.unavailable {
   background: #B0B0B0;
 }
 
-.gbutton {
+/* generator button */
+.g-button {
   background: #FFFFFF;
   color: #000000;
 }
 
-.gbutton.unavailable {
+.g-button.unavailable {
   background: #B0B0B0;
 }
 
-.abutton {
+/* accelerator button */
+.a-button {
   background: #000000;
   border-color: #000000;
   color: #FFFFFF;
 }
 
-.abutton.unavailable {
+.a-button.unavailable {
   background: #808080;
 }
 
-.lbutton {
+.l-button {
   width: 180px;
 }
 
-.llbutton {
+.ll-button {
   width: 240px;
 }
 
-.lbutton.unavailable {
+.l-button.unavailable {
   background: #B0B0B0;
 }
 
-.llbutton.selected {
+.ll-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.tweetconfigbutton.selected {
+.tweet-config-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.challengeconfigbutton.selected {
+.challenge-config-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
 
-.rewardbutton.selected {
+.reward-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.autobuyerbutton.selected {
+.auto-buyer-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.wdbutton.selected {
+.world-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.buytypebutton.selected {
+.buy-type-button.selected {
   background: #000000;
   color: #FFFFFF;
 }
 
-.wdbutton.unavailable {
+.world-button.unavailable {
   background: #B0B0B0;
 }
 
-#resetbutton {
+#reset-button {
   background: white;
   color: #D32F2F;
   border-color: #D81B6032;
@@ -153,7 +155,7 @@ button.unavailable {
   width: 90px;
 }
 
-#resetbutton:hover {
+#reset-button:hover {
   background: #D32F2F;
   color: white;
   width: 90px;

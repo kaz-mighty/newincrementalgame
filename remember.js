@@ -1,4 +1,4 @@
-class Remember {
+class Shrink {
 
   static contents = [
     "段位リセット1回",
@@ -121,8 +121,8 @@ class Remember {
    */
   static giveChallenge(newData, giveId, isRank) {
     let target = isRank ? newData.rankchallengecleared : newData.challengecleared;
-    for (let i = 0; i < Remember.givenChallenges[giveId].length; i++) {
-      target.push(Challenge.getChallengeId(Remember.givenChallenges[giveId][i]));
+    for (let i = 0; i < Shrink.givenChallenges[giveId].length; i++) {
+      target.push(Challenge.getChallengeId(Shrink.givenChallenges[giveId][i]));
     }
   }
 
@@ -172,14 +172,14 @@ class Remember {
     if (remember0 >= 14) newData.rankresettime = new Decimal(13);
     if (remember0 >= 15) newData.rankresettime = new Decimal(21);
     if (remember0 >= 16) newData.rankresettime = new Decimal(34);
-    if (remember0 >= 17) Remember.giveChallenge(newData, 0, false);
-    if (remember0 >= 18) Remember.giveChallenge(newData, 1, false);
-    if (remember0 >= 19) Remember.giveChallenge(newData, 2, false);
-    if (remember0 >= 20) Remember.giveChallenge(newData, 3, false);
-    if (remember0 >= 21) Remember.giveChallenge(newData, 4, false);
-    if (remember0 >= 22) Remember.giveChallenge(newData, 5, false);
-    if (remember0 >= 23) Remember.giveChallenge(newData, 6, false);
-    if (remember0 >= 24) Remember.giveChallenge(newData, 7, false);
+    if (remember0 >= 17) Shrink.giveChallenge(newData, 0, false);
+    if (remember0 >= 18) Shrink.giveChallenge(newData, 1, false);
+    if (remember0 >= 19) Shrink.giveChallenge(newData, 2, false);
+    if (remember0 >= 20) Shrink.giveChallenge(newData, 3, false);
+    if (remember0 >= 21) Shrink.giveChallenge(newData, 4, false);
+    if (remember0 >= 22) Shrink.giveChallenge(newData, 5, false);
+    if (remember0 >= 23) Shrink.giveChallenge(newData, 6, false);
+    if (remember0 >= 24) Shrink.giveChallenge(newData, 7, false);
     if (remember0 >= 25) newData.rank = new Decimal(64);
     if (remember0 >= 26) newData.levelitembought = 108;
     if (remember0 >= 27) newData.rank = new Decimal(128);
@@ -189,29 +189,29 @@ class Remember {
     if (remember0 >= 31) newData.rank = new Decimal(512);
     if (remember0 >= 32) newData.levelitembought = 1728;
     if (remember0 >= 33) newData.maxlevelgained = new Decimal(1000);
-    if (remember0 >= 34) Remember.giveChallenge(newData, 8, false);
+    if (remember0 >= 34) Shrink.giveChallenge(newData, 8, false);
     if (remember0 >= 35) newData.maxlevelgained = new Decimal(3000);
-    if (remember0 >= 36) Remember.giveChallenge(newData, 9, false);
+    if (remember0 >= 36) Shrink.giveChallenge(newData, 9, false);
     if (remember0 >= 37) newData.maxlevelgained = new Decimal(10000);
-    if (remember0 >= 38) Remember.giveChallenge(newData, 10, false);
+    if (remember0 >= 38) Shrink.giveChallenge(newData, 10, false);
     if (remember0 >= 39) newData.maxlevelgained = new Decimal(30000);
-    if (remember0 >= 40) Remember.giveChallenge(newData, 11, false);
+    if (remember0 >= 40) Shrink.giveChallenge(newData, 11, false);
     if (remember0 >= 41) newData.levelresettime = new Decimal(1000);
     if (remember0 >= 42) newData.rankresettime = new Decimal(300);
     if (remember0 >= 43) newData.rank = new Decimal(4096);
     if (remember0 >= 44) newData.shine = 100000;
     if (remember0 >= 45) newData.maxlevelgained = new Decimal(100000);
     if (remember0 >= 46) newData.levelitembought = 6400;
-    if (remember0 >= 47) Remember.giveChallenge(newData, 12, false);
-    if (remember0 >= 48) Remember.giveChallenge(newData, 13, false);
-    if (remember0 >= 49) Remember.giveChallenge(newData, 14, false);
-    if (remember0 >= 50) Remember.giveChallenge(newData, 15, false);
-    if (remember0 >= 51) Remember.giveChallenge(newData, 16, false);
-    if (remember0 >= 52) Remember.giveChallenge(newData, 17, false);
-    if (remember0 >= 53) Remember.giveChallenge(newData, 0, true);
-    if (remember0 >= 54) Remember.giveChallenge(newData, 1, true);
-    if (remember0 >= 55) Remember.giveChallenge(newData, 2, true);
-    if (remember0 >= 56) Remember.giveChallenge(newData, 3, true);
+    if (remember0 >= 47) Shrink.giveChallenge(newData, 12, false);
+    if (remember0 >= 48) Shrink.giveChallenge(newData, 13, false);
+    if (remember0 >= 49) Shrink.giveChallenge(newData, 14, false);
+    if (remember0 >= 50) Shrink.giveChallenge(newData, 15, false);
+    if (remember0 >= 51) Shrink.giveChallenge(newData, 16, false);
+    if (remember0 >= 52) Shrink.giveChallenge(newData, 17, false);
+    if (remember0 >= 53) Shrink.giveChallenge(newData, 0, true);
+    if (remember0 >= 54) Shrink.giveChallenge(newData, 1, true);
+    if (remember0 >= 55) Shrink.giveChallenge(newData, 2, true);
+    if (remember0 >= 56) Shrink.giveChallenge(newData, 3, true);
     if (remember0 >= 57) newData.chip[0] = 1;
     if (remember0 >= 58) newData.chip[0] = 15;
     if (remember0 >= 59) newData.chip[0] = 55;

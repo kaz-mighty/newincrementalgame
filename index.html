@@ -173,7 +173,7 @@
 
 			<div id="accelerators-container">
 				<template v-for="(_, i) in 8" :key="i">
-					<div class="accelerator" v-show="visibleAccelerators[i]">
+					<div class="accelerator" v-show="isAcceleratorsShown[i]">
 						時間加速器{{ i+1 }}: {{ toFormated(player.accelerator.accelerators[i],5) }}
 						<button type="button" class="a-button" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[i]) }" @click="buyAccelerator(i)">
 							購入 コスト: {{ player.accelerator.acceleratorsCost[i].toExponential(1) }}
@@ -221,10 +221,10 @@
 					</span>
 				</div>
 			</div>
-			<div v-if="visibleSpendBrightness[0]">
+			<div v-if="isSpendBrightnessShown[0]">
 				煌き所持数:{{ player.shine.brightness }}
 				<template v-for="(unit, index) in brightnessSpendUnits">
-					<button type="button" class="spend-brightness-button" v-if="visibleSpendBrightness[index]" @click="spendBrightness(unit)">
+					<button type="button" class="spend-brightness-button" v-if="isSpendBrightnessShown[index]" @click="spendBrightness(unit)">
 						煌き消費:{{ unit }}
 					</button>
 				</template>
@@ -583,7 +583,7 @@
 			<div>
 				輝き所持数:{{ player.shine.shine }}
 				<template v-for="(unit, index) in shineSpendUnits">
-					<button type="button" class="spend-shine-button" v-if="visibleSpendShine[index]" @click="spendShine(unit)">
+					<button type="button" class="spend-shine-button" v-if="isSpendShineShown[index]" @click="spendShine(unit)">
 						輝き消費:{{ unit }}
 					</button>
 				</template>
@@ -595,17 +595,17 @@
 			<div>
 				型
 				<template v-for="(name, index) in typeNames">
-					<button type="button" class="buy-type-button" :class="{ 'selected': player.shine.boughtType[index] }" v-if="visibleBuyType[index]" @click="buyType(index)">
+					<button type="button" class="buy-type-button" :class="{ 'selected': player.shine.boughtType[index] }" v-if="isBuyTypeShown[index]" @click="buyType(index)">
 						{{ name }}購入:コスト{{ Shine.shineShopCost[index] }}
 					</button>
 				</template>
 			</div>
 			<br>
 
-			<div v-if="visibleSpendBrightness[0]">
+			<div v-if="isSpendBrightnessShown[0]">
 				煌き所持数:{{ player.shine.brightness }}
 				<template v-for="(unit, index) in brightnessSpendUnits">
-					<button type="button" class="spend-brightness-button" v-if="visibleSpendBrightness[index]" @click="spendBrightness(unit)">
+					<button type="button" class="spend-brightness-button" v-if="isSpendBrightnessShown[index]" @click="spendBrightness(unit)">
 						煌き消費:{{ unit }}
 					</button>
 				</template>
@@ -613,10 +613,10 @@
 				<div>最大煌き保有数: {{ player.shine.calcMaxBright(player)}}</div>
 			</div>
 
-			<div v-if="visibleSpendFlicker[0]">
+			<div v-if="isSpendFlickerShown[0]">
 				瞬き所持数:{{ player.shine.flicker }}
 				<template v-for="(unit, index) in flickerSpendUnits">
-					<button type="button" class="spend-flicker-button" v-if="visibleSpendFlicker[index]" @click="spendFlicker(unit)">
+					<button type="button" class="spend-flicker-button" v-if="isSpendFlickerShown[index]" @click="spendFlicker(unit)">
 						瞬き消費:{{ unit }}
 					</button>
 				</template>
@@ -624,7 +624,7 @@
 				<div>最大瞬き保有数: {{ player.shine.getMaxFlicker(player.challenge.perfectChallengeStage, player.statue) }}</div>
 			</div>
 
-			<div v-if="visibleResidue">
+			<div v-if="isResidueShown">
 				残滓: {{ player.shine.residue }}
 			</div>
 		</div>
@@ -637,14 +637,14 @@
 				記憶は、他世界での実績の個数の合計です。記憶が多くなるほど、発生器の生産量が増加します。
 			</div>
 
-			<div v-if="visibleRemember">
+			<div v-if="isRememberShown">
 				合計思い出: {{ player.rememberSum }}
 				<div>
 					思い出は、自分より番号が大きい世界の思い出の合計です。思い出が多くなるほど、階位リセットに必要なポイントが減少します。
 				</div>
 			</div>
 
-			<div v-if="visiblePipe">
+			<div v-if="isPipeShown">
 				世界管所持数: {{ Math.floor((player.trophy.smallTrophy-72)/3) }}
 				<div>
 					世界管を開通すると、開通先の世界での生産力が、開通元の世界の里程の個数に応じて強化されます。
@@ -656,19 +656,19 @@
 				<button type="button" :class="{ 'selected': nig.world == i , 'unavailable': !nig.common.worldOpened[i] }" @click="moveWorld(i)">
 					世界 {{ i+1 }}
 				</button>
-				<button type="button" v-if="visibleRemember && nig.world == 0 && i != 0" :class="{'unavailable': nig.players[i].trophy.remember >= nig.players[i].trophy.memory || nig.players[i].trophy.memory < 4}" @click="shrinkWorld(i)">
+				<button type="button" v-if="isRememberShown && nig.world == 0 && i != 0" :class="{'unavailable': nig.players[i].trophy.remember >= nig.players[i].trophy.memory || nig.players[i].trophy.memory < 4}" @click="shrinkWorld(i)">
 					収縮
 				</button>
-				<button type="button" v-if="visiblePipe && nig.world != i && nig.common.worldOpened[i]" :class="{'unavailable': player.worldPipe[i] >= player.calcMaxPipe() }" @click="openPipe(i)">
+				<button type="button" v-if="isPipeShown && nig.world != i && nig.common.worldOpened[i]" :class="{'unavailable': player.worldPipe[i] >= player.calcMaxPipe() }" @click="openPipe(i)">
 					開通
 				</button>
 				<span>
 					記憶: {{ nig.players[i].trophy.memory }}
 				</span>
-				<span v-if="visibleRemember">
+				<span v-if="isRememberShown">
 					思い出:{{ nig.players[i].trophy.remember }}
 				</span>
-				<span v-if="visiblePipe">
+				<span v-if="isPipeShown">
 					世界管開通数:{{ player.worldPipe[i] }}
 				</span>
 			</div>
@@ -676,7 +676,7 @@
 			<div v-if="player.rememberSum>0">
 				思い出ボーナス:世界収縮後、思い出ボーナスに応じた状態から新しい世界をスタートすることができます。
 				<div v-for="(_, i) in player.rememberSum" :key="i">
-					達成数 {{ i+1 }} : {{ Remember.contents[i] }}
+					達成数 {{ i+1 }} : {{ Shrink.contents[i] }}
 				</div>
 			</div>
 		</div>
@@ -726,7 +726,7 @@
 
 			鋳片使用
 			<template v-for="(_, i) in 100" :key="i">
-				<div clsss="set-chip" v-if="isVisibleSetChip(i)">
+				<div clsss="set-chip" v-if="isSetChipShown(i)">
 					鋳片効力 {{ i+1 }} : {{ Chip.chipBonusName[i] }}
 					<span v-show="player.chip.disabledChip[i]">（無効）</span>
 					<span v-for="(, j) in 10" :key="j">
@@ -932,7 +932,7 @@
 				<div>
 					<template v-for="(item, index) in MarkStone.Calibration.enemyTypes" :key="index">
 						<button type="button" :class="{ 'selected': calibration.selectedEnemy === index }"
-							v-if="calibration.isEnemyVisible(index)"
+							v-if="calibration.isEnemyShown(index)"
 							@click="selectEnemy(index)">{{ item.name }}</button>
 					</template>
 				</div>
@@ -949,14 +949,14 @@
 				</div>
 				<div>
 					<template v-for="(item, index) in MarkStone.Calibration.enemyTypes" :key="index">
-						<span v-if="calibration.isEnemyVisible(index)">{{ item.resolveName }}: {{ calibration.resolutions[index] + " " }}</span>
+						<span v-if="calibration.isEnemyShown(index)">{{ item.resolveName }}: {{ calibration.resolutions[index] + " " }}</span>
 					</template>
 					合計解決価: {{ calibration.totalDamage }}/1000000
 					成果: {{ calibration.achievements }}
 				</div>
 				<br>
 
-				<div v-if="calibration.isShopVisible()">
+				<div v-if="calibration.isShopShown()">
 					<div>成果の現れ</div>
 					<div v-for="(item, i) in MarkStone.Calibration.shopItems">
 						<button type="button" class="l-button" :class="{ 'selected': calibration.shopUpgrades[i] }"

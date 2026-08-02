@@ -227,14 +227,14 @@ class MarkStone {
     }
 
     /** @param {number} enemyId */
-    isEnemyVisible(enemyId) {
+    isEnemyShown(enemyId) {
       switch (enemyId) {
         case 2: return this.shopUpgrades[6];
         default: return true;
       }
     }
 
-    isShopVisible() {
+    isShopShown() {
       if (this.achievements > 0) return true;
       if (this.shopUpgrades.some((item) => item)) return true;
       return false;

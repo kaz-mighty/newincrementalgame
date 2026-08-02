@@ -21,7 +21,7 @@ const BasicTab = Vue.defineComponent({
     showMult: true,
   }),
   computed: {
-    visibleAccelerators() {
+    isAcceleratorsShown() {
       return new Array(8).fill(null).map((_, i) => this.player.accelerator.isOpened(this.player, i));
     },
   },
@@ -63,7 +63,7 @@ const DarkTab = Vue.defineComponent({
     brightnessSpendUnits: [1, 10, 100, 1_000],
   }),
   computed: {
-    visibleSpendBrightness() {
+    isSpendBrightnessShown() {
       return [
         this.player.challenge.rankChallengeCleared.length >= 32,
         this.player.challenge.rankChallengeCleared.length >= 64,
@@ -298,7 +298,7 @@ const ShineTab = Vue.defineComponent({
     typeNames: ["モード型", "効力型1", "効力型2", "上位効力型1", "上位効力型2", "鋳片型"],
   }),
   computed: {
-    visibleSpendShine() {
+    isSpendShineShown() {
       return [
         true,
         this.player.challenge.challengeCleared.length >= 96,
@@ -309,7 +309,7 @@ const ShineTab = Vue.defineComponent({
         this.player.challenge.perfectChallengeStage >= 10,
       ];
     },
-    visibleSpendBrightness() {
+    isSpendBrightnessShown() {
       return [
         this.player.challenge.rankChallengeCleared.length >= 32,
         this.player.challenge.rankChallengeCleared.length >= 64,
@@ -317,12 +317,12 @@ const ShineTab = Vue.defineComponent({
         this.player.challenge.rankChallengeCleared.length >= 255,
       ];
     },
-    visibleSpendFlicker() {
+    isSpendFlickerShown() {
       return [
         this.player.challenge.perfectChallengeStage >= 1,
       ];
     },
-    visibleBuyType() {
+    isBuyTypeShown() {
       return [
         true,
         true,
@@ -332,7 +332,7 @@ const ShineTab = Vue.defineComponent({
         this.player.crownResetTime.gt(0),
       ];
     },
-    visibleResidue() {
+    isResidueShown() {
       // bug: 残滓獲得後に収縮すると非表示になる
       return this.player.challenge.perfectChallengeStage >= 10;
     }
@@ -360,10 +360,10 @@ const WorldTab = Vue.defineComponent({
     player: currentPlayer,
   }),
   computed: {
-    visibleRemember() {
+    isRememberShown() {
       return this.nig.players[0].trophy.memory >= 6;
     },
-    visiblePipe() {
+    isPipeShown() {
       return this.player.trophy.smallTrophy >= 75;
     },
     maxPipe() {
@@ -403,7 +403,7 @@ const ChipTab = Vue.defineComponent({
     configSpendChip(i) {
       this.player.chip.configSpendChip(this.player.statue.statue[i], i);
     },
-    isVisibleSetChip(i) {
+    isSetChipShown(i) {
       if (i <= 31) return true;
       if (i <= 51) return this.player.rememberSum >= 16;
       return false;
@@ -656,7 +656,7 @@ app.config.globalProperties.Challenge = Challenge;
 app.config.globalProperties.Chip = Chip;
 app.config.globalProperties.LevelShop = LevelShop;
 app.config.globalProperties.MarkStone = MarkStone;
-app.config.globalProperties.Remember = Remember;
+app.config.globalProperties.Shrink = Shrink;
 app.config.globalProperties.Ring = Ring;
 app.config.globalProperties.Shine = Shine;
 app.config.globalProperties.Spirit = Spirit;

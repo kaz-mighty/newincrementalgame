@@ -540,7 +540,7 @@ class Nig { // New Incremental Game
   shrinkWorld(i) {
     if (i == this.world) return;
 
-    let newData = Remember.shrinkWorld(i, this.playersSave[i], this.players[i].trophy.memory, this.player.rememberSum);
+    let newData = Shrink.shrinkWorld(i, this.playersSave[i], this.players[i].trophy.memory, this.player.rememberSum);
     if (newData == undefined) return;
 
     this.playersSave[i] = newData;

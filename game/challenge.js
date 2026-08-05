@@ -76,28 +76,24 @@ class Challenge {
   ];
 
 
-  /** @param {number[]} array */
-  static getChallengeId(array) {
-    let challengeid = 0;
-    for (let i = 0; i < 8; i++) {
-      challengeid *= 2;
-      if (array.includes(i)) {
-        challengeid += 1;
-      }
+  // 重複がない場合に限りoriginalと同じ動作をする
+  /** @param {Iterable<number>} iter */
+  static getChallengeId(iter) {
+    let challengeId = 0;
+    for (const v of iter) {
+      challengeId += 1 << (7 - v);
     }
-    return challengeid;
+    return challengeId;
   }
-  /** @param {number[]} array */
-  static getPChallengeId(array) {
-    let challengeid = 0;
-    for (let i = 9; i >= 0; i--) {
-      challengeid *= 2;
-      if (array.includes(i)) {
-        challengeid += 1;
-      }
+  /** @param {Iterable<number>} iter */
+  static getPChallengeId(iter) {
+    let challengeId = 0;
+    for (const v of iter) {
+      challengeId += 1 << v;
     }
-    return challengeid;
+    return challengeId;
   }
+
   /** @param {number} challengeId */
   static calcChallengesArray(challengeId) {
     let ans = [];
@@ -116,15 +112,15 @@ class Challenge {
     this.rankToken = playerData.ranktoken;
 
     this.onChallenge = playerData.onchallenge;
-    this.challenges = Array.from(playerData.challenges);
-
+    this.challenges = new Set(playerData.challenges);
     this.challengeCleared = Array.from(playerData.challengecleared);
-    this.challengeBonuses = Array.from(playerData.challengebonuses);
     this.rankChallengeCleared = Array.from(playerData.rankchallengecleared);
-    this.rankChallengeBonuses = Array.from(playerData.rankchallengebonuses);
+
+    this.bonuses = new Set(playerData.challengebonuses);
+    this.rankBonuses = new Set(playerData.rankchallengebonuses);
 
     this.onPerfectChallenge = playerData.onpchallenge;
-    this.perfectChallenges = Array.from(playerData.pchallenges);
+    this.perfectChallenges = new Set(playerData.pchallenges);
     this.perfectChallengeCleared = Array.from(playerData.pchallengecleared);
     this.perfectRankChallengeCleared = Array.from(playerData.prchallengecleared);
 
@@ -136,7 +132,7 @@ class Challenge {
     this.challengeWeight = Array.from(playerData.challengeweight);
     this.challengeWeightValue = Array.from(playerData.challengeweightvalue);
 
-    this.activeBonuses = (!this.onChallenge || this.challengeBonuses.includes(4)) ? this.challengeBonuses : [];
+    this.activeBonuses = (!this.onChallenge || this.bonuses.has(4)) ? this.bonuses : new Set();
     this.perfectChallengeStage = 0;
     this.countPChallengeCleared();
   }
@@ -149,16 +145,16 @@ class Challenge {
   }
   /** @param {number} index */
   isChallengeActive(index) {
-    return this.onChallenge && this.challenges.includes(index);
+    return this.onChallenge && this.challenges.has(index);
   }
   /** @param {number} index */
   isPChallengeActive(index) {
-    return this.onPerfectChallenge && this.perfectChallenges.includes(index);
+    return this.onPerfectChallenge && this.perfectChallenges.has(index);
   }
 
   calcToken() {
     let spent = 0;
-    for (let i of this.challengeBonuses) {
+    for (let i of this.bonuses) {
       spent += Challenge.rewardCost[i];
     }
     let t = this.challengeCleared.length;
@@ -168,7 +164,7 @@ class Challenge {
     this.token = t - spent;
 
     let rspent = 0;
-    for (let i of this.rankChallengeBonuses) {
+    for (let i of this.rankBonuses) {
       rspent += Challenge.rewardCost[i];
     }
     let rt = this.rankChallengeCleared.length;
@@ -191,27 +187,25 @@ class Challenge {
 
   /** @param {number} index */
   buyRewards(index) {
-    if (this.challengeBonuses.includes(index)) {
-      this.challengeBonuses.splice(this.challengeBonuses.indexOf(index), 1);
+    if (this.bonuses.delete(index)) {
       this.token += Challenge.rewardCost[index];
     } else {
       if (this.token < Challenge.rewardCost[index]) {
         return;
       }
-      this.challengeBonuses.push(index);
+      this.bonuses.add(index);
       this.token -= Challenge.rewardCost[index];
     }
   }
   /** @param {number} index */
   buyRankRewards(index) {
-    if (this.rankChallengeBonuses.includes(index)) {
-      this.rankChallengeBonuses.splice(this.rankChallengeBonuses.indexOf(index), 1);
+    if (this.rankBonuses.delete(index)) {
       this.rankToken += Challenge.rewardCost[index];
     } else {
       if (this.rankToken < Challenge.rewardCost[index]) {
         return;
       }
-      this.rankChallengeBonuses.push(index);
+      this.rankBonuses.add(index);
       this.rankToken -= Challenge.rewardCost[index];
     }
   }
@@ -221,7 +215,7 @@ class Challenge {
     if (confirm("現在の効力を登録します。よろしいですか？")) {
       let ans = [];
       for (let i = 0; i < 15; i++) {
-        if (this.challengeBonuses.includes(i)) {
+        if (this.bonuses.has(i)) {
           ans.push(i);
         }
       }
@@ -234,7 +228,7 @@ class Challenge {
     if (confirm("現在の上位効力を登録します。よろしいですか？")) {
       let ans = [];
       for (let i = 0; i < 15; i++) {
-        if (this.rankChallengeBonuses.includes(i)) {
+        if (this.rankBonuses.has(i)) {
           ans.push(i);
         }
       }
@@ -245,7 +239,7 @@ class Challenge {
   /** @param {1|2} index */
   changeBonuseType(index) {
     for (let i = 0; i < 15; i++) {
-      if (this.challengeBonuses.includes(i)) {
+      if (this.bonuses.has(i)) {
         this.buyRewards(i);
       }
     }
@@ -263,7 +257,7 @@ class Challenge {
   /** @param {1|2} index */
   changeRankBonuseType(index) {
     for (let i = 0; i < 15; i++) {
-      if (this.rankChallengeBonuses.includes(i)) {
+      if (this.rankBonuses.has(i)) {
         this.buyRankRewards(i);
       }
     }
@@ -283,19 +277,15 @@ class Challenge {
   /** @param {number} index */
   configChallenge(index) {
     if (this.onChallenge) return;
-    if (!this.challenges.includes(index)) {
-      this.challenges.push(index);
-    } else {
-      this.challenges.splice(this.challenges.indexOf(index), 1);
+    if (!this.challenges.delete(index)) {
+      this.challenges.add(index);
     }
   }
   /** @param {number} index */
   configPChallenge(index) {
     if (this.onPerfectChallenge) return;
-    if (!this.perfectChallenges.includes(index)) {
-      this.perfectChallenges.push(index);
-    } else {
-      this.perfectChallenges.splice(this.perfectChallenges.indexOf(index), 1);
+    if (!this.perfectChallenges.delete(index)) {
+      this.perfectChallenges.add(index);
     }
   }
 
@@ -309,6 +299,7 @@ class Challenge {
     if (isNaN(input)) return;
     this.challengeWeightValue[i] = input;
   }
+  // todo: 1つのメソッドにできる
   showUnclearedChallenges() {
     if (this.challengeCleared.length == 255) return;
     if (this.onChallenge) return;
@@ -341,7 +332,7 @@ class Challenge {
       }
     } while (this.challengeCleared.includes(challengeId));
 
-    this.challenges = Challenge.calcChallengesArray(challengeId);
+    this.challenges = new Set(Challenge.calcChallengesArray(challengeId));
   }
   showUnclearedRankChallenges() {
     if (this.rankChallengeCleared.length == 255) return;
@@ -374,7 +365,7 @@ class Challenge {
       }
     } while (this.rankChallengeCleared.includes(challengeid));
 
-    this.challenges = Challenge.calcChallengesArray(challengeid);
+    this.challenges = new Set(Challenge.calcChallengesArray(challengeid));
   }
 
   /** @param {Player} player */
@@ -400,10 +391,10 @@ class Challenge {
     }
 
     if (player.auto.autoDoChallenge || confirm(conf)) {
-      if (!this.challengeBonuses.includes(4)) this.activeBonuses = [];
+      if (!this.bonuses.has(4)) this.activeBonuses = new Set();
       player.resetLevel(true, true);
       this.onChallenge = true;
-      if (this.challenges.includes(3)) {
+      if (this.challenges.has(3)) {
         for (let i = 0; i < 8; i++) {
           player.generator.generatorsMode[i] = 0;
         }
@@ -424,7 +415,7 @@ class Challenge {
     }
 
     for (let i = 0; i < 10; i++) {
-      if (player.statue.statue[i] < this.perfectChallenges.length - i) {
+      if (player.statue.statue[i] < this.perfectChallenges.size - i) {
         alert("像の作成数が不足しているため、完全挑戦を開始できません。");
         return;
       }
@@ -432,12 +423,12 @@ class Challenge {
 
     let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。';
     if (confirm(conf)) {
-      player.resetCrown(true);
+      player.resetCrown(true);  // bug: 効力が有効な状態でリセットされる
       this.onPerfectChallenge = true;
       this.challengeCleared = [];
-      this.challengeBonuses = [];
+      this.bonuses = new Set();  // bug: 1tick経過するまでthis.activeBonusesが更新されない
       this.rankChallengeCleared = [];
-      this.rankChallengeBonuses = [];
+      this.rankBonuses = new Set();  // bug: 同上
     }
   }
 
@@ -445,7 +436,7 @@ class Challenge {
   exitChallenge(player) {
     if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       this.onChallenge = false;
-      this.activeBonuses = this.challengeBonuses;
+      this.activeBonuses = this.bonuses;
       player.generator.calcGnCost(player);
     }
   }

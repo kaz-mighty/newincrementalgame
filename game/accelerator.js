@@ -27,10 +27,10 @@ class Accelerator {
   updateAccelerators(player, mu) {
     for (let i = 1; i < 8; i++) {
       let mult = new Decimal(1);
-      if (i == 1 && player.challenge.activeBonuses.includes(10)) {
-        mult = player.challenge.rankChallengeBonuses.includes(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i]);
-      } else if (i != 1 && player.challenge.rankChallengeBonuses.includes(6)) {
-        mult = player.challenge.rankChallengeBonuses.includes(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i]);
+      if (i == 1 && player.challenge.activeBonuses.has(10)) {
+        mult = player.challenge.rankBonuses.has(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i]);
+      } else if (i != 1 && player.challenge.rankBonuses.has(6)) {
+        mult = player.challenge.rankBonuses.has(10) ? mult.add(this.acceleratorsBought[i].pow_base(2)) : mult.add(this.acceleratorsBought[i]);
       }
       mult = mult.mul(new Decimal(1.5).pow(player.chip.setChip[i + 10]));
       mult = mult.mul(1 + player.eachPipedSmallTrophy[1] * 0.2);
@@ -83,8 +83,8 @@ class Accelerator {
    */
   calcSpeed(challenge, chip10) {
     let amult = new Decimal(1);
-    if (challenge.activeBonuses.includes(6)) {
-      if (challenge.rankChallengeBonuses.includes(10)) {
+    if (challenge.activeBonuses.has(6)) {
+      if (challenge.rankBonuses.has(10)) {
         amult = amult.mul(this.acceleratorsBought[0].pow_base(2));
       } else {
         amult = amult.mul(this.acceleratorsBought[0].add(1));
@@ -93,7 +93,7 @@ class Accelerator {
 
     let acnum = this.accelerators[0].mul(new Decimal(1.5).pow(chip10));
 
-    if (challenge.rankChallengeBonuses.includes(13)) {
+    if (challenge.rankBonuses.has(13)) {
       for (let i = 1; i < 8; i++) {
         acnum = acnum.mul(this.accelerators[i].add(1));
       }
@@ -119,8 +119,8 @@ class Accelerator {
     ];
 
     let bonus = 0;
-    if (challenge.activeBonuses.includes(1)) bonus += 10;
-    if (challenge.rankChallengeBonuses.includes(1)) bonus += 256;
+    if (challenge.activeBonuses.has(1)) bonus += 10;
+    if (challenge.rankBonuses.has(1)) bonus += 256;
     this.accelerators[0] = new Decimal(bonus);
   }
 

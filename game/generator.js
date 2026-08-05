@@ -42,7 +42,7 @@ class GameGenerator {
    */
   updateGenerators(player, mu) {
     for (let i = 0; i < 8; i++) {
-      if (!player.challenge.activeBonuses.includes(13)) {
+      if (!player.challenge.activeBonuses.has(13)) {
         let to = this.generatorsMode[i];
         let mult = mu.mul(player.calcIncrementMult(i, to));
         if (to === 0) {

@@ -122,7 +122,7 @@ class Shrink {
   static giveChallenge(newData, giveId, isRank) {
     let target = isRank ? newData.rankchallengecleared : newData.challengecleared;
     for (let i = 0; i < Shrink.givenChallenges[giveId].length; i++) {
-      target.push(Challenge.getChallengeId(Shrink.givenChallenges[giveId][i]));
+      target.push(Challenge.getChallengeId(Player.numArray2BoolArray(Shrink.givenChallenges[giveId][i], 8)));
     }
   }
 

@@ -143,7 +143,7 @@ class Shine {
       }
     }
 
-    if (player.challenge.rankChallengeBonuses.includes(2)) shineGain *= 2;
+    if (player.challenge.rankBonuses[2]) shineGain *= 2;
     shineGain *= player.campaign.accelLevelUsed + 1;
     this.shine = Math.min(this.shine + shineGain, maxShine);
   }

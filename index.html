@@ -159,13 +159,13 @@
 					<span>
 						購入数: {{ player.generator.generatorsBought[i].toNumber()+' '}}
 					</span>
-					<template v-if="i > 0 && !player.challenge.challengeBonuses.includes(13)">
+					<template v-if="i > 0 && !player.challenge.bonuses[13]">
 						<span>モード: {{ player.generator.generatorsMode[i] }}</span>
 						<button class="mode-button" @click="changeMode(i)">
 							変更
 						</button>
 					</template>
-					<span v-show="showMult  && !player.challenge.activeBonuses.includes(13)">
+					<span v-show="showMult  && !player.challenge.activeBonuses[13]">
 						倍率: {{ player.calcIncrementMult(i,player.generator.generatorsMode[i]).toExponential(2) }}
 					</span>
 				</div>
@@ -319,7 +319,7 @@
 				複数の挑戦を組み合わせて、新たな挑戦として受けることもできます。
 				挑戦中は効力が無効になります。
 				<div class="challenge" v-for="(_, i) in 8" :key="i">
-					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.challenges.includes(i) }" @click="configChallenge(i)">
+					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.challenges[i] }" @click="configChallenge(i)">
 						挑戦 {{ i+1 }}
 					</button>
 					<span> ・{{ Challenge.challengeText[i] }} </span>
@@ -356,7 +356,7 @@
 				効力:効力とは勲章を消費して得られる強化のことです。
 				勲章:{{ player.challenge.token }}
 				<div class="challenge" v-for="(_, i) in 15" :key="i">
-					<button type="button" :class="{ 'selected': player.challenge.challengeBonuses.includes(i) }" @click="buyRewards(i)">
+					<button type="button" :class="{ 'selected': player.challenge.bonuses[i] }" @click="buyRewards(i)">
 						効力 {{ i+1 }}: コスト {{ Challenge.rewardCost[i] }}
 					</button>
 					<span> ・{{ Challenge.rewardText[i] }} </span>
@@ -386,7 +386,7 @@
 				上位効力:上位効力とは大勲章を消費して得られる強化のことです。
 				大勲章:{{ player.challenge.rankToken }}
 				<div class="challenge" v-for="(_, i) in 15" :key="i">
-					<button type="button" :class="{ 'selected': player.challenge.rankChallengeBonuses.includes(i) }" @click="buyRankRewards(i)">
+					<button type="button" :class="{ 'selected': player.challenge.rankBonuses[i] }" @click="buyRankRewards(i)">
 						効力 {{ i+1 }}: コスト {{ Challenge.rewardCost[i] }}
 					</button>
 					<span> ・{{ Challenge.rankRewardText[i] }} </span>
@@ -455,7 +455,7 @@
 				改めて255個の挑戦および階位挑戦の達成を目指すことになります。
 				完全挑戦は、条件を1つも選択しなくても開始することができます。
 				<div class="challenge" v-for="(_, i) in 10" :key="i">
-					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.perfectChallenges.includes(i) }" @click="configPChallenge(i)">
+					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.perfectChallenges[i] }" @click="configPChallenge(i)">
 						完全挑戦 {{ i+1 }}
 					</button>
 					<span> ・{{ Challenge.pChallengeText[i] }} </span>
@@ -501,17 +501,17 @@
 	<template id="auto-tab">
 		<div v-if="player.currentTab == 'auto'">
 			自動購入器設定
-			<div v-if="player.challenge.challengeBonuses.includes(5)">
+			<div v-if="player.challenge.bonuses[5]">
 				<button type="button" class="auto-buyer-button" :class="{ 'selected': nig.common.genAutoBuy }" @click="toggleAutoBuyer(0)">
 					発生器自動購入器
 				</button>
 			</div>
-			<div v-if="player.challenge.challengeBonuses.includes(9)">
+			<div v-if="player.challenge.bonuses[9]">
 				<button type="button" class="auto-buyer-button" :class="{ 'selected': nig.common.accAutoBuy }" @click="toggleAutoBuyer(1)">
 					時間加速器自動購入器
 				</button>
 			</div>
-			<div v-if="player.challenge.challengeBonuses.includes(14)">
+			<div v-if="player.challenge.bonuses[14]">
 				<button type="button" class="auto-buyer-button" :class="{ 'selected': nig.common.autoLevel }" @click="toggleAutoBuyer(2)">
 					自動昇段器
 				</button>
@@ -527,12 +527,12 @@
 				現在: {{ nig.common.autoLevelPoint.toExponential(3) }} かつ {{ nig.common.autoLevelNumber.toNumber() }},
 				{{ nig.common.autoLevelStopNumber.toExponential(3) }}
 			</div>
-			<div v-if="player.challenge.rankChallengeBonuses.includes(5)">
+			<div v-if="player.challenge.rankBonuses[5]">
 				<button type="button" class="auto-buyer-button" :class="{ 'selected': nig.common.levelItemAutoBuy }" @click="toggleAutoBuyer(3)">
 					段位効力自動購入器
 				</button>
 			</div>
-			<div v-if="player.challenge.rankChallengeBonuses.includes(14)">
+			<div v-if="player.challenge.rankBonuses[14]">
 				<button type="button" class="auto-buyer-button" :class="{ 'selected': nig.common.autoRank }" @click="toggleAutoBuyer(5)">
 					自動昇階器
 				</button>

@@ -81,6 +81,7 @@ class Challenge {
   static getChallengeId(iter) {
     let challengeId = 0;
     for (const v of iter) {
+      if (v < 0 || v >= 8) continue;
       challengeId += 1 << (7 - v);
     }
     return challengeId;
@@ -89,6 +90,7 @@ class Challenge {
   static getPChallengeId(iter) {
     let challengeId = 0;
     for (const v of iter) {
+      if (v < 0 || v >= 10) continue;
       challengeId += 1 << v;
     }
     return challengeId;

@@ -114,44 +114,44 @@ class Challenge {
     this.rankToken = playerData.ranktoken;
 
     this.onChallenge = playerData.onchallenge;
-    this.challenges = new Set(playerData.challenges);
-    this.challengeCleared = Array.from(playerData.challengecleared);
-    this.rankChallengeCleared = Array.from(playerData.rankchallengecleared);
+    this.selected = new Set(playerData.challenges);
+    this.cleared = Array.from(playerData.challengecleared);
+    this.rankCleared = Array.from(playerData.rankchallengecleared);
 
     this.bonuses = new Set(playerData.challengebonuses);
     this.rankBonuses = new Set(playerData.rankchallengebonuses);
 
-    this.onPerfectChallenge = playerData.onpchallenge;
-    this.perfectChallenges = new Set(playerData.pchallenges);
-    this.perfectChallengeCleared = Array.from(playerData.pchallengecleared);
-    this.perfectRankChallengeCleared = Array.from(playerData.prchallengecleared);
+    this.onPerfect = playerData.onpchallenge;
+    this.perfectSelected = new Set(playerData.pchallenges);
+    this.perfectCleared = Array.from(playerData.pchallengecleared);
+    this.perfectRankCleared = Array.from(playerData.prchallengecleared);
 
-    this.setChallengeBonuses1 = Array.from(playerData.setchallengebonusesfst);
-    this.setChallengeBonuses2 = Array.from(playerData.setchallengebonusessnd);
-    this.setRankChallengeBonuses1 = Array.from(playerData.setrankchallengebonusesfst);
-    this.setRankChallengeBonuses2 = Array.from(playerData.setrankchallengebonusessnd);
+    this.bonusesType1 = Array.from(playerData.setchallengebonusesfst);
+    this.bonusesType2 = Array.from(playerData.setchallengebonusessnd);
+    this.rankBonusesType1 = Array.from(playerData.setrankchallengebonusesfst);
+    this.rankBonusesType2 = Array.from(playerData.setrankchallengebonusessnd);
 
     this.challengeWeight = Array.from(playerData.challengeweight);
     this.challengeWeightValue = Array.from(playerData.challengeweightvalue);
 
     this.activeBonuses = (!this.onChallenge || this.bonuses.has(4)) ? this.bonuses : new Set();
-    this.perfectChallengeStage = 0;
+    this.perfectStage = 0;
     this.countPChallengeCleared();
   }
 
   getChallengeId() {
-    return Challenge.getChallengeId(this.challenges);
+    return Challenge.getChallengeId(this.selected);
   }
   getPChallengeId() {
-    return Challenge.getPChallengeId(this.perfectChallenges);
+    return Challenge.getPChallengeId(this.perfectSelected);
   }
   /** @param {number} index */
   isChallengeActive(index) {
-    return this.onChallenge && this.challenges.has(index);
+    return this.onChallenge && this.selected.has(index);
   }
   /** @param {number} index */
   isPChallengeActive(index) {
-    return this.onPerfectChallenge && this.perfectChallenges.has(index);
+    return this.onPerfect && this.perfectSelected.has(index);
   }
 
   calcToken() {
@@ -159,9 +159,9 @@ class Challenge {
     for (let i of this.bonuses) {
       spent += Challenge.rewardCost[i];
     }
-    let t = this.challengeCleared.length;
-    if (this.onPerfectChallenge) {
-      t = Math.max(t, this.perfectChallengeCleared[this.getPChallengeId()]);
+    let t = this.cleared.length;
+    if (this.onPerfect) {
+      t = Math.max(t, this.perfectCleared[this.getPChallengeId()]);
     }
     this.token = t - spent;
 
@@ -169,21 +169,21 @@ class Challenge {
     for (let i of this.rankBonuses) {
       rspent += Challenge.rewardCost[i];
     }
-    let rt = this.rankChallengeCleared.length;
-    if (this.onPerfectChallenge) {
-      rt = Math.max(rt, this.perfectRankChallengeCleared[this.getPChallengeId()]);
+    let rt = this.rankCleared.length;
+    if (this.onPerfect) {
+      rt = Math.max(rt, this.perfectRankCleared[this.getPChallengeId()]);
     }
     this.rankToken = rt - rspent;
   }
   countPChallengeCleared() {
     let cnt = 0;
     for (let i = 0; i < 1024; i++) {
-      cnt += this.perfectChallengeCleared[i];
-      cnt += this.perfectRankChallengeCleared[i];
+      cnt += this.perfectCleared[i];
+      cnt += this.perfectRankCleared[i];
     }
 
     cnt /= 510;
-    this.perfectChallengeStage = Math.floor(cnt);
+    this.perfectStage = Math.floor(cnt);
   }
 
 
@@ -221,8 +221,8 @@ class Challenge {
           ans.push(i);
         }
       }
-      if (index == 1) this.setChallengeBonuses1 = ans;
-      else if (index == 2) this.setChallengeBonuses2 = ans;
+      if (index == 1) this.bonusesType1 = ans;
+      else if (index == 2) this.bonusesType2 = ans;
     }
   }
   /** @param {1|2} index */
@@ -234,8 +234,8 @@ class Challenge {
           ans.push(i);
         }
       }
-      if (index == 1) this.setRankChallengeBonuses1 = ans;
-      else if (index == 2) this.setRankChallengeBonuses2 = ans;
+      if (index == 1) this.rankBonusesType1 = ans;
+      else if (index == 2) this.rankBonusesType2 = ans;
     }
   }
   /** @param {1|2} index */
@@ -247,8 +247,8 @@ class Challenge {
     }
 
     let setBonuses = [];
-    if (index == 1) setBonuses = this.setChallengeBonuses1;
-    else if (index == 2) setBonuses = this.setChallengeBonuses2;
+    if (index == 1) setBonuses = this.bonusesType1;
+    else if (index == 2) setBonuses = this.bonusesType2;
 
     for (let i = 0; i < 15; i++) {
       if (setBonuses.includes(i)) {
@@ -265,8 +265,8 @@ class Challenge {
     }
 
     let setBonuses = [];
-    if (index == 1) setBonuses = this.setRankChallengeBonuses1;
-    else if (index == 2) setBonuses = this.setRankChallengeBonuses2;
+    if (index == 1) setBonuses = this.rankBonusesType1;
+    else if (index == 2) setBonuses = this.rankBonusesType2;
 
     for (let i = 0; i < 15; i++) {
       if (setBonuses.includes(i)) {
@@ -279,15 +279,15 @@ class Challenge {
   /** @param {number} index */
   configChallenge(index) {
     if (this.onChallenge) return;
-    if (!this.challenges.delete(index)) {
-      this.challenges.add(index);
+    if (!this.selected.delete(index)) {
+      this.selected.add(index);
     }
   }
   /** @param {number} index */
   configPChallenge(index) {
-    if (this.onPerfectChallenge) return;
-    if (!this.perfectChallenges.delete(index)) {
-      this.perfectChallenges.add(index);
+    if (this.onPerfect) return;
+    if (!this.perfectSelected.delete(index)) {
+      this.perfectSelected.add(index);
     }
   }
 
@@ -303,7 +303,7 @@ class Challenge {
   }
   // todo: 1つのメソッドにできる
   showUnclearedChallenges() {
-    if (this.challengeCleared.length == 255) return;
+    if (this.cleared.length == 255) return;
     if (this.onChallenge) return;
 
     let challengeWeightPairs = [];
@@ -332,12 +332,12 @@ class Challenge {
         if (idx == 255) idx = 0;
         challengeId = challengeWeightPairs[idx].id;
       }
-    } while (this.challengeCleared.includes(challengeId));
+    } while (this.cleared.includes(challengeId));
 
-    this.challenges = new Set(Challenge.calcChallengesArray(challengeId));
+    this.selected = new Set(Challenge.calcChallengesArray(challengeId));
   }
   showUnclearedRankChallenges() {
-    if (this.rankChallengeCleared.length == 255) return;
+    if (this.rankCleared.length == 255) return;
     if (this.onChallenge) return;
 
     let challengeweightpairs = [];
@@ -365,9 +365,9 @@ class Challenge {
         if (idx == 255) idx = 0;
         challengeid = challengeweightpairs[idx].id;
       }
-    } while (this.rankChallengeCleared.includes(challengeid));
+    } while (this.rankCleared.includes(challengeid));
 
-    this.challenges = new Set(Challenge.calcChallengesArray(challengeid));
+    this.selected = new Set(Challenge.calcChallengesArray(challengeid));
   }
 
   /** @param {Player} player */
@@ -381,13 +381,13 @@ class Challenge {
 
     let conf = '挑戦を開始しますか？現在のポイントや発生器、時間加速器は失われます。';
 
-    if (this.challengeCleared.includes(challengeid)) {
-      if (this.challengeCleared.length < 128) {
+    if (this.cleared.includes(challengeid)) {
+      if (this.cleared.length < 128) {
         alert("すでに達成した挑戦です。");
         return;
       }
       conf = 'すでに達成した挑戦です。勲章は得られませんが、それでもよろしいですか？';
-      if (this.rankChallengeCleared.includes(challengeid)) {
+      if (this.rankCleared.includes(challengeid)) {
         conf = 'すでに階位挑戦としても達成した挑戦です。勲章や大勲章は得られませんが、それでもよろしいですか？';
       }
     }
@@ -396,7 +396,7 @@ class Challenge {
       if (!this.bonuses.has(4)) this.activeBonuses = new Set();
       player.resetLevel(true, true);
       this.onChallenge = true;
-      if (this.challenges.has(3)) {
+      if (this.selected.has(3)) {
         for (let i = 0; i < 8; i++) {
           player.generator.generatorsMode[i] = 0;
         }
@@ -406,7 +406,7 @@ class Challenge {
 
   /** @param {Player} player */
   startPChallenge(player) {
-    if (!(this.challengeCleared.length >= 255 && this.rankChallengeCleared.length >= 255)) {
+    if (!(this.cleared.length >= 255 && this.rankCleared.length >= 255)) {
       alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。");
       return;
     }
@@ -417,7 +417,7 @@ class Challenge {
     }
 
     for (let i = 0; i < 10; i++) {
-      if (player.statue.statue[i] < this.perfectChallenges.size - i) {
+      if (player.statue.statue[i] < this.perfectSelected.size - i) {
         alert("像の作成数が不足しているため、完全挑戦を開始できません。");
         return;
       }
@@ -426,10 +426,10 @@ class Challenge {
     let conf = '完全挑戦を開始しますか？現在のポイントや発生器、段位や段位リセット、階位などは失われます。';
     if (confirm(conf)) {
       player.resetCrown(true);  // bug: 効力が有効な状態でリセットされる
-      this.onPerfectChallenge = true;
-      this.challengeCleared = [];
+      this.onPerfect = true;
+      this.cleared = [];
       this.bonuses = new Set();  // bug: 1tick経過するまでthis.activeBonusesが更新されない
-      this.rankChallengeCleared = [];
+      this.rankCleared = [];
       this.rankBonuses = new Set();  // bug: 同上
     }
   }
@@ -448,11 +448,11 @@ class Challenge {
     if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       if (this.onChallenge) this.exitChallenge(player);
       const pChallengeId = this.getPChallengeId();
-      this.onPerfectChallenge = false;
-      this.perfectChallengeCleared[pChallengeId] = Math.max(this.perfectChallengeCleared[pChallengeId], this.challengeCleared.length);
-      this.perfectRankChallengeCleared[pChallengeId] = Math.max(this.perfectRankChallengeCleared[pChallengeId], this.rankChallengeCleared.length);
-      this.challengeCleared = Challenge.challengeIds;
-      this.rankChallengeCleared = Challenge.challengeIds;
+      this.onPerfect = false;
+      this.perfectCleared[pChallengeId] = Math.max(this.perfectCleared[pChallengeId], this.cleared.length);
+      this.perfectRankCleared[pChallengeId] = Math.max(this.perfectRankCleared[pChallengeId], this.rankCleared.length);
+      this.cleared = Challenge.challengeIds;
+      this.rankCleared = Challenge.challengeIds;
       for (let i = 0; i < SET_CHIP_NUM; i++) {
         player.chip.disabledChip[i] = false;
       }

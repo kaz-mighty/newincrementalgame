@@ -6,7 +6,7 @@ class GameGenerator {
     this.generatorsBought = playerData.generatorsBought.map(v => new Decimal(v));
     this.generatorsCost = playerData.generatorsCost.map(v => new Decimal(v));
     this.generatorsMode = Array.from(playerData.generatorsMode);
-    this.setModes = Array.from(playerData.setmodes);
+    this.modeType = Array.from(playerData.setmodes);
 
     this.highestGenerator = 0;
 
@@ -105,7 +105,7 @@ class GameGenerator {
   setModeType() {
     if (confirm('現在のモードを登録します。よろしいですか？')) {
       for (let i = 0; i < 8; i++) {
-        this.setModes[i] = this.generatorsMode[i];
+        this.modeType[i] = this.generatorsMode[i];
       }
     }
   }
@@ -113,7 +113,7 @@ class GameGenerator {
   changeModeType(player) {
     if (player.challenge.isChallengeActive(3)) return;
     for (let i = 0; i < 8; i++) {
-      this.generatorsMode[i] = this.setModes[i];
+      this.generatorsMode[i] = this.modeType[i];
     }
   }
   /**

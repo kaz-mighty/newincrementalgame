@@ -52,13 +52,13 @@
 				<span id="crown" v-if="player.crownResetTime.gt(0)">
 					<button type="button" @click="changeTab('crown')">冠位</button>
 				</span>
-				<span id="spirit" v-if="player.challenge.perfectChallengeStage>=10">
+				<span id="spirit" v-if="player.challenge.perfectStage>=10">
 					<button type="button" @click="changeTab('spirit')">精霊</button>
 				</span>
 				<span id="auto" v-if="player.levelResetTime.gt(0) || player.rankResetTime.gt(0) || player.crownResetTime.gt(0)">
 					<button type="button" @click="changeTab('auto')">自動</button>
 				</span>
-				<span id="shine" v-if="player.challenge.challengeCleared.length >= 64">
+				<span id="shine" v-if="player.challenge.cleared.length >= 64">
 					<button type="button" @click="changeTab('shine')">輝き</button>
 				</span>
 				<span id="world" v-if="nig.common.worldOpened[1] || nig.common.worldOpened[2]">
@@ -199,9 +199,9 @@
 
 	<template id="dark-tab">
 		<div v-if="player.currentTab == 'dark'">
-			<div id="dark-coin-amount" v-show="player.challenge.rankChallengeCleared.length>=32">裏ポイント: {{ player.dark.darkMoney.toExponential(3) }}</div>
+			<div id="dark-coin-amount" v-show="player.challenge.rankCleared.length>=32">裏ポイント: {{ player.dark.darkMoney.toExponential(3) }}</div>
 			裏発生器iは発生器iを強化します。
-			<div v-show="player.challenge.rankChallengeCleared.length>=32">裏発生器は、煌きを消費すると発生器のように動作し、裏ポイントや下位の裏発生器を生み出します。裏ポイントは全ての発生器を強化します。</div>
+			<div v-show="player.challenge.rankCleared.length>=32">裏発生器は、煌きを消費すると発生器のように動作し、裏ポイントや下位の裏発生器を生み出します。裏ポイントは全ての発生器を強化します。</div>
 			<div id="dark-level-reset" v-if="player.dark.darkMoney.greaterThanOrEqualTo('1e18')">
 				<button type="button" @click="resetDarkLevel()">裏昇段リセット</button>
 			</div>
@@ -238,7 +238,7 @@
 
 	<template id="light-tab">
 		<div v-if="player.currentTab == 'light'">
-			<div id="light-coin-amount" v-show="player.challenge.perfectChallengeStage>=1">天上ポイント: {{ player.light.lightMoney.toExponential(3) }}</div>
+			<div id="light-coin-amount" v-show="player.challenge.perfectStage>=1">天上ポイント: {{ player.light.lightMoney.toExponential(3) }}</div>
 			天上発生器iは裏発生器iを強化します。
 
 			<div id="light-generator-container">
@@ -319,7 +319,7 @@
 				複数の挑戦を組み合わせて、新たな挑戦として受けることもできます。
 				挑戦中は効力が無効になります。
 				<div class="challenge" v-for="(_, i) in 8" :key="i">
-					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.challenges.has(i) }" @click="configChallenge(i)">
+					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.selected.has(i) }" @click="configChallenge(i)">
 						挑戦 {{ i+1 }}
 					</button>
 					<span> ・{{ Challenge.challengeText[i] }} </span>
@@ -331,7 +331,7 @@
 						未達成挑戦
 					</button>
 				</div>
-				<div v-if="player.challenge.rankChallengeCleared.length>=1">
+				<div v-if="player.challenge.rankCleared.length>=1">
 					<button type="button" id="search-uncleared-rank" @click="showUnclearedRankChallenges()">
 						未達成階位挑戦
 					</button>
@@ -349,7 +349,7 @@
 					</button>
 				</div>
 
-				<div v-if="player.challenge.challengeCleared.length>=128">挑戦中に階位リセットを行うと...？</div>
+				<div v-if="player.challenge.cleared.length>=128">挑戦中に階位リセットを行うと...？</div>
 			</div>
 
 			<div id="reward-container">
@@ -382,7 +382,7 @@
 				</button>
 			</div>
 
-			<div id="rank-reward-container" v-if="player.challenge.rankChallengeCleared.length>=1">
+			<div id="rank-reward-container" v-if="player.challenge.rankCleared.length>=1">
 				上位効力:上位効力とは大勲章を消費して得られる強化のことです。
 				大勲章:{{ player.challenge.rankToken }}
 				<div class="challenge" v-for="(_, i) in 15" :key="i">
@@ -455,7 +455,7 @@
 				改めて255個の挑戦および階位挑戦の達成を目指すことになります。
 				完全挑戦は、条件を1つも選択しなくても開始することができます。
 				<div class="challenge" v-for="(_, i) in 10" :key="i">
-					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.perfectChallenges.has(i) }" @click="configPChallenge(i)">
+					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.perfectSelected.has(i) }" @click="configPChallenge(i)">
 						完全挑戦 {{ i+1 }}
 					</button>
 					<span> ・{{ Challenge.pChallengeText[i] }} </span>
@@ -464,14 +464,14 @@
 				<div>
 					挑戦番号:{{ pChallengeId }}
 					進行度:
-					通常:{{ player.challenge.perfectChallengeCleared[pChallengeId] }}
-					上位:{{ player.challenge.perfectRankChallengeCleared[pChallengeId] }}
+					通常:{{ player.challenge.perfectCleared[pChallengeId] }}
+					上位:{{ player.challenge.perfectRankCleared[pChallengeId] }}
 				</div>
 				<div>
-					完全挑戦段階: {{ player.challenge.perfectChallengeStage }}
+					完全挑戦段階: {{ player.challenge.perfectStage }}
 				</div>
 				<br>
-				<div v-if="!player.challenge.onPerfectChallenge">
+				<div v-if="!player.challenge.onPerfect">
 					<button type="button" @click="startPChallenge()">
 						挑戦開始
 					</button>
@@ -620,8 +620,8 @@
 						瞬き消費:{{ unit }}
 					</button>
 				</template>
-				<div>瞬き入手率: {{ (player.shine.getFlickerPercent(player.challenge.perfectChallengeStage, player.statue) * 100).toFixed(5) }}%</div>
-				<div>最大瞬き保有数: {{ player.shine.getMaxFlicker(player.challenge.perfectChallengeStage, player.statue) }}</div>
+				<div>瞬き入手率: {{ (player.shine.getFlickerPercent(player.challenge.perfectStage, player.statue) * 100).toFixed(5) }}%</div>
+				<div>最大瞬き保有数: {{ player.shine.getMaxFlicker(player.challenge.perfectStage, player.statue) }}</div>
 			</div>
 
 			<div v-if="isResidueShown">

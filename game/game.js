@@ -459,8 +459,8 @@ class Nig { // New Incremental Game
     this.player.spendBrightness(this.player.auto.autoSpendBrightNumber);
   }
   autoChallenge() {
-    if (this.player.challenge.challengeCleared.length == 255) return;
-    if (this.player.challenge.challengeCleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.challenges.size == 0) {
+    if (this.player.challenge.cleared.length == 255) return;
+    if (this.player.challenge.cleared.includes(this.player.challenge.getChallengeId()) || this.player.challenge.selected.size == 0) {
       this.player.challenge.showUnclearedChallenges();
     }
     if (!this.player.challenge.onChallenge) {

@@ -132,7 +132,7 @@ class Chip {
     this.setChip = Array.from(playerData.setchip);
     this.disabledChip = Array.from(playerData.disabledchip);
     this.spendChip = Array.from(playerData.spendchip);
-    this.setChipType1 = Array.from(playerData.setchiptypefst);
+    this.chipType1 = Array.from(playerData.setchiptypefst);
 
     this.chipUsed = new Array(SET_CHIP_KIND).fill(0);
 
@@ -249,7 +249,7 @@ class Chip {
   setChipType() {
     if (confirm('現在の鋳片型を登録します。よろしいですか？')) {
       for (let i = 0; i < 100; i++) {
-        this.setChipType1[i] = this.setChip[i];
+        this.chipType1[i] = this.setChip[i];
       }
     }
   }
@@ -257,7 +257,7 @@ class Chip {
   changeChipType() {
     this.clearSetChip();
     for (let i = 0; i < 100; i++) {
-      this.chipSet(i, this.setChipType1[i]);
+      this.chipSet(i, this.chipType1[i]);
     }
   }
 

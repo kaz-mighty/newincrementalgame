@@ -46,7 +46,7 @@ class Shine {
 
   /** @param {Player} player */
   calcShinePercent(player) {
-    let sp = Shine.getBaseShinePercent(player.challenge.challengeCleared.length);
+    let sp = Shine.getBaseShinePercent(player.challenge.cleared.length);
     sp += 0.02 * player.chip.setChip[30];
     sp += 0.01 * player.eachPipedSmallTrophy[6];
     sp += 0.001 * Math.floor(Math.pow(this.residue, 1 / 3));
@@ -57,7 +57,7 @@ class Shine {
 
   /** @param {Player} player */
   calcMaxShine(player) {
-    const clear = player.challenge.challengeCleared.length;
+    const clear = player.challenge.cleared.length;
     const rememberLevel = Math.floor((player.rememberSum + 16) / 16);
 
     let value = 0;
@@ -77,7 +77,7 @@ class Shine {
 
   /** @param {Player} player */
   calcBrightPercent(player) {
-    let bp = Shine.getBaseBrightPercent(player.challenge.rankChallengeCleared.length);
+    let bp = Shine.getBaseBrightPercent(player.challenge.rankCleared.length);
     bp += 0.001 * player.chip.setChip[49];
     bp += 0.001 * player.eachPipedSmallTrophy[9] * 0.5;
     bp += 0.001 * player.statue.brightStatueSum * 0.5;
@@ -87,7 +87,7 @@ class Shine {
 
   /** @param {Player} player */
   calcMaxBright(player) {
-    const clear = player.challenge.rankChallengeCleared.length;
+    const clear = player.challenge.rankCleared.length;
     const rememberLevel = Math.floor((player.rememberSum + 16) / 16);
 
     let value = 0;
@@ -171,11 +171,11 @@ class Shine {
 
   /** @param {Player} player */
   updateFlicker(player) {
-    const maxFlicker = this.getMaxFlicker(player.challenge.perfectChallengeStage, player.statue);
+    const maxFlicker = this.getMaxFlicker(player.challenge.perfectStage, player.statue);
     if (this.flicker >= maxFlicker) return;
 
     let flickerGain = 0;
-    if (Math.random() < this.getFlickerPercent(player.challenge.perfectChallengeStage, player.statue)) {
+    if (Math.random() < this.getFlickerPercent(player.challenge.perfectStage, player.statue)) {
       flickerGain += 1;
     }
 

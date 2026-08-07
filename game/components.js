@@ -65,10 +65,10 @@ const DarkTab = Vue.defineComponent({
   computed: {
     isSpendBrightnessShown() {
       return [
-        this.player.challenge.rankChallengeCleared.length >= 32,
-        this.player.challenge.rankChallengeCleared.length >= 64,
-        this.player.challenge.rankChallengeCleared.length >= 128,
-        this.player.challenge.rankChallengeCleared.length >= 255,
+        this.player.challenge.rankCleared.length >= 32,
+        this.player.challenge.rankCleared.length >= 64,
+        this.player.challenge.rankCleared.length >= 128,
+        this.player.challenge.rankCleared.length >= 255,
       ];
     },
   },
@@ -123,8 +123,8 @@ const OptionTab = Vue.defineComponent({
         {id: "level", name: "段位", isShow: this.player.levelResetTime.gt(0) || this.player.rankResetTime.gt(0)},
         {id: "darklevel", name: "裏段位", isShow: this.player.dark.darkLevel.gt(0)},
         {id: "achieved", name: "挑戦達成", isShow: this.player.levelResetTime.gt(0) || this.player.rankResetTime.gt(0)},
-        {id: "rankachieved", name: "上位挑戦達成", isShow: this.player.challenge.rankChallengeCleared.length >= 1},
-        {id: "pachieved", name: "完全挑戦段階", isShow: this.player.challenge.perfectChallengeStage >= 1},
+        {id: "rankachieved", name: "上位挑戦達成", isShow: this.player.challenge.rankCleared.length >= 1},
+        {id: "pachieved", name: "完全挑戦段階", isShow: this.player.challenge.perfectStage >= 1},
         {id: "rank", name: "階位", isShow: this.player.rankResetTime.gt(0)},
         {id: "levelitemboughttime", name: "段位効力購入", isShow: this.player.rankResetTime.gt(0)},
         {id: "world", name: "世界", isShow: this.nig.common.worldOpened[1] || this.nig.common.worldOpened[2]},
@@ -301,25 +301,25 @@ const ShineTab = Vue.defineComponent({
     isSpendShineShown() {
       return [
         true,
-        this.player.challenge.challengeCleared.length >= 96,
-        this.player.challenge.challengeCleared.length >= 128,
-        this.player.challenge.challengeCleared.length >= 160,
-        this.player.challenge.challengeCleared.length >= 192,
-        this.player.challenge.challengeCleared.length >= 224,
-        this.player.challenge.perfectChallengeStage >= 10,
+        this.player.challenge.cleared.length >= 96,
+        this.player.challenge.cleared.length >= 128,
+        this.player.challenge.cleared.length >= 160,
+        this.player.challenge.cleared.length >= 192,
+        this.player.challenge.cleared.length >= 224,
+        this.player.challenge.perfectStage >= 10,
       ];
     },
     isSpendBrightnessShown() {
       return [
-        this.player.challenge.rankChallengeCleared.length >= 32,
-        this.player.challenge.rankChallengeCleared.length >= 64,
-        this.player.challenge.rankChallengeCleared.length >= 128,
-        this.player.challenge.rankChallengeCleared.length >= 255,
+        this.player.challenge.rankCleared.length >= 32,
+        this.player.challenge.rankCleared.length >= 64,
+        this.player.challenge.rankCleared.length >= 128,
+        this.player.challenge.rankCleared.length >= 255,
       ];
     },
     isSpendFlickerShown() {
       return [
-        this.player.challenge.perfectChallengeStage >= 1,
+        this.player.challenge.perfectStage >= 1,
       ];
     },
     isBuyTypeShown() {
@@ -327,14 +327,14 @@ const ShineTab = Vue.defineComponent({
         true,
         true,
         true,
-        this.player.challenge.rankChallengeCleared.length >= 1,
-        this.player.challenge.rankChallengeCleared.length >= 1,
+        this.player.challenge.rankCleared.length >= 1,
+        this.player.challenge.rankCleared.length >= 1,
         this.player.crownResetTime.gt(0),
       ];
     },
     isResidueShown() {
       // bug: 残滓獲得後に収縮すると非表示になる
-      return this.player.challenge.perfectChallengeStage >= 10;
+      return this.player.challenge.perfectStage >= 10;
     }
   },
   methods: {
@@ -586,13 +586,13 @@ const app = Vue.createApp(Vue.defineComponent({
         tweetText += '裏段位:' + this.player.dark.darkLevel + '%0A';
       }
       if (this.player.tweeting.includes('achieved')) {
-        tweetText += '挑戦達成:' + this.player.challenge.challengeCleared.length + '%0A';
+        tweetText += '挑戦達成:' + this.player.challenge.cleared.length + '%0A';
       }
       if (this.player.tweeting.includes('rankachieved')) {
-        tweetText += '上位挑戦達成:' + this.player.challenge.rankChallengeCleared.length + '%0A';
+        tweetText += '上位挑戦達成:' + this.player.challenge.rankCleared.length + '%0A';
       }
       if (this.player.tweeting.includes('pachieved')) {
-        tweetText += '完全挑戦段階:' + this.player.challenge.perfectChallengeStage + '%0A';
+        tweetText += '完全挑戦段階:' + this.player.challenge.perfectStage + '%0A';
       }
       if (this.player.tweeting.includes('rank')) {
         tweetText += '階位:' + this.player.rank + '%0A';

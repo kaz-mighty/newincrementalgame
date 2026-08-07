@@ -167,26 +167,26 @@ class Player {
       tweeting: this.tweeting,
 
       onchallenge: this.challenge.onChallenge,
-      challenges: Array.from(this.challenge.challenges),
-      challengecleared: this.challenge.challengeCleared,
+      challenges: Array.from(this.challenge.selected),
+      challengecleared: this.challenge.cleared,
       challengebonuses: Array.from(this.challenge.bonuses),
 
       challengeweight: this.challenge.challengeWeight,
       challengeweightvalue: this.challenge.challengeWeightValue,
 
-      onpchallenge: this.challenge.onPerfectChallenge,
-      pchallenges: Array.from(this.challenge.perfectChallenges),
-      pchallengecleared: this.challenge.perfectChallengeCleared,
-      prchallengecleared: this.challenge.perfectRankChallengeCleared,
+      onpchallenge: this.challenge.onPerfect,
+      pchallenges: Array.from(this.challenge.perfectSelected),
+      pchallengecleared: this.challenge.perfectCleared,
+      prchallengecleared: this.challenge.perfectRankCleared,
 
       boughttype: this.shine.boughtType,
-      setmodes: this.generator.setModes,
-      setchallengebonusesfst: this.challenge.setChallengeBonuses1,
-      setchallengebonusessnd: this.challenge.setChallengeBonuses2,
-      setrankchallengebonusesfst: this.challenge.setRankChallengeBonuses1,
-      setrankchallengebonusessnd: this.challenge.setRankChallengeBonuses2,
+      setmodes: this.generator.modeType,
+      setchallengebonusesfst: this.challenge.bonusesType1,
+      setchallengebonusessnd: this.challenge.bonusesType2,
+      setrankchallengebonusesfst: this.challenge.rankBonusesType1,
+      setrankchallengebonusessnd: this.challenge.rankBonusesType2,
 
-      rankchallengecleared: this.challenge.rankChallengeCleared,
+      rankchallengecleared: this.challenge.rankCleared,
       rankchallengebonuses: Array.from(this.challenge.rankBonuses),
 
       trophies: this.trophy.trophies,
@@ -213,7 +213,7 @@ class Player {
       spiritlevela: this.spiritLevelA,
       spiritboughtcurrentcrown: this.unUsed.spiritBoughtCurrentCrown,
 
-      setchiptypefst: this.chip.setChipType1,
+      setchiptypefst: this.chip.chipType1,
 
       worldpipe: this.worldPipe,
       rings: this.ring.toSaveObject(this),
@@ -256,7 +256,7 @@ class Player {
     mult = mult.mul(1 + Math.sqrt(this.pipedSmallTrophy));
 
     if (this.challenge.onChallenge && this.challenge.rankBonuses.has(4)) {
-      mult = mult.mul(1 + this.challenge.challenges.size * 0.25);
+      mult = mult.mul(1 + this.challenge.selected.size * 0.25);
     }
     if (!(this.challenge.isPChallengeActive(8))) {
       if (this.dark.darkMoney.greaterThanOrEqualTo(1)) {
@@ -383,7 +383,7 @@ class Player {
     this.generator.updateGenerators(this, new Decimal(val));
     this.accelerator.updateAccelerators(this, new Decimal(val));
     if (this.trophy.trophies[9]) {
-      this.shine.residue += Math.floor(num * (1 + this.challenge.perfectChallengeStage) / 1000000);
+      this.shine.residue += Math.floor(num * (1 + this.challenge.perfectStage) / 1000000);
     }
   }
   /** @param {number} num */
@@ -486,12 +486,12 @@ class Player {
       let disa = this.challenge.isPChallengeActive(9) && (!exit);
       if (this.challenge.onChallenge) {
         this.challenge.onChallenge = false;
-        if (this.challenge.challenges.size >= 6) {
+        if (this.challenge.selected.size >= 6) {
           this.trophy.unlockTrophy(3);
         }
         let id = this.challenge.getChallengeId();
-        if (!this.challenge.challengeCleared.includes(id)) {
-          this.challenge.challengeCleared.push(this.challenge.getChallengeId());
+        if (!this.challenge.cleared.includes(id)) {
+          this.challenge.cleared.push(this.challenge.getChallengeId());
           disa = false;
         }
         this.challenge.activeBonuses = this.challenge.bonuses;
@@ -577,8 +577,8 @@ class Player {
       if (this.challenge.onChallenge) {
         this.challenge.onChallenge = false;
         this.challenge.activeBonuses = this.challenge.bonuses;
-        if (this.challenge.challengeCleared.length >= 128 && !this.challenge.rankChallengeCleared.includes(this.challenge.getChallengeId())) {
-          this.challenge.rankChallengeCleared.push(this.challenge.getChallengeId());
+        if (this.challenge.cleared.length >= 128 && !this.challenge.rankCleared.includes(this.challenge.getChallengeId())) {
+          this.challenge.rankCleared.push(this.challenge.getChallengeId());
         }
       }
 
@@ -689,15 +689,15 @@ class Player {
         this.common.worldOpened[i] = true;
       }
     } else {
-      if (this.challenge.challengeCleared.includes(238)) this.common.worldOpened[1] = true;
-      if (this.challenge.challengeCleared.length >= 100) this.common.worldOpened[2] = true;
-      if (this.challenge.rankChallengeCleared.length >= 16) this.common.worldOpened[3] = true;
+      if (this.challenge.cleared.includes(238)) this.common.worldOpened[1] = true;
+      if (this.challenge.cleared.length >= 100) this.common.worldOpened[2] = true;
+      if (this.challenge.rankCleared.length >= 16) this.common.worldOpened[3] = true;
       if (this.levelShop.levelItemBought >= 12500) this.common.worldOpened[4] = true;
       if (this.dark.darkMoney.greaterThanOrEqualTo('1e8')) this.common.worldOpened[5] = true;
       if (this.rank.greaterThanOrEqualTo(262142)) this.common.worldOpened[6] = true;
-      if (this.challenge.rankChallengeCleared.includes(238)) this.common.worldOpened[7] = true;
-      if (this.challenge.challengeCleared.length >= 200) this.common.worldOpened[8] = true;
-      if (this.challenge.rankChallengeCleared.length >= 200) this.common.worldOpened[9] = true;
+      if (this.challenge.rankCleared.includes(238)) this.common.worldOpened[7] = true;
+      if (this.challenge.cleared.length >= 200) this.common.worldOpened[8] = true;
+      if (this.challenge.rankCleared.length >= 200) this.common.worldOpened[9] = true;
     }
 
     if (this.light.lightMoney.greaterThanOrEqualTo('1e8')) this.common.worldOpened[10] = true;

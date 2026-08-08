@@ -52,7 +52,7 @@ class Accelerator {
    */
   canBuyAccelerator(player, index) {
     // origin より条件が厳しいが、そのようなケースでbuyAcceleratorが呼ばれることはない
-    if (player.challenge.isChallengeActive(5)) return false;
+    if (player.challenge.isActive(5)) return false;
     if (index >= this.getShownNum(player)) return false;
     return player.money.greaterThanOrEqualTo(this.acceleratorsCost[index]);
   }

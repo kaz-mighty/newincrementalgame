@@ -27,7 +27,7 @@ class GameGenerator {
       let p = i === 0 ?
         this.generatorsBought[0] :
         this.generatorsBought[i].add(i + 1).mul(i + 1);
-      if (player.challenge.isChallengeActive(1) && this.generatorsBought[i].gt(0)) {
+      if (player.challenge.isActive(1) && this.generatorsBought[i].gt(0)) {
         p = p.mul(2);
       }
       p = p.sub(player.eachPipedSmallTrophy[0] * 0.2);
@@ -51,7 +51,7 @@ class GameGenerator {
           this.generators[to - 1] = this.generators[to - 1].add(this.generators[i].mul(mult));
         }
       } else {
-        if (player.challenge.isChallengeActive(3)) {
+        if (player.challenge.isActive(3)) {
           let mult = mu.mul(player.calcIncrementMult(i, 0));
           mult = mult.mul(i + 1);
           player.money = player.money.add(this.generators[i].mul(mult));
@@ -74,7 +74,7 @@ class GameGenerator {
    * @param {number} index 
    */
   canBuyGenerator(player, index) {
-    if (player.challenge.isChallengeActive(6)) {
+    if (player.challenge.isActive(6)) {
       if (index == 3 || index == 7) {
         return false;
       }
@@ -118,7 +118,7 @@ class GameGenerator {
   }
   /** @param {Player} player  */
   changeModeType(player) {
-    if (player.challenge.isChallengeActive(3)) return;
+    if (player.challenge.isActive(3)) return;
     for (let i = 0; i < 8; i++) {
       this.generatorsMode[i] = this.modeType[i];
     }
@@ -128,7 +128,7 @@ class GameGenerator {
    * @param {number} index 
    */
   changeMode(player, index) {
-    if (player.challenge.isChallengeActive(3)) return;
+    if (player.challenge.isActive(3)) return;
     this.generatorsMode[index] += 1;
     if (this.generatorsMode[index] > index) {
       this.generatorsMode[index] = 0;

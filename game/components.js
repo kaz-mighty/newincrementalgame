@@ -181,11 +181,11 @@ const LevelTab = Vue.defineComponent({
     },
   },
   methods: {
-    configChallenge(i) {
-      this.player.challenge.configChallenge(i);
+    configSelected(i) {
+      this.player.challenge.configSelected(i);
     },
-    showUnclearedChallenges(isRank) {
-      this.player.challenge.showUnclearedChallenges(isRank);
+    showUncleared(isRank) {
+      this.player.challenge.showUncleared(isRank);
     },
     startChallenge() {
       this.player.challenge.startChallenge(this.player);
@@ -235,18 +235,18 @@ const CrownTab = Vue.defineComponent({
   data: () => ({player: currentPlayer}),
   computed: {
     pChallengeId() {
-      return this.player.challenge.getPChallengeId();
+      return this.player.challenge.getPerfectChallengeId();
     },
   },
   methods: {
-    configPChallenge(i) {
-      this.player.challenge.configPChallenge(i);
+    configPerfectSelected(i) {
+      this.player.challenge.configPerfectSelected(i);
     },
-    startPChallenge() {
-      this.player.challenge.startPChallenge(this.player);
+    startPerfectChallenge() {
+      this.player.challenge.startPerfectChallenge(this.player);
     },
-    exitPChallenge() {
-      this.player.challenge.exitPChallenge(this.player);
+    exitPerfectChallenge() {
+      this.player.challenge.exitPerfectChallenge(this.player);
     },
   },
 });

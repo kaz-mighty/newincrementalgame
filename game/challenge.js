@@ -87,7 +87,7 @@ class Challenge {
     return challengeId;
   }
   /** @param {Iterable<number>} iter */
-  static getPChallengeId(iter) {
+  static getPerfectChallengeId(iter) {
     let challengeId = 0;
     for (const v of iter) {
       if (v < 0 || v >= 10) continue;
@@ -136,35 +136,35 @@ class Challenge {
 
     this.activeBonuses = (!this.onChallenge || this.bonuses.has(4)) ? this.bonuses : new Set();
     this.perfectStage = 0;
-    this.countPChallengeCleared();
+    this.countPerfectCleared();
   }
 
   getChallengeId() {
     return Challenge.getChallengeId(this.selected);
   }
-  getPChallengeId() {
-    return Challenge.getPChallengeId(this.perfectSelected);
+  getPerfectChallengeId() {
+    return Challenge.getPerfectChallengeId(this.perfectSelected);
   }
   /** @param {number} index */
-  isChallengeActive(index) {
+  isActive(index) {
     return this.onChallenge && this.selected.has(index);
   }
   /** @param {number} index */
-  isPChallengeActive(index) {
+  isPerfectActive(index) {
     return this.onPerfect && this.perfectSelected.has(index);
   }
 
   getMaxToken() {
     let t = this.cleared.length;
     if (this.onPerfect) {
-      t = Math.max(t, this.perfectCleared[this.getPChallengeId()]);
+      t = Math.max(t, this.perfectCleared[this.getPerfectChallengeId()]);
     }
     return t;
   }
   getMaxRankToken() {
     let rt = this.rankCleared.length;
     if (this.onPerfect) {
-      rt = Math.max(rt, this.perfectRankCleared[this.getPChallengeId()]);
+      rt = Math.max(rt, this.perfectRankCleared[this.getPerfectChallengeId()]);
     }
     return rt;
   }
@@ -181,7 +181,7 @@ class Challenge {
     }
     this.rankToken = this.getMaxRankToken() - rspent;
   }
-  countPChallengeCleared() {
+  countPerfectCleared() {
     let cnt = 0;
     for (let i = 0; i < 1024; i++) {
       cnt += this.perfectCleared[i];
@@ -283,14 +283,14 @@ class Challenge {
 
 
   /** @param {number} index */
-  configChallenge(index) {
+  configSelected(index) {
     if (this.onChallenge) return;
     if (!this.selected.delete(index)) {
       this.selected.add(index);
     }
   }
   /** @param {number} index */
-  configPChallenge(index) {
+  configPerfectSelected(index) {
     if (this.onPerfect) return;
     if (!this.perfectSelected.delete(index)) {
       this.perfectSelected.add(index);
@@ -308,7 +308,7 @@ class Challenge {
     this.challengeWeightValue[i] = input;
   }
   /** @param {boolean} isRank */
-  showUnclearedChallenges(isRank) {
+  showUncleared(isRank) {
     const cleared = isRank ? this.rankCleared : this.cleared;
     if (cleared.length == 255) return;
     if (this.onChallenge) return;
@@ -379,7 +379,7 @@ class Challenge {
   }
 
   /** @param {Player} player */
-  startPChallenge(player) {
+  startPerfectChallenge(player) {
     if (!(this.cleared.length >= 255 && this.rankCleared.length >= 255)) {
       alert("まだ挑戦や階位挑戦を完了していないので、完全挑戦を開始できません。");
       return;
@@ -418,10 +418,10 @@ class Challenge {
   }
 
   /** @param {Player} player */
-  exitPChallenge(player) {
+  exitPerfectChallenge(player) {
     if (confirm('完全挑戦を中断しますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       if (this.onChallenge) this.exitChallenge(player);
-      const pChallengeId = this.getPChallengeId();
+      const pChallengeId = this.getPerfectChallengeId();
       this.onPerfect = false;
       this.perfectCleared[pChallengeId] = Math.max(this.perfectCleared[pChallengeId], this.cleared.length);
       this.perfectRankCleared[pChallengeId] = Math.max(this.perfectRankCleared[pChallengeId], this.rankCleared.length);
@@ -430,7 +430,7 @@ class Challenge {
       for (let i = 0; i < SET_CHIP_NUM; i++) {
         player.chip.disabledChip[i] = false;
       }
-      this.countPChallengeCleared();
+      this.countPerfectCleared();
     }
   }
 

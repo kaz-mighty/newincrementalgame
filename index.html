@@ -123,7 +123,7 @@
 				冠位: {{ player.crown.toNumber() }} 冠位リセット: {{ player.crownResetTime.toNumber() }}回
 			</div>
 			<div v-if="player.levelResetTime.gt(0)">
-				<span v-if="player.challenge.isChallengeActive(0)">段位リセット条件: 1e+24</span>
+				<span v-if="player.challenge.isActive(0)">段位リセット条件: 1e+24</span>
 				<span v-else>段位リセット条件: 1e+18</span>
 			</div>
 			<div v-if="player.rankResetTime.gt(0)">
@@ -134,7 +134,7 @@
 			</div>
 			<div>
 				<div id="level-reset" v-show="player.money.greaterThanOrEqualTo('1e18')">
-					<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isChallengeActive(0) }" @click="resetLevel(false,false)">昇段リセット</button>
+					<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isActive(0) }" @click="resetLevel(false,false)">昇段リセット</button>
 				</div>
 				<div id="rank-reset" v-show="player.money.greaterThanOrEqualTo(player.resetRankBorder())">
 					<button type="button" @click="resetRank(false)">昇階リセット</button>
@@ -319,7 +319,7 @@
 				複数の挑戦を組み合わせて、新たな挑戦として受けることもできます。
 				挑戦中は効力が無効になります。
 				<div class="challenge" v-for="(_, i) in 8" :key="i">
-					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.selected.has(i) }" @click="configChallenge(i)">
+					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.selected.has(i) }" @click="configSelected(i)">
 						挑戦 {{ i+1 }}
 					</button>
 					<span> ・{{ Challenge.challengeText[i] }} </span>
@@ -327,12 +327,12 @@
 				<br>
 
 				<div>
-					<button type="button" id="search-uncleared" @click="showUnclearedChallenges(false)">
+					<button type="button" id="search-uncleared" @click="showUncleared(false)">
 						未達成挑戦
 					</button>
 				</div>
 				<div v-if="player.challenge.rankCleared.length>=1">
-					<button type="button" id="search-uncleared-rank" @click="showUnclearedChallenges(true)">
+					<button type="button" id="search-uncleared-rank" @click="showUncleared(true)">
 						未達成階位挑戦
 					</button>
 				</div>
@@ -455,7 +455,7 @@
 				改めて255個の挑戦および階位挑戦の達成を目指すことになります。
 				完全挑戦は、条件を1つも選択しなくても開始することができます。
 				<div class="challenge" v-for="(_, i) in 10" :key="i">
-					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.perfectSelected.has(i) }" @click="configPChallenge(i)">
+					<button type="button" class="challenge-button" :class="{ 'selected': player.challenge.perfectSelected.has(i) }" @click="configPerfectSelected(i)">
 						完全挑戦 {{ i+1 }}
 					</button>
 					<span> ・{{ Challenge.pChallengeText[i] }} </span>
@@ -472,12 +472,12 @@
 				</div>
 				<br>
 				<div v-if="!player.challenge.onPerfect">
-					<button type="button" @click="startPChallenge()">
+					<button type="button" @click="startPerfectChallenge()">
 						挑戦開始
 					</button>
 				</div>
 				<div v-else>
-					<button type="button" @click="exitPChallenge()">
+					<button type="button" @click="exitPerfectChallenge()">
 						挑戦終了
 					</button>
 				</div>

@@ -222,7 +222,7 @@ class Player {
 
   calcCommonMult() {
     let mult = new Decimal(1);
-    if (!(this.challenge.isChallengeActive(7))) {
+    if (!(this.challenge.isActive(7))) {
       let cap = new Decimal(100).mul(this.levelShop.levelItems[2] * (1 + this.chip.setChip[28] * 0.3) + 1);
       mult = mult.mul(Player.softCap(this.levelResetTime.add(1), cap));
     }
@@ -235,14 +235,14 @@ class Player {
       mult = mult.mul(new Decimal(3));
     }
 
-    if (this.challenge.isPChallengeActive(0)) {
+    if (this.challenge.isPerfectActive(0)) {
       mult = mult.div(100);
     }
 
     let x1 = 0.25;
     let x2 = 12;
 
-    if (this.challenge.isPChallengeActive(7)) {
+    if (this.challenge.isPerfectActive(7)) {
       x1 = 1.0 / 81;
       x2 = 27;
     }
@@ -258,7 +258,7 @@ class Player {
     if (this.challenge.onChallenge && this.challenge.rankBonuses.has(4)) {
       mult = mult.mul(1 + this.challenge.selected.size * 0.25);
     }
-    if (!(this.challenge.isPChallengeActive(8))) {
+    if (!(this.challenge.isPerfectActive(8))) {
       if (this.dark.darkMoney.greaterThanOrEqualTo(1)) {
         mult = mult.mul(new Decimal(this.dark.darkMoney.add(10).log10()).pow(1 + this.chip.setChip[40] * 0.1));
       }
@@ -273,7 +273,7 @@ class Player {
 
     let camp = this.campaign.sumCommonBonus;
     if (this.campaign.activated.includes("newyear2025")) {
-      if (this.challenge.isChallengeActive(3) && this.challenge.isChallengeActive(4)) {
+      if (this.challenge.isActive(3) && this.challenge.isActive(4)) {
         camp = camp + 10;
       }
     }
@@ -298,7 +298,7 @@ class Player {
   calcBasicIncrementMult(i) {
     let mult = new Decimal(this.commonMult);
 
-    if (!(this.challenge.isChallengeActive(2))) {
+    if (!(this.challenge.isActive(2))) {
       let mm = new Decimal(1);
       mm = mm.mul(this.generator.generatorsBought[i]);
       if (this.challenge.activeBonuses.has(11)) {
@@ -321,7 +321,7 @@ class Player {
         mult = mult.mul(this.maxLevelGained.min(100000));
       }
     }
-    if (!(this.challenge.isPChallengeActive(8))) {
+    if (!(this.challenge.isPerfectActive(8))) {
       if (this.dark.darkGenerators[i].greaterThanOrEqualTo(1)) {
         mult = mult.mul(new Decimal(i + 2 + this.dark.darkGenerators[i].log10()).pow(1 + this.chip.setChip[i + 32] * 0.25));
       }
@@ -329,7 +329,7 @@ class Player {
 
     mult = mult.mul(1 + this.chip.setChip[i + 1] * 0.5);
 
-    if (this.challenge.isPChallengeActive(2)) {
+    if (this.challenge.isPerfectActive(2)) {
       this.incrementalMults[2] = new Decimal(0);
       this.incrementalMults[5] = new Decimal(0);
     }
@@ -343,7 +343,7 @@ class Player {
    */
   calcIncrementMult(i, to) {
     let mult = this.incrementalMults[i];
-    if (!(this.challenge.isChallengeActive(4))) {
+    if (!(this.challenge.isActive(4))) {
       mult = mult.mul(new Decimal(10).pow((i + 1) * (i - to)));
     }
 
@@ -353,7 +353,7 @@ class Player {
     rk += new Decimal(this.rank.add(2).log2()).log2() * this.chip.setChip[23];
     mult = mult.mul(new Decimal(lv.pow((i - to) * (1 + Math.max(rk, 0) * 0.05))));
 
-    if (this.challenge.isPChallengeActive(3) && mult.gt("1e-100")) {
+    if (this.challenge.isPerfectActive(3) && mult.gt("1e-100")) {
       let b = Math.floor(mult.log10() / 6);
       mult = new Decimal(10).pow(b * 6);
     }
@@ -363,7 +363,7 @@ class Player {
 
   calcTickSpeed() {
     let tsp = 1000;
-    if (this.challenge.isPChallengeActive(1)) tsp = 10000;
+    if (this.challenge.isPerfectActive(1)) tsp = 10000;
     tsp += 500 * this.campaign.accelLevelUsed;
     tsp -= this.chip.setChip[9] * 50;
     tsp -= this.levelShop.levelItems[1] * this.challenge.bonuses.size * (1 + this.chip.setChip[27] * 0.5);
@@ -377,7 +377,7 @@ class Player {
   /** @param {number} num */
   spendShine(num) {
     if (this.shine.shine < num) return;
-    if (this.challenge.isPChallengeActive(6)) return;
+    if (this.challenge.isPerfectActive(6)) return;
     this.shine.shine -= num;
     let val = new Decimal(11 + this.chip.setChip[31]).pow(new Decimal(num).log10());
     this.generator.updateGenerators(this, new Decimal(val));
@@ -389,7 +389,7 @@ class Player {
   /** @param {number} num */
   spendBrightness(num) {
     if (this.shine.brightness < num) return;
-    if (this.challenge.isPChallengeActive(6)) return;
+    if (this.challenge.isPerfectActive(6)) return;
     this.shine.brightness -= num;
     let val = new Decimal(11 + this.chip.setChip[50]).pow(new Decimal(num * 100).log10());
     let vald = new Decimal(10 + this.chip.setChip[51] * 0.25).pow(new Decimal(num).log10());
@@ -420,7 +420,7 @@ class Player {
 
 
   resetLevelBorder() {
-    let p = (this.challenge.isChallengeActive(0)) ? 24 : 18;
+    let p = (this.challenge.isActive(0)) ? 24 : 18;
     return new Decimal(10).pow(p);
   }
   calcGainLevel() {
@@ -447,7 +447,7 @@ class Player {
 
     }
 
-    if (this.challenge.isPChallengeActive(4)) {
+    if (this.challenge.isPerfectActive(4)) {
       gainLevel = new Decimal(gainLevel.log2()).max(1);
     }
 
@@ -464,7 +464,7 @@ class Player {
    * @param {boolean} exit 
    */
   resetLevel(force, exit) {
-    if (this.challenge.isChallengeActive(0)) {
+    if (this.challenge.isActive(0)) {
       if (this.money.lt(new Decimal('1e24'))) {
         alert('現在挑戦1が適用されているため、まだ昇段リセットができません。');
         return;
@@ -475,7 +475,7 @@ class Player {
     if (dividing < 1) dividing = 1;
     let gainLevel = this.calcGainLevel();
     let rst = this.rankResetTime.add(1);
-    if (this.challenge.isPChallengeActive(4)) {
+    if (this.challenge.isPerfectActive(4)) {
       rst = rst.pow(0.1).round();
     }
     let gainLevelReset = rst.mul(1 + this.chip.setChip[20]).mul(new Decimal(exit ? 0 : this.challenge.activeBonuses.has(8) ? 2 : 1));
@@ -483,7 +483,7 @@ class Player {
 
     if (force || confirm('昇段リセットして、段位' + gainLevel + 'を得ますか？')) {
 
-      let disa = this.challenge.isPChallengeActive(9) && (!exit);
+      let disa = this.challenge.isPerfectActive(9) && (!exit);
       if (this.challenge.onChallenge) {
         this.challenge.onChallenge = false;
         if (this.challenge.selected.size >= 6) {
@@ -538,9 +538,9 @@ class Player {
 
 
   resetRankBorder() {
-    let p = (this.challenge.isChallengeActive(0)) ? 96 : 72;
+    let p = (this.challenge.isActive(0)) ? 96 : 72;
     let q = this.rememberSum;
-    if (this.challenge.isPChallengeActive(7)) {
+    if (this.challenge.isPerfectActive(7)) {
       q = Math.pow(q, 0.5);
     }
     p -= Math.min(q / 2.0, 36);
@@ -552,7 +552,7 @@ class Player {
     dv = dv - this.crown.add(2).log2() * 0.1;
     dv = Math.max(dv, 3);
     let gainRank = new Decimal(this.money.log10()).div(dv).pow_base(2).round();
-    if (this.challenge.isPChallengeActive(5)) {
+    if (this.challenge.isPerfectActive(5)) {
       gainRank = new Decimal(gainRank.log10()).max(1);
     }
     if (this.challenge.rankBonuses.has(12)) {
@@ -564,7 +564,7 @@ class Player {
   }
   /** @param {boolean} force */
   resetRank(force) {
-    if (this.challenge.isChallengeActive(0)) {
+    if (this.challenge.isActive(0)) {
       if (this.money.lt(this.resetRankBorder())) {
         alert('現在挑戦1が適用されているため、まだ昇階リセットができません。');
         return;
@@ -620,7 +620,7 @@ class Player {
       //あとで消す
       return;
     }
-    if (this.challenge.isChallengeActive(0)) {
+    if (this.challenge.isActive(0)) {
       if (this.money.lt(this.resetCrownBorder())) {
         alert('現在挑戦1が適用されているため、まだ昇冠リセットができません。');
         return;

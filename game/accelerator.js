@@ -39,32 +39,35 @@ class Accelerator {
     }
   }
 
+  /** @param {Player} player */
+  getShownNum(player) {
+    if (player.levelResetTime.lessThanOrEqualTo(0)) return 1;
+    if (player.levelShop.levelItems[3] == 5 && player.campaign.accelLevel > 0) return 8;
+    return player.levelShop.levelItems[3] + 2;
+  }
+
   /**
    * @param {Player} player 
    * @param {number} index 
    */
-  isOpened(player, index) {
-    if (index == 0) return true;
-    if (!player.levelResetTime.gt(0)) return false;
-    if (index == 1) return true;
-    if (index >= 2 && index <= 6) return player.levelShop.levelItems[3] >= index - 1;
-    if (index == 7) return player.levelShop.levelItems[3] == 5 && player.campaign.accelLevel > 0;
-    return false;
+  canBuyAccelerator(player, index) {
+    // origin より条件が厳しいが、そのようなケースでbuyAcceleratorが呼ばれることはない
+    if (player.challenge.isChallengeActive(5)) return false;
+    if (index >= this.getShownNum(player)) return false;
+    return player.money.greaterThanOrEqualTo(this.acceleratorsCost[index]);
   }
+
   /**
    * @param {Player} player 
    * @param {number} index 
    */
   buyAccelerator(player, index) {
-    if (player.challenge.isChallengeActive(5)) return;
-    if (index >= 1 && player.levelResetTime.lessThanOrEqualTo(0)) return;
+    if (!this.canBuyAccelerator(player, index)) return;
 
-    if (player.money.greaterThanOrEqualTo(this.acceleratorsCost[index])) {
-      player.money = player.money.sub(this.acceleratorsCost[index]);
-      this.accelerators[index] = this.accelerators[index].add(1);
-      this.acceleratorsBought[index] = this.acceleratorsBought[index].add(1);
-      this.calcAcCost(player);
-    }
+    player.money = player.money.sub(this.acceleratorsCost[index]);
+    this.accelerators[index] = this.accelerators[index].add(1);
+    this.acceleratorsBought[index] = this.acceleratorsBought[index].add(1);
+    this.calcAcCost(player);
   }
 
   gainTimeCrystal() {

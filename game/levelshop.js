@@ -20,6 +20,7 @@ class LevelShop {
     this.levelItemBought = playerData.levelitembought;
   }
 
+  // todo: コストを状態にして持つ
   /** @param {number} index */
   calcLevelItemCost(index) {
     let d = index + 1;
@@ -32,16 +33,22 @@ class LevelShop {
     return cost;
   }
 
+   /**
+   * @param {Player} player 
+   * @param {number} index 
+   */
+ canBuyLevelItems(player, index) {
+    const cost = this.calcLevelItemCost(index);
+    if (player.level.lessThan(cost) || this.levelItems[index] >= 5) return false;
+    return true;
+  }
   /**
    * @param {Player} player 
    * @param {number} index 
    */
   buyLevelItems(player, index) {
-    let cost = this.calcLevelItemCost(index);
-    if (player.level.lessThan(cost) || this.levelItems[index] >= 5) {
-      return;
-    }
-    player.level = player.level.sub(cost);
+    if (!this.canBuyLevelItems(player, index)) return;
+    player.level = player.level.sub(this.calcLevelItemCost(index));
     this.levelItems[index] = this.levelItems[index] + 1;
     if (this.levelItemBought < 100000) this.levelItemBought = this.levelItemBought + 1;
   }

@@ -21,8 +21,8 @@ const BasicTab = Vue.defineComponent({
     showMult: true,
   }),
   computed: {
-    isAcceleratorsShown() {
-      return new Array(8).fill(null).map((_, i) => this.player.accelerator.isOpened(this.player, i));
+    shownNum() {
+      return this.player.accelerator.getShownNum(this.player);
     },
   },
   methods: {
@@ -184,11 +184,8 @@ const LevelTab = Vue.defineComponent({
     configChallenge(i) {
       this.player.challenge.configChallenge(i);
     },
-    showUnclearedChallenges() {
-      this.player.challenge.showUnclearedChallenges();
-    },
-    showUnclearedRankChallenges() {
-      this.player.challenge.showUnclearedRankChallenges();
+    showUnclearedChallenges(isRank) {
+      this.player.challenge.showUnclearedChallenges(isRank);
     },
     startChallenge() {
       this.player.challenge.startChallenge(this.player);
@@ -402,11 +399,6 @@ const ChipTab = Vue.defineComponent({
     },
     configSpendChip(i) {
       this.player.chip.configSpendChip(this.player.statue.statue[i], i);
-    },
-    isSetChipShown(i) {
-      if (i <= 31) return true;
-      if (i <= 51) return this.player.rememberSum >= 16;
-      return false;
     },
     chipSet(i, j) {
       this.player.chip.chipSet(i, j);

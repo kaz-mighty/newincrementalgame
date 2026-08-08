@@ -73,18 +73,25 @@ class GameGenerator {
    * @param {Player} player 
    * @param {number} index 
    */
-  buyGenerator(player, index) {
+  canBuyGenerator(player, index) {
     if (player.challenge.isChallengeActive(6)) {
       if (index == 3 || index == 7) {
-        return;
+        return false;
       }
     }
-    if (player.money.greaterThanOrEqualTo(this.generatorsCost[index])) {
-      player.money = player.money.sub(this.generatorsCost[index]);
-      this.generators[index] = this.generators[index].add(1);
-      this.generatorsBought[index] = this.generatorsBought[index].add(1);
-      this.calcGnCost(player);
-    }
+    return player.money.greaterThanOrEqualTo(this.generatorsCost[index]);
+  }
+
+  /**
+   * @param {Player} player 
+   * @param {number} index 
+   */
+  buyGenerator(player, index) {
+    if (!this.canBuyGenerator(player, index)) return;
+    player.money = player.money.sub(this.generatorsCost[index]);
+    this.generators[index] = this.generators[index].add(1);
+    this.generatorsBought[index] = this.generatorsBought[index].add(1);
+    this.calcGnCost(player);
   }
 
   reset() {

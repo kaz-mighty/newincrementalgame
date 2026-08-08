@@ -30,17 +30,25 @@ class Light {
     }
   }
 
+
+  /**
+   * @param {Player} player 
+   * @param {number} index 
+   */
+  canBuyLightGenerator(player, index) {
+    return player.money.greaterThanOrEqualTo(this.lightGeneratorsCost[index]);
+  }
   /**
    * @param {Player} player 
    * @param {number} index 
    */
   buyLightGenerator(player, index) {
-    if (player.money.greaterThanOrEqualTo(this.lightGeneratorsCost[index])) {
-      player.money = player.money.sub(this.lightGeneratorsCost[index]);
-      this.lightGenerators[index] = this.lightGenerators[index].add(1);
-      this.lightGeneratorsBought[index] = this.lightGeneratorsBought[index].add(1);
-      this.calcLgCost();
-    }
+    if (!this.canBuyLightGenerator(player, index)) return;
+
+    player.money = player.money.sub(this.lightGeneratorsCost[index]);
+    this.lightGenerators[index] = this.lightGenerators[index].add(1);
+    this.lightGeneratorsBought[index] = this.lightGeneratorsBought[index].add(1);
+    this.calcLgCost();
   }
 
 }

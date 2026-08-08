@@ -213,6 +213,15 @@ class Chip {
   }
 
   /**
+   * @param {number} rememberSum
+   * @param {number} i
+   */
+  isSetChipShown(rememberSum, i) {
+    if (i <= 31) return true;
+    if (i <= 51) return rememberSum >= 16;
+    return false;
+  }
+  /**
    * @param {number} i 対象の鋳片効力 0-indexed
    * @param {number} j 鋳片の種類 1-indexed (0=None)
    */

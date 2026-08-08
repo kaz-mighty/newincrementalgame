@@ -49,13 +49,20 @@ class Dark {
    * @param {Player} player 
    * @param {number} index 
    */
+  canBuyDarkGenerator(player, index) {
+    return player.money.greaterThanOrEqualTo(this.darkGeneratorsCost[index]);
+  }
+  /**
+   * @param {Player} player 
+   * @param {number} index 
+   */
   buyDarkGenerator(player, index) {
-    if (player.money.greaterThanOrEqualTo(this.darkGeneratorsCost[index])) {
-      player.money = player.money.sub(this.darkGeneratorsCost[index]);
-      this.darkGenerators[index] = this.darkGenerators[index].add(1);
-      this.darkGeneratorsBought[index] = this.darkGeneratorsBought[index].add(1);
-      this.calcDgCost(player);
-    }
+    if (!this.canBuyDarkGenerator(player, index)) return;
+
+    player.money = player.money.sub(this.darkGeneratorsCost[index]);
+    this.darkGenerators[index] = this.darkGenerators[index].add(1);
+    this.darkGeneratorsBought[index] = this.darkGeneratorsBought[index].add(1);
+    this.calcDgCost(player);
   }
 
   calcDarkLevelProof() {

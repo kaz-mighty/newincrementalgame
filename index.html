@@ -173,7 +173,7 @@
 
 			<div id="accelerators-container">
 				<template v-for="(_, i) in 8" :key="i">
-					<div class="accelerator" v-show="isAcceleratorsShown[i]">
+					<div class="accelerator" v-show="i < shownNum">
 						時間加速器{{ i+1 }}: {{ toFormated(player.accelerator.accelerators[i],5) }}
 						<button type="button" class="a-button" :class="{ 'unavailable': player.money.lt(player.accelerator.acceleratorsCost[i]) }" @click="buyAccelerator(i)">
 							購入 コスト: {{ player.accelerator.acceleratorsCost[i].toExponential(1) }}
@@ -327,12 +327,12 @@
 				<br>
 
 				<div>
-					<button type="button" id="search-uncleared" @click="showUnclearedChallenges()">
+					<button type="button" id="search-uncleared" @click="showUnclearedChallenges(false)">
 						未達成挑戦
 					</button>
 				</div>
 				<div v-if="player.challenge.rankCleared.length>=1">
-					<button type="button" id="search-uncleared-rank" @click="showUnclearedRankChallenges()">
+					<button type="button" id="search-uncleared-rank" @click="showUnclearedChallenges(true)">
 						未達成階位挑戦
 					</button>
 				</div>
@@ -436,7 +436,7 @@
 				段位効力は、種類ごとに5回まで購入することができます。
 				<br>
 				<div class="level-item" v-for="(_, i) in 5" :key="i">
-					<button type="button" class="l-button" :class="{ 'unavailable': player.level.lt(player.levelShop.calcLevelItemCost(i)) || player.levelShop.levelItems[i] >= 5 }" @click="buyLevelItems(i)">
+					<button type="button" class="l-button" :class="{ 'unavailable': !player.levelShop.canBuyLevelItems(player, i) }" @click="buyLevelItems(i)">
 						段位効力 {{ i+1 }}: コスト {{ player.levelShop.calcLevelItemCost(i).toExponential(1) }}
 					</button>
 					<span> ・{{ LevelShop.itemText[i] }} </span>
@@ -726,7 +726,7 @@
 
 			鋳片使用
 			<template v-for="(_, i) in 100" :key="i">
-				<div clsss="set-chip" v-if="isSetChipShown(i)">
+				<div clsss="set-chip" v-if="player.chip.isSetChipShown(player.rememberSum, i)">
 					鋳片効力 {{ i+1 }} : {{ Chip.chipBonusName[i] }}
 					<span v-show="player.chip.disabledChip[i]">（無効）</span>
 					<span v-for="(, j) in 10" :key="j">

@@ -76,7 +76,7 @@ class Challenge {
   ];
 
 
-  // 重複がない場合に限りoriginalと同じ動作をする
+  // 重複がない場合に限りoriginと同じ動作をする
   /** @param {Iterable<number>} iter */
   static getChallengeId(iter) {
     let challengeId = 0;
@@ -154,26 +154,32 @@ class Challenge {
     return this.onPerfect && this.perfectSelected.has(index);
   }
 
+  getMaxToken() {
+    let t = this.cleared.length;
+    if (this.onPerfect) {
+      t = Math.max(t, this.perfectCleared[this.getPChallengeId()]);
+    }
+    return t;
+  }
+  getMaxRankToken() {
+    let rt = this.rankCleared.length;
+    if (this.onPerfect) {
+      rt = Math.max(rt, this.perfectRankCleared[this.getPChallengeId()]);
+    }
+    return rt;
+  }
   calcToken() {
     let spent = 0;
     for (let i of this.bonuses) {
       spent += Challenge.rewardCost[i];
     }
-    let t = this.cleared.length;
-    if (this.onPerfect) {
-      t = Math.max(t, this.perfectCleared[this.getPChallengeId()]);
-    }
-    this.token = t - spent;
+    this.token = this.getMaxToken() - spent;
 
     let rspent = 0;
     for (let i of this.rankBonuses) {
       rspent += Challenge.rewardCost[i];
     }
-    let rt = this.rankCleared.length;
-    if (this.onPerfect) {
-      rt = Math.max(rt, this.perfectRankCleared[this.getPChallengeId()]);
-    }
-    this.rankToken = rt - rspent;
+    this.rankToken = this.getMaxRankToken() - rspent;
   }
   countPChallengeCleared() {
     let cnt = 0;
@@ -301,9 +307,10 @@ class Challenge {
     if (isNaN(input)) return;
     this.challengeWeightValue[i] = input;
   }
-  // todo: 1つのメソッドにできる
-  showUnclearedChallenges() {
-    if (this.cleared.length == 255) return;
+  /** @param {boolean} isRank */
+  showUnclearedChallenges(isRank) {
+    const cleared = isRank ? this.rankCleared : this.cleared;
+    if (cleared.length == 255) return;
     if (this.onChallenge) return;
 
     let challengeWeightPairs = [];
@@ -332,42 +339,9 @@ class Challenge {
         if (idx == 255) idx = 0;
         challengeId = challengeWeightPairs[idx].id;
       }
-    } while (this.cleared.includes(challengeId));
+    } while (cleared.includes(challengeId));
 
     this.selected = new Set(Challenge.calcChallengesArray(challengeId));
-  }
-  showUnclearedRankChallenges() {
-    if (this.rankCleared.length == 255) return;
-    if (this.onChallenge) return;
-
-    let challengeweightpairs = [];
-    for (let i = 1; i <= 255; i++) {
-      let ans = 0;
-      for (let j = 0; j < 20; j++) {
-        if ((i | this.challengeWeight[j]) == i) {
-          ans += this.challengeWeightValue[j];
-        }
-      }
-      challengeweightpairs.push({
-        id: i,
-        weight: ans
-      });
-    }
-
-    challengeweightpairs.sort((a, b) => a.weight - b.weight);
-
-    let challengeid = this.getChallengeId();
-    do {
-      if (challengeid == 0) {
-        challengeid = challengeweightpairs[0].id;
-      } else {
-        let idx = challengeweightpairs.findIndex((e) => e.id == challengeid) + 1;
-        if (idx == 255) idx = 0;
-        challengeid = challengeweightpairs[idx].id;
-      }
-    } while (this.rankCleared.includes(challengeid));
-
-    this.selected = new Set(Challenge.calcChallengesArray(challengeid));
   }
 
   /** @param {Player} player */

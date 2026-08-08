@@ -613,9 +613,8 @@ class Player {
     let dv = 72;
     return new Decimal(2).pow(this.money.log10() / dv).round();
   }
-  // todo: forceは実際はresetLevelのexitに相当する
-  /** @param {boolean} force  */
-  resetCrown(force) {
+  /** @param {boolean} exit */
+  resetCrown(exit) {
     if (this.challenge.onChallenge) {
       alert('現在挑戦中のため、昇冠リセットができません。');
       //あとで消す
@@ -629,7 +628,7 @@ class Player {
     }
 
     let gainCrown = this.calcGainCrown();
-    if (force || confirm('昇冠リセットして、冠位' + gainCrown + 'を得ますか？')) {
+    if (exit || confirm('昇冠リセットして、冠位' + gainCrown + 'を得ますか？')) {
 
       this.markStone.resetCrown();
 
@@ -643,7 +642,7 @@ class Player {
       this.generator.reset();
       this.accelerator.reset(this.challenge);
 
-      if (!force) {
+      if (!exit) {
         this.crown = this.crown.add(gainCrown);
         this.crownResetTime = this.crownResetTime.add(1);
       }

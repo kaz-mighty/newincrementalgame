@@ -21,6 +21,48 @@ const TabHeader = Vue.defineComponent({
     player: currentPlayer,
   }),
   computed: {
+    isDarkShown() {
+      return this.player.dark.darkGenerators[0].gte(1) || this.player.money.gte("1e100");
+    },
+    isLightShown() {
+      return this.player.light.lightGenerators[0].gte(1) || (this.player.money.gte("1e200") && this.player.crownResetTime.gt(0));
+    },
+    isTimeShown() {
+      return this.player.campaign.accelLevel > 0;
+    },
+    isLevelShown() {
+      return this.player.crownResetTime.gt(0) || this.player.rankResetTime.gt(0) || this.player.levelResetTime.gt(0);
+    },
+    isRankShown() {
+      return this.player.crownResetTime.gt(0) || this.player.rankResetTime.gt(0);
+    },
+    isCrownShown() {
+      return this.player.crownResetTime.gt(0);
+    },
+    isSpiritShown() {
+      return this.player.challenge.perfectStage >= 10;
+    },
+    isAutoShown() {
+      return this.isLevelShown;
+    },
+    isShineShown() {
+      return this.player.challenge.cleared.length >= 64;
+    },
+    isWorldShown() {
+      return this.player.common.worldOpened[1] || this.player.common.worldOpened[2];
+    },
+    isChipShown() {
+      return this.player.trophy.smallTrophies1st[5];
+    },
+    isStatueShown() {
+      return this.player.chip.chip[0] >= 10000 || this.player.statue.statue[0] >= 1;
+    },
+    isRingShown() {
+      return this.player.shine.residue >= 100;
+    },
+    isMarkStoneShown() {
+      return this.player.markStone.stones[0] > 0 || this.player.markStone.greatStones[0] > 0;
+    },
   },
   methods: {
     /** @param {string} tabname */

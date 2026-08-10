@@ -65,52 +65,52 @@
 			<span id="basic">
 				<button type="button" @click="changeTab('basic')">通常</button>
 			</span>
-			<span id="dark" v-if="player.money.greaterThanOrEqualTo('1e100') || player.dark.darkGenerators[0].greaterThanOrEqualTo(1)">
+			<span id="dark" v-if="isDarkShown">
 				<button type="button" @click="changeTab('dark')">裏</button>
 			</span>
-			<span id="light" v-if="(player.money.greaterThanOrEqualTo('1e200')&&player.crownResetTime.gt(0)) || player.light.lightGenerators[0].greaterThanOrEqualTo(1)">
+			<span id="light" v-if="isLightShown">
 				<button type="button" @click="changeTab('light')">天上</button>
 			</span>
-			<span id="time" v-if="player.campaign.accelLevel>0">
+			<span id="time" v-if="isTimeShown">
 				<button type="button" @click="changeTab('time')">時</button>
 			</span>
 			<span id="option">
 				<button type="button" @click="changeTab('option')">設定</button>
 			</span>
-			<span id="level" v-if="player.levelResetTime.gt(0) || player.rankResetTime.gt(0) || player.crownResetTime.gt(0)">
+			<span id="level" v-if="isLevelShown">
 				<button type="button" @click="changeTab('level')">段位</button>
 			</span>
-			<span id="rank" v-if="player.rankResetTime.gt(0) || player.crownResetTime.gt(0)">
+			<span id="rank" v-if="isRankShown">
 				<button type="button" @click="changeTab('rank')">階位</button>
 			</span>
-			<span id="crown" v-if="player.crownResetTime.gt(0)">
+			<span id="crown" v-if="isCrownShown">
 				<button type="button" @click="changeTab('crown')">冠位</button>
 			</span>
-			<span id="spirit" v-if="player.challenge.perfectStage>=10">
+			<span id="spirit" v-if="isSpiritShown">
 				<button type="button" @click="changeTab('spirit')">精霊</button>
 			</span>
-			<span id="auto" v-if="player.levelResetTime.gt(0) || player.rankResetTime.gt(0) || player.crownResetTime.gt(0)">
+			<span id="auto" v-if="isAutoShown">
 				<button type="button" @click="changeTab('auto')">自動</button>
 			</span>
-			<span id="shine" v-if="player.challenge.cleared.length >= 64">
+			<span id="shine" v-if="isShineShown">
 				<button type="button" @click="changeTab('shine')">輝き</button>
 			</span>
-			<span id="world" v-if="nig.common.worldOpened[1] || nig.common.worldOpened[2]">
+			<span id="world" v-if="isWorldShown">
 				<button type="button" @click="changeTab('world')">世界</button>
 			</span>
-			<span id="chip" v-if="player.trophy.smallTrophies1st[5]">
+			<span id="chip" v-if="isChipShown">
 				<button type="button" @click="changeTab('chip')">鋳片</button>
 			</span>
-			<span id="statue" v-if="player.chip.chip[0] >= 10000 || player.statue.statue[0] >= 1">
+			<span id="statue" v-if="isStatueShown">
 				<button type="button" @click="changeTab('statue')">像</button>
 			</span>
 			<span id="trophy">
 				<button type="button" @click="changeTab('trophy')">実績</button>
 			</span>
-			<span id="ring" v-if="player.shine.residue >= 100">
+			<span id="ring" v-if="isRingShown">
 				<button type="button" @click="changeTab('ring')">輪</button>
 			</span>
-			<span id="mark-stone" v-if="player.markStone.stones[0] > 0 || player.markStone.greatStones[0] > 0">
+			<span id="mark-stone" v-if="isMarkStoneShown">
 				<button type="button" @click="changeTab('markstone')">印石</button>
 			</span>
 		</div>

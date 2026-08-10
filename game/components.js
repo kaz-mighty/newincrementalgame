@@ -14,6 +14,23 @@ function toFormated(dec, exp) {
 }
 
 
+const TabHeader = Vue.defineComponent({
+  template: "#tab-header",
+  data: () => ({
+    nig: nigInstance,
+    player: currentPlayer,
+  }),
+  computed: {
+  },
+  methods: {
+    /** @param {string} tabname */
+    changeTab(tabname) {
+      this.player.currentTab = tabname;
+    },
+  },
+});
+
+
 const BasicTab = Vue.defineComponent({
   template: "#basic-tab",
   data: () => ({
@@ -518,6 +535,7 @@ const MarkStoneTab = Vue.defineComponent({
 
 const app = Vue.createApp(Vue.defineComponent({
   components: {
+    TabHeader,
     BasicTab,
     DarkTab,
     LightTab,
@@ -632,10 +650,6 @@ const app = Vue.createApp(Vue.defineComponent({
         case 4: this.player.challenge.changeRankBonuseType(2); break;
         case 5: this.player.chip.changeChipType(); break;
       }
-    },
-    /** @param {string} tabname */
-    changeTab(tabname) {
-      this.player.currentTab = tabname;
     },
   },
   mounted() {

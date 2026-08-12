@@ -80,6 +80,15 @@ const BasicTab = Vue.defineComponent({
     showMult: true,
   }),
   computed: {
+    modeBonus() {
+      return this.player.calcCommonModeBonus();
+    },
+    incrementMults() {
+      const [lv, rk] = this.modeBonus;
+      return new Array(8).fill(null).map((_, i) => 
+        this.player.calcIncrementMult(i, this.player.generator.generatorsMode[i], lv, rk).toExponential(2)
+      );
+    },
     shownNum() {
       return this.player.accelerator.getShownNum(this.player);
     },

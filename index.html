@@ -171,8 +171,8 @@
 							変更
 						</button>
 					</template>
-					<span v-show="showMult  && !player.challenge.activeBonuses.has(13)">
-						倍率: {{ player.calcIncrementMult(i,player.generator.generatorsMode[i]).toExponential(2) }}
+					<span v-if="showMult && !player.challenge.activeBonuses.has(13)">
+						倍率: {{ incrementMults[i] }}
 					</span>
 				</div>
 			</div>

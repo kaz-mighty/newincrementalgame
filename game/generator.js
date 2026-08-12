@@ -48,10 +48,12 @@ class GameGenerator {
    * @param {Decimal} mu 
    */
   updateGenerators(player, mu) {
+    let [levelBonus, rankBonus] = player.calcCommonModeBonus();
+
     for (let i = 0; i < 8; i++) {
       if (!player.challenge.activeBonuses.has(13)) {
         let to = this.generatorsMode[i];
-        let mult = mu.mul(player.calcIncrementMult(i, to));
+        let mult = mu.mul(player.calcIncrementMult(i, to, levelBonus, rankBonus));
         if (to === 0) {
           player.money = player.money.add(this.generators[i].mul(mult));
         } else {
@@ -59,12 +61,12 @@ class GameGenerator {
         }
       } else {
         if (player.challenge.isActive(3)) {
-          let mult = mu.mul(player.calcIncrementMult(i, 0));
+          let mult = mu.mul(player.calcIncrementMult(i, 0, levelBonus, rankBonus));
           mult = mult.mul(i + 1);
           player.money = player.money.add(this.generators[i].mul(mult));
         } else {
           for (let to = 0; to <= i; to++) {
-            let mult = mu.mul(player.calcIncrementMult(i, to));
+            let mult = mu.mul(player.calcIncrementMult(i, to, levelBonus, rankBonus));
             if (to === 0) {
               player.money = player.money.add(this.generators[i].mul(mult));
             } else {

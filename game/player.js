@@ -223,6 +223,8 @@ class Player {
     };
   }
 
+  // bug: これらのメソッドは輝き系使用時に呼び出されず、発生器倍率が更新されない。
+  // Generator.updateGeneratorsの先頭で1回だけ呼ぶのが望ましい。
   calcCommonMult() {
     let mult = new Decimal(1);
     if (!(this.challenge.isActive(7))) {
@@ -340,21 +342,29 @@ class Player {
     this.incrementalMults[i] = mult;
   }
 
+  // Note: origin と同じ動作を保つため、必要時に毎回呼び出す
+  // (calcCommonMultなどのようにインスタンスに状態を保存すると、vueレンダリング時に古い値で計算される可能性がある)
+  /** @returns {[levelBonus: Decimal, rankBonus: number]} */
+  calcCommonModeBonus() {
+    let lv = new Decimal(this.level.pow(1 + 0.5 * this.chip.setChip[19]).add(2).log2());
+    let rk = this.rank.add(2).div(262142).log2();
+    rk += new Decimal(this.rank.add(2).log2()).log2() * this.chip.setChip[23];
+    rk = 1 + Math.max(rk, 0) * 0.05;
+    return [lv, rk];
+  }
+
   /**
    * @param {number} i 
    * @param {number} to 
+   * @param {Decimal} levelBonus
+   * @param {number} rankBonus
    */
-  calcIncrementMult(i, to) {
+  calcIncrementMult(i, to, levelBonus, rankBonus) {
     let mult = this.incrementalMults[i];
     if (!(this.challenge.isActive(4))) {
       mult = mult.mul(new Decimal(10).pow((i + 1) * (i - to)));
     }
-
-    let lv = new Decimal(this.level.pow(1 + 0.5 * this.chip.setChip[19]).add(2).log2());
-
-    let rk = this.rank.add(2).div(262142).log2();
-    rk += new Decimal(this.rank.add(2).log2()).log2() * this.chip.setChip[23];
-    mult = mult.mul(new Decimal(lv.pow((i - to) * (1 + Math.max(rk, 0) * 0.05))));
+    mult = mult.mul(levelBonus.pow((i - to) * rankBonus));
 
     if (this.challenge.isPerfectActive(3) && mult.gt("1e-100")) {
       let b = Math.floor(mult.log10() / 6);

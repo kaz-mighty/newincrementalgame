@@ -413,7 +413,7 @@ class Challenge {
     if (confirm('挑戦を諦めますか？現在のポイントや発生器、時間加速器を引き継いだまま、通常の状態に入ります。')) {
       this.onChallenge = false;
       this.activeBonuses = this.bonuses;
-      player.generator.calcGnCost(player);
+      player.generator.updateAllCost(player);
     }
   }
 

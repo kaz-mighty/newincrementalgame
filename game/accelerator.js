@@ -9,14 +9,22 @@ class Accelerator {
     this.timeCrystalSum = this.timeCrystal.slice(0, 8).reduce((a, b) => a + b);
   }
 
+  /**
+   * @param {Player} player
+   * @param {number} i
+   */
+  calcCost(player, i) {
+    let p = this.acceleratorsBought[i].add(1);
+    p = p.mul(p.add(1)).div(2);
+    p = p.mul(i === 0 ? 1 : new Decimal(10).mul(new Decimal(2).pow(i - 1)));
+    p = p.sub(player.eachPipedSmallTrophy[3] * 0.2 * (i + 1));
+    return p.pow_base(10);
+  }
+
   /** @param {Player} player */
-  calcAcCost(player) {
+  updateAllCost(player) {
     for (let i = 0; i < 8; i++) {
-      let p = this.acceleratorsBought[i].add(1);
-      p = p.mul(p.add(1)).div(2);
-      p = p.mul(i === 0 ? 1 : new Decimal(10).mul(new Decimal(2).pow(i - 1)));
-      p = p.sub(player.eachPipedSmallTrophy[3] * 0.2 * (i + 1));
-      this.acceleratorsCost[i] = p.pow_base(10);
+      this.acceleratorsCost[i] = this.calcCost(player, i);
     }
   }
 
@@ -67,7 +75,7 @@ class Accelerator {
     player.money = player.money.sub(this.acceleratorsCost[index]);
     this.accelerators[index] = this.accelerators[index].add(1);
     this.acceleratorsBought[index] = this.acceleratorsBought[index].add(1);
-    this.calcAcCost(player);
+    this.acceleratorsCost[index] = this.calcCost(player, index);
   }
 
   gainTimeCrystal() {

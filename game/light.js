@@ -8,12 +8,17 @@ class Light {
     this.lightGeneratorsCost = playerData.lightgeneratorsCost.map(v => new Decimal(v));
   }
 
-  calcLgCost() {
+  /** @param {number} i */
+  calcCost(i) {
+    let p = 200 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1) * (i + 1));
+    let q = this.lightGeneratorsBought[i].mul(i + 1).mul(i + 1).mul(i + 1);
+    q = q.add(p);
+    return new Decimal(10).pow(q);
+  }
+
+  updateAllCost() {
     for (let i = 0; i < 8; i++) {
-      let p = 200 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1) * (i + 1));
-      let q = this.lightGeneratorsBought[i].mul(i + 1).mul(i + 1).mul(i + 1);
-      q = q.add(p);
-      this.lightGeneratorsCost[i] = new Decimal(10).pow(q);
+      this.lightGeneratorsCost[i] = this.calcCost(i);
     }
   }
 
@@ -48,7 +53,7 @@ class Light {
     player.money = player.money.sub(this.lightGeneratorsCost[index]);
     this.lightGenerators[index] = this.lightGenerators[index].add(1);
     this.lightGeneratorsBought[index] = this.lightGeneratorsBought[index].add(1);
-    this.calcLgCost();
+    this.lightGeneratorsCost[index] = this.calcCost(index);
   }
 
 }

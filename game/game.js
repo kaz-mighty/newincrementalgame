@@ -362,10 +362,10 @@ class Nig { // New Incremental Game
       this.player.calcBasicIncrementMult(i);
     }
 
-    this.player.generator.calcGnCost(this.player);
-    this.player.accelerator.calcAcCost(this.player);
-    this.player.dark.calcDgCost(this.player);
-    this.player.light.calcLgCost();
+    this.player.generator.updateAllCost(this.player);
+    this.player.accelerator.updateAllCost(this.player);
+    this.player.dark.updateAllCost(this.player);
+    this.player.light.updateAllCost();
 
     // bug: 多重起動ができてしまう
     if (this.player.auto.autoRing) {

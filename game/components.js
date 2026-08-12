@@ -133,7 +133,7 @@ const DarkTab = Vue.defineComponent({
   },
   methods: {
     resetDarkLevel() {
-      this.player.dark.resetDarklevel(this.player);
+      this.player.resetDarkLevel();
     },
     buyDarkGenerator(i) {
       this.player.dark.buyDarkGenerator(this.player, i);

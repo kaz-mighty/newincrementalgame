@@ -21,18 +21,25 @@ class GameGenerator {
     }
   }
 
-  /** @param {Player} player */
-  calcGnCost(player) {
-    for (let i = 0; i < 8; i++) {
-      let p = i === 0 ?
-        this.generatorsBought[0] :
-        this.generatorsBought[i].add(i + 1).mul(i + 1);
-      if (player.challenge.isActive(1) && this.generatorsBought[i].gt(0)) {
-        p = p.mul(2);
-      }
-      p = p.sub(player.eachPipedSmallTrophy[0] * 0.2);
+  /**
+   * @param {Player} player
+   * @param {number} i
+   */
+  calcCost(player, i) {
+    let p = i === 0 ?
+      this.generatorsBought[0] :
+      this.generatorsBought[i].add(i + 1).mul(i + 1);
+    if (player.challenge.isActive(1) && this.generatorsBought[i].gt(0)) {
+      p = p.mul(2);
+    }
+    p = p.sub(player.eachPipedSmallTrophy[0] * 0.2);
 
-      this.generatorsCost[i] = new Decimal(10).pow(p);
+    return new Decimal(10).pow(p);
+  }
+  /** @param {Player} player */
+  updateAllCost(player) {
+    for (let i = 0; i < 8; i++) {
+      this.generatorsCost[i] = this.calcCost(player, i);
     }
   }
 
@@ -91,7 +98,7 @@ class GameGenerator {
     player.money = player.money.sub(this.generatorsCost[index]);
     this.generators[index] = this.generators[index].add(1);
     this.generatorsBought[index] = this.generatorsBought[index].add(1);
-    this.calcGnCost(player);
+    this.generatorsCost[index] = this.calcCost(player, index);
   }
 
   reset() {

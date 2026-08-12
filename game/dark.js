@@ -14,14 +14,22 @@ class Dark {
     this.updateProofCallback = null;
   }
 
+  /**
+   * @param {Player} player
+   * @param {number} i
+   */
+  calcCost(player, i) {
+    let p = 100 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1));
+    let q = this.darkGeneratorsBought[i].mul(i + 1).mul(i + 1);
+    q = q.add(p);
+    q = q.sub(player.eachPipedSmallTrophy[8] * 0.02 * (i + 1) * (i + 1));
+    return new Decimal(10).pow(q);
+  }
+
   /** @param {Player} player */
-  calcDgCost(player) {
+  updateAllCost(player) {
     for (let i = 0; i < 8; i++) {
-      let p = 100 + (i == 0 ? 0 : (i + 1) * (i + 1) * (i + 1));
-      let q = this.darkGeneratorsBought[i].mul(i + 1).mul(i + 1);
-      q = q.add(p);
-      q = q.sub(player.eachPipedSmallTrophy[8] * 0.02 * (i + 1) * (i + 1));
-      this.darkGeneratorsCost[i] = new Decimal(10).pow(q);
+      this.darkGeneratorsCost[i] = this.calcCost(player, i);
     }
   }
 
@@ -62,7 +70,7 @@ class Dark {
     player.money = player.money.sub(this.darkGeneratorsCost[index]);
     this.darkGenerators[index] = this.darkGenerators[index].add(1);
     this.darkGeneratorsBought[index] = this.darkGeneratorsBought[index].add(1);
-    this.calcDgCost(player);
+    this.darkGeneratorsCost[index] = this.calcCost(player, index);
   }
 
   calcDarkLevelProof() {
@@ -79,7 +87,7 @@ class Dark {
   }
 
   /** @param {Player} player */
-  resetDarklevel(player) {
+  resetDarkLevel(player) {
     let dv = 18 - player.crown.add(2).log2();
     dv = Math.max(dv, 1);
     let gainDarkLevel = new Decimal(this.darkMoney.log10()).div(dv).pow_base(2);

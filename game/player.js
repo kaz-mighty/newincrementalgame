@@ -92,13 +92,16 @@ class Player {
     };
 
     // 以下、セーブされない状態 ほとんどの変数は世界が現在アクティブでない場合無効(正しい値にならない)
-    // 世界共有データ
+    // ===== 世界共有データ =====
     this.common = commonData;
-    // キャッシュ等
+    // ===== キャッシュ等 =====
     this.commonMult = new Decimal(0);
     this.incrementalMults = new Array(8).fill(null).map(() => new Decimal(1));
     this.multByAc = new Decimal(1);
-    // 他世界統計
+    // Note: 各発生器のリセット時、一旦コストが定数で初期化されたのちに
+    // 次のupdateで再計算される仕様を維持しつつ高速化するためのフラグ
+    this._shouldCostUpdate = false;
+    // ===== 他世界統計 =====
     this.memorySum = 0;
     this.rememberSum = 0;
     this.eachPipedSmallTrophy = new Array(WORLD_NUM).fill(0);
@@ -528,6 +531,7 @@ class Player {
 
       this.generator.reset();
       this.accelerator.reset(this.challenge);
+      this._shouldCostUpdate = true;
 
       this.tickSpeed = 1000;
 
@@ -590,6 +594,7 @@ class Player {
 
       this.generator.reset();
       this.accelerator.reset(this.challenge);
+      this._shouldCostUpdate = true;
 
       this.tickSpeed = 1000;
 
@@ -641,6 +646,7 @@ class Player {
 
       this.generator.reset();
       this.accelerator.reset(this.challenge);
+      this._shouldCostUpdate = true;
 
       if (!exit) {
         this.crown = this.crown.add(gainCrown);
@@ -659,6 +665,10 @@ class Player {
     }
   }
 
+  resetDarkLevel() {
+    this.dark.resetDarkLevel(this);
+    this._shouldCostUpdate = true;
+  }
 
   calcMaxPipe() {
     if (this.trophy.trophies[9]) return 3;
@@ -718,10 +728,12 @@ class Player {
       this.calcBasicIncrementMult(i);
     }
 
-    this.generator.calcGnCost(this);
-    this.accelerator.calcAcCost(this);
-    this.dark.calcDgCost(this);
-    this.light.calcLgCost();
+    if (this._shouldCostUpdate) {
+      this.generator.updateAllCost(this);
+      this.accelerator.updateAllCost(this);
+      this.dark.updateAllCost(this);
+      this._shouldCostUpdate = false;
+    }
 
     this.generator.updateGenerators(this, new Decimal(1));
     this.accelerator.updateAccelerators(this, new Decimal(1));

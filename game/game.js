@@ -591,6 +591,11 @@ class Nig { // New Incremental Game
   }
 }
 
+// Decimalは不変オブジェクトとして扱われているので、中身をリアクティブにされないようにする
+// (プロトタイプに対しマークすると全インスタンスに有効)
+// パフォーマンスがそこそこ向上する
+Vue.markRaw(Decimal.prototype);
+
 /** @type {Vue.Ref<Nig>} */
 const nigInstance = Vue.ref(new Nig());
 /** @type {Vue.ComputedRef<Player>} */

@@ -87,11 +87,17 @@ class Dark {
   }
 
   /** @param {Player} player */
-  resetDarkLevel(player) {
+  gainDarkLevel(player) {
     let dv = 18 - player.crown.add(2).log2();
     dv = Math.max(dv, 1);
     let gainDarkLevel = new Decimal(this.darkMoney.log10()).div(dv).pow_base(2);
     gainDarkLevel = gainDarkLevel.mul(1 + player.common.totalDarkLevelProof * 0.1).round();
+    return gainDarkLevel;
+  }
+
+  /** @param {Player} player */
+  resetDarkLevel(player) {
+    const gainDarkLevel = this.gainDarkLevel(player);
     if (confirm('裏昇段リセットして、裏段位' + gainDarkLevel + 'を得ますか？')) {
       this.darkMoney = new Decimal(0);
       this.darkGenerators = new Array(8).fill(null).map(() => new Decimal(0));

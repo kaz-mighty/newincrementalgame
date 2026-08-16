@@ -85,7 +85,7 @@ const BasicTab = Vue.defineComponent({
     },
     incrementMults() {
       const [lv, rk] = this.modeBonus;
-      return new Array(8).fill(null).map((_, i) => 
+      return new Array(8).fill(null).map((_, i) =>
         this.player.calcIncrementMult(i, this.player.generator.generatorsMode[i], lv, rk).toExponential(2)
       );
     },
@@ -294,7 +294,7 @@ const RankTab = Vue.defineComponent({
   methods: {
     buyLevelItems(i) {
       this.player.levelShop.buyLevelItems(this.player, i);
-    }
+    },
   },
 });
 
@@ -400,7 +400,7 @@ const ShineTab = Vue.defineComponent({
     isResidueShown() {
       // bug: 残滓獲得後に収縮すると非表示になる
       return this.player.challenge.perfectStage >= 10;
-    }
+    },
   },
   methods: {
     spendShine(num) {
@@ -455,9 +455,6 @@ const ChipTab = Vue.defineComponent({
     nig: nigInstance,
     player: currentPlayer,
   }),
-  computed: {
-
-  },
   methods: {
     toggleChipThresholdUse() {
       this.nig.toggleChipThresholdUse();
@@ -486,9 +483,6 @@ const ChipTab = Vue.defineComponent({
 const StatueTab = Vue.defineComponent({
   template: "#statue-tab",
   data: () => ({player: currentPlayer}),
-  computed: {
-
-  },
   methods: {
     buildStatue(i) {
       this.player.statue.buildStatue(this.player, i);
@@ -514,7 +508,7 @@ const RingTab = Vue.defineComponent({
   computed: {
     activeRingId() {
       return this.player.ring.setRings[this.player.ring.missionState.activeRing];
-    }
+    },
   },
   methods: {
     configAutoMission() {
@@ -613,9 +607,6 @@ const app = Vue.createApp(Vue.defineComponent({
     };
   },
   computed: {
-    tabComponentName() {
-      return this.player.currentTab.charAt(0).toUpperCase() + this.player.currentTab.slice(1) + "Tab";
-    },
     tweetLink() {
       let tweetText = "";
       if (this.player.tweeting.includes('world')) {
@@ -689,7 +680,7 @@ const app = Vue.createApp(Vue.defineComponent({
         + '&hashtags=' + tweetHashtag;
 
       return attribute;
-    }
+    },
   },
   methods: {
     changeType(typeIndex) {

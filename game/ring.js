@@ -527,24 +527,24 @@ class Ring {
    */
   toSaveObject(player) {
     return {
-      setrings: this.setRings,
-      ringsexp: this.ringsExp,
+      setrings: Array.from(this.setRings),
+      ringsexp: Array.from(this.ringsExp),
       onmission: this.onMission,
       missionid: this.missionId,
       missionstate: {
         turn: this.missionState.turn,
         activering: this.missionState.activeRing,
-        skilllog: this.missionState.skillLog,
+        skilllog: this.missionState.skillLog.map(array => [...array]),  // 二次元配列 deep copy
         flowerpoint: this.missionState.flowerPoint,
         snowpoint: this.missionState.snowPoint,
         moonpoint: this.missionState.moonPoint,
         flowermultiplier: this.missionState.flowerMultiplier,
         snowmultiplier: this.missionState.snowMultiplier,
         moonmultiplier: this.missionState.moonMultiplier,
-        tps: this.missionState.tps,
-        fieldeffect: this.missionState.fieldEffect,
+        tps: Array.from(this.missionState.tps),
+        fieldeffect: this.missionState.fieldEffect.map(array => [...array]),
       },
-      clearedmission: this.clearedMission,
+      clearedmission: Array.from(this.clearedMission),
       auto: {
         doauto: player.auto.autoRing,
         automissionid: this.unUsed.automissionid,

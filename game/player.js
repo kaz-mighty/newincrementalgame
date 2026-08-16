@@ -120,8 +120,8 @@ class Player {
       brightness: this.shine.brightness,
       flicker: this.shine.flicker,
 
-      shineloader: this.unUsed.shineLoader,
-      brightloader: this.unUsed.brightLoader,
+      shineloader: Array.from(this.unUsed.shineLoader),
+      brightloader: Array.from(this.unUsed.brightLoader),
 
       residue: this.shine.residue,
 
@@ -135,90 +135,90 @@ class Player {
 
       markstone: this.markStone.toSaveObject(),
 
-      generators: this.generator.generators,
-      generatorsBought: this.generator.generatorsBought,
-      generatorsCost: this.generator.generatorsCost,
-      generatorsMode: this.generator.generatorsMode,
+      generators: Array.from(this.generator.generators),
+      generatorsBought: Array.from(this.generator.generatorsBought),
+      generatorsCost: Array.from(this.generator.generatorsCost),
+      generatorsMode: Array.from(this.generator.generatorsMode),
 
-      accelerators: this.accelerator.accelerators,
-      acceleratorsBought: this.accelerator.acceleratorsBought,
-      acceleratorsCost: this.accelerator.acceleratorsCost,
+      accelerators: Array.from(this.accelerator.accelerators),
+      acceleratorsBought: Array.from(this.accelerator.acceleratorsBought),
+      acceleratorsCost: Array.from(this.accelerator.acceleratorsCost),
 
       darkmoney: this.dark.darkMoney,
 
-      darkgenerators: this.dark.darkGenerators,
-      darkgeneratorsBought: this.dark.darkGeneratorsBought,
-      darkgeneratorsCost: this.dark.darkGeneratorsCost,
+      darkgenerators: Array.from(this.dark.darkGenerators),
+      darkgeneratorsBought: Array.from(this.dark.darkGeneratorsBought),
+      darkgeneratorsCost: Array.from(this.dark.darkGeneratorsCost),
 
       darklevel: this.dark.darkLevel,
       darklevelproof: this.dark.darkLevelProof,
 
       lightmoney: this.light.lightMoney,
 
-      lightgenerators: this.light.lightGenerators,
-      lightgeneratorsBought: this.light.lightGeneratorsBought,
-      lightgeneratorsCost: this.light.lightGeneratorsCost,
+      lightgenerators: Array.from(this.light.lightGenerators),
+      lightgeneratorsBought: Array.from(this.light.lightGeneratorsBought),
+      lightgeneratorsCost: Array.from(this.light.lightGeneratorsCost),
 
       tickspeed: this.tickSpeed,
       accelevel: this.campaign.accelLevel,
       accelevelused: this.campaign.accelLevelUsed,
-      activatedcampaigns: this.campaign.activated,
-      timecrystal: this.accelerator.timeCrystal,
+      activatedcampaigns: Array.from(this.campaign.activated),
+      timecrystal: Array.from(this.accelerator.timeCrystal),
       saveversion: this.saveVersion,
 
       currenttab: this.currentTab,
-      tweeting: this.tweeting,
+      tweeting: Array.from(this.tweeting),
 
       onchallenge: this.challenge.onChallenge,
       challenges: Array.from(this.challenge.selected),
-      challengecleared: this.challenge.cleared,
+      challengecleared: Array.from(this.challenge.cleared),
       challengebonuses: Array.from(this.challenge.bonuses),
 
-      challengeweight: this.challenge.challengeWeight,
-      challengeweightvalue: this.challenge.challengeWeightValue,
+      challengeweight: Array.from(this.challenge.challengeWeight),
+      challengeweightvalue: Array.from(this.challenge.challengeWeightValue),
 
       onpchallenge: this.challenge.onPerfect,
       pchallenges: Array.from(this.challenge.perfectSelected),
-      pchallengecleared: this.challenge.perfectCleared,
-      prchallengecleared: this.challenge.perfectRankCleared,
+      pchallengecleared: Array.from(this.challenge.perfectCleared),
+      prchallengecleared: Array.from(this.challenge.perfectRankCleared),
 
-      boughttype: this.shine.boughtType,
-      setmodes: this.generator.modeType,
-      setchallengebonusesfst: this.challenge.bonusesType1,
-      setchallengebonusessnd: this.challenge.bonusesType2,
-      setrankchallengebonusesfst: this.challenge.rankBonusesType1,
-      setrankchallengebonusessnd: this.challenge.rankBonusesType2,
+      boughttype: Array.from(this.shine.boughtType),
+      setmodes: Array.from(this.generator.modeType),
+      setchallengebonusesfst: Array.from(this.challenge.bonusesType1),
+      setchallengebonusessnd: Array.from(this.challenge.bonusesType2),
+      setrankchallengebonusesfst: Array.from(this.challenge.rankBonusesType1),
+      setrankchallengebonusessnd: Array.from(this.challenge.rankBonusesType2),
 
-      rankchallengecleared: this.challenge.rankCleared,
+      rankchallengecleared: Array.from(this.challenge.rankCleared),
       rankchallengebonuses: Array.from(this.challenge.rankBonuses),
 
-      trophies: this.trophy.trophies,
-      smalltrophies: this.trophy.smallTrophies1st,
-      smalltrophies2nd: this.trophy.smallTrophies2nd,
+      trophies: Array.from(this.trophy.trophies),
+      smalltrophies: Array.from(this.trophy.smallTrophies1st),
+      smalltrophies2nd: Array.from(this.trophy.smallTrophies2nd),
 
-      levelitems: this.levelShop.levelItems,
+      levelitems: Array.from(this.levelShop.levelItems),
       levelitembought: this.levelShop.levelItemBought,
 
       remember: this.trophy.remember,
       rememberspent: this.unUsed.rememberSpent,
       rememberforgot: this.unUsed.rememberForgot,
 
-      chip: this.chip.chip,
-      setchip: this.chip.setChip,
-      disabledchip: this.chip.disabledChip,
-      spendchip: this.chip.spendChip,
+      chip: Array.from(this.chip.chip),
+      setchip: Array.from(this.chip.setChip),
+      disabledchip: Array.from(this.chip.disabledChip),
+      spendchip: Array.from(this.chip.spendChip),
 
-      statue: this.statue.statue,
-      polishedstatue: this.statue.polishedStatue,
-      polishedstatuebr: this.statue.brightStatue,
-      polishedstatuefl: this.statue.flickerStatue,
+      statue: Array.from(this.statue.statue),
+      polishedstatue: Array.from(this.statue.polishedStatue),
+      polishedstatuebr: Array.from(this.statue.brightStatue),
+      polishedstatuefl: Array.from(this.statue.flickerStatue),
 
-      spiritlevela: this.spiritLevelA,
-      spiritboughtcurrentcrown: this.unUsed.spiritBoughtCurrentCrown,
+      spiritlevela: Array.from(this.spiritLevelA),
+      spiritboughtcurrentcrown: Array.from(this.unUsed.spiritBoughtCurrentCrown),
 
-      setchiptypefst: this.chip.chipType1,
+      setchiptypefst: Array.from(this.chip.chipType1),
 
-      worldpipe: this.worldPipe,
+      worldpipe: Array.from(this.worldPipe),
       rings: this.ring.toSaveObject(this),
     };
   }

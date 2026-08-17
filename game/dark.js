@@ -10,7 +10,7 @@ class Dark {
     this.darkGeneratorsCost = playerData.darkgeneratorsCost.map(v => new Decimal(v));
 
     // 相互参照を回避するためのコールバック
-    /** @type {() => void | null} */
+    /** @type {(() => void) | null} */
     this.updateProofCallback = null;
   }
 

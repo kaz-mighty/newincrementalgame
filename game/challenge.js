@@ -252,6 +252,7 @@ class Challenge {
       }
     }
 
+    /** @type {number[]} */
     let setBonuses = [];
     if (index == 1) setBonuses = this.bonusesType1;
     else if (index == 2) setBonuses = this.bonusesType2;
@@ -270,6 +271,7 @@ class Challenge {
       }
     }
 
+    /** @type {number[]} */
     let setBonuses = [];
     if (index == 1) setBonuses = this.rankBonusesType1;
     else if (index == 2) setBonuses = this.rankBonusesType2;
@@ -303,7 +305,7 @@ class Challenge {
   }
   /** @param {number} i */
   configChallengeWeightValue(i) {
-    let input = parseInt(window.prompt("重みを設定", ""));
+    let input = parseInt(window.prompt("重みを設定", "") ?? "NaN");
     if (isNaN(input)) return;
     this.challengeWeightValue[i] = input;
   }

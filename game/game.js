@@ -272,7 +272,13 @@ class Nig { // New Incremental Game
 
   dataSave() {
     this.save();
-    localStorage.setItem("playerStoredb", btoa(JSON.stringify(Vue.toRaw(this.playersSave))));
+    const saveText = btoa(JSON.stringify(Vue.toRaw(this.playersSave)));
+    try {
+      localStorage.setItem("playerStoredb", saveText);
+    } catch (e) {
+      console.error(e);
+    }
+    return saveText;
   }
   save() {
     // セーブデータ内の不明なプロパティも維持するため、マージする
@@ -291,10 +297,7 @@ class Nig { // New Incremental Game
     }
 
     for (let i = 0; i < WORLD_NUM; i++) {
-      const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
-
       let saveData = deepmerge(initialData(), playersSave[i], {
-        arrayMerge: overwriteMerge,
         isMergeableObject: isPlainObject
       });
 
@@ -409,24 +412,24 @@ class Nig { // New Incremental Game
     let input;
     switch (index) {
       case 0:
-        input = new Decimal(window.prompt("リセット時入手段位を設定", ""));
-        this.common.autoLevelNumber = input;
+        input = window.prompt("リセット時入手段位を設定", "");
+        if (input !== null) this.common.autoLevelNumber = new Decimal(input);
         break;
       case 1:
-        input = new Decimal(window.prompt("昇段停止段位を設定", ""));
-        this.common.autoLevelStopNumber = input;
+        input = window.prompt("昇段停止段位を設定", "");
+        if (input !== null) this.common.autoLevelStopNumber = new Decimal(input);
         break;
       case 2:
-        input = new Decimal(window.prompt("リセット時入手階位を設定", ""));
-        this.common.autoRankNumber = input;
+        input = window.prompt("リセット時入手階位を設定", "");
+        if (input !== null) this.common.autoRankNumber = new Decimal(input);
         break;
       case 3:
-        input = new Decimal(window.prompt("段位リセットポイント閾値を設定（0で無効）"));
-        this.common.autoLevelPoint = input;
+        input = window.prompt("段位リセットポイント閾値を設定（0で無効）");
+        if (input !== null) this.common.autoLevelPoint = new Decimal(input);
         break;
       case 4:
-        input = new Decimal(window.prompt("階位リセットポイント閾値を設定（0で無効）"));
-        this.common.autoRankPoint = input;
+        input = window.prompt("階位リセットポイント閾値を設定（0で無効）");
+        if (input !== null) this.common.autoRankPoint = new Decimal(input);
         break;
     }
   }
@@ -445,8 +448,8 @@ class Nig { // New Incremental Game
     this.common.chipThresholdUse = !this.common.chipThresholdUse;
   }
   configChipThresholdNumber() {
-    let input = new Decimal(window.prompt("閾値を設定", ""));
-    this.common.chipThreshold = input;
+    let input = window.prompt("閾値を設定", "");
+    if (input !== null) this.common.chipThreshold = new Decimal(input);
   }
   confCheckTrophies() {
     this.common.trophyCheck = !this.common.trophyCheck;
@@ -500,7 +503,7 @@ class Nig { // New Incremental Game
   }
   /** @param {number} index */
   configRingAutoBuyer(index) {
-    let input = parseInt(window.prompt("消費量を設定:最大1000", ""));
+    let input = parseInt(window.prompt("消費量を設定:最大1000", "") ?? "NaN");
     if (isNaN(input)) return;
     if (input < 0 || input > 1000) return;
     if (index == 0) {

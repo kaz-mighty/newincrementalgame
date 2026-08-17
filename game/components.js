@@ -94,24 +94,33 @@ const BasicTab = Vue.defineComponent({
     },
   },
   methods: {
+    /**
+     * @param {boolean} force
+     * @param {boolean} exit
+     */
     resetLevel(force, exit) {
       this.player.resetLevel(force, exit);
     },
+    /** @param {boolean} force */
     resetRank(force) {
       this.player.resetRank(force);
     },
+    /** @param {boolean} force */
     resetCrown(force) {
       this.player.resetCrown(force);
     },
     configShowMult() {
       this.showMult = !this.showMult;
     },
+    /** @param {number} i */
     buyGenerator(i) {
       this.player.generator.buyGenerator(this.player, i);
     },
+    /** @param {number} i */
     changeMode(i) {
       this.player.generator.changeMode(this.player, i);
     },
+    /** @param {number} i */
     buyAccelerator(i) {
       this.player.accelerator.buyAccelerator(this.player, i);
     },
@@ -144,9 +153,11 @@ const DarkTab = Vue.defineComponent({
     resetDarkLevel() {
       this.player.resetDarkLevel();
     },
+    /** @param {number} i */
     buyDarkGenerator(i) {
       this.player.dark.buyDarkGenerator(this.player, i);
     },
+    /** @param {number} num */
     spendBrightness(num) {
       this.player.spendBrightness(num);
     },
@@ -157,6 +168,7 @@ const LightTab = Vue.defineComponent({
   template: "#light-tab",
   data: () => ({player: currentPlayer}),
   methods: {
+    /** @param {number} i */
     buyLightGenerator(i) {
       this.player.light.buyLightGenerator(this.player, i);
     },
@@ -167,9 +179,11 @@ const TimeTab = Vue.defineComponent({
   template: "#time-tab",
   data: () => ({player: currentPlayer}),
   methods: {
+    /** @param {number} value */
     addAccelLevelUsed(value) {
       this.player.campaign.addAccelLevelUsed(value);
     },
+    /** @param {string} campaignId */
     chooseCampaigns(campaignId) {
       this.player.campaign.chooseCampaigns(campaignId);
     },
@@ -207,16 +221,17 @@ const OptionTab = Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {boolean} force */
     resetData(force) {
       this.nig.resetData(force);
     },
+    /** @param {string} content */
     configTweet(content) {
       this.player.configTweet(content);
     },
     exportSave() {
       // セーブボタンが無いため吐き出し時にセーブもする
-      this.nig.dataSave();
-      this.nig.common.exported = localStorage.getItem("playerStoredb");
+      this.nig.common.exported = this.nig.dataSave();
     },
     exportSaveFile() {
       this.nig.save();
@@ -229,7 +244,7 @@ const OptionTab = Vue.defineComponent({
     },
     importSave() {
       let input = window.prompt("データを入力", "");
-      if (input.length <= 50) {
+      if (input == null || input.length <= 50) {
         return;
       }
       let k = atob(input).charAt(0);
@@ -249,9 +264,11 @@ const LevelTab = Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {number} i */
     configSelected(i) {
       this.player.challenge.configSelected(i);
     },
+    /** @param {boolean} isRank */
     showUncleared(isRank) {
       this.player.challenge.showUncleared(isRank);
     },
@@ -261,27 +278,35 @@ const LevelTab = Vue.defineComponent({
     exitChallenge() {
       this.player.challenge.exitChallenge(this.player);
     },
+    /** @param {number} i */
     buyRewards(i) {
       this.player.challenge.buyRewards(i);
     },
+    /** @param {number} i */
     buyRankRewards(i) {
       this.player.challenge.buyRankRewards(i);
     },
+    /** @param {1 | 2} i */
     setBonuseType(i) {
       this.player.challenge.setBonuseType(i);
     },
+    /** @param {1 | 2} i */
     changeBonuseType(i) {
       this.player.challenge.changeBonuseType(i);
     },
+    /** @param {1 | 2} i */
     setRankBonuseType(i) {
       this.player.challenge.setRankBonuseType(i);
     },
+    /** @param {1 | 2} i */
     changeRankBonuseType(i) {
       this.player.challenge.changeRankBonuseType(i);
     },
+    /** @param {number} i */
     configChallengeWeightKind(i) {
       this.player.challenge.configChallengeWeightKind(i);
     },
+    /** @param {number} i */
     configChallengeWeightValue(i) {
       this.player.challenge.configChallengeWeightValue(i);
     },
@@ -292,6 +317,7 @@ const RankTab = Vue.defineComponent({
   template: "#rank-tab",
   data: () => ({player: currentPlayer}),
   methods: {
+    /** @param {number} i */
     buyLevelItems(i) {
       this.player.levelShop.buyLevelItems(this.player, i);
     },
@@ -307,6 +333,7 @@ const CrownTab = Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {number} i */
     configPerfectSelected(i) {
       this.player.challenge.configPerfectSelected(i);
     },
@@ -338,15 +365,19 @@ const AutoTab = Vue.defineComponent({
     player: currentPlayer,
   }),
   methods: {
+    /** @param {number} i */
     toggleAutoBuyer(i) {
       this.nig.toggleAutoBuyer(i);
     },
+    /** @param {number} i */
     configAutoBuyer(i) {
       this.nig.configAutoBuyer(i);
     },
+    /** @param {number} i */
     toggleRingAutoBuyer(i) {
       this.nig.toggleRingAutoBuyer(i);
     },
+    /** @param {number} i */
     configRingAutoBuyer(i) {
       this.nig.configRingAutoBuyer(i);
     },
@@ -403,15 +434,19 @@ const ShineTab = Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {number} num */
     spendShine(num) {
       this.player.spendShine(num);
     },
+    /** @param {number} num */
     spendBrightness(num) {
       this.player.spendBrightness(num);
     },
+    /** @param {number} num */
     spendFlicker(num) {
       this.player.spendFlicker(num);
     },
+    /** @param {number} i */
     buyType(i) {
       this.player.shine.buyType(i);
     },
@@ -437,12 +472,15 @@ const WorldTab = Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {number} i */
     moveWorld(i) {
       this.nig.moveWorld(i);
     },
+    /** @param {number} i */
     shrinkWorld(i) {
       this.nig.shrinkWorld(i);
     },
+    /** @param {number} i */
     openPipe(i) {
       this.player.openPipe(i);
     },
@@ -462,9 +500,14 @@ const ChipTab = Vue.defineComponent({
     configChipThresholdNumber() {
       this.nig.configChipThresholdNumber();
     },
+    /** @param {number} i */
     configSpendChip(i) {
       this.player.chip.configSpendChip(this.player.statue.statue[i], i);
     },
+    /**
+     * @param {number} i
+     * @param {number} j
+     */
     chipSet(i, j) {
       this.player.chip.chipSet(i, j);
     },
@@ -484,15 +527,19 @@ const StatueTab = Vue.defineComponent({
   template: "#statue-tab",
   data: () => ({player: currentPlayer}),
   methods: {
+    /** @param {number} i */
     buildStatue(i) {
       this.player.statue.buildStatue(this.player, i);
     },
+    /** @param {number} i */
     polishStatue(i) {
       this.player.statue.polishStatue(this.player, i);
     },
+    /** @param {number} i */
     polishStatueBright(i) {
       this.player.statue.polishStatueBright(this.player, i);
     },
+    /** @param {number} i */
     polishStatueFlicker(i) {
       this.player.statue.polishStatueFlicker(this.player, i);
     },
@@ -514,12 +561,15 @@ const RingTab = Vue.defineComponent({
     configAutoMission() {
       this.nig.configAutoMission();
     },
+    /** @param {number} i */
     configSetRings(i) {
       this.player.ring.configSetRings(this.player.world, i);
     },
+    /** @param {number} i */
     startMission(i) {
       this.player.ring.startMission(i);
     },
+    /** @param {number} i */
     useSkill(i) {
       this.player.ring.useSkill(i);
     },
@@ -557,6 +607,7 @@ const MarkStoneTab = Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {number} i */
     selectType(i) {
       this.player.markStone.selectType(i);
     },
@@ -566,12 +617,15 @@ const MarkStoneTab = Vue.defineComponent({
     toggleCalibration() {
       this.calibration.toggleCalibration();
     },
+    /** @param {number} i */
     selectEnemy(i) {
       this.calibration.selectEnemy(i);
     },
+    /** @param {number} lv */
     selectEnemyLevel(lv) {
       this.calibration.selectEnemyLevel(lv);
     },
+    /** @param {number} i */
     buyShopUpgrade(i) {
       this.calibration.buyShopUpgrade(i);
     },
@@ -683,6 +737,7 @@ const app = Vue.createApp(Vue.defineComponent({
     },
   },
   methods: {
+    /** @param {number} typeIndex */
     changeType(typeIndex) {
       switch (typeIndex) {
         case 0: this.player.generator.changeModeType(this.player); break;

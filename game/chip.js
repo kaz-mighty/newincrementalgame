@@ -124,6 +124,7 @@ class Chip {
         return i - 1;
       }
     }
+    throw new Error("Unreacheable Error: getChipId");
   }
 
   /** @param {PlayerSaveData} playerData */
@@ -206,7 +207,7 @@ class Chip {
    */
   configSpendChip(statue, i) {
     let maxspend = statue * statue;
-    let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), ""));
+    let input = parseInt(window.prompt("消費数を設定:設定可能最大数:" + maxspend.toString(), "") ?? "NaN");
     if (isNaN(input)) return;
     if (input < 0 || input > maxspend) return;
     this.spendChip[i] = input;

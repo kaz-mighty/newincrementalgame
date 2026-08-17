@@ -240,6 +240,14 @@ class Ring {
     },
   ];
 
+  /**
+   * @typedef {Object} FieldEffect
+   * @prop {number} id
+   * @prop {"skilluse" | "turnend"} timing
+   * @prop {(v: any, val?: any) => void} effect
+   * @prop {string} description
+   */
+  /** @type {FieldEffect[]} */
   static fieldEffects = [
     {
       id: 1,
@@ -291,6 +299,7 @@ class Ring {
     },
   ];
 
+  /** @type {{name: string, tp: number, effect: (rings: Ring) => void}[]} */
   static skills = [
     {
       name: "通常",
@@ -593,7 +602,7 @@ class Ring {
   }
 
   /**
-   * @param {string} property
+   * @param {"flowerPoint" | "snowPoint" | "moonPoint" | "flowerMultiplier" | "snowMultiplier" | "moonMultiplier"} property
    * @param {number} value
    */
   affect(property, value) {
@@ -606,6 +615,8 @@ class Ring {
       // @ts-expect-error
       if (e[0].timing == "skilluse") { // bug
         const eff = Ring.fieldEffects.find((elem) => elem.id == e[0]);
+        // Note: origin と同じ動作を明示的に保つ (nullチェックをしていないため、未知の値を持つセーブデータで例外になる)
+        if (eff == null) throw new Error("Unknown fieldEffectId");
         eff.effect(v);
       }
     }
@@ -703,6 +714,8 @@ class Ring {
       this.missionState.turn++;
       for (let e of this.missionState.fieldEffect) {
         let eff = Ring.fieldEffects.find((elem) => elem.id == e[0]);
+        // Note: origin と同じ動作を明示的に保つ (nullチェックをしていないため、未知の値を持つセーブデータで例外になる)
+        if (eff == null) throw new Error("Unknown fieldEffectId");
         if (eff.timing == "turnend") {
           eff.effect(this.missionState, e[1]);
         }

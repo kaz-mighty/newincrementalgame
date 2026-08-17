@@ -243,56 +243,50 @@ class Ring {
   /**
    * @typedef {Object} FieldEffect
    * @prop {number} id
-   * @prop {"skilluse" | "turnend"} timing
-   * @prop {(v: any, val?: any) => void} effect
+   * @prop {(v: {state: Ring["missionState"], prop: string, value: number}) => void} [useSkill]
+   * @prop {(v: Ring["missionState"], val: number) => void} [endTurn]
    * @prop {string} description
    */
   /** @type {FieldEffect[]} */
   static fieldEffects = [
     {
       id: 1,
-      timing: "skilluse",
-      effect: (v) => {
+      useSkill: (v) => {
         if (v.prop == 'flowerPoint') v.value = Math.floor(v.value * 1.5);
       },
       description: "花の評価上昇量1.5倍"
     },
     {
       id: 2,
-      timing: "skilluse",
-      effect: (v) => {
+      useSkill: (v) => {
         if (v.prop == 'snowPoint') v.value = Math.floor(v.value * 1.5);
       },
       description: "雪の評価上昇量1.5倍"
     },
     {
       id: 3,
-      timing: "skilluse",
-      effect: (v) => {
+      useSkill: (v) => {
         if (v.prop == 'moonPoint') v.value = Math.floor(v.value * 1.5);
       },
       description: "月の評価上昇量1.5倍"
     },
     {
       id: 4,
-      timing: "turnend",
-      effect: (v, val) => {
+      endTurn: (v, val) => {
         v.flowerPoint += val;
       },
       description: "花の評価上昇"
     },
     {
       id: 5,
-      timing: "turnend",
-      effect: (v, val) => {
+      endTurn: (v, val) => {
         v.snowPoint += val;
       },
       description: "雪の評価上昇"
     },
     {
       id: 6,
-      timing: "turnend",
-      effect: (v, val) => {
+      endTurn: (v, val) => {
         v.moonPoint += val;
       },
       description: "月の評価上昇"
@@ -613,11 +607,11 @@ class Ring {
     };
     for (let e of this.missionState.fieldEffect) {
       // @ts-expect-error
-      if (e[0].timing == "skilluse") { // bug
+      if (e[0].timing == "skilluse") { // bug: 対応するfieldEffectsではなくidを直接参照している
         const eff = Ring.fieldEffects.find((elem) => elem.id == e[0]);
         // Note: origin と同じ動作を明示的に保つ (nullチェックをしていないため、未知の値を持つセーブデータで例外になる)
         if (eff == null) throw new Error("Unknown fieldEffectId");
-        eff.effect(v);
+        eff.useSkill?.(v);
       }
     }
     this.missionState[v.prop] += v.value;
@@ -716,9 +710,7 @@ class Ring {
         let eff = Ring.fieldEffects.find((elem) => elem.id == e[0]);
         // Note: origin と同じ動作を明示的に保つ (nullチェックをしていないため、未知の値を持つセーブデータで例外になる)
         if (eff == null) throw new Error("Unknown fieldEffectId");
-        if (eff.timing == "turnend") {
-          eff.effect(this.missionState, e[1]);
-        }
+        eff.endTurn?.(this.missionState, e[1]);
       }
 
       //this.missionState.fieldEffect.forEach((item, i) => {

@@ -127,10 +127,9 @@ class Campaign {
 
   updateCampaign() {
     // Note: 1tickの間、期間中キャンペーンが空になることがあるが、元の仕様の再現を優先
-    // 同じ値を再代入した場合でもリアクティビティがトリガーされるので、それを回避する
     const date = new Date();
-    if (this._nowMonth.value != date.getMonth()) {this._nowMonth.value = date.getMonth();}
-    if (this._nowDate.value != date.getDate()) {this._nowDate.value = date.getDate();}
+    this._nowMonth.value = date.getMonth();
+    this._nowDate.value = date.getDate();
 
     for (const campaignId in Campaign.campaigns) {
       if (!this.isDuring(Campaign.campaigns[campaignId])) continue;

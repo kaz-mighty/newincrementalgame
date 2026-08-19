@@ -712,7 +712,7 @@
 			所持鋳片
 			<div v-for="(_, i) in 10" :key="i">
 				<div v-show="player.chip.chip[i]>0">
-					{{ Chip.chipName[i] + "片"　}}: {{ player.chip.chip[i] }}
+					{{ Chip.chipName[i] + "片" }}: {{ player.chip.chip[i] }}
 				</div>
 			</div>
 			<br>
@@ -732,7 +732,7 @@
 
 			鋳片使用
 			<template v-for="(_, i) in 100" :key="i">
-				<div clsss="set-chip" v-if="player.chip.isSetChipShown(player.rememberSum, i)">
+				<div class="set-chip" v-if="player.chip.isSetChipShown(player.rememberSum, i)">
 					鋳片効力 {{ i+1 }} : {{ Chip.chipBonusName[i] }}
 					<span v-show="player.chip.disabledChip[i]">（無効）</span>
 					<span v-for="(, j) in 10" :key="j">
@@ -860,7 +860,7 @@
 					</template>
 				</div>
 				<button type="button" @click="endMission()">
-					{{ player.ring.ringPointSum()>=Ring.missionInfo[player.ring.missionId].goal?"完了":"撤退"　}}
+					{{ player.ring.ringPointSum()>=Ring.missionInfo[player.ring.missionId].goal?"完了":"撤退" }}
 				</button>
 			</div>
 		</div>

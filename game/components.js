@@ -80,6 +80,9 @@ const BasicTab = Vue.defineComponent({
     showMult: true,
   }),
   computed: {
+    levelResetButtonClass() {
+      return { 'unavailable': this.player.money.lt('1e24') && this.player.challenge.isActive(0) };
+    },
     modeBonus() {
       return this.player.calcCommonModeBonus();
     },
@@ -763,4 +766,4 @@ app.config.globalProperties.Shrink = Shrink;
 app.config.globalProperties.Ring = Ring;
 app.config.globalProperties.Shine = Shine;
 app.config.globalProperties.Spirit = Spirit;
-app.mount('#app');
+const rootComponentInstance = app.mount('#app');

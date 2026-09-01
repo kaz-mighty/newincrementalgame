@@ -62,57 +62,23 @@
 
 	<template id="tab-header">
 		<div id="tabs">
-			<span id="basic">
-				<button type="button" @click="changeTab('basic')">通常</button>
-			</span>
-			<span id="dark" v-if="isDarkShown">
-				<button type="button" @click="changeTab('dark')">裏</button>
-			</span>
-			<span id="light" v-if="isLightShown">
-				<button type="button" @click="changeTab('light')">天上</button>
-			</span>
-			<span id="time" v-if="isTimeShown">
-				<button type="button" @click="changeTab('time')">時</button>
-			</span>
-			<span id="option">
-				<button type="button" @click="changeTab('option')">設定</button>
-			</span>
-			<span id="level" v-if="isLevelShown">
-				<button type="button" @click="changeTab('level')">段位</button>
-			</span>
-			<span id="rank" v-if="isRankShown">
-				<button type="button" @click="changeTab('rank')">階位</button>
-			</span>
-			<span id="crown" v-if="isCrownShown">
-				<button type="button" @click="changeTab('crown')">冠位</button>
-			</span>
-			<span id="spirit" v-if="isSpiritShown">
-				<button type="button" @click="changeTab('spirit')">精霊</button>
-			</span>
-			<span id="auto" v-if="isAutoShown">
-				<button type="button" @click="changeTab('auto')">自動</button>
-			</span>
-			<span id="shine" v-if="isShineShown">
-				<button type="button" @click="changeTab('shine')">輝き</button>
-			</span>
-			<span id="world" v-if="isWorldShown">
-				<button type="button" @click="changeTab('world')">世界</button>
-			</span>
-			<span id="chip" v-if="isChipShown">
-				<button type="button" @click="changeTab('chip')">鋳片</button>
-			</span>
-			<span id="statue" v-if="isStatueShown">
-				<button type="button" @click="changeTab('statue')">像</button>
-			</span>
-			<span id="trophy">
-				<button type="button" @click="changeTab('trophy')">実績</button>
-			</span>
-			<span id="ring" v-if="isRingShown">
-				<button type="button" @click="changeTab('ring')">輪</button>
-			</span>
-			<span id="mark-stone" v-if="isMarkStoneShown">
-				<button type="button" @click="changeTab('markstone')">印石</button>
-			</span>
+			<button type="button" id="basic" @click="changeTab('basic')">通常</button>
+			<button type="button" id="dark" @click="changeTab('dark')" v-if="isDarkShown">裏</button>
+			<button type="button" id="light" @click="changeTab('light')" v-if="isLightShown">天上</button>
+			<button type="button" id="time" @click="changeTab('time')" v-if="isTimeShown">時</button>
+			<button type="button" id="option" @click="changeTab('option')">設定</button>
+			<button type="button" id="level" @click="changeTab('level')" v-if="isLevelShown">段位</button>
+			<button type="button" id="rank" @click="changeTab('rank')" v-if="isRankShown">階位</button>
+			<button type="button" id="crown" @click="changeTab('crown')" v-if="isCrownShown">冠位</button>
+			<button type="button" id="spirit" @click="changeTab('spirit')" v-if="isSpiritShown">精霊</button>
+			<button type="button" id="auto" @click="changeTab('auto')" v-if="isAutoShown">自動</button>
+			<button type="button" id="shine" @click="changeTab('shine')" v-if="isShineShown">輝き</button>
+			<button type="button" id="world" @click="changeTab('world')" v-if="isWorldShown">世界</button>
+			<button type="button" id="chip" @click="changeTab('chip')" v-if="isChipShown">鋳片</button>
+			<button type="button" id="statue" @click="changeTab('statue')" v-if="isStatueShown">像</button>
+			<button type="button" id="trophy" @click="changeTab('trophy')">実績</button>
+			<button type="button" id="ring" @click="changeTab('ring')" v-if="isRingShown">輪</button>
+			<button type="button" id="mark-stone" @click="changeTab('markstone')" v-if="isMarkStoneShown">印石</button>
 		</div>
 	</template>
 
@@ -138,15 +104,15 @@
 			<div v-if="player.crownResetTime.gt(0)">
 				冠位リセット条件: {{ player.resetCrownBorder().toExponential(3) }}
 			</div>
-			<div>
-				<div id="level-reset" v-show="player.money.greaterThanOrEqualTo('1e18')">
-					<button type="button" :class="{ 'unavailable': player.money.lt('1e24') && player.challenge.isActive(0) }" @click="resetLevel(false,false)">昇段リセット</button>
+			<div id="reset-container">
+				<div v-show="player.money.greaterThanOrEqualTo('1e18')">
+					<button type="button" id="level-reset" :class="levelResetButtonClass" @click="resetLevel(false,false)">昇段リセット</button>
 				</div>
-				<div id="rank-reset" v-show="player.money.greaterThanOrEqualTo(player.resetRankBorder())">
-					<button type="button" @click="resetRank(false)">昇階リセット</button>
+				<div v-show="player.money.greaterThanOrEqualTo(player.resetRankBorder())">
+					<button type="button" id="rank-reset" @click="resetRank(false)">昇階リセット</button>
 				</div>
-				<div id="crown-reset" v-show="player.money.greaterThanOrEqualTo(player.resetCrownBorder())">
-					<button type="button" :class="{ 'unavailable': player.challenge.onChallenge }" @click="resetCrown(false)">昇冠リセット</button>
+				<div v-show="player.money.greaterThanOrEqualTo(player.resetCrownBorder())">
+					<button type="button" id="crown-reset" :class="{ 'unavailable': player.challenge.onChallenge }" @click="resetCrown(false)">昇冠リセット</button>
 				</div>
 			</div>
 			<br>
@@ -208,8 +174,8 @@
 			<div id="dark-coin-amount" v-show="player.challenge.rankCleared.length>=32">裏ポイント: {{ player.dark.darkMoney.toExponential(3) }}</div>
 			裏発生器iは発生器iを強化します。
 			<div v-show="player.challenge.rankCleared.length>=32">裏発生器は、煌きを消費すると発生器のように動作し、裏ポイントや下位の裏発生器を生み出します。裏ポイントは全ての発生器を強化します。</div>
-			<div id="dark-level-reset" v-if="player.dark.darkMoney.greaterThanOrEqualTo('1e18')">
-				<button type="button" @click="resetDarkLevel()">裏昇段リセット</button>
+			<div v-if="player.dark.darkMoney.greaterThanOrEqualTo('1e18')">
+				<button type="button" id="dark-level-reset" @click="resetDarkLevel()">裏昇段リセット</button>
 			</div>
 			<div v-if="player.dark.darkLevel.gt(0)">
 				裏段位: {{ toFormated(player.dark.darkLevel,5) }}
@@ -332,25 +298,25 @@
 				</div>
 				<br>
 
-				<div>
-					<button type="button" id="search-uncleared" @click="showUncleared(false)">
-						未達成挑戦
-					</button>
-				</div>
-				<div v-if="player.challenge.rankCleared.length>=1">
-					<button type="button" id="search-uncleared-rank" @click="showUncleared(true)">
-						未達成階位挑戦
-					</button>
+				<div id="search-uncleared-container">
+					<div>
+						<button type="button" id="search-uncleared" @click="showUncleared(false)">
+							未達成挑戦
+						</button>
+					</div>
+					<div v-if="player.challenge.rankCleared.length>=1">
+						<button type="button" id="search-uncleared-rank" @click="showUncleared(true)">
+							未達成階位挑戦
+						</button>
+					</div>
 				</div>
 				<br>
 
-				<div v-if="!player.challenge.onChallenge">
-					<button type="button" id="challenge-start" @click="startChallenge()">
+				<div>
+					<button type="button" id="challenge-start" @click="startChallenge()" v-if="!player.challenge.onChallenge">
 						挑戦開始
 					</button>
-				</div>
-				<div v-else>
-					<button type="button" id="challenge-exit" @click="exitChallenge()">
+					<button type="button" id="challenge-exit" @click="exitChallenge()" v-else>
 						挑戦放棄
 					</button>
 				</div>

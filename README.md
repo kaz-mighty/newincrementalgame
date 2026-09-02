@@ -1,6 +1,8 @@
-# newincrementalgame
+# new incremental game
 
-this is an incremental game project I(twitter:@dem08656775) created. I threw old disgusting one away, so this is new incremantalgame --- not meaning I insist creating new type of incremental game or introducing new idea. Acctually, this game is similar to derivetive clicker or Antimatter Dimensions.
+This is a fork repository of the incremental game.
+
+これは新しい放置ゲーム(1).fileのフォークリポジトリです。
 
 ## Overview of fork 
 
@@ -50,3 +52,17 @@ IDEを最大限活用するためにライブラリの型定義を用意する�
   - [CDNから読み込んだ(Moduleではない従来型の)JSライブラリに対して、後付けで型を適用する方法](https://qiita.com/murasuke/items/a5c29940fc39ad3c7117)
   - [JS プロジェクトのまま TS の型チェックの恩恵を受ける方法](https://qiita.com/tettekete/items/9335e9d9ea00311626aa)
   - [TypeScript 5.5 - @import Tag](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html#the-jsdoc-import-tag)
+
+
+## branch
+
+- fork/stable: github-pages 公開用ブランチ 
+- fork/beta: github-pages 公開用ブランチ。 内部APIや変数名が突然変わる可能性があります
+- fork/origin-stable-fast: github-pages 公開用ブランチ。 origin の安定版を軽微な変更で軽量化したもの
+
+- fork/develop: 開発用ブランチ
+- fork/workflow: workflow用ブランチ
+
+- fork/for_diff: originのベータ版のコミット履歴を整理し直したもの
+- main: origin の安定版
+- beta: origin のベータ版

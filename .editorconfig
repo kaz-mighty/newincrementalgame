@@ -1,0 +1,11 @@
+root = ture
+
+[*]
+indent_size = 2
+
+[*.js]
+indent_style = space
+
+[*.html]
+indent_style = tab
+

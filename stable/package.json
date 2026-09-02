@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "break_infinity.js": "1.2.0",
+    "deepmerge": "^4.3.1",
+    "patch-package": "^8.0.1",
+    "vue": "3.4.5"
+  }
+}
